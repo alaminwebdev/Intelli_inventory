@@ -6,3 +6,7 @@ Route::name('role-management.')->prefix('role-management')->namespace('RoleManag
 Route::name('profile-management.')->prefix('profile-management')->namespace('ProfileManagement')->group(base_path('routes/admin/profile_management.php'));
 Route::name('user-management.')->prefix('user-management')->namespace('UserManagement')->group(base_path('routes/admin/user_management.php'));
 Route::name('member-management.')->prefix('member-management')->namespace('MemberManagement')->group(base_path('routes/admin/member_management.php'));
+
+// include __DIR__ . '/admin/system_setup.php';
+
+include 'admin/system_setup.php';
