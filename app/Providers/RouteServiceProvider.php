@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    protected $namespace          = 'App\Http\Controllers';
-    protected $nameSpaceAdmin     = 'App\Http\Controllers\Backend';
-    protected $nameSpaceSiteAdmin = 'App\Http\Controllers\Frontend';
     /**
      * The path to the "home" route for your application.
      *
@@ -20,7 +17,8 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    // public const ADMIN_DASHBOARD = 'admin/dashboard';
+    // public const MEMBER_DASHBOARD = 'member/dashboard';
 
     /**
      * The controller namespace for the application.
@@ -30,6 +28,8 @@ class RouteServiceProvider extends ServiceProvider
      * @var string|null
      */
     // protected $namespace = 'App\\Http\\Controllers';
+    protected $nameSpaceAdmin = 'App\\Http\\Controllers\\Admin';
+    protected $nameSpaceMember = 'App\\Http\\Controllers\\Member';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -42,13 +42,25 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->routes(function () {
             Route::prefix('api')
-                ->middleware('api')
-                ->namespace($this->namespace)
-                ->group(base_path('routes/api.php'));
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/api.php'));
 
-            Route::middleware('web')
-                ->namespace($this->namespace)
-                ->group(base_path('routes/web.php'));
+            Route::middleware(['web','revalidate'])
+            ->namespace($this->namespace)
+            ->group(base_path('routes/web.php'));
+
+            Route::middleware(['web', 'auth:admin','permission','revalidate'])
+            ->name( 'admin.')
+            ->prefix('admin')
+            ->namespace($this->nameSpaceAdmin)
+            ->group(base_path('routes/admin.php'));
+
+            Route::middleware(['web', 'auth:member','revalidate'])
+            ->name( 'member.')
+            ->prefix('member')
+            ->namespace($this->nameSpaceMember)
+            ->group(base_path('routes/member.php'));
         });
     }
 

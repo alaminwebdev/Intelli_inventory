@@ -2,16 +2,21 @@
 
 namespace App\Providers;
 
+use App\Models\SiteSetting;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\DB;
 
-class AppServiceProvider extends ServiceProvider {
+class AppServiceProvider extends ServiceProvider
+{
     /**
      * Register any application services.
      *
      * @return void
      */
-    public function register() {
+    public function register()
+    {
         //
     }
 
@@ -20,7 +25,19 @@ class AppServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function boot() {
+    public function boot()
+    {
         Schema::defaultStringLength(191);
+
+        if($this->app->environment('production')) {
+            \URL::forceScheme('https');
+        }
+        
+        if (\Schema::hasTable('site_settings')) {
+            View::share('site_setting', SiteSetting::first());
+        }
+        
+       auth()->setDefaultDriver(getGuard());
+
     }
 }
