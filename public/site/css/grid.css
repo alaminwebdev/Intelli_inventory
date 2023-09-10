@@ -1,0 +1,154 @@
+/* 
+ * Author M. Atoar Rahman
+ * Date: 07/03/2022
+ * Time: 11:40 AM
+*/
+@media only screen and (max-width: 768px){
+
+}
+/* 
+** Header Top Section
+*/
+#header .column{ display: grid; grid-template-columns: repeat(12, 1fr); }
+#header .leftSide{grid-column: span 2}
+#header .midSide{grid-column: span 5}
+#header .rightSide{grid-column: span 5}
+
+@media only screen and (max-width: 768px) {
+    #header .leftSide{grid-column: span 2}
+    #header .midSide{grid-column: span 2}
+    #header .rightSide{grid-column: span 8} 
+    
+    #header .leftSide img{width: 100%;}
+    #header .midSide img{padding-right: 0px;}
+    #header .midSide{padding-left: 5px;}
+}
+
+/* 
+** Menu Section
+*/
+#menu .column{ display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: 85px;}
+#menu .leftSide{grid-column: span 2}
+#menu .rightSide{grid-column: span 10}
+
+@media only screen and (max-width: 768px) {
+    #menu .column{ grid-template-rows: auto;}
+    #menu .leftSide{grid-column: span 3}
+    #menu .rightSide{grid-column: span 9}
+    #menu .leftSide img{width: auto; }
+}
+/* 
+** Banner Section
+*/
+#banner .column{ display: grid; grid-template-columns: 1fr; }
+@media only screen and (max-width: 992px) {
+    #carouselSlide .carousel-caption{
+        top: 25%;
+        line-height: 28px;
+    }
+    #carouselSlide .carousel-caption h4{font-size: 16px; }
+    #carouselSlide .carousel-caption h1{font-size: 24px;}
+    #carouselSlide .btn { font-size: 16px;} 
+}
+@media only screen and (max-width: 768px) {
+    #carouselSlide .carousel-caption{
+        top: 4%;
+        line-height: 28px;
+    }
+    #carouselSlide .carousel-caption h4{font-size: 11px; }
+    #carouselSlide .carousel-caption h1{font-size: 14px; margin-bottom: 5px;}
+    #carouselSlide .btn { font-size: 14px;}
+}
+/* 
+** Count Down Section  
+*/
+#countDown .column{ display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media only screen and (max-width: 768px) {
+    #countDown .column{
+        grid-template-columns: 1fr;
+    }
+    #countDown { margin-top: 30px;}
+    #countDown .allTime{display: block; text-align: center;}
+    #countDown .allTime .count{margin-bottom: 15px;}
+}
+/* 
+** About section 
+*/
+#aboutICPC .column{ display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+@media only screen and (max-width: 768px) {
+    #aboutICPC .column{
+        grid-template-columns: 1fr;
+    }
+}
+/* 
+** Count Down Number 
+*/
+#countDownNumber .column{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+@media only screen and (max-width: 768px) {
+    #countDownNumber .column{
+        grid-template-columns: 1fr;
+    }
+}
+/* 
+** Event Activities
+*/
+#eventActivities .column{ display: grid; grid-template-columns: 1fr 1fr1fr; gap: 1rem; }
+@media only screen and (max-width: 768px) {
+    #eventActivities .column{
+        grid-template-columns: 1fr;
+    }
+}
+/* 
+** Event Information
+*/
+#eventInformation .column{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+@media only screen and (max-width: 768px) {
+    #eventInformation .column{
+        grid-template-columns: 1fr;
+    }
+}
+/* 
+** Updated Blog
+*/
+#updatedBlog .column{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+@media only screen and (max-width: 768px) {
+    #updatedBlog .column{
+        grid-template-columns: 1fr;
+    }
+}
+/* 
+** ICPC Global Supporters and Sponsors 
+*/
+#supporters .column{ display: grid; grid-template-columns: repeat(4, 1fr);  gap: 1rem; }
+@media only screen and (max-width: 768px) {
+    #supporters .column{
+        grid-template-columns: 1fr;
+    }
+}
+/* 
+** Local Partners/Sponsors 
+*/
+#partners .column{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: -30px; }
+@media only screen and (max-width: 768px) {
+    #partners .column{
+        grid-template-columns: 1fr;
+    }
+}
+/* 
+** Bottom section 
+*/
+#bottom .column{ display: grid; grid-template-columns: 1fr; gap: 1rem; align-items: center; }
+/* 
+** Footer section 
+*/
+#footer .column{ display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media only screen and (max-width: 768px) {
+    #footer .column{
+        grid-template-columns: 1fr;
+    }
+    #footer .rightSide p{
+        text-align: left;
+    }
+}
+
+
