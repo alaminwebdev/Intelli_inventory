@@ -37,13 +37,13 @@
                                             
                                             <div class="form-group col-sm-6">
                                                 <label class="control-label">Product Type <span class="text-red">*</span></label>
-                                                <select name="product_type" id="product_type" class="form-control select2 @error('product_type') is-invalid @enderror">
+                                                <select name="product_type_id" id="product_type_id" class="form-control select2 @error('product_type_id') is-invalid @enderror">
                                                     <option value="" >Please Select</option>
                                                     @foreach ($product_types as $item)
-                                                        <option value="{{ $item->id }}" {{ @$editData->product_type == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
+                                                        <option value="{{ $item->id }}" {{ @$editData->product_type_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
                                                     @endforeach
                                                 </select>
-                                                @error('product_type')
+                                                @error('product_type_id')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -52,13 +52,13 @@
 
                                             <div class="form-group col-sm-6">
                                                 <label class="control-label">Unit <span class="text-red">*</span></label>
-                                                <select name="unit" id="unit" class="form-control select2 @error('unit') is-invalid @enderror">
+                                                <select name="unit_id" id="unit_id" class="form-control select2 @error('unit_id') is-invalid @enderror">
                                                     <option value="" >Please Select</option>
                                                     @foreach ($units as $item)
-                                                        <option value="{{ $item->id }}" {{ @$editData->unit == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
+                                                        <option value="{{ $item->id }}" {{ @$editData->unit_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
                                                     @endforeach
                                                 </select>
-                                                @error('unit')
+                                                @error('unit_id')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>

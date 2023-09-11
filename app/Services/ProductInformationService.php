@@ -17,8 +17,8 @@ class ProductInformationService implements IService
     public function getAll()
     {
         try {
-            $data = ProductInformation::join('product_types', 'product_types.id', 'product_information.product_type')
-                ->join('units', 'units.id', 'product_information.unit')
+            $data = ProductInformation::join('product_types', 'product_types.id', 'product_information.product_type_id')
+                ->join('units', 'units.id', 'product_information.unit_id')
                 ->select(
                     'product_information.*',
                     'units.name as unit',
@@ -37,11 +37,11 @@ class ProductInformationService implements IService
     {
         try {
             $data               = new ProductInformation();
-            $data->code         = $request->code;
-            $data->name         = $request->name;
-            $data->product_type = $request->product_type;
-            $data->unit         = $request->unit;
-            $data->status       = $request->status ?? 0;
+            $data->code             = $request->code;
+            $data->name             = $request->name;
+            $data->product_type_id  = $request->product_type_id;
+            $data->unit_id          = $request->unit_id;
+            $data->status           = $request->status ?? 0;
             $data->save();
         } catch (Exception $e) {
             return $e->getMessage();
@@ -56,12 +56,12 @@ class ProductInformationService implements IService
     public function update(Request $request, $id)
     {
         try {
-            $data               = ProductInformation::find($id);
-            $data->code         = $request->code;
-            $data->name         = $request->name;
-            $data->product_type = $request->product_type;
-            $data->unit         = $request->unit;
-            $data->status       = $request->status ?? 0;
+            $data                   = ProductInformation::find($id);
+            $data->code             = $request->code;
+            $data->name             = $request->name;
+            $data->product_type_id  = $request->product_type_id;
+            $data->unit_id          = $request->unit_id;
+            $data->status           = $request->status ?? 0;
             $data->save();
             return true;
         } catch (Exception $e) {

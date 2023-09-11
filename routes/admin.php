@@ -9,4 +9,8 @@ Route::name('member-management.')->prefix('member-management')->namespace('Membe
 
 // include __DIR__ . '/admin/system_setup.php';
 
+// System Setup
 include 'admin/system_setup.php';
+
+// Product Management
+include 'admin/product_management.php';

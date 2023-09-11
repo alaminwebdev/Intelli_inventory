@@ -17,8 +17,8 @@ class CreateProductInformationTable extends Migration
             $table->id();
             $table->string('code')->nullable();
             $table->string('name')->nullable();
-            $table->integer('product_type')->nullable();
-            $table->integer('unit')->nullable();
+            $table->integer('product_type_id')->nullable();
+            $table->integer('unit_id')->nullable();
             $table->tinyInteger('status')->nullable();
             $table->timestamps();
         });
