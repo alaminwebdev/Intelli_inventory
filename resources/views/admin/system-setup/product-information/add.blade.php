@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="card">
+                    <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
                             <a href="{{ route('admin.product.information.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>Product Information List</a>

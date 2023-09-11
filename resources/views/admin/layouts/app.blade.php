@@ -69,6 +69,11 @@
         .card-header::after {
             content: none;
         }
+
+        .select2-container {
+            display: block;
+            width: auto !important;
+        }
     </style>
 
 </head>
