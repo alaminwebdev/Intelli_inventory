@@ -16,13 +16,13 @@ class ProductTypeController extends Controller
         $this->productTypeService  = $productTypeService;
     }
     public function index(){
-        $data['title'] = 'Product Type List';
+        $data['title'] = 'Product Category List';
         $data['product_types'] = $this->productTypeService->getAll();
         return view('admin.system-setup.product-type.list', $data);
     }
     public function add()
     {
-        $data['title'] = 'Add Product Type';
+        $data['title'] = 'Add Product Category';
         return view('admin.system-setup.product-type.add', $data);
     }
     public function store(Request $request)
@@ -35,7 +35,7 @@ class ProductTypeController extends Controller
     }
     public function edit($id)
     {
-        $data['title'] = 'Edit Product Type';
+        $data['title'] = 'Edit Product Category';
         $data['editData'] = $this->productTypeService->getByID($id);
         return view('admin.system-setup.product-type.add', $data);
     }

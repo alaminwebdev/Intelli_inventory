@@ -4,7 +4,7 @@ $nav_menus = [];
 @endphp
 
 <style>
-    .nav-sidebar .nav-treeview .nav-item{
+.nav-sidebar .nav-treeview .nav-item{
     position: relative;
 }
 .nav-sidebar .nav-treeview .nav-item .nav-link{
@@ -28,7 +28,8 @@ $nav_menus = [];
     left: 22px;
     width: 0;
     border-left: 1px dashed rgba(255,255,255,0.5);
-}[class*=sidebar-dark] .brand-link, [class*=sidebar-dark] .brand-link .pushmenu {
+}
+[class*=sidebar-dark] .brand-link, [class*=sidebar-dark] .brand-link .pushmenu {
     color: rgb(255 255 255 / 90%);
 }
 [class*=sidebar-dark-] .sidebar a {
@@ -38,6 +39,7 @@ $nav_menus = [];
     /* background-color: #17a2b8; */
     background: linear-gradient(180deg, #79F5FD 0%, #ddfeff 100%) !important;
     color: #000;
+    transition: all .2s linear;
 }
 </style>
 

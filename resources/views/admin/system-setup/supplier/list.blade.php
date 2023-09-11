@@ -7,33 +7,33 @@
 				<div class="card shadow-sm">
 					<div class="card-header text-right">
 						<h4 class="card-title">{{@$title}}</h4>
-						<a href="{{route('admin.product.type.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Product Category</a>
+						<a href="{{route('admin.supplier.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Supplier</a>
 					</div>
 					<div class="card-body">
 						<table id="sb-data-table" class="table table-bordered">
 							<thead>
 								<tr>
 									<th width="5%">SL.</th>
-									<th>Product Category Name</th>
+									<th>Supplier Name</th>
 									<th>Status</th>
 									<th width="15%" class="text-center">Action</th>
 								</tr>
 							</thead>
 							<tbody >
-								@foreach($product_types as $list)
+								@foreach($suppliers as $list)
 								<tr data-id="{{$list->id}}">
 									<td>{{ $loop->iteration}}</td>
 									<td>{{ @$list->name ?? 'N/A' }}</td>
 
 									<td>{!! activeStatus($list->status) !!}</td>
 									<td class="text-center">
-										@if(sorpermission('admin.product.type.edit'))
-										<a class="btn btn-sm btn-success" href="{{route('admin.product.type.edit',$list->id)}}">
+										@if(sorpermission('admin.supplier.edit'))
+										<a class="btn btn-sm btn-success" href="{{route('admin.supplier.edit',$list->id)}}">
 											<i class="fa fa-edit"></i>
 										</a>
 										@endif
-										@if(sorpermission('admin.product.type.delete'))
-										<a class="btn btn-sm btn-danger destroy" data-id="{{$list->id}}" data-route="{{route('admin.product.type.delete')}}">
+										@if(sorpermission('admin.supplier.delete'))
+										<a class="btn btn-sm btn-danger destroy" data-id="{{$list->id}}" data-route="{{route('admin.supplier.delete')}}">
 											<i class="fa fa-trash"></i>
 										</a>
 										@endif

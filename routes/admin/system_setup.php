@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\UnitController;
+use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\ProductTypeController;
 use App\Http\Controllers\Admin\ProductInformationController;
 
@@ -11,6 +12,15 @@ Route::prefix('/unit')->group(function () {
     Route::get('/edit/{id}', [UnitController::class, 'edit'])->name('unit.edit');
     Route::post('/update/{id}', [UnitController::class, 'update'])->name('unit.update');
     Route::post('/delete', [UnitController::class, 'delete'])->name('unit.delete');
+});
+
+Route::prefix('/supplier')->group(function () {
+    Route::get('/list', [SupplierController::class, 'index'])->name('supplier.list');
+    Route::get('/add', [SupplierController::class, 'add'])->name('supplier.add');
+    Route::post('/store', [SupplierController::class, 'store'])->name('supplier.store');
+    Route::get('/edit/{id}', [SupplierController::class, 'edit'])->name('supplier.edit');
+    Route::post('/update/{id}', [SupplierController::class, 'update'])->name('supplier.update');
+    Route::post('/delete', [SupplierController::class, 'delete'])->name('supplier.delete');
 });
 
 Route::prefix('/product-type')->group(function () {

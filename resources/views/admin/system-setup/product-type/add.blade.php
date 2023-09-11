@@ -7,7 +7,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.product.type.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>Product Type List</a>
+                            <a href="{{ route('admin.product.type.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>Product Category List</a>
                         </div>
                         <div class="card-body">
                             <form id="submitForm" action="{{ isset($editData) ? route('admin.product.type.update', $editData->id) : route('admin.product.type.store') }} " method="post" enctype="multipart/form-data" autocomplete="off">
