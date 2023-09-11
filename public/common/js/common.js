@@ -4,6 +4,9 @@ $.widget.bridge('uibutton', $.ui.button)
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
     $('.select2').select2();
+    $('#sb-data-table').DataTable({
+        "pageLength": 25
+    });
 
     $(document).on('click','.destroy',function(){
         var thisBtn = $(this);

@@ -25,7 +25,7 @@
                                                 @enderror
                                             </div>
                                             <div class="form-group col-sm-6">
-                                                <label class="control-label">Name <span class="text-red">*</span>
+                                                <label class="control-label">Product Name <span class="text-red">*</span>
                                                 </label>
                                                 <input type="text" class="form-control form-control-sm name @error('name') is-invalid @enderror" id="name" name="name" value="{{ @$editData->name }}" placeholder="Name">
                                                 @error('name')
@@ -35,6 +35,36 @@
                                                 @enderror
                                             </div>
                                             
+                                            <div class="form-group col-sm-6">
+                                                <label class="control-label">Product Type <span class="text-red">*</span></label>
+                                                <select name="product_type" id="product_type" class="form-control select2 @error('product_type') is-invalid @enderror">
+                                                    <option value="" >Please Select</option>
+                                                    @foreach ($product_types as $item)
+                                                        <option value="{{ $item->id }}" {{ @$editData->product_type == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('product_type')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+
+                                            <div class="form-group col-sm-6">
+                                                <label class="control-label">Unit <span class="text-red">*</span></label>
+                                                <select name="unit" id="unit" class="form-control select2 @error('unit') is-invalid @enderror">
+                                                    <option value="" >Please Select</option>
+                                                    @foreach ($units as $item)
+                                                        <option value="{{ $item->id }}" {{ @$editData->unit == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('unit')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+
                                             <div class="form-group col-sm-6">
                                                 <label class="control-label">Status <span class="text-red">*</span></label>
                                                 <select name="status" id="status" class="form-control select2 ">
@@ -56,7 +86,7 @@
                                                 <button type="reset" class="btn btn-danger btn-sm">Clear</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.product.type.list') }}">Back</a>
+                                                <a href="{{ route('admin.product.information.list') }}">Back</a>
                                             </button>
                                         </div>
                                     </div>

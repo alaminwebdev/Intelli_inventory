@@ -10,8 +10,8 @@
 						<a href="{{route('admin.product.type.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Product Type</a>
 					</div>
 					<div class="card-body">
-						<table id="dataTable" class="table table-bordered" style="width:100%; border-collapse: collapse;">
-							<thead class="thead-custom">
+						<table id="sb-data-table" class="table table-bordered">
+							<thead>
 								<tr>
 									<th width="5%">SL.</th>
 									<th>Product Type Name</th>

@@ -28,8 +28,20 @@ $nav_menus = [];
     left: 22px;
     width: 0;
     border-left: 1px dashed rgba(255,255,255,0.5);
+}[class*=sidebar-dark] .brand-link, [class*=sidebar-dark] .brand-link .pushmenu {
+    color: rgb(255 255 255 / 90%);
+}
+[class*=sidebar-dark-] .sidebar a {
+    color: #ececec;
+}
+[class*=sidebar-dark-] .nav-sidebar>.nav-item.menu-open>.nav-link, [class*=sidebar-dark-] .nav-sidebar>.nav-item:hover>.nav-link, [class*=sidebar-dark-] .nav-sidebar>.nav-item>.nav-link:focus {
+    /* background-color: #17a2b8; */
+    background: linear-gradient(180deg, #79F5FD 0%, #ddfeff 100%) !important;
+    color: #000;
 }
 </style>
+
+
 
 @if (in_array(1, $user_role))
     @php

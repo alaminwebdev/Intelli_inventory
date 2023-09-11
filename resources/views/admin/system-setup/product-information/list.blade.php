@@ -10,12 +10,12 @@
 						<a href="{{route('admin.product.information.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Product</a>
 					</div>
 					<div class="card-body">
-						<table id="dataTable" class="table table-bordered" style="width:100%; border-collapse: collapse;">
-							<thead class="thead-custom">
+						<table id="sb-data-table" class="table table-bordered">
+							<thead>
 								<tr>
 									<th width="5%">SL.</th>
-									<th>Product Code</th>
-									<th>Product Name</th>
+									<th>Product </th>
+									<th>Product Type</th>
 									<th>Status</th>
 									<th width="15%" class="text-center">Action</th>
 								</tr>
@@ -24,8 +24,8 @@
 								@foreach($products as $list)
 								<tr data-id="{{$list->id}}">
 									<td>{{ $loop->iteration}}</td>
-									<td>{{ @$list->code ?? 'N/A' }}</td>
-									<td>{{ @$list->name ?? 'N/A' }}</td>
+									<td>{{ @$list->code }} - {{ @$list->name}}({{ @$list->unit }})</td>
+									<td>{{ @$list->product_type}}</td>
 
 									<td>{!! activeStatus($list->status) !!}</td>
 									<td class="text-center">

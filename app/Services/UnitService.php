@@ -25,6 +25,16 @@ class UnitService implements IService
             return response()->json(["msg" => $e->getMessage()]);
         }
     }
+    public function getUnitByStatus()
+    {
+        try {
+            $data = Unit::where('status', 1)->latest()->get();
+            return $data;
+        } catch (\Exception $e) {
+            $d['error'] = 'Something wrong';
+            return response()->json(["msg" => $e->getMessage()]);
+        }
+    }
 
     public function create(Request $request)
     {

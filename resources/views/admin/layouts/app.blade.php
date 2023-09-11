@@ -1,35 +1,78 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <noscript>
         {{-- Your browser does not support JavaScript! --}}
         <img id="noscript" src="https://cms-assets.tutsplus.com/uploads/users/30/posts/25498/preview_image/preview-tag-noscript.png" alt="Your browser does not support JavaScript!">
         <style>
-            #noscript{
-                width:100%;
-                height:100vh;
+            #noscript {
+                width: 100%;
+                height: 100vh;
             }
 
-            div { display:none; }
+            div {
+                display: none;
+            }
         </style>
     </noscript>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="shortcut icon" href="{{fileExist(['url'=>@$site_setting->favicon,'type'=>'favicon'])}}" type="image/x-icon">
-    <link rel="icon" href="{{fileExist(['url'=>@$site_setting->favicon,'type'=>'favicon'])}}" type="image/x-icon">
-    <title>{{(@$site_setting->title_suffix)?(@$site_setting->title_suffix):'Project Name'}} | {{@$title??'Dashboard'}}</title>
+    <link rel="shortcut icon" href="{{ fileExist(['url' => @$site_setting->favicon, 'type' => 'favicon']) }}" type="image/x-icon">
+    <link rel="icon" href="{{ fileExist(['url' => @$site_setting->favicon, 'type' => 'favicon']) }}" type="image/x-icon">
+    <title>{{ @$site_setting->title_suffix ? @$site_setting->title_suffix : 'Project Name' }} | {{ @$title ?? 'Dashboard' }}</title>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <link rel="stylesheet" href="{{asset('plugins')}}/fontawesome-free/css/all.min.css">
-    <link rel="stylesheet" href="{{asset('plugins')}}/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
-    <link rel="stylesheet" href="{{asset('plugins')}}/select2/css/select2.min.css">
-    <link rel="stylesheet" href="{{asset('plugins')}}/icheck-bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('plugins') }}/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('plugins') }}/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <link rel="stylesheet" href="{{ asset('plugins') }}/select2/css/select2.min.css">
+    <link rel="stylesheet" href="{{ asset('plugins') }}/icheck-bootstrap/icheck-bootstrap.min.css">
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <link rel="stylesheet" href="{{asset('admin')}}/dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="{{asset('common')}}/css/common.css">
-    <script src="{{asset('plugins')}}/jquery/jquery.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('admin') }}/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="{{ asset('common') }}/css/common.css">
+
+    <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+    <script src="{{ asset('plugins') }}/jquery/jquery.min.js"></script>
+    <style>
+        table {
+            width: 100%;
+        }
+
+        table :where(thead) {
+            /* background: #3994ffa1 !important; */
+            background: linear-gradient(180deg, #79F5FD 0%, #ddfeffa1 100%) !important;
+        }
+
+        table :where(thead th) {
+            vertical-align: middle !important;
+        }
+
+        .table td,
+        .table th {
+            padding: .5rem;
+            vertical-align: middle;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header .card-title {
+            font-weight: 600;
+            color: #2a527b;
+            text-transform: uppercase;
+        }
+
+        .card-header::after {
+            content: none;
+        }
+    </style>
+
 </head>
+
 <body class="sidebar-mini layout-navbar-fixed layout-fixed layout-navbar-fixed layout-footer-fixed text-sm">
     <div class="wrapper">
         @include('admin.layouts.status-message')
@@ -60,14 +103,17 @@
         @include('admin.layouts.footer')
         @include('admin.layouts.preloader')
     </div>
-    <script src="{{asset('plugins')}}/jquery-ui/jquery-ui.min.js"></script>
-    <script src="{{asset('plugins')}}/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="{{asset('plugins')}}/sweetalert2/sweetalert2.min.js"></script>
-    <script src="{{asset('plugins')}}/jquery-validation/jquery.validate.min.js"></script>
-    <script src="{{asset('plugins')}}/jquery-validation/additional-methods.min.js"></script>
-    <script src="{{asset('plugins')}}/select2/js/select2.full.min.js"></script>
-    <script src="{{asset('admin')}}/dist/js/adminlte.js"></script>
-    <script src="{{asset('common')}}/js/common.js"></script>
+    <script src="{{ asset('plugins') }}/jquery-ui/jquery-ui.min.js"></script>
+    <script src="{{ asset('plugins') }}/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('plugins') }}/sweetalert2/sweetalert2.min.js"></script>
+    <script src="{{ asset('plugins') }}/jquery-validation/jquery.validate.min.js"></script>
+    <script src="{{ asset('plugins') }}/jquery-validation/additional-methods.min.js"></script>
+    <script src="{{ asset('plugins') }}/select2/js/select2.full.min.js"></script>
+    <script src="{{ asset('admin') }}/dist/js/adminlte.js"></script>
+    <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('common') }}/js/common.js"></script>
 
 </body>
+
 </html>
