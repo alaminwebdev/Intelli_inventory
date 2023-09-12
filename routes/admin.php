@@ -1,4 +1,6 @@
 <?php
+use App\Http\Controllers\Admin\DefaultController;
+
 Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 
 Route::name('site-setting-management.')->prefix('site-setting-management')->namespace('SiteSettingManagement')->group(base_path('routes/admin/site_setting_management.php'));
@@ -7,7 +9,10 @@ Route::name('profile-management.')->prefix('profile-management')->namespace('Pro
 Route::name('user-management.')->prefix('user-management')->namespace('UserManagement')->group(base_path('routes/admin/user_management.php'));
 Route::name('member-management.')->prefix('member-management')->namespace('MemberManagement')->group(base_path('routes/admin/member_management.php'));
 
-// include __DIR__ . '/admin/system_setup.php';
+
+
+// Default Controller 
+Route::get('/get-products-by-type', [DefaultController::class, 'getProductsByType'])->name('get.products.by.type');
 
 // System Setup
 include 'admin/system_setup.php';

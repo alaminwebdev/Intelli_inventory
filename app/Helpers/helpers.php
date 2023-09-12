@@ -79,6 +79,18 @@ if (!function_exists('activeStatus')) {
     }
 }
 
+if (!function_exists('activeStock')) {
+    function activeStock($value)
+    {
+        if ($value == 1) {
+            $output = '<span class="badge badge-success">' . __('Approved') . '</span>';
+        } else {
+            $output = '<span class="badge badge-warning">' . __('Pending') . '</span>';
+        }
+        return $output;
+    }
+}
+
 if (!function_exists('sorpermission')) {
     function sorpermission($route)
     {

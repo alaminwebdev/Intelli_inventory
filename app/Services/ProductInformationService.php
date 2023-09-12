@@ -28,8 +28,17 @@ class ProductInformationService implements IService
                 ->get();
             return $data;
         } catch (\Exception $e) {
-            $d['error'] = 'Something wrong';
-            return response()->json(["msg" => $e->getMessage()]);
+            return $e->getMessage();
+        }
+    }
+
+    public function getProductsByTypeId($id)
+    {
+        try {
+            $data = ProductInformation::where('product_type_id', $id)->where('status', 1)->latest()->get();
+            return $data;
+        } catch (\Exception $e) {
+            return $e->getMessage();
         }
     }
 

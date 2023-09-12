@@ -21,8 +21,7 @@ class ProductTypeService implements IService
             $data = ProductType::latest()->get();
             return $data;
         } catch (\Exception $e) {
-            $d['error'] = 'Something wrong';
-            return response()->json(["msg" => $e->getMessage()]);
+            return $e->getMessage();
         }
     }
     public function getProductTypeByStatus()
@@ -31,8 +30,7 @@ class ProductTypeService implements IService
             $data = ProductType::where('status', 1)->latest()->get();
             return $data;
         } catch (\Exception $e) {
-            $d['error'] = 'Something wrong';
-            return response()->json(["msg" => $e->getMessage()]);
+            return $e->getMessage();
         }
     }
 
