@@ -17,5 +17,11 @@ Route::get('/get-products-by-type', [DefaultController::class, 'getProductsByTyp
 // System Setup
 include 'admin/system_setup.php';
 
+// Employee Management
+include 'admin/employee_management.php';
+
 // Product Management
 include 'admin/product_management.php';
+
+// Report Management
+include 'admin/report_management.php';

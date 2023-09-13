@@ -2,32 +2,22 @@
 
 namespace App\Services;
 
-
-use App\Models\Unit;
+use App\Models\Department;
 
 use App\Services\IService;
 use Illuminate\Http\Request;
 
 /**
- * Class UnitService
+ * Class DepartmentService
  * @package App\Services
  */
-class UnitService implements IService
+class DepartmentService implements IService
 {
 
     public function getAll()
     {
         try {
-            $data = Unit::latest()->get();
-            return $data;
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-    }
-    public function getUnitByStatus()
-    {
-        try {
-            $data = Unit::where('status', 1)->latest()->get();
+            $data = Department::latest()->get();
             return $data;
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -37,8 +27,9 @@ class UnitService implements IService
     public function create(Request $request)
     {
         try {
-            $data           = new Unit();
+            $data           = new Department();
             $data->name     = $request->name;
+            $data->sort     = $request->sort;
             $data->status   = $request->status ?? 0;
             $data->save();
         } catch (Exception $e) {
@@ -48,14 +39,15 @@ class UnitService implements IService
 
     public function getByID($id)
     {
-        $data = Unit::find($id);
+        $data = Department::find($id);
         return $data;
     }
     public function update(Request $request, $id)
     {
         try {
-            $data           = Unit::find($id);
+            $data           = Department::find($id);
             $data->name     = $request->name;
+            $data->sort     = $request->sort;
             $data->status   = $request->status;
             $data->save();
             return true;
@@ -66,7 +58,7 @@ class UnitService implements IService
 
     public function delete($id)
     {
-        $user = Unit::find($id);
+        $user = Department::find($id);
         $user->delete();
         return true;
     }

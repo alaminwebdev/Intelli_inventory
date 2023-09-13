@@ -1,9 +1,11 @@
 <?php
 
-use App\Http\Controllers\Admin\UnitController;
-use App\Http\Controllers\Admin\SupplierController;
-use App\Http\Controllers\Admin\ProductTypeController;
-use App\Http\Controllers\Admin\ProductInformationController;
+
+use App\Http\Controllers\Admin\SystemSetup\UnitController;
+use App\Http\Controllers\Admin\SystemSetup\SupplierController;
+use App\Http\Controllers\Admin\SystemSetup\ProductTypeController;
+use App\Http\Controllers\Admin\SystemSetup\ProductInformationController;
+
 
 Route::prefix('/unit')->group(function () {
     Route::get('/list', [UnitController::class, 'index'])->name('unit.list');

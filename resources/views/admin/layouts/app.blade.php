@@ -40,12 +40,12 @@
         }
 
         table :where(thead) {
-            /* background: #3994ffa1 !important; */
-            background: linear-gradient(180deg, #79F5FD 0%, #ddfeffa1 100%) !important;
+            background: linear-gradient(180deg, #5b86e5b5  0%, #36D1DC 100%) !important;
         }
 
         table :where(thead th) {
             vertical-align: middle !important;
+            text-align: center;
         }
 
         .table td,

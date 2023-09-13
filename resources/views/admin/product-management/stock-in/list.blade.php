@@ -7,7 +7,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.stock.in.product.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Stock</a>
+                            <a href="{{ route('admin.stock.in.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Stock</a>
                         </div>
                         <div class="card-body">
                             <table id="sb-data-table" class="table table-bordered">

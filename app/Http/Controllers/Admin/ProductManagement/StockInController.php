@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\ProductManagement;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -44,6 +44,8 @@ class StockInController extends Controller
         $data['uniqueGRNNo']    = $this->stockInService->getUniqueGRNNo();
         return view('admin.product-management.stock-in.add', $data);
     }
+    /*
+    */
     public function store(Request $request)
     {
         // $request->validate([

@@ -7,7 +7,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.stock.in.product.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>Stock-In List</a>
+                            <a href="{{ route('admin.stock.in.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>Stock-In List</a>
                         </div>
                         <div class="card-body">
                             <div id="loading-spinner" style="display: none; position:absolute; z-index:9999; top:50%; left:50%; transform:translate(-50%,-50%);">
@@ -148,7 +148,7 @@
                                                 <button type="reset" class="btn btn-danger btn-sm">Clear</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.stock.in.product.list') }}">Back</a>
+                                                <a href="{{ route('admin.stock.in.list') }}">Back</a>
                                             </button>
                                         </div>
                                     </div>
@@ -344,7 +344,7 @@
                     }
                 });
 
-                $.post("{{ route('admin.stock.in.product.store') }}", {
+                $.post("{{ route('admin.stock.in.store') }}", {
                     data: submitData
                 }, function(response) {
 
@@ -369,7 +369,7 @@
                         });
 
                         setTimeout(function() {
-                            location.href = "{{ route('admin.stock.in.product.list') }}";
+                            location.href = "{{ route('admin.stock.in.list') }}";
                         }, 1000);
 
                     } else if (result.error) {

@@ -29,18 +29,49 @@ $nav_menus = [];
     width: 0;
     border-left: 1px dashed rgba(255,255,255,0.5);
 }
+.layout-navbar-fixed .wrapper .sidebar-dark-primary .brand-link:not([class*=navbar]) {
+    background: #36D1DC;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to left, #5B86E5, #36D1DC);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #5B86E5, #36D1DC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    font-weight: 600 !important;
+    box-shadow: rgb(83 91 101 / 33%) 0px 7px 20px 0px;
+}
+[class*=sidebar-dark] .brand-link {
+    border-bottom: none !important;
+}
+
 [class*=sidebar-dark] .brand-link, [class*=sidebar-dark] .brand-link .pushmenu {
     color: rgb(255 255 255 / 90%);
 }
 [class*=sidebar-dark-] .sidebar a {
-    color: #ececec;
+    color: #fff;
 }
 [class*=sidebar-dark-] .nav-sidebar>.nav-item.menu-open>.nav-link, [class*=sidebar-dark-] .nav-sidebar>.nav-item:hover>.nav-link, [class*=sidebar-dark-] .nav-sidebar>.nav-item>.nav-link:focus {
-    /* background-color: #17a2b8; */
-    background: linear-gradient(180deg, #79F5FD 0%, #ddfeff 100%) !important;
-    color: #000;
-    transition: all .2s linear;
+    background: rgba(63, 103, 145, 0.651) !important;
+    transition: all .1s linear;
 }
+
+[class*=sidebar-dark-] {
+    background: #36D1DC;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #5B86E5, #36D1DC);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #5B86E5, #36D1DC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
+[class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link{
+    color: #f8f9fa;
+}
+
+[class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link.active, [class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link.active:focus, [class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link.active:hover {
+    background-color: rgba(63, 103, 145, 0.441);
+    color: #fff;
+}
+
+.sidebar-dark-primary .nav-sidebar>.nav-item>.nav-link.active, .sidebar-light-primary .nav-sidebar>.nav-item>.nav-link.active {
+    background-color: rgba(63, 103, 145, 0.651);
+    color: #fff;
+}
+
 </style>
 
 
@@ -182,7 +213,7 @@ $nav_menus = [];
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <a href="{{url('/')}}" class="brand-link">
         <img src="{{fileExist(['url'=>@$site_setting->logo,'type'=>'logo'])}}" alt="Brand Logo" class="brand-image img-circle elevation-3">
-        <span class="brand-text font-weight-light">{{(@$site_setting->name)?(@$site_setting->name):'Project Name'}}</span>
+        <span class="brand-text">{{(@$site_setting->name)?(@$site_setting->name):'Project Name'}}</span>
     </a>
     <div class="sidebar">
         <div class="form-inline mt-2">
