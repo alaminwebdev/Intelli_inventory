@@ -75,6 +75,10 @@ $nav_menus = [];
 .main-sidebar, .main-sidebar::before {
     transition: margin-left .5s ease-in-out,width 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
 }
+.main-sidebar .brand-text, .main-sidebar .logo-xl, .main-sidebar .logo-xs, .sidebar .nav-link p, .sidebar .user-panel .info {
+    transition: margin-left .3s linear, opacity 3s linear, visibility .5s linear;
+    transition-delay: 0.3s; /* Delay the second transition by 0.5 seconds */
+}
 
 </style>
 
@@ -215,7 +219,7 @@ $nav_menus = [];
 
 
 <aside class="main-sidebar sidebar-dark-primary elevation-1">
-    <a href="{{url('/')}}" class="brand-link">
+    <a href="{{url('/')}}" class="brand-link" style="transition: inherit;">
         <img src="{{fileExist(['url'=>@$site_setting->logo,'type'=>'logo'])}}" alt="Brand Logo" class="brand-image img-circle elevation-3">
         <span class="brand-text">{{(@$site_setting->name)?(@$site_setting->name):'Project Name'}}</span>
     </a>

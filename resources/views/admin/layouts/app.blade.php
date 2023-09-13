@@ -38,6 +38,11 @@
         .content-wrapper {
             background: linear-gradient(to left, #5b86e51f, #36d1dc0d);
         }
+        .navbar-white {
+            background: linear-gradient(to right, #5b86e5f2, #36d1dc26);
+            backdrop-filter: blur(6.6px);
+            -webkit-backdrop-filter: blur(6.6px);
+        }
         table {
             width: 100%;
         }
