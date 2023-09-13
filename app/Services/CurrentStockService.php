@@ -29,10 +29,10 @@ class CurrentStockService
                     $q->where('stock_in_details.available_qty', '>', 0);
                 })
                 ->select(
-                    'units.name as unit_name',
                     'product_information.id as product_id',
                     'product_information.code as product_code',
                     'product_information.name as product_name',
+                    'units.name as unit_name',
                     DB::raw('sum(stock_in_details.available_qty) as available_qty')
                 )
                 ->groupBy('stock_in_details.product_information_id')

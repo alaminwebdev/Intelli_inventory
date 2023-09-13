@@ -35,6 +35,9 @@
     <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
     <script src="{{ asset('plugins') }}/jquery/jquery.min.js"></script>
     <style>
+        .content-wrapper {
+            background: linear-gradient(to left, #5b86e51f, #36d1dc0d);
+        }
         table {
             width: 100%;
         }
@@ -46,6 +49,7 @@
         table :where(thead th) {
             vertical-align: middle !important;
             text-align: center;
+            color:#fff;
         }
 
         .table td,

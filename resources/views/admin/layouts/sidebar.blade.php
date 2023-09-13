@@ -72,6 +72,10 @@ $nav_menus = [];
     color: #fff;
 }
 
+.main-sidebar, .main-sidebar::before {
+    transition: margin-left .5s ease-in-out,width 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
 </style>
 
 
@@ -210,7 +214,7 @@ $nav_menus = [];
 @endif
 
 
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="main-sidebar sidebar-dark-primary elevation-1">
     <a href="{{url('/')}}" class="brand-link">
         <img src="{{fileExist(['url'=>@$site_setting->logo,'type'=>'logo'])}}" alt="Brand Logo" class="brand-image img-circle elevation-3">
         <span class="brand-text">{{(@$site_setting->name)?(@$site_setting->name):'Project Name'}}</span>

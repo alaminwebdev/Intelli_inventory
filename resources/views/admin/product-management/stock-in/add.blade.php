@@ -119,7 +119,7 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <table width="100%" class="table border" style="font-size: 12px;">
+                                            <table width="100%" class="table table-bordered">
                                                 <thead>
                                                     <tr>
                                                         <th>Po No.</th>
@@ -129,7 +129,7 @@
                                                         <th>Reject Qty</th>
                                                         <th>Mfg Date</th>
                                                         <th>Expire Date</th>
-                                                        <th>Action</th>
+                                                        <th style="width: 10%">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="product_table">
@@ -214,9 +214,9 @@
                 var newRow = $("<tr>");
                 newRow.append("<td class='po_no' >" + poNo + "</td>");
                 newRow.append("<td class='po_date'>" + poDate + "</td>");
-                newRow.append("<td class='invoice_qty'>" + invoiceQty + "</td>");
-                newRow.append("<td class='receive_qty'>" + receiveQty + "</td>");
-                newRow.append("<td class='reject_qty'>" + rejectQty + "</td>");
+                newRow.append("<td class='invoice_qty' style='text-align:right'>" + invoiceQty + "</td>");
+                newRow.append("<td class='receive_qty' style='text-align:right'>" + receiveQty + "</td>");
+                newRow.append("<td class='reject_qty' style='text-align:right'>" + rejectQty + "</td>");
                 newRow.append("<td class='mfg_date'>" + mfgDate + "</td>");
                 newRow.append("<td class='expire_date'>" + expireDate + "</td>");
                 newRow.append("<td><a class='edit_po btn btn-sm btn-primary' style='cursor:pointer'><i class='fa fa-edit'></i></a> <a class='delete_po btn btn-sm btn-danger' style='cursor:pointer'><i class='fa fa-trash'></i></a></td>");
