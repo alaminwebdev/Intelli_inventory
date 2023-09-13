@@ -49,6 +49,11 @@ class SectionService implements IService
         $data = Section::find($id);
         return $data;
     }
+    public function getSectionsByDepartment($id)
+    {
+        $data = Section::where('department_id', $id)->where('status',1)->get();
+        return $data;
+    }
     public function update(Request $request, $id)
     {
         try {

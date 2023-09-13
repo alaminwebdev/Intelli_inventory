@@ -2,27 +2,22 @@
 
 namespace App\Services;
 
-
-use App\Models\EmployeeDesignation;
+use App\Models\Employee;
 
 use App\Services\IService;
 use Illuminate\Http\Request;
 
 /**
- * Class DesignationService
+ * Class EmployeeService
  * @package App\Services
  */
-class DesignationService implements IService
+class EmployeeService implements IService
 {
 
-    public function getAll($status = null)
+    public function getAll()
     {
         try {
-            $query = EmployeeDesignation::latest();
-            if ($status) {
-                $query->where('status', 1);
-            }
-            $data = $query->get();
+            $data = Employee::latest()->get();
             return $data;
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -32,7 +27,7 @@ class DesignationService implements IService
     public function create(Request $request)
     {
         try {
-            $data           = new EmployeeDesignation();
+            $data           = new Employee();
             $data->name     = $request->name;
             $data->sort     = $request->sort;
             $data->status   = $request->status ?? 0;
@@ -44,13 +39,13 @@ class DesignationService implements IService
 
     public function getByID($id)
     {
-        $data = EmployeeDesignation::find($id);
+        $data = Employee::find($id);
         return $data;
     }
     public function update(Request $request, $id)
     {
         try {
-            $data           = EmployeeDesignation::find($id);
+            $data           = Employee::find($id);
             $data->name     = $request->name;
             $data->sort     = $request->sort;
             $data->status   = $request->status;
@@ -63,7 +58,7 @@ class DesignationService implements IService
 
     public function delete($id)
     {
-        $user = EmployeeDesignation::find($id);
+        $user = Employee::find($id);
         $user->delete();
         return true;
     }

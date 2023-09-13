@@ -16,8 +16,8 @@ class DepartmentController extends Controller
         $this->departmentService  = $departmentService;
     }
     public function index(){
-        $data['title'] = 'Department List';
-        $data['designations'] = $this->departmentService->getAll();
+        $data['title']          = 'Department List';
+        $data['departments']    = $this->departmentService->getAll();
         return view('admin.employee-management.department.list', $data);
     }
     public function add()

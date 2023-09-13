@@ -7,41 +7,43 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.department.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Department</a>
+                            <a href="{{ route('admin.employee.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Employee</a>
                         </div>
                         <div class="card-body">
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th width="5%">SL.</th>
+                                        <th>Name</th>
                                         <th>Department</th>
-                                        <th>Sort</th>
+                                        <th>Section</th>
                                         <th>Status</th>
                                         <th width="15%">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($departments as $list)
+                                    {{-- @foreach ($employees as $list)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ @$list->name ?? 'N/A' }}</td>
+                                            <td>{{ @$list->department_name ?? 'N/A' }}</td>
                                             <td>{{ @$list->sort ?? 'N/A' }}</td>
 
                                             <td>{!! activeStatus($list->status) !!}</td>
                                             <td>
-                                                @if (sorpermission('admin.department.edit'))
-                                                    <a class="btn btn-sm btn-success" href="{{ route('admin.department.edit', $list->id) }}">
+                                                @if (sorpermission('admin.employee.edit'))
+                                                    <a class="btn btn-sm btn-success" href="{{ route('admin.employee.edit', $list->id) }}">
                                                         <i class="fa fa-edit"></i>
                                                     </a>
                                                 @endif
-                                                @if (sorpermission('admin.department.delete'))
-                                                    <a class="btn btn-sm btn-danger destroy" data-id="{{ $list->id }}" data-route="{{ route('admin.department.delete') }}">
+                                                @if (sorpermission('admin.employee.delete'))
+                                                    <a class="btn btn-sm btn-danger destroy" data-id="{{ $list->id }}" data-route="{{ route('admin.employee.delete') }}">
                                                         <i class="fa fa-trash"></i>
                                                     </a>
                                                 @endif
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\EmployeeManagement\DesignationController;
 use App\Http\Controllers\Admin\EmployeeManagement\DepartmentController;
 use App\Http\Controllers\Admin\EmployeeManagement\SectionController;
+use App\Http\Controllers\Admin\EmployeeManagement\EmployeeController;
 
 Route::prefix('/employee-designation')->group(function () {
     Route::get('/list', [DesignationController::class, 'index'])->name('employee.designation.list');
@@ -29,4 +30,13 @@ Route::prefix('/section')->group(function () {
     Route::get('/edit/{id}', [SectionController::class, 'edit'])->name('section.edit');
     Route::post('/update/{id}', [SectionController::class, 'update'])->name('section.update');
     Route::post('/delete', [SectionController::class, 'delete'])->name('section.delete');
+});
+
+Route::prefix('/employee')->group(function () {
+    Route::get('/list', [EmployeeController::class, 'index'])->name('employee.list');
+    Route::get('/add', [EmployeeController::class, 'add'])->name('employee.add');
+    Route::post('/store', [EmployeeController::class, 'store'])->name('employee.store');
+    Route::get('/edit/{id}', [EmployeeController::class, 'edit'])->name('employee.edit');
+    Route::post('/update/{id}', [EmployeeController::class, 'update'])->name('employee.update');
+    Route::post('/delete', [EmployeeController::class, 'delete'])->name('employee.delete');
 });

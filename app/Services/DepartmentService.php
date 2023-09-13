@@ -14,10 +14,14 @@ use Illuminate\Http\Request;
 class DepartmentService implements IService
 {
 
-    public function getAll()
+    public function getAll($status = null)
     {
         try {
-            $data = Department::latest()->get();
+            $query = Department::latest();
+            if ($status) {
+                $query->where('status', 1);
+            }
+            $data = $query->get();
             return $data;
         } catch (\Exception $e) {
             return $e->getMessage();
