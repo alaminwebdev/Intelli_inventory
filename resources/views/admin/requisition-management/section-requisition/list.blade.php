@@ -10,14 +10,16 @@
                             <a href="{{ route('admin.section.requisition.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Section Requisition</a>
                         </div>
                         <div class="card-body">
+                            
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th width="5%">SL.</th>
                                         <th>Requisition No</th>
-                                        <th >Requisition Details</th>
+                                        <th>Product</th>
+                                        <th>Current Stock</th>
+                                        <th>Demand Quantity</th>
                                         <th>Status</th>
-                                        {{-- <th width="15%">Action</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -28,35 +30,36 @@
                                                 ->select('section_requisition_details.current_stock as current_stock', 'section_requisition_details.demand_quantity as demand_quantity', 'product_information.name as product')
                                                 ->get();
                                         @endphp
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ @$list->requisition_no ?? 'N/A' }}</td>
-                                            <td>
-                                                @foreach (@$sectionRequisitionProducts as $item)
-                                                    <ul class="{{ $loop->last ? '': 'border-bottom pb-3' }}">
-                                                        <li class="">Product Name: {{ $item->product }} </li>
-                                                        <li class="">Current Stock: {{ $item->current_stock }} </li>
-                                                        <li class="">Demand Quantity: {{ $item->demand_quantity }} </li>
-                                                    </ul>
-                                                @endforeach
-                                            </td>
-                                            <td class="text-center">{!! activeRequisition($list->status) !!}</td>
-                                            {{-- <td>
-                                                @if (sorpermission('admin.section.edit'))
-                                                    <a class="btn btn-sm btn-success" href="{{ route('admin.section.edit', $list->id) }}">
-                                                        <i class="fa fa-edit"></i>
-                                                    </a>
-                                                @endif
-                                                @if (sorpermission('admin.section.delete'))
-                                                    <a class="btn btn-sm btn-danger destroy" data-id="{{ $list->id }}" data-route="{{ route('admin.section.delete') }}">
-                                                        <i class="fa fa-trash"></i>
-                                                    </a>
-                                                @endif
-                                            </td> --}}
-                                        </tr>
+                                        @if (count($sectionRequisitionProducts) > 0)
+                                            @php $rowspan = count($sectionRequisitionProducts); @endphp
+                                            @foreach ($sectionRequisitionProducts as $item)
+                                                <tr>
+                                                    @if ($loop->first)
+                                                        <td rowspan="{{ $rowspan }}">{{ $loop->parent->iteration }}</td>
+                                                        <td rowspan="{{ $rowspan }}">{{ @$list->requisition_no ?? 'N/A' }}</td>
+                                                    @endif
+                                                    <td>{{ $item->product }}</td>
+                                                    <td class="text-right">{{ $item->current_stock }}</td>
+                                                    <td class="text-right">{{ $item->demand_quantity }}</td>
+                                                    @if ($loop->first)
+                                                        <td rowspan="{{ $rowspan }}" class="text-center">{!! activeRequisition($list->status) !!}</td>
+                                                    @endif
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ @$list->requisition_no ?? 'N/A' }}</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td class="text-center">{!! activeRequisition($list->status) !!}</td>
+                                            </tr>
+                                        @endif
                                     @endforeach
                                 </tbody>
                             </table>
+
                         </div>
                     </div>
                 </div>
