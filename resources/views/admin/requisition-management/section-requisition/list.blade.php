@@ -14,21 +14,34 @@
                                 <thead>
                                     <tr>
                                         <th width="5%">SL.</th>
-                                        <th>Sort</th>
+                                        <th>Requisition No</th>
+                                        <th >Requisition Details</th>
                                         <th>Status</th>
-                                        <th width="15%">Action</th>
+                                        {{-- <th width="15%">Action</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- @foreach ($sections as $list)
+                                    @foreach ($sectionRequisitions as $list)
+                                        @php
+                                            $sectionRequisitionProducts = \App\Models\SectionRequisitionDetails::join('product_information', 'product_information.id', 'section_requisition_details.product_id')
+                                                ->where('section_requisition_id', $list->id)
+                                                ->select('section_requisition_details.current_stock as current_stock', 'section_requisition_details.demand_quantity as demand_quantity', 'product_information.name as product')
+                                                ->get();
+                                        @endphp
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ @$list->name ?? 'N/A' }}</td>
-                                            <td>{{ @$list->department_name ?? 'N/A' }}</td>
-                                            <td>{{ @$list->sort ?? 'N/A' }}</td>
-
-                                            <td>{!! activeStatus($list->status) !!}</td>
+                                            <td>{{ @$list->requisition_no ?? 'N/A' }}</td>
                                             <td>
+                                                @foreach (@$sectionRequisitionProducts as $item)
+                                                    <ul class="{{ $loop->last ? '': 'border-bottom pb-3' }}">
+                                                        <li class="">Product Name: {{ $item->product }} </li>
+                                                        <li class="">Current Stock: {{ $item->current_stock }} </li>
+                                                        <li class="">Demand Quantity: {{ $item->demand_quantity }} </li>
+                                                    </ul>
+                                                @endforeach
+                                            </td>
+                                            <td class="text-center">{!! activeRequisition($list->status) !!}</td>
+                                            {{-- <td>
                                                 @if (sorpermission('admin.section.edit'))
                                                     <a class="btn btn-sm btn-success" href="{{ route('admin.section.edit', $list->id) }}">
                                                         <i class="fa fa-edit"></i>
@@ -39,9 +52,9 @@
                                                         <i class="fa fa-trash"></i>
                                                     </a>
                                                 @endif
-                                            </td>
+                                            </td> --}}
                                         </tr>
-                                    @endforeach --}}
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>

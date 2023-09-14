@@ -3,10 +3,11 @@
 namespace App\Services;
 
 use App\Models\SectionRequisition;
-
-
+use App\Models\SectionRequisitionDetails;
 use App\Services\IService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class SectionRequisitionService
@@ -36,16 +37,48 @@ class SectionRequisitionService implements IService
 
     public function create(Request $request)
     {
-        // try {
-        //     $data                   = new Section();
-        //     $data->name             = $request->name;
-        //     $data->department_id    = $request->department_id;
-        //     $data->sort             = $request->sort;
-        //     $data->status           = $request->status ?? 0;
-        //     $data->save();
-        // } catch (Exception $e) {
-        //     return $e->getMessage();
-        // }
+        DB::beginTransaction();
+        try {
+
+            $sectionRequisition = new SectionRequisition();
+
+            $sectionRequisition->requisition_no = $request->requisition_no;
+            $sectionRequisition->user_id = Auth::id();
+            $sectionRequisition->status = 0;
+
+            if ($sectionRequisition->save()) {
+                // Get all form data arrays
+                $productTypesData   = $request->input('product_type');
+                $currentStockData   = $request->input('current_stock');
+                $demandQuantityData = $request->input('demand_quantity');
+                $remarksData        = $request->input('remarks');
+
+                // Loop through the product types data (keys are product IDs, values are product type IDs)
+                foreach ($productTypesData as $productId => $productTypeId) {
+                    // Retrieve data for the current product
+                    $currentStock = $currentStockData[$productId];
+                    $demandQuantity = $demandQuantityData[$productId];
+                    $remarks = $remarksData[$productId];
+
+                    if ($demandQuantity !== null && $demandQuantity > 0) {
+                        // Store Data into SectionRequisitionDetails
+                        $sectionRequisitionDetails                          = new SectionRequisitionDetails();
+                        $sectionRequisitionDetails->section_requisition_id  = $sectionRequisition->id;
+                        $sectionRequisitionDetails->product_id              = $productId;
+                        $sectionRequisitionDetails->current_stock           = $currentStock;
+                        $sectionRequisitionDetails->demand_quantity         = $demandQuantity;
+                        $sectionRequisitionDetails->remarks                 = $remarks;
+                        $sectionRequisitionDetails->status                  = 0;
+                        $sectionRequisitionDetails->save();
+                    }
+                }
+            }
+            DB::commit();
+            return true;
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
     }
 
     public function getByID($id)

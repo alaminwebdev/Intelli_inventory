@@ -22,8 +22,8 @@ class SectionRequisitionController extends Controller
     }
     public function index()
     {
-        $data['title']      = 'Section Requisition List';
-        $data['sections']   = $this->sectionRequisitionService->getAll();
+        $data['title']                  = 'Section Requisition List';
+        $data['sectionRequisitions']    = $this->sectionRequisitionService->getAll();
         return view('admin.requisition-management.section-requisition.list', $data);
     }
     public function add()
@@ -35,9 +35,6 @@ class SectionRequisitionController extends Controller
     }
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'name' => 'required',
-        // ]);
         $this->sectionRequisitionService->create($request);
         return redirect()->route('admin.section.requisition.list')->with('success', 'Data successfully inserted!');
     }
