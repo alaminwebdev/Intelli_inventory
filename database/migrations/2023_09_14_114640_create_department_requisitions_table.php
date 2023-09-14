@@ -15,13 +15,7 @@ class CreateDepartmentRequisitionsTable extends Migration {
             $table->id();
             $table->string('requisition_no');
             $table->bigInteger('user_id');
-            $table->bigInteger('category_id');
-            $table->bigInteger('product_id');
-            $table->integer('current_stock')->nullable();
-            $table->integer('demand_quantity')->nullable();
-            $table->integer('recive_quantity')->nullable();
             $table->integer('status')->nullable();
-            $table->longText('remarks')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
