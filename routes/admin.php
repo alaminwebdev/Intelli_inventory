@@ -24,5 +24,8 @@ include 'admin/employee_management.php';
 // Product Management
 include 'admin/product_management.php';
 
+// Requisition Management
+include 'admin/requisition_management.php';
+
 // Report Management
 include 'admin/report_management.php';

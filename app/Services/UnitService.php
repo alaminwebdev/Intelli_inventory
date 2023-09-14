@@ -15,19 +15,14 @@ use Illuminate\Http\Request;
 class UnitService implements IService
 {
 
-    public function getAll()
+    public function getAll($status = null)
     {
         try {
-            $data = Unit::latest()->get();
-            return $data;
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-    }
-    public function getUnitByStatus()
-    {
-        try {
-            $data = Unit::where('status', 1)->latest()->get();
+            $query = Unit::latest();
+            if ($status) {
+                $query->where('status', 1);
+            }
+            $data =$query->get();
             return $data;
         } catch (\Exception $e) {
             return $e->getMessage();

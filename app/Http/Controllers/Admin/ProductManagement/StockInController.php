@@ -39,7 +39,7 @@ class StockInController extends Controller
     public function add()
     {
         $data['title']          = 'Add Stock';
-        $data['product_types']  = $this->productTypeService->getProductTypeByStatus();
+        $data['product_types']  = $this->productTypeService->getAll(1);
         $data['suppliers']      = $this->supplierService->getSupplierByStatus();
         $data['uniqueGRNNo']    = $this->stockInService->getUniqueGRNNo();
         return view('admin.product-management.stock-in.add', $data);

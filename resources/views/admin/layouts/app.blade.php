@@ -83,6 +83,9 @@
             display: block;
             width: auto !important;
         }
+        .text-gray {
+            color: #6c757d;
+        }
     </style>
 
 </head>

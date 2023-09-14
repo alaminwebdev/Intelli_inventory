@@ -35,7 +35,7 @@ class ProductInformationController extends Controller
     {
         $data['title']          = 'Add Product';
         $data['product_types']  = $this->productTypeService->getAll(1);
-        $data['units']          = $this->unitService->getUnitByStatus();
+        $data['units']          = $this->unitService->getAll(1);
         return view('admin.system-setup.product-information.add', $data);
     }
     public function store(Request $request)
@@ -53,8 +53,8 @@ class ProductInformationController extends Controller
     {
         $data['title']          = 'Edit Product';
         $data['editData']       = $this->productInformationService->getByID($id);
-        $data['product_types']  = $this->productTypeService->getProductTypeByStatus();
-        $data['units']          = $this->unitService->getUnitByStatus();
+        $data['product_types']  = $this->productTypeService->getAll(1);
+        $data['units']          = $this->unitService->getAll(1);
         return view('admin.system-setup.product-information.add', $data);
     }
 
