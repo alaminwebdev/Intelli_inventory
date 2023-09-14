@@ -40,22 +40,34 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
+            'bp_no'             => 'required',
+            'name'              => 'required',
+            'email'             => 'required',
+            'designation_id'    => 'required',
+            'department_id'     => 'required',
+            'section_id'        => 'required',
         ]);
         $this->employeeService->create($request);
         return redirect()->route('admin.employee.list')->with('success', 'Data successfully inserted!');
     }
     public function edit($id)
     {
-        $data['title'] = 'Edit Department';
-        $data['editData'] = $this->employeeService->getByID($id);
+        $data['title']          = 'Edit Department';
+        $data['editData']       = $this->employeeService->getByID($id);
+        $data['designations']   = $this->designationService->getAll(1);
+        $data['departments']    = $this->departmentService->getAll(1);
         return view('admin.employee-management.employee.add', $data);
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required',
+            'bp_no'             => 'required',
+            'name'              => 'required',
+            'email'             => 'required',
+            'designation_id'    => 'required',
+            'department_id'     => 'required',
+            'section_id'        => 'required',
         ]);
         $this->employeeService->update($request, $id);
         return redirect()->route('admin.employee.list')->with('success', 'Data successfully updated!');

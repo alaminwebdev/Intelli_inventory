@@ -15,19 +15,23 @@
                                     <tr>
                                         <th width="5%">SL.</th>
                                         <th>Name</th>
+                                        <th>BP No.</th>
                                         <th>Department</th>
                                         <th>Section</th>
+                                        <th>Designations</th>
                                         <th>Status</th>
                                         <th width="15%">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- @foreach ($employees as $list)
+                                    @foreach ($employees as $list)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ @$list->name ?? 'N/A' }}</td>
-                                            <td>{{ @$list->department_name ?? 'N/A' }}</td>
-                                            <td>{{ @$list->sort ?? 'N/A' }}</td>
+                                            <td>{{ @$list->bp_no ?? 'N/A' }}</td>
+                                            <td>{{ @$list->department ?? 'N/A' }}</td>
+                                            <td>{{ @$list->section ?? 'N/A' }}</td>
+                                            <td>{{ @$list->designations ?? 'N/A' }}</td>
 
                                             <td>{!! activeStatus($list->status) !!}</td>
                                             <td>
@@ -43,7 +47,7 @@
                                                 @endif
                                             </td>
                                         </tr>
-                                    @endforeach --}}
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
