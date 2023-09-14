@@ -34,7 +34,7 @@ class ProductInformationController extends Controller
     public function add()
     {
         $data['title']          = 'Add Product';
-        $data['product_types']  = $this->productTypeService->getProductTypeByStatus();
+        $data['product_types']  = $this->productTypeService->getAll(1);
         $data['units']          = $this->unitService->getUnitByStatus();
         return view('admin.system-setup.product-information.add', $data);
     }

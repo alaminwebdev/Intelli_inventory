@@ -15,24 +15,20 @@ use Illuminate\Http\Request;
 class ProductTypeService implements IService
 {
 
-    public function getAll()
+    public function getAll($status = null)
     {
         try {
-            $data = ProductType::latest()->get();
+            $query = ProductType::latest();
+            if ($status) {
+                $query->where('status', 1);
+            }
+            $data =$query->get();
             return $data;
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
-    public function getProductTypeByStatus()
-    {
-        try {
-            $data = ProductType::where('status', 1)->latest()->get();
-            return $data;
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-    }
+
 
     public function create(Request $request)
     {
