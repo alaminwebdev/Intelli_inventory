@@ -79,7 +79,17 @@ $nav_menus = [];
     transition: margin-left .3s linear, opacity 3s linear, visibility .5s linear;
     transition-delay: 0.3s; /* Delay the second transition by 0.5 seconds */
 }
-
+[class*=sidebar-dark] .btn-sidebar, [class*=sidebar-dark] .form-control-sidebar {
+    background-color: #fff;
+    border: 1px solid #ececec;
+    color: #1f2d3d;
+}
+[class*=sidebar-dark] .btn-sidebar:focus, [class*=sidebar-dark] .form-control-sidebar:focus {
+    border: 1px solid #ececec;
+}
+[class*=sidebar-dark] .btn-sidebar:hover, [class*=sidebar-dark] .btn-sidebar:focus  {
+    background-color: #fff;
+}
 </style>
 
 

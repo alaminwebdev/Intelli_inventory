@@ -25,6 +25,14 @@ class DepartmentRequisitionService implements IService
             return $e->getMessage();
         }
     }
+    public function getUniqueRequisitionNo()
+    {
+        do {
+            $requisition_no = rand(10000, 99999);
+        } while (DepartmentRequisition::where('requisition_no', $requisition_no)->exists());
+
+        return $requisition_no;
+    }
 
     public function create(Request $request)
     {

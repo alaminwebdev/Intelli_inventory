@@ -40,9 +40,9 @@ class SectionRequisitionController extends Controller
     }
     public function edit($id)
     {
-        $data['title']          = 'Edit Section Requisition';
-        $data['editData']       = $this->sectionRequisitionService->getByID($id);
-        return view('admin.requisition-management.section-requisition.add', $data);
+        // $data['title']          = 'Edit Section Requisition';
+        // $data['editData']       = $this->sectionRequisitionService->getByID($id);
+        // return view('admin.requisition-management.section-requisition.add', $data);
     }
 
     public function update(Request $request, $id)
@@ -50,17 +50,17 @@ class SectionRequisitionController extends Controller
         // $request->validate([
         //     'name' => 'required',
         // ]);
-        $this->sectionRequisitionService->update($request, $id);
-        return redirect()->route('admin.section.requisition.list')->with('success', 'Data successfully updated!');
+        // $this->sectionRequisitionService->update($request, $id);
+        // return redirect()->route('admin.section.requisition.list')->with('success', 'Data successfully updated!');
     }
 
     public function delete(Request $request)
     {
-        $deleted = $this->sectionRequisitionService->delete($request->id);
-        if ($deleted) {
-            return response()->json(['status' => 'success', 'message' => 'Successfully Deleted']);
-        } else {
-            return response()->json(['status' => 'error', 'message' => 'Sorry something wrong']);
-        }
+        // $deleted = $this->sectionRequisitionService->delete($request->id);
+        // if ($deleted) {
+        //     return response()->json(['status' => 'success', 'message' => 'Successfully Deleted']);
+        // } else {
+        //     return response()->json(['status' => 'error', 'message' => 'Sorry something wrong']);
+        // }
     }
 }

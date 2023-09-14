@@ -35,26 +35,49 @@
     <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
     <script src="{{ asset('plugins') }}/jquery/jquery.min.js"></script>
     <style>
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            /* background: #888; */
+            background: linear-gradient(180deg, #5b86e5b5 0%, #36D1DC 100%);
+
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #5b86e5b5;
+        }
+
         .content-wrapper {
             background: linear-gradient(to left, #5b86e51f, #36d1dc0d);
         }
+
         .navbar-white {
             background: linear-gradient(to right, #5b86e5f2, #36d1dc26);
             backdrop-filter: blur(6.6px);
             -webkit-backdrop-filter: blur(6.6px);
         }
+
         table {
             width: 100%;
         }
 
         table :where(thead) {
-            background: linear-gradient(180deg, #5b86e5b5  0%, #36D1DC 100%) !important;
+            background: linear-gradient(180deg, #5b86e5b5 0%, #36D1DC 100%) !important;
         }
 
         table :where(thead th) {
             vertical-align: middle !important;
             text-align: center;
-            color:#fff;
+            color: #fff;
         }
 
         .table td,
@@ -83,6 +106,7 @@
             display: block;
             width: auto !important;
         }
+
         .text-gray {
             color: #6c757d;
         }
