@@ -39,7 +39,7 @@ class DepartmentRequisitionController extends Controller
     }
     public function store(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
         $this->departmentRequisitionService->create($request);
         return redirect()->route('admin.department.requisition.list')->with('success', 'Data successfully inserted!');
     }

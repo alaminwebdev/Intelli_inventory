@@ -20,13 +20,13 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="row px-3 py-4 border rounded shadow-sm mb-3">
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <label class="control-label">Requisition No :</label>
                                                 <input type="text" class="form-control form-control-sm" id="remarks" name="requisition_no" value="{{ $uniqueRequisitionNo }}" readonly>
                                             </div>
-                                            <div class="col-md-6">
-                                                <label class="control-label">Section Requisition Number <span class="text-red">(Select a section requisition to merge into one requisition)</span></label>
-                                                <select name="section_requisition_no[]" class="form-control form-control-sm select2" id="section_requisition_no" multiple="multiple">
+                                            <div class="col-md-8">
+                                                <label class="control-label">Section Requisition Number <span class="text-red">(Select a section requisition to merge into one requisition):</span></label>
+                                                <select name="section_requisition_id[]" class="form-control form-control-sm select2" id="section_requisition_id" multiple="multiple">
                                                     <option value="" disabled>Select Section Requisition</option>
                                                     @foreach ($section_requisitions as $section_requisition)
                                                         <option value="{{ $section_requisition->id }}">Requisition No. {{ $section_requisition->requisition_no }}</option>
@@ -119,7 +119,7 @@
 
     <script>
         $(function() {
-            $('#section_requisition_no').on('change', function() {
+            $('#section_requisition_id').on('change', function() {
                 let selectedRequisitionIds = $(this).val();
 
                 // Clear form fields if no option is selected
@@ -140,7 +140,11 @@
                         dataType: 'json',
                         success: function(response) {
                             console.log(response);
-                            //Update form fields with received data
+
+                            // Clear form fields
+                            $('input[name^="section_current_stock"]').val('');
+                            $('input[name^="section_demand_quantity"]').val('');
+
                             // Loop through the received data
                             response.forEach(function(data) {
                                 var productId = data.product_id;
