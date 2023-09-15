@@ -16,6 +16,7 @@ class CreateSectionRequisitionsTable extends Migration {
             $table->bigInteger('department_requisition_id')->nullable();
             $table->string('requisition_no');
             $table->bigInteger('user_id');
+            $table->integer('section_id')->nullable();
             $table->integer('status')->nullable();
             $table->softDeletes();
             $table->timestamps();

@@ -15,6 +15,7 @@ class CreateDepartmentRequisitionsTable extends Migration {
             $table->id();
             $table->string('requisition_no');
             $table->bigInteger('user_id');
+            $table->integer('department_id')->nullable();
             $table->integer('status')->nullable();
             $table->softDeletes();
             $table->timestamps();
