@@ -37,7 +37,7 @@
                                     </div> 
                                     <div class="col-sm-2">
                                         <label class="control-label" style="visibility: hidden;">Search</label>
-                                        <button type="submit" class="btn btn-block btn-success btn-sm">Search</button>
+                                        <button type="submit" class="btn btn-block btn-success btn-sm" disabled>Search</button>
                                     </div>
                                 </div>
                             </form>

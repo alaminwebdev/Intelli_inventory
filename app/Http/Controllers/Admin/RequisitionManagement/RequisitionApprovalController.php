@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin\RequisitionManagement;
 
 use App\Http\Controllers\Controller;
+use App\Models\DepartmentRequisitionDetails;
+use App\Models\ProductInformation;
 use Illuminate\Http\Request;
 use App\Services\ProductTypeService;
 use App\Services\DepartmentRequisitionService;
@@ -51,6 +53,7 @@ class RequisitionApprovalController extends Controller
 
     public function update(Request $request, $id)
     {
+        dd($request->all());
         // $request->validate([
         //     'name' => 'required',
         // ]);
