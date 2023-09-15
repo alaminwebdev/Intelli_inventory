@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\RequisitionManagement\SectionRequisitionController;
 use App\Http\Controllers\Admin\RequisitionManagement\DepartmentRequisitionController;
+use App\Http\Controllers\Admin\RequisitionManagement\RequisitionApprovalController;
 
 
 Route::prefix('/section-requisition')->group(function () {
@@ -22,6 +23,14 @@ Route::prefix('/department-requisition')->group(function () {
     Route::post('/update/{id}', [DepartmentRequisitionController::class, 'update'])->name('department.requisition.update');
     Route::post('/delete', [DepartmentRequisitionController::class, 'delete'])->name('department.requisition.delete');
 });
+
+Route::prefix('/requisition')->group(function () {
+    Route::get('/list', [RequisitionApprovalController::class, 'index'])->name('requisition.list');
+    Route::get('/edit/{id}', [RequisitionApprovalController::class, 'edit'])->name('requisition.edit');
+    Route::post('/update/{id}', [RequisitionApprovalController::class, 'update'])->name('requisition.update');
+});
+
+
 
 
 

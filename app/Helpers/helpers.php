@@ -95,8 +95,10 @@ if (!function_exists('activeRequisition')) {
     {
         if ($value == 1) {
             $output = '<span class="badge badge-success">' . __('Approved') . '</span>';
+        } elseif($value == 2) {
+            $output = '<span class="badge badge-danger">' . __('Rejected') . '</span>';
         } else {
-            $output = '<span class="badge badge-warning">' . __('Pending') . '</span>';
+            $output = '<span class="badge badge-warning">' . __('Initiated') . '</span>';
         }
         return $output;
     }

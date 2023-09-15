@@ -17,7 +17,7 @@ class CreateDepartmentRequisitionDetailsTable extends Migration {
             $table->bigInteger('product_id');
             $table->integer('current_stock')->nullable();
             $table->integer('demand_quantity')->nullable();
-            $table->integer('recive_quantity')->nullable();
+            $table->integer('approve_quantity')->nullable();
             $table->integer('status')->nullable();
             $table->longText('remarks')->nullable();
             $table->timestamps();
