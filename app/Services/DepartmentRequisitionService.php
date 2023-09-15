@@ -20,10 +20,17 @@ use Illuminate\Support\Facades\Auth;
 class DepartmentRequisitionService implements IService
 {
 
-    public function getAll()
+    public function getAll($department_id = null, $status = null)
     {
         try {
-            $data = DepartmentRequisition::latest()->get();
+            $query = DepartmentRequisition::latest();
+            if ($department_id) {
+                $query->where('section_id', $department_id);
+            }
+            if ($status) {
+                $query->where('status', $status);
+            }
+            $data = $query->get();
             return $data;
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -46,8 +53,8 @@ class DepartmentRequisitionService implements IService
 
             $departmentRequisition = new DepartmentRequisition();
 
-            $departmentRequisition->requisition_no = $request->requisition_no;
-            $departmentRequisition->user_id = Auth::id();
+            $departmentRequisition->requisition_no  = $request->requisition_no;
+            $departmentRequisition->user_id         = Auth::id();
             $departmentRequisition->status = 0;
 
             if ($departmentRequisition->save()) {
@@ -73,7 +80,7 @@ class DepartmentRequisitionService implements IService
                         $departmentRequisitionDetails                               = new DepartmentRequisitionDetails();
                         $departmentRequisitionDetails->department_requisition_id    = $departmentRequisition->id;
                         $departmentRequisitionDetails->product_id                   = $productId;
-                        $departmentRequisitionDetails->current_stock                = $departmentCurrentStock;
+                        $departmentRequisitionDetails->current_stock                = $departmentCurrentStock ?? $sectionCurrentStock;
                         $departmentRequisitionDetails->demand_quantity              = $departmentDemandQuantity ?? $sectionDemandQuantity;
                         $departmentRequisitionDetails->remarks                      = $remarks;
                         $departmentRequisitionDetails->status                       = 0;
@@ -84,15 +91,15 @@ class DepartmentRequisitionService implements IService
                 // Store department requisition id into SectionRequisition
                 if ($request->has('section_requisition_id')) {
                     foreach ($request->section_requisition_id as $key => $value) {
-                        $storeDepartmentRequisitionId = SectionRequisition::find($value);
-                        $storeDepartmentRequisitionId->department_requisition_id = $departmentRequisition->id;
+                        $storeDepartmentRequisitionId                               = SectionRequisition::find($value);
+                        $storeDepartmentRequisitionId->department_requisition_id    = $departmentRequisition->id;
                         $storeDepartmentRequisitionId->save();
                     }
                 }
             }
             DB::commit();
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             return $e->getMessage();
         }

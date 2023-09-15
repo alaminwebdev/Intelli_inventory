@@ -100,7 +100,7 @@ class SectionRequisitionService implements IService
             }
             DB::commit();
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             return $e->getMessage();
         }

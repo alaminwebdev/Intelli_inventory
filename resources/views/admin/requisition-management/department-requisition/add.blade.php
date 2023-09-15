@@ -14,7 +14,7 @@
                             <a href="{{ route('admin.department.requisition.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>Department Requisition List</a>
                         </div>
                         <div class="card-body">
-                            <form id="submitForm" action="{{ isset($editData) ? route('admin.department.requisition.update', $editData->id) : route('admin.department.requisition.store') }} " method="post" enctype="multipart/form-data" autocomplete="off">
+                            <form id="submitForm" action="{{ isset($editData) ? route('admin.department.requisition.update', $editData->id) : route('admin.department.requisition.store') }} " method="post" enctype="multipart/form-data" autocomplete="off" onsubmit="return validateForm(event)">
                                 @csrf
 
                                 <div class="row">
@@ -105,7 +105,7 @@
                                                 <button type="reset" class="btn btn-danger btn-sm">Clear</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.section.list') }}">Back</a>
+                                                <a href="{{ route('admin.department.requisition.list') }}">Back</a>
                                             </button>
                                         </div>
                                     </div>
@@ -162,7 +162,6 @@
                     });
                 }
             });
-
         });
     </script>
 
@@ -172,14 +171,15 @@
             event.preventDefault(); // Prevent the default form submission
 
             // Get all elements with the name attribute "demand_quantity[]"
-            var demandQuantityInputs = document.querySelectorAll('[name^="demand_quantity["]');
+            var departmentDemandQuantityInputs = document.querySelectorAll('[name^="department_demand_quantity["]');
             var hasUserInput = false; // Flag to track if at least one product has user input
 
-            for (var i = 0; i < demandQuantityInputs.length; i++) {
-                var demandQuantityInput = demandQuantityInputs[i];
+            for (var i = 0; i < departmentDemandQuantityInputs.length; i++) {
+                var departmentDemandQuantityInput = departmentDemandQuantityInputs[i];
+                
 
                 // Retrieve the parent <tr> element
-                var parentTr = demandQuantityInput.closest('tr');
+                var parentTr = departmentDemandQuantityInput.closest('tr');
 
                 // Retrieve the data-product-id attribute from the parent <tr>
                 var productId = parentTr.dataset.productId;
@@ -187,39 +187,40 @@
                 // Retrieve the product name associated with this product
                 var productName = parentTr.querySelector('td:first-child').innerText;
 
-                var currentStockInput = document.querySelector('[name="current_stock[' + productId + ']"]');
+                var departmentCurrentStockInput = document.querySelector('[name="department_current_stock[' + productId + ']"]');
+                
+                var sectionDemandQuantityInput = document.querySelector('[name="section_demand_quantity[' + productId + ']"]');
 
-                // Check if demand_quantity field is non-empty
-                if (demandQuantityInput.value.trim() !== '') {
-                    var demandQuantityValue = parseFloat(demandQuantityInput.value);
-                    var currentStockValue = parseFloat(currentStockInput.value);
+
+                // Check if Department demand_quantity field is non-empty
+                if (departmentDemandQuantityInput.value.trim() !== '') {
+                    var sectionDemandQuantityValue      = parseFloat(sectionDemandQuantityInput.value);
+                    var departmentDemandQuantityValue   = parseFloat(departmentDemandQuantityInput.value);
+                    var departmentCurrentStockValue     = parseFloat(departmentCurrentStockInput.value);
+
 
                     // Check if demand_quantity is not empty and is a positive number
-                    if (isNaN(demandQuantityValue) || demandQuantityValue <= 0) {
-                        alert("Demand Quantity for product '" + productName + "' must be a positive number.");
-                        demandQuantityInput.focus();
-                        demandQuantityInput.classList.add('is-invalid'); // Add is-invalid class
+                    if (isNaN(departmentDemandQuantityValue) || departmentDemandQuantityValue <= 0) {
+                        alert("Department Demand Quantity for product '" + productName + "' must be a positive number.");
+                        departmentDemandQuantityInput.focus();
+                        departmentDemandQuantityInput.classList.add('is-invalid'); // Add is-invalid class
                         return false;
                     }
 
                     // Check if current_stock is not empty and is a positive number
-                    if (isNaN(currentStockValue) || currentStockValue <= 0) {
-                        alert("Current Stock for product '" + productName + "' must be required and have a positive number.");
-                        currentStockInput.focus();
-                        currentStockInput.classList.add('is-invalid'); // Add is-invalid class
+                    if (isNaN(departmentCurrentStockValue) || departmentCurrentStockValue <= 0) {
+                        alert("Department Current Stock for product '" + productName + "' must be required and have a positive number.");
+                        departmentCurrentStockInput.focus();
+                        departmentCurrentStockInput.classList.add('is-invalid'); // Add is-invalid class
                         return false;
                     }
 
                     // If both fields are valid, remove the is-invalid class
-                    demandQuantityInput.classList.remove('is-invalid');
-                    currentStockInput.classList.remove('is-invalid');
+                    departmentDemandQuantityInput.classList.remove('is-invalid');
+                    departmentCurrentStockInput.classList.remove('is-invalid');
 
                     // Set the flag to true since at least one product has user input
                     hasUserInput = true;
-                } else {
-                    // If demand_quantity is empty, add the is-invalid class
-                    // demandQuantityInput.classList.add('is-invalid');
-                    demandQuantityInput.focus();
                 }
             }
 

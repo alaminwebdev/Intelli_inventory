@@ -25,8 +25,8 @@ class DepartmentRequisitionController extends Controller
     }
     public function index()
     {
-        $data['title']                  = 'Department Requisition List';
-        $data['sectionRequisitions']    = $this->departmentRequisitionService->getAll();
+        $data['title']                      = 'Department Requisition List';
+        $data['departmentRequisitions']    = $this->departmentRequisitionService->getAll();
         return view('admin.requisition-management.department-requisition.list', $data);
     }
     public function add()
@@ -39,10 +39,10 @@ class DepartmentRequisitionController extends Controller
     }
     public function store(Request $request)
     {
-        // dd($request->all());
         $this->departmentRequisitionService->create($request);
         return redirect()->route('admin.department.requisition.list')->with('success', 'Data successfully inserted!');
     }
+
     public function edit($id)
     {
         // $data['title']          = 'Edit Department Requisition';
