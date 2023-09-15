@@ -14,6 +14,7 @@ Route::name('member-management.')->prefix('member-management')->namespace('Membe
 // Default Controller 
 Route::get('/get-products-by-type', [DefaultController::class, 'getProductsByType'])->name('get.products.by.type');
 Route::get('/get-sections-by-department', [DefaultController::class, 'getSectionsByDepartment'])->name('get.sections.by.department');
+Route::get('/get-products-by-section-requisition', [DefaultController::class, 'getProductsBySectionRequisition'])->name('get.products.by.section.requisition');
 
 // System Setup
 include 'admin/system_setup.php';

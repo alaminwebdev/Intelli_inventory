@@ -14,14 +14,25 @@
                             <a href="{{ route('admin.department.requisition.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>Department Requisition List</a>
                         </div>
                         <div class="card-body">
-                            <form id="submitForm" action="{{ isset($editData) ? route('admin.department.requisition.update', $editData->id) : route('admin.department.requisition.store') }} " method="post" enctype="multipart/form-data" autocomplete="off" onsubmit="return validateForm(event)">
+                            <form id="submitForm" action="{{ isset($editData) ? route('admin.department.requisition.update', $editData->id) : route('admin.department.requisition.store') }} " method="post" enctype="multipart/form-data" autocomplete="off">
                                 @csrf
-                                <input type="hidden" name="requisition_no" value="{{ $uniqueRequisitionNo }}">
+
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="border-bottom mb-3 pb-3 ">
-                                            <p class="font-weight-bold m-0 text-gray">BP No : </p>
-                                            <p class="font-weight-bold m-0 text-gray">Requisition No : {{ $uniqueRequisitionNo }}</p>
+                                        <div class="row px-3 py-4 border rounded shadow-sm mb-3">
+                                            <div class="col-md-6">
+                                                <label class="control-label">Requisition No :</label>
+                                                <input type="text" class="form-control form-control-sm" id="remarks" name="requisition_no" value="{{ $uniqueRequisitionNo }}" readonly>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="control-label">Section Requisition Number <span class="text-red">(Select a section requisition to merge into one requisition)</span></label>
+                                                <select name="section_requisition_no[]" class="form-control form-control-sm select2" id="section_requisition_no" multiple="multiple">
+                                                    <option value="" disabled>Select Section Requisition</option>
+                                                    @foreach ($section_requisitions as $section_requisition)
+                                                        <option value="{{ $section_requisition->id }}">Requisition No. {{ $section_requisition->requisition_no }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
@@ -30,7 +41,7 @@
                                                 <div class="card" style="box-shadow: none;">
                                                     <div class="card-header p-0" data-toggle="collapse" data-target="#collapse-{{ $item->id }}" aria-expanded="true" aria-controls="collapse-{{ $item->id }}" style="cursor: pointer;">
                                                         <h5 class="mb-0">
-                                                            <button class="btn btn-link px-0" type="button" >{{ $item->name }}</button>
+                                                            <button class="btn btn-link px-0" type="button">{{ $item->name }}</button>
                                                         </h5>
                                                         <i class="fas fa-chevron-down"></i>
                                                     </div>
@@ -41,8 +52,10 @@
                                                                 <thead>
                                                                     <tr>
                                                                         <th>Product Name</th>
-                                                                        <th>Current Stock</th>
-                                                                        <th>Demand Quantity</th>
+                                                                        <th>Current Stock(Section)</th>
+                                                                        <th>Demand Quantity(Section)</th>
+                                                                        <th>Current Stock(Department)</th>
+                                                                        <th>Demand Quantity(Department)</th>
                                                                         <th>Remarks</th>
                                                                     </tr>
                                                                 </thead>
@@ -57,13 +70,19 @@
                                                                         <tr data-product-id="{{ $product->id }}">
                                                                             <td class="product-name">{{ $product->name }}</td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm @error('current_stock') is-invalid @enderror" id="current_stock" name="current_stock[{{ $product->id }}]">
+                                                                                <input type="number" class="form-control form-control-sm" id="section_current_stock_{{ $product->id }}" name="section_current_stock[{{ $product->id }}]" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm @error('demand_quantity') is-invalid @enderror" id="demand_quantity" name="demand_quantity[{{ $product->id }}]">
+                                                                                <input type="number" class="form-control form-control-sm" id="section_demand_quantity_{{ $product->id }}" name="section_demand_quantity[{{ $product->id }}]" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="text" class="form-control form-control-sm @error('remarks') is-invalid @enderror" id="remarks" name="remarks[{{ $product->id }}]">
+                                                                                <input type="number" class="form-control form-control-sm" id="department_current_stock_{{ $product->id }}" name="department_current_stock[{{ $product->id }}]">
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="number" class="form-control form-control-sm" id="department_demand_quantity_{{ $product->id }}" name="department_demand_quantity[{{ $product->id }}]">
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="text" class="form-control form-control-sm" id="remarks_{{ $product->id }}" name="remarks[{{ $product->id }}]">
                                                                             </td>
                                                                         </tr>
                                                                         <input type="hidden" name="product_type[{{ $product->id }}]" value="{{ $item->id }}">
@@ -97,6 +116,51 @@
             </div>
         </div>
     </section>
+
+    <script>
+        $(function() {
+            $('#section_requisition_no').on('change', function() {
+                let selectedRequisitionIds = $(this).val();
+
+                // Clear form fields if no option is selected
+                if (!selectedRequisitionIds || selectedRequisitionIds.length === 0) {
+                    $('input[name^="section_current_stock"]').val('');
+                    $('input[name^="section_demand_quantity"]').val('');
+                    return; // Exit the function early
+                }
+                console.log(selectedRequisitionIds);
+                if (selectedRequisitionIds && selectedRequisitionIds.length > 0) {
+                    // Send AJAX request to fetch product data
+                    $.ajax({
+                        url: "{{ route('admin.get.products.by.section.requisition') }}",
+                        type: 'GET',
+                        data: {
+                            selectedRequisitionIds: selectedRequisitionIds
+                        },
+                        dataType: 'json',
+                        success: function(response) {
+                            console.log(response);
+                            //Update form fields with received data
+                            // Loop through the received data
+                            response.forEach(function(data) {
+                                var productId = data.product_id;
+                                var totalCurrentStock = data.total_current_stock;
+                                var totalDemandQuantity = data.total_demand_quantity;
+
+                                // Update the section_current_stock and section_demand_quantity fields
+                                $('#section_current_stock_' + productId).val(totalCurrentStock);
+                                $('#section_demand_quantity_' + productId).val(totalDemandQuantity);
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
+                }
+            });
+
+        });
+    </script>
 
     <script>
         // Function to validate the form before submission

@@ -6,18 +6,22 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\ProductTypeService;
 use App\Services\DepartmentRequisitionService;
+use App\Services\SectionRequisitionService;
 
 class DepartmentRequisitionController extends Controller
 {
     private $productTypeService;
+    private $sectionRequisitionService;
     private $departmentRequisitionService;
 
     public function __construct(
         DepartmentRequisitionService $departmentRequisitionService,
-        ProductTypeService $productTypeService
+        ProductTypeService $productTypeService,
+        SectionRequisitionService $sectionRequisitionService
     ) {
         $this->productTypeService           = $productTypeService;
         $this->departmentRequisitionService = $departmentRequisitionService;
+        $this->sectionRequisitionService    = $sectionRequisitionService;
     }
     public function index()
     {
@@ -30,10 +34,12 @@ class DepartmentRequisitionController extends Controller
         $data['title']                  = 'Add Department Requisition';
         $data['product_types']          = $this->productTypeService->getAll(1);
         $data['uniqueRequisitionNo']    = $this->departmentRequisitionService->getUniqueRequisitionNo();
+        $data['section_requisitions']   = $this->sectionRequisitionService->getAll();
         return view('admin.requisition-management.department-requisition.add', $data);
     }
     public function store(Request $request)
     {
+        dd($request->all());
         $this->departmentRequisitionService->create($request);
         return redirect()->route('admin.department.requisition.list')->with('success', 'Data successfully inserted!');
     }

@@ -10,6 +10,7 @@ use App\Services\ProductTypeService;
 use App\Services\UnitService;
 use App\Services\SupplierService;
 use App\Services\SectionService;
+use App\Services\SectionRequisitionService;
 
 class DefaultController extends Controller
 {
@@ -18,13 +19,15 @@ class DefaultController extends Controller
     private $unitService;
     private $supplierService;
     private $sectionService;
+    private $sectionRequisitionService;
 
     public function __construct(
         ProductInformationService $productInformationService,
         ProductTypeService $productTypeService,
         UnitService $unitService,
         SupplierService $supplierService,
-        SectionService $sectionService
+        SectionService $sectionService,
+        SectionRequisitionService $sectionRequisitionService
 
     ) {
         $this->productInformationService    = $productInformationService;
@@ -32,6 +35,7 @@ class DefaultController extends Controller
         $this->unitService                  = $unitService;
         $this->supplierService              = $supplierService;
         $this->sectionService               = $sectionService;
+        $this->sectionRequisitionService    = $sectionRequisitionService;
     }
 
     public function getProductsByType(Request $request)
@@ -42,6 +46,11 @@ class DefaultController extends Controller
     public function getSectionsByDepartment(Request $request)
     {
         $data = $this->sectionService->getSectionsByDepartment($request->department_id);
+        return response()->json($data);
+    }
+    public function getProductsBySectionRequisition(Request $request)
+    {
+        $data = $this->sectionRequisitionService->getRequisitionProductsByIDs($request->selectedRequisitionIds);
         return response()->json($data);
     }
 }

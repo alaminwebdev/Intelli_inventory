@@ -16,10 +16,35 @@ use Illuminate\Support\Facades\DB;
 class SectionRequisitionService implements IService
 {
 
-    public function getAll()
+    public function getAll($section_id = null, $status = null)
     {
         try {
-            $data = SectionRequisition::latest()->get();
+            $query = SectionRequisition::latest();
+            if ($section_id) {
+                $query->where('section_id', $section_id);
+            }
+            if ($status) {
+                $query->where('status', $status);
+            }
+            $data = $query->get();
+            return $data;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+    public function getRequisitionProductsByIDs($section_ids)
+    {
+        try {
+
+            $data =  DB::table('section_requisition_details')
+                ->whereIn('section_requisition_details.section_requisition_id', $section_ids)
+                ->select(
+                    'section_requisition_details.product_id',
+                    DB::raw('SUM(section_requisition_details.current_stock) as total_current_stock'),
+                    DB::raw('SUM(section_requisition_details.demand_quantity) as total_demand_quantity'),
+                )
+                ->groupBy('section_requisition_details.product_id')
+                ->get();
             return $data;
         } catch (\Exception $e) {
             return $e->getMessage();
