@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\UserManagement;
 
 use App\Http\Controllers\Controller;
 use App\Models\Designation;
+use App\Models\Employee;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserRole;
@@ -67,6 +68,7 @@ class UserController extends Controller
         $data['title'] = 'Add User';
         $data['roles'] = Role::where('id','!=',1)->orderBy('sort','asc')->get();
         $data['designations'] = Designation::orderBy('sort','asc')->get();
+        $data['employees'] = Employee::orderBy('sort','asc')->get();
         return view('admin.user-management.user-info.add',$data);
     }
 
@@ -97,7 +99,7 @@ class UserController extends Controller
                 'name'     => ['required'],
                 'email'     => ['required','email','unique:users,email'],
                 'mobile_no'     => ['required','digits:11','unique:users,mobile_no'],
-                'designation_id'     => ['required'],
+                // 'designation_id'     => ['required'],
                 'role_ids'     => ['required'],
                 'status'     => ['required'],
                 'image' => ['mimes:jpeg,png,jpg,gif,svg'],
@@ -124,11 +126,15 @@ class UserController extends Controller
             $store->name           = $request->name;
             $store->email          = $request->email;
             $store->mobile_no      = $request->mobile_no;
-            $store->designation_id = $request->designation_id;
-            $store->working_place  = $request->working_place;
+            // $store->designation_id = $request->designation_id;
+            // $store->working_place  = $request->working_place;
             $store->status         = $request->status;
             $store->password       = bcrypt($request->password);
             $store->created_by     = auth()->user()->id;
+            
+            if ($request->filled('employee_id')) {
+                $store->employee_id  = $request->employee_id;
+            }
 
             if($request->hasFile('image')){
                 $folder_name = 'profile';

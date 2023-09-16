@@ -11,6 +11,7 @@ use App\Services\UnitService;
 use App\Services\SupplierService;
 use App\Services\SectionService;
 use App\Services\SectionRequisitionService;
+use App\Services\EmployeeService;
 
 class DefaultController extends Controller
 {
@@ -20,6 +21,7 @@ class DefaultController extends Controller
     private $supplierService;
     private $sectionService;
     private $sectionRequisitionService;
+    private $employeeService;
 
     public function __construct(
         ProductInformationService $productInformationService,
@@ -27,7 +29,8 @@ class DefaultController extends Controller
         UnitService $unitService,
         SupplierService $supplierService,
         SectionService $sectionService,
-        SectionRequisitionService $sectionRequisitionService
+        SectionRequisitionService $sectionRequisitionService,
+        EmployeeService $employeeService
 
     ) {
         $this->productInformationService    = $productInformationService;
@@ -36,6 +39,7 @@ class DefaultController extends Controller
         $this->supplierService              = $supplierService;
         $this->sectionService               = $sectionService;
         $this->sectionRequisitionService    = $sectionRequisitionService;
+        $this->employeeService              = $employeeService;
     }
 
     public function getProductsByType(Request $request)
@@ -51,6 +55,11 @@ class DefaultController extends Controller
     public function getProductsBySectionRequisition(Request $request)
     {
         $data = $this->sectionRequisitionService->getRequisitionProductsByIDs($request->selectedRequisitionIds);
+        return response()->json($data);
+    }
+    public function getEmployeeById(Request $request)
+    {
+        $data = $this->employeeService->getByID($request->employee_id);
         return response()->json($data);
     }
 }

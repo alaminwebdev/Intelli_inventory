@@ -3,27 +3,39 @@
 namespace App\Http\Controllers\Admin\RequisitionManagement;
 
 use App\Http\Controllers\Controller;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 
 use App\Services\ProductTypeService;
 use App\Services\SectionRequisitionService;
+use App\Services\EmployeeService;
+use Illuminate\Support\Facades\Auth;
 
 class SectionRequisitionController extends Controller
 {
     private $sectionRequisitionService;
     private $productTypeService;
+    private $employeeService;
 
     public function __construct(
         SectionRequisitionService $sectionRequisitionService,
-        ProductTypeService $productTypeService
+        ProductTypeService $productTypeService,
+        EmployeeService $employeeService
     ) {
         $this->sectionRequisitionService    = $sectionRequisitionService;
         $this->productTypeService           = $productTypeService;
+        $this->employeeService              = $employeeService;
     }
     public function index()
     {
         $data['title']                  = 'Section Requisition List';
-        $data['sectionRequisitions']    = $this->sectionRequisitionService->getAll();
+        $user = Auth::user();
+        if ($user->id !== 1 && $user->employee_id) {
+            $employee                       = $this->employeeService->getByID($user->employee_id);
+            $data['sectionRequisitions']    = $this->sectionRequisitionService->getAll($employee->section_id);
+        }else{
+            $data['sectionRequisitions']    = $this->sectionRequisitionService->getAll();
+        }
         return view('admin.requisition-management.section-requisition.list', $data);
     }
     public function add()

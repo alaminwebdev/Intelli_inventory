@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Employee;
 use App\Models\SectionRequisition;
 use App\Models\SectionRequisitionDetails;
 use App\Services\IService;
@@ -68,7 +69,13 @@ class SectionRequisitionService implements IService
             $sectionRequisition = new SectionRequisition();
 
             $sectionRequisition->requisition_no = $request->requisition_no;
-            $sectionRequisition->user_id = Auth::id();
+            $sectionRequisition->user_id    = Auth::id();
+            $user = Auth::user();
+            if ($user->id !== 1 && $user->employee_id) {
+                $employee                       = Employee::find($user->employee_id);
+                $sectionRequisition->section_id = $employee->section_id;
+            }
+
             $sectionRequisition->status = 0;
 
             if ($sectionRequisition->save()) {
