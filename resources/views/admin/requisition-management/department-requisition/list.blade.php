@@ -15,13 +15,12 @@
                                     <tr>
                                         <th width="5%">SL.</th>
                                         <th>Requisition No</th>
-                                        <th>Product</th>
-                                        <th>Current Stock</th>
-                                        <th>Demand Quantity</th>
+                                        <th>View</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+
                                     @foreach ($departmentRequisitions as $list)
                                         @php
                                             $departmentRequisitionProducts = \App\Models\DepartmentRequisitionDetails::join('product_information', 'product_information.id', 'department_requisition_details.product_id')
@@ -29,32 +28,16 @@
                                                 ->select('department_requisition_details.current_stock as current_stock', 'department_requisition_details.demand_quantity as demand_quantity', 'product_information.name as product')
                                                 ->get();
                                         @endphp
-                                        @if (count($departmentRequisitionProducts) > 0)
-                                            @php $rowspan = count($departmentRequisitionProducts); @endphp
-                                            @foreach ($departmentRequisitionProducts as $item)
-                                                <tr>
-                                                    @if ($loop->first)
-                                                        <td rowspan="{{ $rowspan }}">{{ $loop->parent->iteration }}</td>
-                                                        <td rowspan="{{ $rowspan }}">{{ @$list->requisition_no ?? 'N/A' }}</td>
-                                                    @endif
-                                                    <td>{{ $item->product }}</td>
-                                                    <td class="text-right">{{ $item->current_stock }}</td>
-                                                    <td class="text-right">{{ $item->demand_quantity }}</td>
-                                                    @if ($loop->first)
-                                                        <td rowspan="{{ $rowspan }}" class="text-center">{!! activeRequisition($list->status) !!}</td>
-                                                    @endif
-                                                </tr>
-                                            @endforeach
-                                        @else
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ @$list->requisition_no ?? 'N/A' }}</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td class="text-center">{!! activeRequisition($list->status) !!}</td>
-                                            </tr>
-                                        @endif
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ @$list->requisition_no ?? 'N/A' }}</td>
+                                            <td class="text-center">
+                                                <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-products="{{ json_encode($departmentRequisitionProducts) }}">
+                                                    <i class="far fa-eye"></i>
+                                                </button>
+                                            </td>
+                                            <td class="text-center">{!! activeRequisition($list->status) !!}</td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                             </table>
@@ -64,5 +47,64 @@
             </div>
         </div>
     </section>
-    <script></script>
+
+    <!-- Modal for Product Details -->
+    <div class="modal fade" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">Product Details</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Current Stock</th>
+                                <th>Demand Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productDetailsTable">
+                            <!-- Product details will be displayed here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('.view-products').on('click', function() {
+                var products = $(this).data('products');
+
+                // Clear any existing content in the modal table
+                $('#productDetailsTable').html('');
+
+                // Loop through the products and add them to the table
+                for (var i = 0; i < products.length; i++) {
+                    var product = products[i];
+
+                    var productName = product.product;
+                    var currentStock = product.current_stock;
+                    var demandQuantity = product.demand_quantity;
+
+                    // Append the product details to the table
+                    $('#productDetailsTable').append(`
+                            <tr>
+                                <td>${productName}</td>
+                                <td class="text-right">${currentStock}</td>
+                                <td class="text-right">${demandQuantity}</td>
+                            </tr>
+                        `);
+                }
+            });
+        });
+    </script>
 @endsection

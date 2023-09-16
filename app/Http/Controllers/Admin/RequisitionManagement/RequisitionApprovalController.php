@@ -9,21 +9,25 @@ use Illuminate\Http\Request;
 use App\Services\ProductTypeService;
 use App\Services\DepartmentRequisitionService;
 use App\Services\SectionRequisitionService;
+use App\Services\RequisitionApprovalService;
 
 class RequisitionApprovalController extends Controller
 {
     private $productTypeService;
     private $sectionRequisitionService;
     private $departmentRequisitionService;
+    private $requisitionApprovalService;
 
     public function __construct(
         DepartmentRequisitionService $departmentRequisitionService,
         ProductTypeService $productTypeService,
-        SectionRequisitionService $sectionRequisitionService
+        SectionRequisitionService $sectionRequisitionService,
+        RequisitionApprovalService $requisitionApprovalService
     ) {
-        $this->productTypeService           = $productTypeService;
-        $this->departmentRequisitionService = $departmentRequisitionService;
-        $this->sectionRequisitionService    = $sectionRequisitionService;
+        $this->productTypeService               = $productTypeService;
+        $this->departmentRequisitionService     = $departmentRequisitionService;
+        $this->sectionRequisitionService        = $sectionRequisitionService;
+        $this->requisitionApprovalService       = $requisitionApprovalService;
     }
     public function index()
     {
@@ -53,12 +57,8 @@ class RequisitionApprovalController extends Controller
 
     public function update(Request $request, $id)
     {
-        dd($request->all());
-        // $request->validate([
-        //     'name' => 'required',
-        // ]);
-        // $this->sectionRequisitionService->update($request, $id);
-        // return redirect()->route('admin.section.requisition.list')->with('success', 'Data successfully updated!');
+        $this->requisitionApprovalService->update($request, $id);
+        return redirect()->route('admin.requisition.list')->with('success', 'Data successfully updated!');
     }
 
     public function delete(Request $request)
