@@ -36,7 +36,7 @@ class DepartmentService implements IService
             $data->sort     = $request->sort;
             $data->status   = $request->status ?? 0;
             $data->save();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $e->getMessage();
         }
     }

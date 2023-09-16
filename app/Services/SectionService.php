@@ -39,7 +39,7 @@ class SectionService implements IService
             $data->sort             = $request->sort;
             $data->status           = $request->status ?? 0;
             $data->save();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
@@ -64,7 +64,7 @@ class SectionService implements IService
             $data->status         = $request->status;
             $data->save();
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $e->getMessage();
         }
     }

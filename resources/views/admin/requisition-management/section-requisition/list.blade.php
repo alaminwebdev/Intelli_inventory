@@ -16,6 +16,7 @@
                                     <tr>
                                         <th width="5%">SL.</th>
                                         <th>Requisition No</th>
+                                        <th>Requested Section</th>
                                         <th>View</th>
                                         <th>Status</th>
                                     </tr>
@@ -31,6 +32,7 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ @$list->requisition_no ?? 'N/A' }}</td>
+                                            <td>{{ @$list->section->name ?? 'N/A' }}</td>
                                             <td class="text-center">
                                                 <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-products="{{ json_encode($sectionRequisitionProducts) }}">
                                                     <i class="far fa-eye"></i>

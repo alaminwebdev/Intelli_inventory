@@ -10,15 +10,12 @@
                             {{-- <a href="{{ route('admin.department.requisition.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Department Requisition</a> --}}
                         </div>
                         <div class="card-body">
-                            <form id="submitForm" action=" " method="post">
+                            {{-- <form id="submitForm" action=" " method="post">
                                 <div class="row px-3 py-4 border rounded shadow-sm mb-3">
                                     <div class="col-sm-5">
                                         <label class="control-label">Department <span class="text-red">*</span></label>
                                         <select name="department_id" id="department_id" class="form-control select2 @error('department_id') is-invalid @enderror">
                                             <option value="" >Please Select</option>
-                                            {{-- @foreach ($product_types as $item)
-                                                <option value="{{ $item->id }}" {{ @$editData->product_type_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
-                                            @endforeach --}}
                                         </select>
                                         @error('product_type_id')
                                             <span class="invalid-feedback" role="alert">
@@ -40,7 +37,7 @@
                                         <button type="submit" class="btn btn-block btn-success btn-sm" disabled>Search</button>
                                     </div>
                                 </div>
-                            </form>
+                            </form> --}}
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -56,7 +53,7 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ @$list->requisition_no ?? 'N/A' }}</td>
-                                            <td>N/A</td>
+                                            <td>{{ @$list->department->name ?? 'N/A' }}</td>
                                             <td class="text-center">{!! activeRequisition($list->status) !!}</td>
                                             <td class="text-center">
                                                 @if(sorpermission('admin.requisition.edit'))

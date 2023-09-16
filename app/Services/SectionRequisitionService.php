@@ -33,6 +33,15 @@ class SectionRequisitionService implements IService
             return $e->getMessage();
         }
     }
+    public function getAllBySections($section_ids, $status)
+    {
+        try {
+            $data = SectionRequisition::whereIn('section_id', $section_ids)->where('status', $status)->latest()->get();
+            return $data;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
     public function getRequisitionProductsByIDs($section_ids)
     {
         try {
@@ -69,14 +78,9 @@ class SectionRequisitionService implements IService
             $sectionRequisition = new SectionRequisition();
 
             $sectionRequisition->requisition_no = $request->requisition_no;
-            $sectionRequisition->user_id    = Auth::id();
-            $user = Auth::user();
-            if ($user->id !== 1 && $user->employee_id) {
-                $employee                       = Employee::find($user->employee_id);
-                $sectionRequisition->section_id = $employee->section_id;
-            }
-
-            $sectionRequisition->status = 0;
+            $sectionRequisition->section_id     = $request->section_id;
+            $sectionRequisition->user_id        = Auth::id();
+            $sectionRequisition->status         = 0;
 
             if ($sectionRequisition->save()) {
                 // Get all form data arrays
@@ -88,9 +92,9 @@ class SectionRequisitionService implements IService
                 // Loop through the product types data (keys are product IDs, values are product type IDs)
                 foreach ($productTypesData as $productId => $productTypeId) {
                     // Retrieve data for the current product
-                    $currentStock = $currentStockData[$productId];
+                    $currentStock   = $currentStockData[$productId];
                     $demandQuantity = $demandQuantityData[$productId];
-                    $remarks = $remarksData[$productId];
+                    $remarks        = $remarksData[$productId];
 
                     if ($demandQuantity !== null && $demandQuantity > 0) {
                         // Store Data into SectionRequisitionDetails

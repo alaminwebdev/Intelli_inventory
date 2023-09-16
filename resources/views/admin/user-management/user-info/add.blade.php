@@ -7,19 +7,21 @@
                     <div class="card">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.user-management.user-info.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list"></i> User List</a>
+                            <div class="d-flex align-items-center">
+                                <div class="custom-control custom-switch mr-3">
+                                    <input type="checkbox" class="custom-control-input" id="is_employee" name="is_employee" >
+                                    <label class="custom-control-label" for="is_employee">Toggle this to create user from Employee</label>
+                                </div>
+                                <a href="{{ route('admin.user-management.user-info.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list"></i> User List</a>
+                            </div>
                         </div>
                         <div class="card-body">
                             <form id="submitForm">
                                 @csrf
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="form-row px-4 py-3 mb-3 shadow-sm border rounded">
+                                        <div class="form-row px-4 py-3 mb-3 shadow-sm border rounded" id="employeeFieldContainer" style="display: none;">
                                             <div class="form-group col-md-6">
-                                                <label class="mb-0">Show Select Field</label>
-                                                <input name="is_employee" type="checkbox" id="is_employee">
-                                            </div>
-                                            <div class="form-group col-md-6" id="employeeFieldContainer" style="display: none;">
                                                 <label class="control-label">Select Employee <span class="text-red">*</span></label>
                                                 <select name="employee_id" id="employee_id" class="form-control select2">
                                                     <option value="">Please Select</option>

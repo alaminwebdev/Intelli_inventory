@@ -20,16 +20,34 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="row px-3 py-4 border rounded shadow-sm mb-3">
-                                            <div class="col-md-4">
+                                            <div class="col-md-2">
                                                 <label class="control-label">Requisition No :</label>
                                                 <input type="text" class="form-control form-control-sm" id="remarks" name="requisition_no" value="{{ $uniqueRequisitionNo }}" readonly>
                                             </div>
-                                            <div class="col-md-8">
-                                                <label class="control-label">Section Requisition Number <span class="text-red">(Select a section requisition to merge into one requisition):</span></label>
+                                            <div class="col-md-5">
+                                                <label class="control-label">Department <span class="text-red">*</span></label>
+                                                <select name="department_id" class="form-control form-control-sm select2" id="department_id" {{ $employee ? 'disabled' : '' }}>
+                                                    @if (!$employee)
+                                                        <option value="">Select Department</option>
+                                                    @endif
+                                                    @foreach ($departments as $department)
+                                                        <option value="{{ $department->id }}" {{ ($employee && $employee->department_id == $department->id) || (!$employee && old('department_id') == $department->id) ? 'selected' : '' }}>
+                                                            {{ $department->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+
+                                                @if ($employee)
+                                                    <!-- Hidden input field to store the department_id value -->
+                                                    <input type="hidden" name="department_id" value="{{ $employee->department_id }}">
+                                                @endif
+                                            </div>
+                                            <div class="col-md-5">
+                                                <label class="control-label">Section Requisition Number <span class="text-red"></span></label>
                                                 <select name="section_requisition_id[]" class="form-control form-control-sm select2" id="section_requisition_id" multiple="multiple">
                                                     <option value="" disabled>Select Section Requisition</option>
                                                     @foreach ($section_requisitions as $section_requisition)
-                                                        <option value="{{ $section_requisition->id }}">Requisition No. {{ $section_requisition->requisition_no }}</option>
+                                                        <option value="{{ $section_requisition->id }}">{{ $section_requisition->requisition_no }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -119,6 +137,52 @@
 
     <script>
         $(function() {
+
+            $(document).on('change', '#department_id', function() {
+                let department_id = $(this).val();
+                console.log(department_id);
+                $.ajax({
+                    url: "{{ route('admin.get.sections.requisitions.by.department') }}",
+                    type: "GET",
+                    data: {
+                        department_id: department_id
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        // Handle the data here
+                        let section_requisition_select = $('#section_requisition_id');
+
+                        // Clear all selected options
+                        section_requisition_select.val([]);
+
+                        // Clear the select's existing options
+                        section_requisition_select.empty();
+
+                        // Add a default option
+                        section_requisition_select.append($('<option>', {
+                            value: '',
+                            text: 'Select Section Requisition',
+                            disabled: true
+                        }));
+
+                        // Add new options based on the data
+                        data.forEach(item => {
+                            section_requisition_select.append($('<option>', {
+                                value: item.id,
+                                text: item.requisition_no
+                            }));
+                        });
+
+                        // Trigger the onchange event of section_requisition_id
+                        section_requisition_select.trigger('change');
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $(function() {
             $('#section_requisition_id').on('change', function() {
                 let selectedRequisitionIds = $(this).val();
 
@@ -170,13 +234,23 @@
         function validateForm(event) {
             event.preventDefault(); // Prevent the default form submission
 
+            // Validate the "Department" select input
+            var departmentSelect = document.getElementById('department_id');
+            var selectedDepartment = departmentSelect.value;
+
+            if (selectedDepartment === '') {
+                alert("Please select a department.");
+                departmentSelect.focus();
+                return false;
+            }
+
             // Get all elements with the name attribute "demand_quantity[]"
             var departmentDemandQuantityInputs = document.querySelectorAll('[name^="department_demand_quantity["]');
             var hasUserInput = false; // Flag to track if at least one product has user input
 
             for (var i = 0; i < departmentDemandQuantityInputs.length; i++) {
                 var departmentDemandQuantityInput = departmentDemandQuantityInputs[i];
-                
+
 
                 // Retrieve the parent <tr> element
                 var parentTr = departmentDemandQuantityInput.closest('tr');
@@ -188,15 +262,15 @@
                 var productName = parentTr.querySelector('td:first-child').innerText;
 
                 var departmentCurrentStockInput = document.querySelector('[name="department_current_stock[' + productId + ']"]');
-                
+
                 var sectionDemandQuantityInput = document.querySelector('[name="section_demand_quantity[' + productId + ']"]');
 
 
                 // Check if Department demand_quantity field is non-empty
                 if (departmentDemandQuantityInput.value.trim() !== '') {
-                    var sectionDemandQuantityValue      = parseFloat(sectionDemandQuantityInput.value);
-                    var departmentDemandQuantityValue   = parseFloat(departmentDemandQuantityInput.value);
-                    var departmentCurrentStockValue     = parseFloat(departmentCurrentStockInput.value);
+                    var sectionDemandQuantityValue = parseFloat(sectionDemandQuantityInput.value);
+                    var departmentDemandQuantityValue = parseFloat(departmentDemandQuantityInput.value);
+                    var departmentCurrentStockValue = parseFloat(departmentCurrentStockInput.value);
 
 
                     // Check if demand_quantity is not empty and is a positive number

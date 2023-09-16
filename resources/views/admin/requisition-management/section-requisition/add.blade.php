@@ -19,10 +19,39 @@
                                 <input type="hidden" name="requisition_no" value="{{ $uniqueRequisitionNo }}">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="border-bottom mb-3 pb-3 ">
+                                        <div class="row px-3 py-4 border rounded shadow-sm mb-3">
+                                            <div class="col-md-3">
+                                                <label class="control-label">BP No :</label>
+                                                <input type="text" class="form-control form-control-sm" id="" name="" value="{{ $employee ? $employee->bp_no : '' }}" readonly>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="control-label">Requisition No :</label>
+                                                <input type="text" class="form-control form-control-sm" value="{{ $uniqueRequisitionNo }}" readonly>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="control-label">Section <span class="text-red">*</span></label>
+                                                <select name="section_id" class="form-control form-control-sm select2" id="section_id" {{ $employee ? 'disabled' : '' }}>
+                                                    @if (!$employee)
+                                                        <option value="">Select Section</option>
+                                                    @endif
+                                                    @foreach ($sections as $section)
+                                                        <option value="{{ $section->id }}" {{ ($employee && $employee->section_id == $section->id) || (!$employee && old('section_id') == $section->id) ? 'selected' : '' }}>
+                                                            {{ $section->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+
+                                                @if ($employee)
+                                                    <!-- Hidden input field to store the department_id value -->
+                                                    <input type="hidden" name="section_id" value="{{ $employee->section_id }}">
+                                                @endif
+                                            </div>
+
+                                        </div>
+                                        {{-- <div class="border-bottom mb-3 pb-3 ">
                                             <p class="font-weight-bold m-0 text-gray">BP No : </p>
                                             <p class="font-weight-bold m-0 text-gray">Requisition No : {{ $uniqueRequisitionNo }}</p>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                     <div class="col-md-12">
                                         <div class="accordion">
@@ -30,7 +59,7 @@
                                                 <div class="card" style="box-shadow: none;">
                                                     <div class="card-header p-0" data-toggle="collapse" data-target="#collapse-{{ $item->id }}" aria-expanded="true" aria-controls="collapse-{{ $item->id }}" style="cursor: pointer;">
                                                         <h5 class="mb-0">
-                                                            <button class="btn btn-link px-0" type="button" >{{ $item->name }}</button>
+                                                            <button class="btn btn-link px-0" type="button">{{ $item->name }}</button>
                                                         </h5>
                                                         <i class="fas fa-chevron-down"></i>
                                                     </div>
@@ -102,6 +131,16 @@
         // Function to validate the form before submission
         function validateForm(event) {
             event.preventDefault(); // Prevent the default form submission
+
+            // Validate the "Section" select input
+            var sectionSelect = document.getElementById('section_id');
+            var selectedSection = sectionSelect.value;
+
+            if (selectedSection === '') {
+                alert("Please select a section.");
+                sectionSelect.focus();
+                return false;
+            }
 
             // Get all elements with the name attribute "demand_quantity[]"
             var demandQuantityInputs = document.querySelectorAll('[name^="demand_quantity["]');

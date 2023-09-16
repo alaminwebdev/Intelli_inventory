@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Services\ProductTypeService;
 use App\Services\SectionRequisitionService;
 use App\Services\EmployeeService;
+use App\Services\SectionService;
 use Illuminate\Support\Facades\Auth;
 
 class SectionRequisitionController extends Controller
@@ -16,15 +17,18 @@ class SectionRequisitionController extends Controller
     private $sectionRequisitionService;
     private $productTypeService;
     private $employeeService;
+    private $sectionService;
 
     public function __construct(
         SectionRequisitionService $sectionRequisitionService,
         ProductTypeService $productTypeService,
-        EmployeeService $employeeService
+        EmployeeService $employeeService,
+        SectionService $sectionService
     ) {
         $this->sectionRequisitionService    = $sectionRequisitionService;
         $this->productTypeService           = $productTypeService;
         $this->employeeService              = $employeeService;
+        $this->sectionService               = $sectionService;
     }
     public function index()
     {
@@ -43,6 +47,13 @@ class SectionRequisitionController extends Controller
         $data['title']                  = 'Add Section Requisition';
         $data['product_types']          = $this->productTypeService->getAll(1);
         $data['uniqueRequisitionNo']    = $this->sectionRequisitionService->getUniqueRequisitionNo();
+        $user = Auth::user();
+        if ($user->id !== 1 && $user->employee_id) {
+            $data['employee']           = $this->employeeService->getByID($user->employee_id);
+        } else {
+            $data['employee']           = [];
+        }
+        $data['sections']           = $this->sectionService->getAll();
         return view('admin.requisition-management.section-requisition.add', $data);
     }
     public function store(Request $request)

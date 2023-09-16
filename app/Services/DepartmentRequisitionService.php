@@ -25,7 +25,7 @@ class DepartmentRequisitionService implements IService
         try {
             $query = DepartmentRequisition::latest();
             if ($department_id) {
-                $query->where('section_id', $department_id);
+                $query->where('department_id', $department_id);
             }
             if ($status) {
                 $query->where('status', $status);
@@ -51,11 +51,11 @@ class DepartmentRequisitionService implements IService
         DB::beginTransaction();
         try {
 
-            $departmentRequisition = new DepartmentRequisition();
-
+            $departmentRequisition                  = new DepartmentRequisition();
             $departmentRequisition->requisition_no  = $request->requisition_no;
             $departmentRequisition->user_id         = Auth::id();
-            $departmentRequisition->status = 0;
+            $departmentRequisition->department_id   = $request->department_id;
+            $departmentRequisition->status          = 0;
 
             if ($departmentRequisition->save()) {
                 // Get all form data arrays

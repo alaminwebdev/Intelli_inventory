@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SectionRequisition extends Model {
     use HasFactory, SoftDeletes;
+    public function section() {
+        return $this->hasOne(Section::class, 'id', 'section_id' );
+    }
 }

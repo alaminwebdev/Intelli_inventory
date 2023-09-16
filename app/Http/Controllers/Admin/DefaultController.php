@@ -57,6 +57,12 @@ class DefaultController extends Controller
         $data = $this->sectionRequisitionService->getRequisitionProductsByIDs($request->selectedRequisitionIds);
         return response()->json($data);
     }
+    public function getSectionsRequisitionsByDepartment(Request $request)
+    {
+        $sections   = $this->sectionService->getSectionsByDepartment($request->department_id)->pluck('id');
+        $data       = $this->sectionRequisitionService->getAllBySections($sections, 0);
+        return response()->json($data);
+    }
     public function getEmployeeById(Request $request)
     {
         $data = $this->employeeService->getByID($request->employee_id);

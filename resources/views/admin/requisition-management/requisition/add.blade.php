@@ -20,11 +20,11 @@
                                         <div class="row px-3 py-4 border rounded shadow-sm mb-3">
                                             <div class="col-md-4">
                                                 <label class="control-label">Department :</label>
-                                                <input type="text" class="form-control form-control-sm" id="remarks" name="requisition_no" value="{{ $editData->requisition_no }}" readonly>
+                                                <input type="text" class="form-control form-control-sm"  value="{{ $editData->department->name }}" readonly>
                                             </div>
                                             <div class="col-md-4">
                                                 <label class="control-label">Requisition No :</label>
-                                                <input type="text" class="form-control form-control-sm" id="remarks" name="requisition_no" value="{{ $editData->requisition_no }}" readonly>
+                                                <input type="text" class="form-control form-control-sm" id="requisition_no" name="requisition_no" value="{{ $editData->requisition_no }}" readonly>
                                             </div>
                                             <div class="col-md-4">
                                                 <label class="control-label">Requisition Status <span class="text-red">*</span></label>
@@ -80,10 +80,10 @@
                                                                                 <input type="number" class="form-control form-control-sm" id="department_demand_quantity_{{ $product->product_id }}" name="department_demand_quantity[{{ $product->product_id }}]" value="{{ $product->demand_quantity }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="approve_quantity_{{ $product->product_id }}" name="approve_quantity[{{ $product->product_id }}]">
+                                                                                <input type="number" class="form-control form-control-sm" id="approve_quantity_{{ $product->product_id }}" name="approve_quantity[{{ $product->product_id }}]" value="{{ $product->approve_quantity }}">
                                                                             </td>
                                                                             <td>
-                                                                                <input type="text" class="form-control form-control-sm" id="remarks_{{ $product->product_id }}" name="remarks[{{ $product->product_id }}]">
+                                                                                <input type="text" class="form-control form-control-sm" id="remarks_{{ $product->product_id }}" name="remarks[{{ $product->product_id }}]" value="{{ $product->remarks }}">
                                                                             </td>
                                                                         </tr>
                                                                         <input type="hidden" name="product_type[{{ $product->product_id }}]" value="{{ $item->id }}">
