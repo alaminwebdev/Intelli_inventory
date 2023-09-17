@@ -10,11 +10,6 @@
                             <a href="{{ route('admin.stock.in.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>Stock-In List</a>
                         </div>
                         <div class="card-body">
-                            <div id="loading-spinner" style="display: none; position:absolute; z-index:9999; top:50%; left:50%; transform:translate(-50%,-50%);">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
-                            </div>
                             <form id="stockInForm" method="post" enctype="multipart/form-data" autocomplete="off">
                                 @csrf
                                 <div class="row">

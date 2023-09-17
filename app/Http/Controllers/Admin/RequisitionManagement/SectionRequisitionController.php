@@ -36,10 +36,12 @@ class SectionRequisitionController extends Controller
         $user = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
             $employee                       = $this->employeeService->getByID($user->employee_id);
-            $data['sectionRequisitions']    = $this->sectionRequisitionService->getAll($employee->section_id);
+            $sectionIds                     = Employee::where('department_id', $employee->department_id)->whereNotNull('section_id')->pluck('section_id');
+            $data['sectionRequisitions']    = $this->sectionRequisitionService->getAll(null, null, $sectionIds);
         }else{
             $data['sectionRequisitions']    = $this->sectionRequisitionService->getAll();
         }
+
         return view('admin.requisition-management.section-requisition.list', $data);
     }
     public function add()
@@ -59,8 +61,8 @@ class SectionRequisitionController extends Controller
     }
     public function store(Request $request)
     {
-        $this->sectionRequisitionService->create($request);
-        return redirect()->route('admin.section.requisition.list')->with('success', 'Data successfully inserted!');
+        $data = $this->sectionRequisitionService->create($request);
+        return response()->json($data);
     }
     public function edit($id)
     {
