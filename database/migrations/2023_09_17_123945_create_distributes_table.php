@@ -16,6 +16,10 @@ class CreateDistributesTable extends Migration {
             $table->bigInteger('department_requisition_id');
             $table->bigInteger('department_id')->nullable();
             $table->string('requisition_no');
+            $table->bigInteger('approved_by')->nullable();
+            $table->dateTime('approved_at')->nullable();
+            $table->bigInteger('distributed_by')->nullable();
+            $table->dateTime('distributed_at')->nullable();
             $table->integer('status')->nullable()->comment("1=approved, 2=distribute");
             $table->softDeletes();
             $table->timestamps();

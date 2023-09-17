@@ -14,7 +14,7 @@
                             <a href="{{ route('admin.distribution.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>প্রোডাক্ট বিতরনের তালিকা</a>
                         </div>
                         <div class="card-body">
-                            <form id="submitForm" action="{{ isset($editData) ? route('admin.distribution.update', 2) : route('admin.distribution.store') }} " method="post" enctype="multipart/form-data" autocomplete="off" >
+                            <form id="submitForm" action="{{ isset($editData) ? route('admin.distribution.update', $editData->id) : route('admin.distribution.store') }} " method="post" enctype="multipart/form-data" autocomplete="off" >
                                 @csrf
 
                                 <div class="row">
@@ -64,13 +64,16 @@
                                                                 </thead>
                                                                 <tbody>
                                                                     @php
-                                                                        $products = App\Models\ProductInformation::where('product_type_id', $item->id)
-                                                                            ->where('status', 1)
+                                                                        $productIds = \App\Models\ProductInformation::where('product_type_id', $item->id)
                                                                             ->latest()
+                                                                            ->pluck('id');
+
+                                                                        $requisitionProducts = \App\Models\DepartmentRequisitionDetails::where('department_requisition_id', $editData->id)
+                                                                            ->whereIn('product_id', $productIds)
                                                                             ->get();
                                                                     @endphp
-                                                                    @foreach ($products as $product)
-                                                                        <tr data-product-id="{{ $product->id }}">
+                                                                    @foreach ($requisitionProducts as $product)
+                                                                        <tr data-product-id="{{ $product->product_id }}">
                                                                             <td class="product-name">{{ $product->name }}</td>
                                                                             <td>
                                                                                 <input type="number" class="form-control form-control-sm" readonly>
