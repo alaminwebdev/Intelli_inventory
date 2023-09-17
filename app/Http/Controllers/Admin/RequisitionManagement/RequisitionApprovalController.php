@@ -31,7 +31,7 @@ class RequisitionApprovalController extends Controller
     }
     public function index()
     {
-        $data['title']                      = 'Requisition List';
+        $data['title']                      = 'সুপারিশকৃত চাহিদাপত্রের তালিকা';
         $data['departmentRequisitions']     = $this->departmentRequisitionService->getAll();
         return view('admin.requisition-management.requisition.list', $data);
     }
@@ -48,7 +48,7 @@ class RequisitionApprovalController extends Controller
 
     public function edit($id)
     {
-        $data['title']          = 'Edit Requisition';
+        $data['title']          = 'Edit চাহিদাপত্র';
         $data['editData']       = $this->departmentRequisitionService->getByID($id);
         $data['product_types']  = $this->productTypeService->getAll(1);
 

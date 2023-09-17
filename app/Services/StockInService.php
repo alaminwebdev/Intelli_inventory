@@ -113,4 +113,11 @@ class StockInService implements IService
         // $user->delete();
         // return true;
     }
+    public function active($id)
+    {
+        $data = StockIn::find($id);
+        $data->status = 1;
+        $data->save();
+        return true;
+    }
 }
