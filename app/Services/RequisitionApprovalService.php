@@ -37,8 +37,7 @@ class RequisitionApprovalService implements IService
         DB::beginTransaction();
         try {
 
-            $departmentRequisition = DepartmentRequisition::find($id);
-
+            $departmentRequisition                  = DepartmentRequisition::find($id);
             $departmentRequisition->status          = $request->status;
 
             if ($departmentRequisition->save()) {
@@ -49,6 +48,7 @@ class RequisitionApprovalService implements IService
                     $departmentDemandQuantityData   = $request->input('department_demand_quantity');
                     $approveQuantityData            = $request->input('approve_quantity');
                     $remarksData                    = $request->input('remarks');
+                    $approveRemarksData             = $request->input('approve_remarks');
     
                     // Loop through the product types data (keys are product IDs, values are product type IDs)
                     foreach ($productTypesData as $productId => $productTypeId) {
@@ -56,12 +56,14 @@ class RequisitionApprovalService implements IService
                         $departmentDemandQuantity   = $departmentDemandQuantityData[$productId];
                         $approveQuantity            = $approveQuantityData[$productId];
                         $remarks                    = $remarksData[$productId];
+                        $approveRemarks             = $approveRemarksData[$productId];
     
                         if ($departmentDemandQuantity !== null) {
                             // Store Data into DepartmentRequisitionDetails
                             $departmentRequisitionDetails                               = DepartmentRequisitionDetails::where('department_requisition_id', $id)->where('product_id', $productId)->first();
                             $departmentRequisitionDetails->approve_quantity             = $approveQuantity ?? $departmentDemandQuantity;
                             $departmentRequisitionDetails->remarks                      = $remarks;
+                            $departmentRequisitionDetails->approve_remarks              = $approveRemarks;
                             $departmentRequisitionDetails->status                       = 1;
                             $departmentRequisitionDetails->save();
                         }

@@ -26,7 +26,7 @@
                                         @php
                                             $sectionRequisitionProducts = \App\Models\SectionRequisitionDetails::join('product_information', 'product_information.id', 'section_requisition_details.product_id')
                                                 ->where('section_requisition_id', $list->id)
-                                                ->select('section_requisition_details.current_stock as current_stock', 'section_requisition_details.demand_quantity as demand_quantity', 'product_information.name as product')
+                                                ->select('section_requisition_details.current_stock as current_stock', 'section_requisition_details.demand_quantity as demand_quantity', 'section_requisition_details.remarks as remarks', 'product_information.name as product')
                                                 ->get();
                                         @endphp
                                         <tr>
@@ -67,6 +67,7 @@
                                 <th>Product</th>
                                 <th>Current Stock</th>
                                 <th>Demand Quantity</th>
+                                <th>Remarks / Valid Reason</th>
                             </tr>
                         </thead>
                         <tbody id="productDetailsTable">
@@ -93,9 +94,10 @@
                 for (var i = 0; i < products.length; i++) {
                     var product = products[i];
 
-                    var productName = product.product;
-                    var currentStock = product.current_stock;
-                    var demandQuantity = product.demand_quantity;
+                    var productName     = product.product;
+                    var currentStock    = product.current_stock;
+                    var demandQuantity  = product.demand_quantity;
+                    var remarks         = product.remarks;
 
                     // Append the product details to the table
                     $('#productDetailsTable').append(`
@@ -103,6 +105,7 @@
                             <td>${productName}</td>
                             <td class="text-right">${currentStock}</td>
                             <td class="text-right">${demandQuantity}</td>
+                            <td>${remarks}</td>
                         </tr>
                     `);
                 }
