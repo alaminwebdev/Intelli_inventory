@@ -45,7 +45,8 @@ class EmployeeController extends Controller
             'email'             => 'required',
             'designation_id'    => 'required',
             'department_id'     => 'required',
-            'section_id'        => 'required',
+            'mobile_no'         => 'required|unique:employees,mobile_no',
+            // 'section_id'        => 'required',
         ]);
         $this->employeeService->create($request);
         return redirect()->route('admin.employee.list')->with('success', 'Data successfully inserted!');
@@ -67,7 +68,7 @@ class EmployeeController extends Controller
             'email'             => 'required',
             'designation_id'    => 'required',
             'department_id'     => 'required',
-            'section_id'        => 'required',
+            // 'section_id'        => 'required',
         ]);
         $this->employeeService->update($request, $id);
         return redirect()->route('admin.employee.list')->with('success', 'Data successfully updated!');

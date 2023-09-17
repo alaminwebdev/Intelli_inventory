@@ -73,7 +73,7 @@
                                                                     @endphp
                                                                     @foreach ($requisitionProducts as $product)
                                                                         <tr data-product-id="{{ $product->product_id }}">
-                                                                            <td class="product-name">{{ $product->product_id }}</td>
+                                                                            <td class="product-name">{{ $product->product->name }}</td>
                                                                             <td>
                                                                                 <input type="number" class="form-control form-control-sm" id="department_current_stock_{{ $product->product_id }}" name="department_current_stock[{{ $product->product_id }}]" value="{{ $product->current_stock }}" readonly>
                                                                             </td>
