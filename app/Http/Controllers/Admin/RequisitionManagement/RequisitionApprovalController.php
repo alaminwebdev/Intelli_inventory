@@ -48,7 +48,7 @@ class RequisitionApprovalController extends Controller
 
     public function edit($id)
     {
-        $data['title']          = 'Edit চাহিদাপত্র';
+        $data['title']          = 'চাহিদাপত্র হালনাগাদ করুন';
         $data['editData']       = $this->departmentRequisitionService->getByID($id);
         $data['product_types']  = $this->productTypeService->getAll(1);
 
