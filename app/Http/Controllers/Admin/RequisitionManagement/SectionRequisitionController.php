@@ -32,7 +32,7 @@ class SectionRequisitionController extends Controller
     }
     public function index()
     {
-        $data['title']                  = 'Section Requisition List';
+        $data['title']                  = 'চাহিদাপত্রের তালিকা - সেকশন';
         $user = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
             $employee                       = $this->employeeService->getByID($user->employee_id);
@@ -44,7 +44,7 @@ class SectionRequisitionController extends Controller
     }
     public function add()
     {
-        $data['title']                  = 'Add Section Requisition';
+        $data['title']                  = 'চাহিদাপত্র যুক্ত করুন';
         $data['product_types']          = $this->productTypeService->getAll(1);
         $data['uniqueRequisitionNo']    = $this->sectionRequisitionService->getUniqueRequisitionNo();
         $user = Auth::user();

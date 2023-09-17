@@ -9,9 +9,8 @@ use App\Services\DepartmentRequisitionService;
 use App\Services\SectionRequisitionService;
 use App\Services\DepartmentService;
 use App\Services\EmployeeService;
-use Illuminate\Support\Facades\Auth;
 
-class DepartmentRequisitionController extends Controller
+class DistributionController extends Controller
 {
     private $productTypeService;
     private $sectionRequisitionService;
@@ -34,49 +33,35 @@ class DepartmentRequisitionController extends Controller
     }
     public function index()
     {
-        $data['title']                      = 'চাহিদাপত্রের তালিকা - ডিপার্টমেন্ট';
-        $user = Auth::user();
-        if ($user->id !== 1 && $user->employee_id) {
-            $employee                           = $this->employeeService->getByID($user->employee_id);
-            $data['departmentRequisitions']     = $this->departmentRequisitionService->getAll($employee->department_id);
-        } else {
-            $data['departmentRequisitions']     = $this->departmentRequisitionService->getAll();
-        }
-        return view('admin.requisition-management.department-requisition.list', $data);
+        $data['title']                      = 'প্রোডাক্ট বিতরনের তালিকা';
+        $data['departmentRequisitions']     = $this->departmentRequisitionService->getAll();
+        return view('admin.requisition-management.distribution.list', $data);
     }
     public function add()
     {
-        $data['title']                  = 'চাহিদাপত্র যুক্ত করুন';
-        $data['product_types']          = $this->productTypeService->getAll(1);
-        $data['uniqueRequisitionNo']    = $this->departmentRequisitionService->getUniqueRequisitionNo();
-
-        $user = Auth::user();
-        if ($user->id !== 1 && $user->employee_id) {
-            $data['employee']             = $this->employeeService->getByID($user->employee_id);
-            $data['section_requisitions'] = $this->sectionRequisitionService->getAllBySections([$data['employee']->section_id], 0);
-        } else {
-            $data['employee']               = [];
-            $data['section_requisitions']   = [];
-        }
-        
-        $data['departments']            = $this->departmentService->getAll(1);
-        return view('admin.requisition-management.department-requisition.add', $data);
+        // $data['title']                  = '';
+        // $data['product_types']          = $this->productTypeService->getAll(1);
+        // $data['departments']            = $this->departmentService->getAll(1);
+        // return view('admin.requisition-management.distribution.add', $data);
     }
     public function store(Request $request)
     {
-        $this->departmentRequisitionService->create($request);
-        return redirect()->route('admin.department.requisition.list')->with('success', 'Data successfully inserted!');
+        // $this->departmentRequisitionService->create($request);
+        // return redirect()->route('admin.distribution.list')->with('success', 'Data successfully inserted!');
     }
 
     public function edit($id)
     {
-        // $data['title']          = 'Edit Department Requisition';
-        // $data['editData']       = $this->sectionRequisitionService->getByID($id);
-        // return view('admin.requisition-management.section-requisition.add', $data);
+        $data['title']          = 'প্রোডাক্ট বিতরন করুন';
+        $data['editData']       = [];
+        $data['product_types']          = $this->productTypeService->getAll(1);
+        $data['departments']            = $this->departmentService->getAll(1);
+        return view('admin.requisition-management.distribution.add', $data);
     }
 
     public function update(Request $request, $id)
     {
+        dd($request->all());
         // $request->validate([
         //     'name' => 'required',
         // ]);

@@ -11,7 +11,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.section.requisition.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>Section Requisition List</a>
+                            <a href="{{ route('admin.section.requisition.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>চাহিদাপত্রের তালিকা - সেকশন</a>
                         </div>
                         <div class="card-body">
                             <form id="submitForm" action="{{ isset($editData) ? route('admin.section.requisition.update', $editData->id) : route('admin.section.requisition.store') }} " method="post" enctype="multipart/form-data" autocomplete="off" onsubmit="return validateForm(event)">
@@ -21,15 +21,15 @@
                                     <div class="col-md-12">
                                         <div class="row px-3 py-4 border rounded shadow-sm mb-3">
                                             <div class="col-md-3">
-                                                <label class="control-label">BP No :</label>
+                                                <label class="control-label">বি পি নাম্বার :</label>
                                                 <input type="text" class="form-control form-control-sm" id="" name="" value="{{ $employee ? $employee->bp_no : '' }}" readonly>
                                             </div>
                                             <div class="col-md-3">
-                                                <label class="control-label">Requisition No :</label>
+                                                <label class="control-label">চাহিদাপত্র নাম্বার :</label>
                                                 <input type="text" class="form-control form-control-sm" value="{{ $uniqueRequisitionNo }}" readonly>
                                             </div>
                                             <div class="col-md-6">
-                                                <label class="control-label">Section <span class="text-red">*</span></label>
+                                                <label class="control-label">সেকশন <span class="text-red">*</span></label>
                                                 <select name="section_id" class="form-control form-control-sm select2" id="section_id" {{ $employee ? 'disabled' : '' }}>
                                                     @if (!$employee)
                                                         <option value="">Select Section</option>
@@ -69,10 +69,10 @@
                                                             <table id="" class="table table-bordered">
                                                                 <thead>
                                                                     <tr>
-                                                                        <th>Product Name</th>
-                                                                        <th>Current Stock</th>
-                                                                        <th>Demand Quantity</th>
-                                                                        <th>Remarks / Valid Reason</th>
+                                                                        <th>প্রোডাক্ট</th>
+                                                                        <th>বর্তমান স্টক</th>
+                                                                        <th>চাহিদার পরিমাণ</th>
+                                                                        <th>সংযুক্তি</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -109,13 +109,13 @@
                                     <div class="col-md-12">
                                         <div class="text-right">
                                             @if (@$editData->id)
-                                                <button type="submit" class="btn btn-success btn-sm">Update</button>
+                                                <button type="submit" class="btn btn-success btn-sm">হালনাগাদ</button>
                                             @else
-                                                <button type="submit" class="btn btn-success btn-sm">Save</button>
-                                                <button type="reset" class="btn btn-danger btn-sm">Clear</button>
+                                                <button type="submit" class="btn btn-success btn-sm">সংরক্ষণ</button>
+                                                <button type="reset" class="btn btn-danger btn-sm">মুছুন</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.section.list') }}">Back</a>
+                                                <a href="{{ route('admin.section.requisition.list') }}">পিছনে যান</a>
                                             </button>
                                         </div>
                                     </div>

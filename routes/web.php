@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('frontend.home');
+    // return view('frontend.home');
+    return redirect()->route('admin.login');
 });
 // admin part
 Route::get('admin/login', 'App\Http\Controllers\Auth\LoginController@showLoginForm')->name('admin.login');

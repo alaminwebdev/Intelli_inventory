@@ -7,17 +7,17 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.department.requisition.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Department Requisition</a>
+                            <a href="{{ route('admin.department.requisition.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> চাহিদাপত্র যুক্ত করুন</a>
                         </div>
                         <div class="card-body">
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th width="5%">SL.</th>
-                                        <th>Requisition No</th>
-                                        <th>Requested Department</th>
-                                        <th>View</th>
-                                        <th>Status</th>
+                                        <th width="5%">ক্রমিক নং.</th>
+                                        <th>চাহিদাপত্র নাম্বার</th>
+                                        <th>অনুরোধকৃত ডিপার্টমেন্ট</th>
+                                        <th>প্রোডাক্ট দেখুন</th>
+                                        <th>বর্তমান অবস্থা</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -64,10 +64,10 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Product</th>
-                                <th>Current Stock</th>
-                                <th>Demand Quantity</th>
-                                <th>Remarks / Valid Reason</th>
+                                <th>প্রোডাক্ট</th>
+                                <th>বর্তমান স্টক</th>
+                                <th>চাহিদার পরিমাণ</th>
+                                <th>সংযুক্তি</th>
                             </tr>
                         </thead>
                         <tbody id="productDetailsTable">

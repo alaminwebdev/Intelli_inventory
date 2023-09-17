@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\RequisitionManagement\SectionRequisitionController;
 use App\Http\Controllers\Admin\RequisitionManagement\DepartmentRequisitionController;
 use App\Http\Controllers\Admin\RequisitionManagement\RequisitionApprovalController;
+use App\Http\Controllers\Admin\RequisitionManagement\DistributionController;
 
 
 Route::prefix('/section-requisition')->group(function () {
@@ -28,6 +29,12 @@ Route::prefix('/requisition')->group(function () {
     Route::get('/list', [RequisitionApprovalController::class, 'index'])->name('requisition.list');
     Route::get('/edit/{id}', [RequisitionApprovalController::class, 'edit'])->name('requisition.edit');
     Route::post('/update/{id}', [RequisitionApprovalController::class, 'update'])->name('requisition.update');
+});
+
+Route::prefix('/distribution')->group(function () {
+    Route::get('/list', [DistributionController::class, 'index'])->name('distribution.list');
+    Route::get('/edit/{id}', [DistributionController::class, 'edit'])->name('distribution.edit');
+    Route::post('/update/{id}', [DistributionController::class, 'update'])->name('distribution.update');
 });
 
 

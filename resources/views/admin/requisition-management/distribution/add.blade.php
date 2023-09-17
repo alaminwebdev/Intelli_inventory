@@ -11,10 +11,10 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.department.requisition.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>চাহিদাপত্রের তালিকা - ডিপার্টমেন্ট</a>
+                            <a href="{{ route('admin.distribution.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>প্রোডাক্ট বিতরনের তালিকা</a>
                         </div>
                         <div class="card-body">
-                            <form id="submitForm" action="{{ isset($editData) ? route('admin.department.requisition.update', $editData->id) : route('admin.department.requisition.store') }} " method="post" enctype="multipart/form-data" autocomplete="off" onsubmit="return validateForm(event)">
+                            <form id="submitForm" action="{{ isset($editData) ? route('admin.distribution.update', 2) : route('admin.distribution.store') }} " method="post" enctype="multipart/form-data" autocomplete="off" >
                                 @csrf
 
                                 <div class="row">
@@ -22,32 +22,16 @@
                                         <div class="row px-3 py-4 border rounded shadow-sm mb-3">
                                             <div class="col-md-2">
                                                 <label class="control-label">চাহিদাপত্র নাম্বার :</label>
-                                                <input type="text" class="form-control form-control-sm" id="remarks" name="requisition_no" value="{{ $uniqueRequisitionNo }}" readonly>
+                                                <input type="text" class="form-control form-control-sm" id="remarks" name="requisition_no" value="" readonly>
                                             </div>
                                             <div class="col-md-5">
                                                 <label class="control-label">ডিপার্টমেন্ট : <span class="text-red">*</span></label>
-                                                <select name="department_id" class="form-control form-control-sm select2" id="department_id" {{ $employee ? 'disabled' : '' }}>
-                                                    @if (!$employee)
-                                                        <option value="">Select Department</option>
-                                                    @endif
+                                                <select name="department_id" class="form-control form-control-sm select2" id="department_id" disabled>
+                                                    <option value="">Select Department</option>
                                                     @foreach ($departments as $department)
-                                                        <option value="{{ $department->id }}" {{ ($employee && $employee->department_id == $department->id) || (!$employee && old('department_id') == $department->id) ? 'selected' : '' }}>
+                                                        <option value="{{ $department->id }}">
                                                             {{ $department->name }}
                                                         </option>
-                                                    @endforeach
-                                                </select>
-
-                                                @if ($employee)
-                                                    <!-- Hidden input field to store the department_id value -->
-                                                    <input type="hidden" name="department_id" value="{{ $employee->department_id }}">
-                                                @endif
-                                            </div>
-                                            <div class="col-md-5">
-                                                <label class="control-label">সেকশন চাহিদাপত্র নাম্বার : <span class="text-red"></span></label>
-                                                <select name="section_requisition_id[]" class="form-control form-control-sm select2" id="section_requisition_id" multiple="multiple">
-                                                    <option value="" disabled>Select Section Requisition</option>
-                                                    @foreach ($section_requisitions as $section_requisition)
-                                                        <option value="{{ $section_requisition->id }}">{{ $section_requisition->requisition_no }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -70,10 +54,11 @@
                                                                 <thead>
                                                                     <tr>
                                                                         <th>প্রোডাক্ট</th>
-                                                                        <th>বর্তমান স্টক(সেকশন)</th>
-                                                                        <th>চাহিদার পরিমাণ(সেকশন)</th>
-                                                                        <th>বর্তমান স্টক(ডিপার্টমেন্ট)</th>
-                                                                        <th>চাহিদার পরিমাণ(ডিপার্টমেন্ট)</th>
+                                                                        <th>পূর্ববর্তী বিতরনের পরিমাণ</th>
+                                                                        <th>ডিপার্টমেন্টের স্টক</th>
+                                                                        <th>চাহিদার পরিমাণ</th>
+                                                                        <th>বিতরনযোগ্য স্টক</th>
+                                                                        <th>বিতরনের পরিমাণ</th>
                                                                         <th>সংযুক্তি</th>
                                                                     </tr>
                                                                 </thead>
@@ -88,16 +73,19 @@
                                                                         <tr data-product-id="{{ $product->id }}">
                                                                             <td class="product-name">{{ $product->name }}</td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="section_current_stock_{{ $product->id }}" name="section_current_stock[{{ $product->id }}]" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="section_demand_quantity_{{ $product->id }}" name="section_demand_quantity[{{ $product->id }}]" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" id="department_current_stock_{{ $product->id }}" name="department_current_stock[{{ $product->id }}]" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="department_current_stock_{{ $product->id }}" name="department_current_stock[{{ $product->id }}]">
+                                                                                <input type="number" class="form-control form-control-sm" id="department_demand_quantity_{{ $product->id }}" name="department_demand_quantity[{{ $product->id }}]" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="department_demand_quantity_{{ $product->id }}" name="department_demand_quantity[{{ $product->id }}]">
+                                                                                <input type="text" class="form-control form-control-sm" id="available_quantity_{{ $product->id }}" name="available_quantity[{{ $product->id }}]" readonly>
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="number" class="form-control form-control-sm" id="distribute_quantity_{{ $product->id }}" name="distribute_quantity[{{ $product->id }}]" >
                                                                             </td>
                                                                             <td>
                                                                                 <input type="text" class="form-control form-control-sm" id="remarks_{{ $product->id }}" name="remarks[{{ $product->id }}]">
@@ -123,7 +111,7 @@
                                                 <button type="reset" class="btn btn-danger btn-sm">মুছুন</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.department.requisition.list') }}">পিছনে যান</a>
+                                                <a href="{{ route('admin.distribution.list') }}">পিছনে যান</a>
                                             </button>
                                         </div>
                                     </div>
