@@ -32,7 +32,7 @@ class DistributionController extends Controller {
     }
     public function index() {
         $data['title']                  = 'প্রোডাক্ট বিতরনের তালিকা';
-        $data['departmentRequisitions'] = $this->departmentRequisitionService->getAll();
+        $data['departmentRequisitions'] = $this->departmentRequisitionService->getAll(null, 1);
         return view('admin.requisition-management.distribution.list', $data);
     }
     public function add() {
