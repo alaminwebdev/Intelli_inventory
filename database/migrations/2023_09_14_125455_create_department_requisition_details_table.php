@@ -20,6 +20,7 @@ class CreateDepartmentRequisitionDetailsTable extends Migration {
             $table->integer('approve_quantity')->nullable();
             $table->integer('status')->nullable();
             $table->longText('remarks')->nullable();
+            $table->longText('approve_remarks')->nullable();
             $table->timestamps();
         });
     }

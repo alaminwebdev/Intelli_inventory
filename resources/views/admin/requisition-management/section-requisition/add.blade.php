@@ -72,7 +72,7 @@
                                                                         <th>Product Name</th>
                                                                         <th>Current Stock</th>
                                                                         <th>Demand Quantity</th>
-                                                                        <th>Remarks</th>
+                                                                        <th>Remarks / Valid Reason</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>

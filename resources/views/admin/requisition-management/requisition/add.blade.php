@@ -55,8 +55,9 @@
                                                                         <th>Product Name</th>
                                                                         <th>Current Stock</th>
                                                                         <th>Demand Quantity</th>
+                                                                        <th>Department Valid Reason</th>
                                                                         <th>Approve Quantity</th>
-                                                                        <th>Remarks</th>
+                                                                        <th>Valid Reason / Remarks</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -80,10 +81,13 @@
                                                                                 <input type="number" class="form-control form-control-sm" id="department_demand_quantity_{{ $product->product_id }}" name="department_demand_quantity[{{ $product->product_id }}]" value="{{ $product->demand_quantity }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="approve_quantity_{{ $product->product_id }}" name="approve_quantity[{{ $product->product_id }}]" value="{{ $product->approve_quantity }}">
+                                                                                <input type="text" class="form-control form-control-sm" id="remarks_{{ $product->product_id }}" name="remarks[{{ $product->product_id }}]" value="{{ $product->remarks }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="text" class="form-control form-control-sm" id="remarks_{{ $product->product_id }}" name="remarks[{{ $product->product_id }}]" value="{{ $product->remarks }}">
+                                                                                <input type="number" class="form-control form-control-sm" id="approve_quantity_{{ $product->product_id }}" name="approve_quantity[{{ $product->product_id }}]" value="{{ $product->approve_quantity ?? $product->demand_quantity  }}">
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="text" class="form-control form-control-sm" id="approve_remarks_{{ $product->product_id }}" name="approve_remarks[{{ $product->product_id }}]" value="{{ $product->approve_remarks }}">
                                                                             </td>
                                                                         </tr>
                                                                         <input type="hidden" name="product_type[{{ $product->product_id }}]" value="{{ $item->id }}">

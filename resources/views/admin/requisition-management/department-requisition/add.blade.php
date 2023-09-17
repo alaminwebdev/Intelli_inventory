@@ -74,7 +74,7 @@
                                                                         <th>Demand Quantity(Section)</th>
                                                                         <th>Current Stock(Department)</th>
                                                                         <th>Demand Quantity(Department)</th>
-                                                                        <th>Remarks</th>
+                                                                        <th>Remarks / Valid Reason</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -265,7 +265,7 @@
 
                 var sectionDemandQuantityInput = document.querySelector('[name="section_demand_quantity[' + productId + ']"]');
 
-
+               
                 // Check if Department demand_quantity field is non-empty
                 if (departmentDemandQuantityInput.value.trim() !== '') {
                     var sectionDemandQuantityValue = parseFloat(sectionDemandQuantityInput.value);
@@ -288,6 +288,8 @@
                         departmentCurrentStockInput.classList.add('is-invalid'); // Add is-invalid class
                         return false;
                     }
+
+
 
                     // If both fields are valid, remove the is-invalid class
                     departmentDemandQuantityInput.classList.remove('is-invalid');

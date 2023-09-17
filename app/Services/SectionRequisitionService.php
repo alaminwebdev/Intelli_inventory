@@ -36,7 +36,7 @@ class SectionRequisitionService implements IService
     public function getAllBySections($section_ids, $status)
     {
         try {
-            $data = SectionRequisition::whereIn('section_id', $section_ids)->where('status', $status)->latest()->get();
+            $data = SectionRequisition::whereIn('section_id', $section_ids)->where('status', $status)->whereNull('department_requisition_id')->latest()->get();
             return $data;
         } catch (\Exception $e) {
             return $e->getMessage();
