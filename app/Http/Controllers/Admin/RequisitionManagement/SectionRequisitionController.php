@@ -50,10 +50,11 @@ class SectionRequisitionController extends Controller
         $user = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
             $data['employee']           = $this->employeeService->getByID($user->employee_id);
+            $data['sections']           = $this->sectionService->getSectionsByDepartment($data['employee']->department_id);
         } else {
             $data['employee']           = [];
+            $data['sections']           = $this->sectionService->getAll();
         }
-        $data['sections']           = $this->sectionService->getAll();
         return view('admin.requisition-management.section-requisition.add', $data);
     }
     public function store(Request $request)

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\RequisitionManagement;
 
 use App\Http\Controllers\Controller;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Services\ProductTypeService;
 use App\Services\DepartmentRequisitionService;
@@ -53,7 +54,8 @@ class DepartmentRequisitionController extends Controller
         $user = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
             $data['employee']             = $this->employeeService->getByID($user->employee_id);
-            $data['section_requisitions'] = $this->sectionRequisitionService->getAllBySections([$data['employee']->section_id], 0);
+            $sectionIds                   = Employee::where('department_id', $data['employee']->department_id)->whereNotNull('section_id')->pluck('section_id');
+            $data['section_requisitions'] = $this->sectionRequisitionService->getAllBySections($sectionIds, 0);
         } else {
             $data['employee']               = [];
             $data['section_requisitions']   = [];

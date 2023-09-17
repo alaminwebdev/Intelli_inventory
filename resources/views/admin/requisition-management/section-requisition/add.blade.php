@@ -30,10 +30,11 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="control-label">সেকশন <span class="text-red">*</span></label>
-                                                <select name="section_id" class="form-control form-control-sm select2" id="section_id" {{ $employee ? 'disabled' : '' }}>
-                                                    @if (!$employee)
+                                                <select name="section_id" class="form-control form-control-sm select2" id="section_id" {{ $employee && $employee->section_id ? 'disabled' : '' }}>
+                                                    {{-- @if (!$employee)
                                                         <option value="">Select Section</option>
-                                                    @endif
+                                                    @endif --}}
+                                                    <option value="">Select Section</option>
                                                     @foreach ($sections as $section)
                                                         <option value="{{ $section->id }}" {{ ($employee && $employee->section_id == $section->id) || (!$employee && old('section_id') == $section->id) ? 'selected' : '' }}>
                                                             {{ $section->name }}
@@ -41,7 +42,7 @@
                                                     @endforeach
                                                 </select>
 
-                                                @if ($employee)
+                                                @if ($employee && $employee->section_id)
                                                     <!-- Hidden input field to store the department_id value -->
                                                     <input type="hidden" name="section_id" value="{{ $employee->section_id }}">
                                                 @endif
