@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DepartmentRequisitionDetails extends Model {
     use HasFactory;
+    
     public function product() {
         return $this->hasOne(ProductInformation::class, 'id', 'product_id');
     }

@@ -16,7 +16,9 @@ class CreateDepartmentRequisitionsTable extends Migration {
             $table->string('requisition_no');
             $table->bigInteger('user_id');
             $table->integer('department_id')->nullable();
-            $table->integer('status')->nullable();
+            $table->integer('status')->nullable()->comment('0=created, 1=Dep.approved, 2=reject, 3=Final Approved');
+            $table->bigInteger('final_approve_by')->nullable();
+            $table->dateTime('final_created_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
