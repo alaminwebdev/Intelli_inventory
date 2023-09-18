@@ -66,8 +66,8 @@ class DepartmentRequisitionController extends Controller
     }
     public function store(Request $request)
     {
-        $this->departmentRequisitionService->create($request);
-        return redirect()->route('admin.department.requisition.list')->with('success', 'Data successfully inserted!');
+        $data = $this->departmentRequisitionService->create($request);
+        return response()->json($data);
     }
 
     public function edit($id)

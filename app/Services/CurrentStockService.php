@@ -33,7 +33,7 @@ class CurrentStockService
                     'product_information.code as product_code',
                     'product_information.name as product_name',
                     'units.name as unit_name',
-                    DB::raw('sum(stock_in_details.available_qty) as available_qty')
+                    DB::raw('sum(stock_in_details.available_qty) as available_qty'),
                 )
                 ->groupBy('stock_in_details.product_information_id')
                 ->orderBy('product_information.code', 'asc')

@@ -7,24 +7,25 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            {{-- <a href="{{ route('admin.stock.in.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Stock</a> --}}
+                            <form method="post" action="{{ route('admin.report.current.stock.in.list') }}" id="filterForm">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-primary" name="type" value="pdf"><i class="fas fa-file-pdf mr-1"></i>পিডিএফ হিসাবে ডাউনলোড করুন</button>
+                            </form>
                         </div>
                         <div class="card-body">
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th width="5%">SL.</th>
-                                        <th>Product Code</th>
-                                        <th>Product Information</th>
-                                        <th>Available Quantity</th>
+                                        <th width="5%">ক্রমিক নং:</th>
+                                        <th>প্রোডাক্টের তথ্য</th>
+                                        <th>বর্তমান স্টক</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($current_stock as $list)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ @$list->product_code ?? 'N/A' }}</td>
-                                            <td>{{ @$list->product_name }}({{@$list->unit_name }})</td>
+                                            <td>{{ @$list->product_name }}({{ @$list->unit_name }})</td>
                                             <td class="text-right">{{ @$list->available_qty ?? 'N/A' }}</td>
                                         </tr>
                                     @endforeach
@@ -36,5 +37,16 @@
             </div>
         </div>
     </section>
-    <script></script>
+    <script>
+        $(function() {
+            $(document).on('click', '[name=type]', function(e) {
+                var type = $(this).attr('value');
+                if (type == 'pdf') {
+                    $('#filterForm').attr('target', '_blank');
+                } else {
+                    $('#filterForm').removeAttr('target');
+                }
+            });
+        })
+    </script>
 @endsection
