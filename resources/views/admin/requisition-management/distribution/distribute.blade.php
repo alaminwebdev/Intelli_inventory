@@ -14,7 +14,7 @@
                             <a href="{{ route('admin.distribution.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>প্রোডাক্ট বিতরনের তালিকা</a>
                         </div>
                         <div class="card-body">
-                            <form id="submitForm" action="{{ isset($editData) ? route('admin.distribution.update', $editData->id) : route('admin.distribution.store') }} " method="post" enctype="multipart/form-data" autocomplete="off" >
+                            <form id="submitForm" action="{{ route('admin.distribution.distribute') }} " method="post">
                                 @csrf
 
                                 <div class="row">
@@ -74,9 +74,7 @@
                                                                             ->whereIn('product_id', $productIds)
                                                                             ->get();
 
-                                                                      
-                                                                        // dd($requisitionProducts->toArray());
-
+           
                                                                     @endphp
                                                                     @foreach ($requisitionProducts as $product)
 
@@ -88,16 +86,19 @@
                                                                             //                 ->where('requisition_approvals.status', 2)
                                                                             //                 ->orderBy('requisition_approval_details.id', 'desc')
                                                                             //                 ->first();
-                                                                                        
-                                                                        @endphp
+                                                                         @endphp
+                                                                                          
 
                                                                         <tr data-product-id="{{ $product->product_id }}">
-                                                                            <td class="product-name">{{ $product->product->name  }}</td>
+                                                                            <td class="product-name">{{ $product->product->name  }}
+                                                                               
+                                                                            </td>
                                                                             <td>
+                                                                                
                                                                                 <input type="number" class="form-control form-control-sm" id="previous_stock_{{ $product->product_id }}" value="{{ $lastDistribute->distribute_quantity ?? 0}}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="department_current_stock_{{ $product->product_id }}" name="department_current_stock[{{ $product->product_id }}]" value="{{ $product->current_stock }}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" id="department_current_stock_{{ $product->product_id }}" value="{{ $product->current_stock }}" readonly>
                                                                             </td>
                                                                             <td>
                                                                                 <input type="number" class="form-control form-control-sm" id="department_demand_quantity_{{ $product->product_id }}" name="department_demand_quantity[{{ $product->product_id }}]" value="{{ $product->demand_quantity }}" readonly>
@@ -106,10 +107,10 @@
                                                                                 <input type="text" class="form-control form-control-sm" id="approve_quantity_{{ $product->product_id }}" value="{{ $product->StockDetail->sum('available_qty') }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="distribute_quantity_{{ $product->product_id }}" name="distribute_quantity[{{ $product->product_id }}]" >
+                                                                                <input type="number" class="form-control form-control-sm" id="distribute_quantity_{{ $product->product_id }}" name="distribute_quantity[{{ $product->product_id }}]" value="{{ $product->final_approve_quantity }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="text" class="form-control form-control-sm" id="remarks_{{ $product->product_id }}" name="remarks[{{ $product->product_id }}]">
+                                                                                <input type="text" class="form-control form-control-sm" id="remarks_{{ $product->product_id }}" name="remarks[{{ $product->product_id }}]" value="{{ $product->final_approve_remarks }}" readonly>
                                                                             </td>
                                                                         </tr>
                                                                     @endforeach
@@ -124,14 +125,9 @@
 
                                     <div class="col-md-12">
                                         <div class="text-right">
-                                            @if (@$editData->id)
-                                                <button type="submit" class="btn btn-success btn-sm">হালনাগাদ</button>
-                                            @else
-                                                <button type="submit" class="btn btn-success btn-sm">সংরক্ষণ</button>
-                                                <button type="reset" class="btn btn-danger btn-sm">মুছুন</button>
-                                            @endif
+                                            <button type="submit" class="btn btn-success btn-sm">বিতরণ</button>
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.distribution.list') }}">পিছনে যান</a>
+                                                <a href="{{ route('admin.pending.distribute.list') }}">পিছনে যান</a>
                                             </button>
                                         </div>
                                     </div>

@@ -14,14 +14,11 @@ class CreateDistributesTable extends Migration {
         Schema::create('distributes', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('department_requisition_id');
-            $table->bigInteger('department_id')->nullable();
-            $table->string('requisition_no');
-            $table->bigInteger('approved_by')->nullable();
-            $table->dateTime('approved_at')->nullable();
-            $table->bigInteger('distributed_by')->nullable();
-            $table->dateTime('distributed_at')->nullable();
-            $table->integer('status')->nullable()->comment("1=approved, 2=distribute");
-            $table->softDeletes();
+            $table->bigInteger('product_id');
+            $table->bigInteger('stock_in_detail_id');
+            $table->integer('distribute_quantity');
+            $table->integer('distribute_by');
+            $table->dateTime('distribute_at');
             $table->timestamps();
         });
     }

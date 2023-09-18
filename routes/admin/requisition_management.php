@@ -34,3 +34,9 @@ Route::prefix('/distribution-approval')->group(function () {
     Route::get('/edit/{id}', [DistributionController::class, 'edit'])->name('distribution.edit');
     Route::post('/store', [DistributionController::class, 'store'])->name('distribution.update');
 });
+
+Route::prefix('/distribute')->group(function () {
+    Route::get('/pending-distribute-list', [DistributionController::class, 'pendingDistribute'])->name('pending.distribute.list');
+    Route::get('/pending-distribute-edit/{id}', [DistributionController::class, 'productDistributeEdit'])->name('distribution.distribute.edit');
+    Route::post('/distribute', [DistributionController::class, 'productDistribute'])->name('distribution.distribute');
+});
