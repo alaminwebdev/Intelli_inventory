@@ -400,6 +400,7 @@
 
                         // Set the flag to true since at least one product has user input
                         hasUserInput = true;
+                        break;
                     }
                 }
 
