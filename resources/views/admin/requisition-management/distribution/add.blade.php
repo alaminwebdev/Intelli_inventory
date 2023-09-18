@@ -21,6 +21,8 @@
                                     <div class="col-md-12">
                                         <div class="row px-3 py-4 border rounded shadow-sm mb-3">
                                             <div class="col-md-2">
+                                                <input type="hidden" value="{{ $editData->department_id }}" name="department_id">
+                                                <input type="hidden" value="{{ $editData->id }}" name="department_requisition_id">
                                                 <label class="control-label">চাহিদাপত্র নাম্বার :</label>
                                                 <input type="text" class="form-control form-control-sm" id="remarks" name="requisition_no" value="{{ $editData->requisition_no }}" readonly>
                                             </div>
@@ -69,25 +71,37 @@
                                                                             ->pluck('id');
                                                                         
 
-                                                                        $requisitionProducts = \App\Models\DepartmentRequisitionDetails::where('department_requisition_id', $editData->id)
+                                                                        $requisitionProducts = \App\Models\DepartmentRequisitionDetails::with('StockDetail')->where('department_requisition_id', $editData->id)
                                                                             ->whereIn('product_id', $productIds)
                                                                             ->get();
-                                                                            
+
+                                                                      
+                                                                        // dd($requisitionProducts->toArray());
+
                                                                     @endphp
                                                                     @foreach ($requisitionProducts as $product)
+
+                                                                        @php
+                                                                            $lastDistribute = \App\Models\DistributeDetail::where('department_id', $editData->department_id)
+                                                                                            ->where('product_id', $product->product_id)
+                                                                                            ->orderBy('id', 'desc')
+                                                                                            ->first();
+                                                                        @endphp
+
                                                                         <tr data-product-id="{{ $product->product_id }}">
                                                                             <td class="product-name">{{ $product->product->name  }}</td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="previous_stock_{{ $product->product_id }}" name="previous_stock[{{ $product->product_id }}]"  readonly>
+                                                                                
+                                                                                <input type="number" class="form-control form-control-sm" id="previous_stock_{{ $product->product_id }}" value="{{ $lastDistribute->distribute_quantity}}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="department_current_stock_{{ $product->product_id }}" name="department_current_stock[{{ $product->product_id }}]" value="{{ $product->current_stock }}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" id="department_current_stock_{{ $product->product_id }}" value="{{ $product->current_stock }}" readonly>
                                                                             </td>
                                                                             <td>
                                                                                 <input type="number" class="form-control form-control-sm" id="department_demand_quantity_{{ $product->product_id }}" name="department_demand_quantity[{{ $product->product_id }}]" value="{{ $product->demand_quantity }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="text" class="form-control form-control-sm" id="approve_quantity_{{ $product->product_id }}" name="approve_quantity[{{ $product->product_id }}]"   readonly>
+                                                                                <input type="text" class="form-control form-control-sm" id="approve_quantity_{{ $product->product_id }}" value="{{ $product->StockDetail->sum('available_qty') }}" readonly>
                                                                             </td>
                                                                             <td>
                                                                                 <input type="number" class="form-control form-control-sm" id="distribute_quantity_{{ $product->product_id }}" name="distribute_quantity[{{ $product->product_id }}]" >
@@ -96,7 +110,6 @@
                                                                                 <input type="text" class="form-control form-control-sm" id="remarks_{{ $product->product_id }}" name="remarks[{{ $product->product_id }}]">
                                                                             </td>
                                                                         </tr>
-                                                                        <input type="hidden" name="product_type[{{ $product->product_id }}]" value="{{ $item->id }}">
                                                                     @endforeach
                                                                 </tbody>
                                                             </table>
