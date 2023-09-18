@@ -81,4 +81,9 @@ class StockInController extends Controller
         //     return response()->json(['status' => 'error', 'message' => 'Sorry something wrong']);
         // }
     }
+    public function active($id)
+    {
+        $this->stockInService->active($id);
+        return redirect()->route('admin.stock.in.list')->with('success', 'Successfully Approved!');
+    }
 }

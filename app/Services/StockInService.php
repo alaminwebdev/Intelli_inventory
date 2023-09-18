@@ -75,7 +75,7 @@ class StockInService implements IService {
             }
             DB::commit();
             return response()->json(['success' => 'Stock Information Inserted']);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => $e->getMessage()]);
         }
@@ -105,5 +105,10 @@ class StockInService implements IService {
         // $user->delete();
         // return true;
     }
-
+    public function active($id) {
+        $data         = StockIn::find($id);
+        $data->status = 1;
+        $data->save();
+        return true;
+    }
 }

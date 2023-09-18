@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 class SectionRequisitionService implements IService
 {
 
-    public function getAll($section_id = null, $status = null)
+    public function getAll($section_id = null, $status = null, $section_ids = null)
     {
         try {
             $query = SectionRequisition::latest();
@@ -26,6 +26,9 @@ class SectionRequisitionService implements IService
             }
             if ($status) {
                 $query->where('status', $status);
+            }
+            if ($section_ids) {
+                $query->whereIn('section_id', $section_ids);
             }
             $data = $query->get();
             return $data;
@@ -75,26 +78,22 @@ class SectionRequisitionService implements IService
         DB::beginTransaction();
         try {
 
+            $data = $request->input('data');
             $sectionRequisition = new SectionRequisition();
 
-            $sectionRequisition->requisition_no = $request->requisition_no;
-            $sectionRequisition->section_id     = $request->section_id;
+            $sectionRequisition->requisition_no = $data['requisitionNumber'];
+            $sectionRequisition->section_id     = $data['sectionId'];
             $sectionRequisition->user_id        = Auth::id();
             $sectionRequisition->status         = 0;
 
             if ($sectionRequisition->save()) {
-                // Get all form data arrays
-                $productTypesData   = $request->input('product_type');
-                $currentStockData   = $request->input('current_stock');
-                $demandQuantityData = $request->input('demand_quantity');
-                $remarksData        = $request->input('remarks');
-
-                // Loop through the product types data (keys are product IDs, values are product type IDs)
-                foreach ($productTypesData as $productId => $productTypeId) {
+                $productData = $data['productData'];
+                foreach ($productData as $productId => $productDetails) {
                     // Retrieve data for the current product
-                    $currentStock   = $currentStockData[$productId];
-                    $demandQuantity = $demandQuantityData[$productId];
-                    $remarks        = $remarksData[$productId];
+                    $currentStock   = $productDetails['current_stock'] ?? null;
+                    $demandQuantity = $productDetails['demand_quantity'] ?? null;
+                    $remarks        = $productDetails['remarks'] ?? null;
+                    
 
                     if ($demandQuantity !== null && $demandQuantity > 0) {
                         // Store Data into SectionRequisitionDetails
@@ -110,10 +109,10 @@ class SectionRequisitionService implements IService
                 }
             }
             DB::commit();
-            return true;
+            return response()->json(['success' => 'Requisition Information Inserted']);
         } catch (\Exception $e) {
             DB::rollBack();
-            return $e->getMessage();
+            return response()->json(['error' => $e->getMessage()]);
         }
     }
 

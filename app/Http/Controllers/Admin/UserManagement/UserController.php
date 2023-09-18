@@ -190,6 +190,7 @@ class UserController extends Controller
         $data['roles'] = Role::where('id','!=',1)->orderBy('sort','asc')->get();
         $data['designations'] = Designation::orderBy('sort','asc')->get();
         $data['editData'] = User::where('id','!=',1)->where('id',$id)->firstOrFail();
+        $data['employees'] = Employee::orderBy('sort','asc')->get();
         return view('admin.user-management.user-info.add',$data);
     }
 
@@ -200,7 +201,7 @@ class UserController extends Controller
                 'name'     => ['required'],
                 'email'     => ['required','email','unique:users,email,'.$id],
                 'mobile_no'     => ['required','digits:11','unique:users,mobile_no,'.$id],
-                'designation_id'     => ['required'],
+                // 'designation_id'     => ['required'],
                 'role_ids'     => ['required'],
                 'status'     => ['required'],
                 'image' => ['mimes:jpeg,png,jpg,gif,svg']
@@ -226,8 +227,8 @@ class UserController extends Controller
             $store->name           = $request->name;
             $store->email          = $request->email;
             $store->mobile_no      = $request->mobile_no;
-            $store->designation_id = $request->designation_id;
-            $store->working_place  = $request->working_place;
+            // $store->designation_id = $request->designation_id;
+            // $store->working_place  = $request->working_place;
             $store->status         = $request->status;
             if($request->change_password){
                 $store->password = bcrypt($request->password);
@@ -255,7 +256,7 @@ class UserController extends Controller
                 UserRole::where('user_id',$store->id)->whereNotIn('role_id',$request->role_ids)->delete();
                 if($request->role_ids){
                     foreach($request->role_ids as $role_id){
-                        $user_role_exist = UserRole::where('role_id',$role_id)->first();
+                        $user_role_exist = UserRole::where('user_id',$store->id)->where('role_id',$role_id)->first();
                         if($user_role_exist){
                             $user_role_store = $user_role_exist;
                         }else{

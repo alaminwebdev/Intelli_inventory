@@ -10,6 +10,7 @@ Route::prefix('/stock-in')->group(function () {
     Route::get('/edit/{id}', [StockInController::class, 'edit'])->name('stock.in.edit');
     Route::post('/update/{id}', [StockInController::class, 'update'])->name('stock.in.update');
     Route::post('/delete', [StockInController::class, 'delete'])->name('stock.in.delete');
+    Route::get('/active/{id}', [StockInController::class, 'active'])->name('stock.in.active');
 });
 
 

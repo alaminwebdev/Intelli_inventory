@@ -20,9 +20,9 @@ class EmployeeService implements IService
     public function getAll()
     {
         try {
-            $data = Employee::join('departments', 'departments.id', 'employees.department_id')
-            ->join('sections', 'sections.id', 'employees.section_id')
-            ->join('employee_designations', 'employee_designations.id', 'employees.designation_id')
+            $data = Employee::leftjoin('departments', 'departments.id', 'employees.department_id')
+            ->leftjoin('sections', 'sections.id', 'employees.section_id')
+            ->leftjoin('employee_designations', 'employee_designations.id', 'employees.designation_id')
             ->select(
                 'employees.*',
                 'departments.name as department',

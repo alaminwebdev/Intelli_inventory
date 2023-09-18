@@ -54,7 +54,7 @@
                                                 @enderror
                                             </div>
                                             <div class="form-group col-sm-4">
-                                                <label class="control-label">Section <span class="text-red">*</span></label>
+                                                <label class="control-label">Section </label>
                                                 <select name="section_id" id="section_id" class="form-control select2 @error('section_id') is-invalid @enderror">
                                                     <option value="">Please Select</option>
                                                 </select>
@@ -85,7 +85,7 @@
                                             <div class="form-group col-sm-4">
                                                 <label class="control-label">Mobile <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm mobile_no  @error('mobile_no') is-invalid @enderror" id="mobile_no" name="mobile_no" value="{{ @$editData->mobile_no }}" placeholder="Mobile No">
-                                                @error('email')
+                                                @error('mobile_no')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>

@@ -14,26 +14,29 @@
                             <a href="{{ route('admin.section.requisition.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>চাহিদাপত্রের তালিকা - সেকশন</a>
                         </div>
                         <div class="card-body">
-                            <form id="submitForm" action="{{ isset($editData) ? route('admin.section.requisition.update', $editData->id) : route('admin.section.requisition.store') }} " method="post" enctype="multipart/form-data" autocomplete="off" onsubmit="return validateForm(event)">
+                            
+                            <form id="sectionRequisitionForm" action="{{ isset($editData) ? route('admin.section.requisition.update', $editData->id) : route('admin.section.requisition.store') }} " method="post" enctype="multipart/form-data" autocomplete="off">
                                 @csrf
                                 <input type="hidden" name="requisition_no" value="{{ $uniqueRequisitionNo }}">
+
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="row px-3 py-4 border rounded shadow-sm mb-3">
                                             <div class="col-md-3">
                                                 <label class="control-label">বি পি নাম্বার :</label>
-                                                <input type="text" class="form-control form-control-sm" id="" name="" value="{{ $employee ? $employee->bp_no : '' }}" readonly>
+                                                <input type="text" class="form-control form-control-sm" id="bp_number" name="bp_number" value="{{ $employee ? $employee->bp_no : '' }}" readonly>
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="control-label">চাহিদাপত্র নাম্বার :</label>
-                                                <input type="text" class="form-control form-control-sm" value="{{ $uniqueRequisitionNo }}" readonly>
+                                                <input type="text" class="form-control form-control-sm" id="requisition_number" value="{{ $uniqueRequisitionNo }}" readonly>
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="control-label">সেকশন <span class="text-red">*</span></label>
-                                                <select name="section_id" class="form-control form-control-sm select2" id="section_id" {{ $employee ? 'disabled' : '' }}>
-                                                    @if (!$employee)
+                                                <select name="section_id" class="form-control form-control-sm select2" id="section_id" {{ $employee && $employee->section_id ? 'disabled' : '' }}>
+                                                    {{-- @if (!$employee)
                                                         <option value="">Select Section</option>
-                                                    @endif
+                                                    @endif --}}
+                                                    <option value="">Select Section</option>
                                                     @foreach ($sections as $section)
                                                         <option value="{{ $section->id }}" {{ ($employee && $employee->section_id == $section->id) || (!$employee && old('section_id') == $section->id) ? 'selected' : '' }}>
                                                             {{ $section->name }}
@@ -41,17 +44,13 @@
                                                     @endforeach
                                                 </select>
 
-                                                @if ($employee)
+                                                @if ($employee && $employee->section_id)
                                                     <!-- Hidden input field to store the department_id value -->
                                                     <input type="hidden" name="section_id" value="{{ $employee->section_id }}">
                                                 @endif
                                             </div>
 
                                         </div>
-                                        {{-- <div class="border-bottom mb-3 pb-3 ">
-                                            <p class="font-weight-bold m-0 text-gray">BP No : </p>
-                                            <p class="font-weight-bold m-0 text-gray">Requisition No : {{ $uniqueRequisitionNo }}</p>
-                                        </div> --}}
                                     </div>
                                     <div class="col-md-12">
                                         <div class="accordion">
@@ -86,13 +85,13 @@
                                                                         <tr data-product-id="{{ $product->id }}">
                                                                             <td class="product-name">{{ $product->name }}</td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm @error('current_stock') is-invalid @enderror" id="current_stock" name="current_stock[{{ $product->id }}]">
+                                                                                <input type="number" class="form-control form-control-sm @error('current_stock') is-invalid @enderror" id="current_stock_{{ $product->id }}" name="current_stock" data-product-id="{{ $product->id }}">
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm @error('demand_quantity') is-invalid @enderror" id="demand_quantity" name="demand_quantity[{{ $product->id }}]">
+                                                                                <input type="number" class="form-control form-control-sm @error('demand_quantity') is-invalid @enderror" id="demand_quantity_{{ $product->id }}" name="demand_quantity" data-product-id="{{ $product->id }}">
                                                                             </td>
                                                                             <td>
-                                                                                <input type="text" class="form-control form-control-sm @error('remarks') is-invalid @enderror" id="remarks" name="remarks[{{ $product->id }}]">
+                                                                                <input type="text" class="form-control form-control-sm @error('remarks') is-invalid @enderror" id="remarks_{{ $product->id }}" name="remarks" data-product-id="{{ $product->id }}">
                                                                             </td>
                                                                         </tr>
                                                                         <input type="hidden" name="product_type[{{ $product->id }}]" value="{{ $item->id }}">
@@ -127,81 +126,184 @@
         </div>
     </section>
 
+
     <script>
-        // Function to validate the form before submission
-        function validateForm(event) {
-            event.preventDefault(); // Prevent the default form submission
+        $(function() {
+            // Initialize an object to store user-modified data
+            const userModifiedData = {};
+            // Initialize the product data array within userModifiedData
+            userModifiedData.productData = {};
 
-            // Validate the "Section" select input
-            var sectionSelect = document.getElementById('section_id');
-            var selectedSection = sectionSelect.value;
-
-            if (selectedSection === '') {
-                alert("Please select a section.");
-                sectionSelect.focus();
-                return false;
+            // Function to update userModifiedData object with common data
+            function updateCommonData() {
+                userModifiedData.bpNumber = $("#bp_number").val();
+                userModifiedData.requisitionNumber = $("#requisition_number").val();
+                userModifiedData.sectionId = $("#section_id").val();
             }
 
-            // Get all elements with the name attribute "demand_quantity[]"
-            var demandQuantityInputs = document.querySelectorAll('[name^="demand_quantity["]');
-            var hasUserInput = false; // Flag to track if at least one product has user input
+            // Update common data when the page loads
+            updateCommonData();
 
-            for (var i = 0; i < demandQuantityInputs.length; i++) {
-                var demandQuantityInput = demandQuantityInputs[i];
+            // Add event listeners to common data fields for updates
+            $("#bp_number, #requisition_number, #section_id").on("input", function() {
+                updateCommonData();
+            });
 
-                // Retrieve the parent <tr> element
-                var parentTr = demandQuantityInput.closest('tr');
+            document.addEventListener('input', function(event) {
+                const element = event.target;
+                const productId = element.closest('tr').getAttribute('data-product-id');
+                const inputName = element.getAttribute('name');
+                const inputValue = element.value;
 
-                // Retrieve the data-product-id attribute from the parent <tr>
-                var productId = parentTr.dataset.productId;
-
-                // Retrieve the product name associated with this product
-                var productName = parentTr.querySelector('td:first-child').innerText;
-
-                var currentStockInput = document.querySelector('[name="current_stock[' + productId + ']"]');
-
-                // Check if demand_quantity field is non-empty
-                if (demandQuantityInput.value.trim() !== '') {
-                    var demandQuantityValue = parseFloat(demandQuantityInput.value);
-                    var currentStockValue = parseFloat(currentStockInput.value);
-
-                    // Check if demand_quantity is not empty and is a positive number
-                    if (isNaN(demandQuantityValue) || demandQuantityValue <= 0) {
-                        alert("Demand Quantity for product '" + productName + "' must be a positive number.");
-                        demandQuantityInput.focus();
-                        demandQuantityInput.classList.add('is-invalid'); // Add is-invalid class
-                        return false;
+                if (productId) {
+                    // Initialize an object for this product if it doesn't exist
+                    if (!userModifiedData.productData[productId]) {
+                        userModifiedData.productData[productId] = {};
                     }
 
-                    // Check if current_stock is not empty and is a positive number
-                    if (isNaN(currentStockValue) || currentStockValue <= 0) {
-                        alert("Current Stock for product '" + productName + "' must be required and have a positive number.");
-                        currentStockInput.focus();
-                        currentStockInput.classList.add('is-invalid'); // Add is-invalid class
-                        return false;
-                    }
-
-                    // If both fields are valid, remove the is-invalid class
-                    demandQuantityInput.classList.remove('is-invalid');
-                    currentStockInput.classList.remove('is-invalid');
-
-                    // Set the flag to true since at least one product has user input
-                    hasUserInput = true;
-                } else {
-                    // If demand_quantity is empty, add the is-invalid class
-                    // demandQuantityInput.classList.add('is-invalid');
-                    demandQuantityInput.focus();
+                    // Store the input value in the object based on the input name
+                    userModifiedData.productData[productId][inputName] = inputValue;
+                    console.log(userModifiedData);
                 }
-            }
+            });
 
-            // Check if at least one product has user input
-            if (!hasUserInput) {
-                alert("At least one product must have user input for the requisition.");
-                return false;
-            }
+            // Submit Stock-In Data
+            let sectionRequisitionForm = document.getElementById('sectionRequisitionForm');
 
-            // If all validation checks pass and at least one product has user input, you can submit the form
-            event.target.submit(); // Manually trigger the form submission
-        }
+            sectionRequisitionForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                // Validate the "Section" select input
+                var sectionSelect = document.getElementById('section_id');
+                var selectedSection = sectionSelect.value;
+
+                if (selectedSection === '') {
+                    alert("Please select a section.");
+                    sectionSelect.focus();
+                    return false;
+                }
+
+
+                // Get all elements with the name attribute "demand_quantity[]"
+                var demandQuantityInputs = document.querySelectorAll('[id^="demand_quantity_"]');
+                console.log(demandQuantityInputs);
+                var hasUserInput = false; // Flag to track if at least one product has user input
+
+                for (var i = 0; i < demandQuantityInputs.length; i++) {
+                    var demandQuantityInput = demandQuantityInputs[i];
+
+                    // Retrieve the parent <tr> element
+                    var parentTr = demandQuantityInput.closest('tr');
+
+                    // Retrieve the data-product-id attribute from the parent <tr>
+                    var productId = parentTr.dataset.productId;
+
+                    // Retrieve the product name associated with this product
+                    var productName = parentTr.querySelector('td:first-child').innerText;
+
+                    var currentStockInput = document.getElementById('current_stock_' + productId);
+
+                    // Check if demand_quantity field is non-empty
+                    if (demandQuantityInput.value.trim() !== '') {
+                        var demandQuantityValue = parseFloat(demandQuantityInput.value);
+                        var currentStockValue = parseFloat(currentStockInput.value);
+
+                        // Check if demand_quantity is not empty and is a positive number
+                        if (isNaN(demandQuantityValue) || demandQuantityValue <= 0) {
+                            alert("Demand Quantity for product '" + productName + "' must be a positive number.");
+                            demandQuantityInput.focus();
+                            demandQuantityInput.classList.add('is-invalid'); // Add is-invalid class
+                            return false;
+                        }
+
+                        // Check if current_stock is not empty and is a positive number
+                        if (isNaN(currentStockValue) || currentStockValue <= 0) {
+                            alert("Current Stock for product '" + productName + "' must be required and have a positive number.");
+                            currentStockInput.focus();
+                            currentStockInput.classList.add('is-invalid'); // Add is-invalid class
+                            return false;
+                        }
+
+                        // If both fields are valid, remove the is-invalid class
+                        demandQuantityInput.classList.remove('is-invalid');
+                        currentStockInput.classList.remove('is-invalid');
+
+                        // Set the flag to true since at least one product has user input
+                        hasUserInput = true;
+                    } else {
+                        // If demand_quantity is empty, add the is-invalid class
+                        // demandQuantityInput.classList.add('is-invalid');
+                        demandQuantityInput.focus();
+                    }
+                }
+
+                // Check if at least one product has user input
+                if (!hasUserInput) {
+                    alert("At least one product must have user input for the requisition.");
+                    return false;
+                }
+
+
+
+                $('#loading-spinner').show(); // Show the spinner
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+                $.post("{{ route('admin.section.requisition.store') }}", {
+                    data: userModifiedData
+                }, function(response) {
+
+                    $('#loading-spinner').hide();
+                    var result = response.original;
+
+                    if (result.success && result.success.trim() !== "") {
+
+                        console.log("Success message:", result.success);
+                        Swal.fire({
+                            toast: true,
+                            customClass: {
+                                popup: 'colored-toast'
+                            },
+                            iconColor: 'white',
+                            icon: "success",
+                            title: result.success,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+
+                        setTimeout(function() {
+                            location.href = "{{ route('admin.section.requisition.list') }}";
+                        }, 1000);
+
+                    } else if (result.error) {
+
+                        console.log("Error message:", result.error);
+                        Swal.fire({
+                            toast: true,
+                            customClass: {
+                                popup: 'colored-toast'
+                            },
+                            iconColor: 'white',
+                            icon: "error",
+                            title: result.error,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+
+                    } else {
+                        console.log("Unexpected response:", result);
+                    }
+                });
+            })
+        });
     </script>
+
 @endsection

@@ -41,11 +41,11 @@
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th width="5%">SL.</th>
-                                        <th>Requisition No</th>
-                                        <th>Request Department</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
+                                        <th width="5%">ক্রমিক নং.</th>
+                                        <th>চাহিদাপত্র নাম্বার</th>
+                                        <th>অনুরোধকৃত ডিপার্টমেন্ট</th>
+                                        <th>বর্তমান অবস্থা</th>
+                                        <th>অ্যাকশন</th>
                                     </tr>
                                 </thead>
                                 <tbody>

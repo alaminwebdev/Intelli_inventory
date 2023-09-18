@@ -10,6 +10,8 @@ use App\Services\ProductTypeService;
 use App\Services\DepartmentRequisitionService;
 use App\Services\SectionRequisitionService;
 use App\Services\RequisitionApprovalService;
+use App\Services\EmployeeService;
+use Illuminate\Support\Facades\Auth;
 
 class RequisitionApprovalController extends Controller
 {
@@ -17,22 +19,32 @@ class RequisitionApprovalController extends Controller
     private $sectionRequisitionService;
     private $departmentRequisitionService;
     private $requisitionApprovalService;
+    private $employeeService;
 
     public function __construct(
         DepartmentRequisitionService $departmentRequisitionService,
         ProductTypeService $productTypeService,
         SectionRequisitionService $sectionRequisitionService,
-        RequisitionApprovalService $requisitionApprovalService
+        RequisitionApprovalService $requisitionApprovalService,
+        EmployeeService $employeeService
     ) {
         $this->productTypeService               = $productTypeService;
         $this->departmentRequisitionService     = $departmentRequisitionService;
         $this->sectionRequisitionService        = $sectionRequisitionService;
         $this->requisitionApprovalService       = $requisitionApprovalService;
+        $this->employeeService              = $employeeService;
     }
     public function index()
     {
-        $data['title']                      = 'Requisition List';
+        $data['title']                      = 'সুপারিশকৃত চাহিদাপত্রের তালিকা';
         $data['departmentRequisitions']     = $this->departmentRequisitionService->getAll();
+        $user = Auth::user();
+        if ($user->id !== 1 && $user->employee_id) {
+            $employee                           = $this->employeeService->getByID($user->employee_id);
+            $data['departmentRequisitions']     = $this->departmentRequisitionService->getAll($employee->department_id);
+        } else {
+            $data['departmentRequisitions']     = $this->departmentRequisitionService->getAll();
+        }
         return view('admin.requisition-management.requisition.list', $data);
     }
     public function add()
@@ -48,7 +60,7 @@ class RequisitionApprovalController extends Controller
 
     public function edit($id)
     {
-        $data['title']          = 'Edit Requisition';
+        $data['title']          = 'চাহিদাপত্র হালনাগাদ করুন';
         $data['editData']       = $this->departmentRequisitionService->getByID($id);
         $data['product_types']  = $this->productTypeService->getAll(1);
 

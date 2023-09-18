@@ -10,11 +10,6 @@
                             <a href="{{ route('admin.stock.in.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>Stock-In List</a>
                         </div>
                         <div class="card-body">
-                            <div id="loading-spinner" style="display: none; position:absolute; z-index:9999; top:50%; left:50%; transform:translate(-50%,-50%);">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
-                            </div>
                             <form id="stockInForm" method="post" enctype="multipart/form-data" autocomplete="off">
                                 @csrf
                                 <div class="row">
@@ -106,7 +101,7 @@
                                                     </div>
                                                     <div class="form-group col-md-2">
                                                         <label class="control-label">Reject Qty</label>
-                                                        <input type="number" class="form-control form-control-sm @error('reject_qty') is-invalid @enderror" id="reject_qty" name="reject_qty" value="{{ @$editData->reject_qty }}">
+                                                        <input type="number" class="form-control form-control-sm @error('reject_qty') is-invalid @enderror" id="reject_qty" name="reject_qty" value="{{ @$editData->reject_qty }}" readonly>
                                                     </div>
                                                     <div class="form-group col-md-2">
                                                         <label class="control-label">Remarks</label>
@@ -159,6 +154,40 @@
             </div>
         </div>
     </section>
+    <script>
+        // Get references to the input fields
+        const invoiceQtyInput = document.getElementById("invoice_qty");
+        const receiveQtyInput = document.getElementById("receive_qty");
+        const rejectQtyInput = document.getElementById("reject_qty");
+
+        // Add event listeners to detect changes
+        invoiceQtyInput.addEventListener("input", updateRejectQty);
+        receiveQtyInput.addEventListener("input", updateRejectQty);
+
+        // Function to update the reject_qty field based on input values
+        function updateRejectQty() {
+            const invoiceQty = parseFloat(invoiceQtyInput.value) || 0;
+            const receiveQty = parseFloat(receiveQtyInput.value) || 0;
+
+            // Validate that receive_qty is less than or equal to invoice_qty
+            if (receiveQty > invoiceQty) {
+                receiveQtyInput.setCustomValidity("Receive quantity cannot be greater than invoice quantity.");
+            } else {
+                receiveQtyInput.setCustomValidity(""); // Clear any validation message
+            }
+
+            // Calculate reject_qty based on your logic
+            let rejectQty = invoiceQty - receiveQty;
+
+            // Ensure reject_qty is not negative
+            if (rejectQty < 0) {
+                rejectQty = 0; // Set to zero if negative
+            }
+
+            // Update the reject_qty input field
+            rejectQtyInput.value = rejectQty;
+        }
+    </script>
     <script>
         $(function() {
 
@@ -323,6 +352,12 @@
 
             stockInForm.addEventListener('submit', (e) => {
                 e.preventDefault();
+                
+                // Check if rowData array is empty
+                if (rowData.length === 0) {
+                    alert("Please add at least one product row.");
+                    return; // Prevent form submission if rowData is empty
+                }
                 // Create an object to hold all the data
                 let submitData = {};
 

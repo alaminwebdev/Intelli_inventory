@@ -115,6 +115,7 @@
 </head>
 
 <body class="sidebar-mini layout-navbar-fixed layout-fixed layout-navbar-fixed layout-footer-fixed text-sm">
+
     <div class="wrapper">
         @include('admin.layouts.status-message')
         @include('admin.layouts.navbar')
@@ -143,7 +144,14 @@
         </div>
         @include('admin.layouts.footer')
         @include('admin.layouts.preloader')
+
     </div>
+    <div id="loading-spinner" style="display:none; position:fixed; z-index:9999; top:50%; left:50%; transform:translate(-50%,-50%);">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    
     <script src="{{ asset('plugins') }}/jquery-ui/jquery-ui.min.js"></script>
     <script src="{{ asset('plugins') }}/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('plugins') }}/sweetalert2/sweetalert2.min.js"></script>

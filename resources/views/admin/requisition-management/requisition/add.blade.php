@@ -9,7 +9,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.requisition.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>Requisition List</a>
+                            <a href="{{ route('admin.requisition.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>চাহিদাপত্রের তালিকা</a>
                         </div>
                         <div class="card-body">
                             <form id="submitForm" action="{{ route('admin.requisition.update', $editData->id) }} " method="post" enctype="multipart/form-data" autocomplete="off" onsubmit="return validateForm(event)">
@@ -19,15 +19,15 @@
                                     <div class="col-md-12">
                                         <div class="row px-3 py-4 border rounded shadow-sm mb-3">
                                             <div class="col-md-4">
-                                                <label class="control-label">Department :</label>
+                                                <label class="control-label">ডিপার্টমেন্ট :</label>
                                                 <input type="text" class="form-control form-control-sm"  value="{{ $editData->department->name }}" readonly>
                                             </div>
                                             <div class="col-md-4">
-                                                <label class="control-label">Requisition No :</label>
+                                                <label class="control-label">চাহিদাপত্রের নাম্বার :</label>
                                                 <input type="text" class="form-control form-control-sm" id="requisition_no" name="requisition_no" value="{{ $editData->requisition_no }}" readonly>
                                             </div>
                                             <div class="col-md-4">
-                                                <label class="control-label">Requisition Status <span class="text-red">*</span></label>
+                                                <label class="control-label">চাহিদাপত্রের অবস্থা <span class="text-red">*</span></label>
                                                 <select name="status" id="status" class="form-control select2 @error('status') is-invalid @enderror">
                                                     <option value="" disabled >Please Select</option>
                                                     <option value="1" >Approved</option>
@@ -52,12 +52,12 @@
                                                             <table id="" class="table table-bordered">
                                                                 <thead>
                                                                     <tr>
-                                                                        <th>Product Name</th>
-                                                                        <th>Current Stock</th>
-                                                                        <th>Demand Quantity</th>
-                                                                        <th>Department Valid Reason</th>
-                                                                        <th>Approve Quantity</th>
-                                                                        <th>Valid Reason / Remarks</th>
+                                                                        <th>প্রোডাক্ট</th>
+                                                                        <th>বর্তমান স্টক</th>
+                                                                        <th>চাহিদার পরিমাণ</th>
+                                                                        <th>ডিপার্টমেন্টের সংযুক্তি</th>
+                                                                        <th>বিতরনের পরিমাণ</th>
+                                                                        <th>সংযুক্তি</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -73,7 +73,7 @@
                                                                     @endphp
                                                                     @foreach ($requisitionProducts as $product)
                                                                         <tr data-product-id="{{ $product->product_id }}">
-                                                                            <td class="product-name">{{ $product->product_id }}</td>
+                                                                            <td class="product-name">{{ $product->product->name }}</td>
                                                                             <td>
                                                                                 <input type="number" class="form-control form-control-sm" id="department_current_stock_{{ $product->product_id }}" name="department_current_stock[{{ $product->product_id }}]" value="{{ $product->current_stock }}" readonly>
                                                                             </td>
@@ -104,13 +104,13 @@
                                     <div class="col-md-12">
                                         <div class="text-right">
                                             @if (@$editData->id)
-                                                <button type="submit" class="btn btn-success btn-sm">Update</button>
+                                                <button type="submit" class="btn btn-success btn-sm">হালনাগাদ</button>
                                             @else
-                                                <button type="submit" class="btn btn-success btn-sm">Save</button>
-                                                <button type="reset" class="btn btn-danger btn-sm">Clear</button>
+                                                <button type="submit" class="btn btn-success btn-sm">সংরক্ষণ</button>
+                                                <button type="reset" class="btn btn-danger btn-sm">মুছুন</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.requisition.list') }}">Back</a>
+                                                <a href="{{ route('admin.requisition.list') }}">পিছনে যান</a>
                                             </button>
                                         </div>
                                     </div>
