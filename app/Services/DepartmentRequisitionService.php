@@ -50,30 +50,24 @@ class DepartmentRequisitionService implements IService
 
         DB::beginTransaction();
         try {
+            $data = $request->input('data');
 
             $departmentRequisition                  = new DepartmentRequisition();
-            $departmentRequisition->requisition_no  = $request->requisition_no;
+            $departmentRequisition->requisition_no  = $data['requisitionNo'];
             $departmentRequisition->user_id         = Auth::id();
-            $departmentRequisition->department_id   = $request->department_id;
+            $departmentRequisition->department_id   = $data['departmentId'];
             $departmentRequisition->status          = 0;
 
             if ($departmentRequisition->save()) {
-                // Get all form data arrays
-                $productTypesData               = $request->input('product_type');
-                $sectionCurrentStockData        = $request->input('section_current_stock');
-                $sectionDemandQuantityData      = $request->input('section_demand_quantity');
-                $departmentCurrentStockData     = $request->input('department_current_stock');
-                $departmentDemandQuantityData   = $request->input('department_demand_quantity');
-                $remarksData                    = $request->input('remarks');
+                $productData = $data['productData'];
 
-                // Loop through the product types data (keys are product IDs, values are product type IDs)
-                foreach ($productTypesData as $productId => $productTypeId) {
+                foreach ($productData as $productId => $productDetails) {
                     // Retrieve data for the current product
-                    $sectionCurrentStock        = $sectionCurrentStockData[$productId];
-                    $sectionDemandQuantity      = $sectionDemandQuantityData[$productId];
-                    $departmentCurrentStock     = $departmentCurrentStockData[$productId];
-                    $departmentDemandQuantity   = $departmentDemandQuantityData[$productId];
-                    $remarks                    = $remarksData[$productId];
+                    $sectionCurrentStock        = $productDetails['section_current_stock'] ?? null;
+                    $sectionDemandQuantity      = $productDetails['section_demand_quantity'] ?? null;
+                    $departmentCurrentStock     = $productDetails['department_current_stock'] ?? null;
+                    $departmentDemandQuantity   = $productDetails['department_demand_quantity'] ?? null;
+                    $remarks                    = $productDetails['remarks'] ?? null;
 
                     if ($departmentDemandQuantity !== null || $sectionDemandQuantity !== null) {
                         // Store Data into DepartmentRequisitionDetails
@@ -88,20 +82,25 @@ class DepartmentRequisitionService implements IService
                     }
                 }
 
-                // Store department requisition id into SectionRequisition
-                if ($request->has('section_requisition_id')) {
-                    foreach ($request->section_requisition_id as $key => $value) {
+                $sectionRequisitionIds = $data['sectionRequisitionIds'] ?? null;
+
+                if ($sectionRequisitionIds && is_array($sectionRequisitionIds)) {
+                    // Store department requisition id into SectionRequisition
+                    foreach ($sectionRequisitionIds as $key => $value) {
                         $storeDepartmentRequisitionId                               = SectionRequisition::find($value);
-                        $storeDepartmentRequisitionId->department_requisition_id    = $departmentRequisition->id;
-                        $storeDepartmentRequisitionId->save();
+                        if ($storeDepartmentRequisitionId) {
+                            // Associate this Section Requisition with the Department Requisition
+                            $storeDepartmentRequisitionId->department_requisition_id = $departmentRequisition->id;
+                            $storeDepartmentRequisitionId->save();
+                        }
                     }
                 }
             }
             DB::commit();
-            return true;
+            return response()->json(['success' => 'Requisition Information Inserted']);
         } catch (\Exception $e) {
             DB::rollBack();
-            return $e->getMessage();
+            return response()->json(['error' => $e->getMessage()]);
         }
     }
 
