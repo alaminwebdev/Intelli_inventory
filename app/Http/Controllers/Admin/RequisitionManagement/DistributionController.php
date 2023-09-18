@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\RequisitionManagement;
 use App\Http\Controllers\Controller;
 use App\Services\DepartmentRequisitionService;
 use App\Services\DepartmentService;
+use App\Services\DistributionService;
 use App\Services\EmployeeService;
 use App\Services\ProductTypeService;
 use App\Services\SectionRequisitionService;
@@ -41,26 +42,32 @@ class DistributionController extends Controller {
         // $data['departments']            = $this->departmentService->getAll(1);
         // return view('admin.requisition-management.distribution.add', $data);
     }
-    public function store(Request $request) {
-        // $this->departmentRequisitionService->create($request);
-        // return redirect()->route('admin.distribution.list')->with('success', 'Data successfully inserted!');
-    }
 
     public function edit($id) {
+
         $data['title']         = 'প্রোডাক্ট বিতরন করুন';
         $data['editData']      = $this->departmentRequisitionService->getByID($id);
         $data['product_types'] = $this->productTypeService->getAll(1);
-        $data['departments']   = $this->departmentService->getAll(1);
+
+        $data['departments'] = $this->departmentService->getAll(1);
+
+        // $reId = DepartmentRequisition::where('department_requisitions.id', $id)
+        //     ->join('department_requisition_details', 'department_requisition_details.department_requisition_id', '=', 'department_requisitions.id')
+        //     ->pluck('product_id')->toArray();
+
+        // $lastDis = DistributeDetail::distinct()->where('department_id', $data['editData']->department_id)
+        //     ->whereIn('product_id', $reId)
+        //     ->take(count($reId))
+        //     ->orderBy('id', 'desc')
+        //     ->get();
+        // dd($lastDis->toArray());
         return view('admin.requisition-management.distribution.add', $data);
     }
 
-    public function update(Request $request, $id) {
-        dd($request->all());
-        // $request->validate([
-        //     'name' => 'required',
-        // ]);
-        // $this->sectionRequisitionService->update($request, $id);
-        // return redirect()->route('admin.section.requisition.list')->with('success', 'Data successfully updated!');
+    public function store(Request $request, DistributionService $distribute) {
+
+        $distribute->store($request);
+        return redirect()->route('admin.distribution.list')->with('success', 'Data successfully updated!');
     }
 
     public function delete(Request $request) {
