@@ -74,7 +74,7 @@ class DistributionController extends Controller {
 
     public function pendingDistribute() {
         $data['title']              = 'প্রোডাক্ট বিতরনের তালিকা';
-        $data['pendingDistributes'] = DepartmentRequisition::orderBy('id', 'desc')->get();
+        $data['pendingDistributes'] = DepartmentRequisition::where('status', 3)->orderBy('id', 'desc')->get();
         return view('admin.requisition-management.distribution.pending', $data);
     }
     public function productDistributeEdit($id) {
@@ -88,10 +88,6 @@ class DistributionController extends Controller {
     }
 
     public function productDistribute(Request $request) {
-        $data['editData']      = DepartmentRequisition::find($request->department_requisition_id);
-        $data['product_types'] = $this->productTypeService->getAll(1);
-
-        $data['departments'] = $this->departmentService->getAll(1);
 
         foreach ($request->distribute_quantity as $key => $quantity) {
             $stocks = StockInDetail::where('product_information_id', $key)
@@ -148,5 +144,9 @@ class DistributionController extends Controller {
             }
         }
 
+        DepartmentRequisition::where('id', $request->department_requisition_id)->update([
+            'status' => 4,
+        ]);
+        return redirect()->route('admin.pending.distribute.list');
     }
 }
