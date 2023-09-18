@@ -67,7 +67,7 @@
                                 <th>প্রোডাক্ট</th>
                                 <th>বর্তমান স্টক</th>
                                 <th>চাহিদার পরিমাণ</th>
-                                <th>সংযুক্তি</th>
+                                <th>মন্তব্য / যৌক্তিকতা</th>
                             </tr>
                         </thead>
                         <tbody id="productDetailsTable">
