@@ -27,6 +27,7 @@ Route::prefix('/requisition')->group(function () {
     Route::get('/list', [RequisitionApprovalController::class, 'index'])->name('requisition.list');
     Route::get('/edit/{id}', [RequisitionApprovalController::class, 'edit'])->name('requisition.edit');
     Route::post('/update/{id}', [RequisitionApprovalController::class, 'update'])->name('requisition.update');
+    Route::get('/requisition-approval-report/{id}', [RequisitionApprovalController::class, 'requisitionApprovalReport'])->name('requisition.approval.report');
 });
 
 Route::prefix('/distribution-approval')->group(function () {

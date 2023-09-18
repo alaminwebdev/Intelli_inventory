@@ -13,6 +13,11 @@ use App\Services\RequisitionApprovalService;
 use App\Services\EmployeeService;
 use Illuminate\Support\Facades\Auth;
 
+use DateTime;
+use DateTimeZone;
+use PDF;
+use IntlDateFormatter;
+
 class RequisitionApprovalController extends Controller
 {
     private $productTypeService;
@@ -37,7 +42,6 @@ class RequisitionApprovalController extends Controller
     public function index()
     {
         $data['title']                      = 'সুপারিশকৃত চাহিদাপত্রের তালিকা';
-        $data['departmentRequisitions']     = $this->departmentRequisitionService->getAll();
         $user = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
             $employee                           = $this->employeeService->getByID($user->employee_id);
@@ -81,5 +85,22 @@ class RequisitionApprovalController extends Controller
         // } else {
         //     return response()->json(['status' => 'error', 'message' => 'Sorry something wrong']);
         // }
+    }
+    public function requisitionApprovalReport($id)
+    {
+        $date                   = new DateTime('now', new DateTimeZone('Asia/Dhaka')); // Set your desired timezone
+        $formatter              = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+        $formatter->setPattern('d-MMMM-y'); // Customize the date format if needed
+        $data['date_in_bengali'] = $formatter->format($date);
+
+        $data['requisitionApprovalProducts']  = $this->requisitionApprovalService->getApprovedRequisitionProductsByType($id);
+        $data['requestedRequisitionInfo']                     = $this->departmentRequisitionService->getByID($id);
+
+        // Generate a PDF
+        $pdf = PDF::loadView('admin.reports.approved-requisition-pdf', $data);
+        $pdf->SetProtection(['copy', 'print'], '', 'pass');
+
+        $fileName = 'বর্তমান স্টক-' . $data['date_in_bengali'] . '.pdf';
+        return $pdf->stream($fileName);
     }
 }
