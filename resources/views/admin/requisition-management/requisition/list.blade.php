@@ -62,7 +62,7 @@
                                                     </a>
                                                 @endif
 
-                                                <a class="btn btn-sm btn-primary" href="{{ route('admin.requisition.approval.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i> ডাউনলোড পিডিএফ</a>
+                                                <a class="btn btn-sm btn-primary" href="{{ route('admin.requisition.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i> ডাউনলোড পিডিএফ</a>
                                                 {{-- @if (sorpermission('admin.requisition.delete'))
                                                 <a class="btn btn-sm btn-danger destroy" data-id="{{$list->id}}" data-route="{{route('admin.requisition.delete')}}">
                                                     <i class="fa fa-trash"></i>

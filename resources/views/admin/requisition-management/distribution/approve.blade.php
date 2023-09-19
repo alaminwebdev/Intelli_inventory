@@ -50,6 +50,7 @@
                                             <td>{{ @$list->requisition_no ?? 'N/A' }}</td>
                                             <td>{{ @$list->department->name ?? 'N/A' }}</td>
                                             <td class="text-center">
+                                                <a class="btn btn-sm btn-primary" href="{{ route('admin.requisition.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i> ডাউনলোড পিডিএফ</a>
                                                 <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-products="{{ json_encode($DepartmentRequisitionDetails) }}">
                                                     <i class="far fa-eye"></i>
                                                 </button>

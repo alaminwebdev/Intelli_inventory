@@ -13,6 +13,10 @@
         $status = 'প্রত্যাখ্যাত';
     } elseif ($requestedRequisitionInfo->status == 3) {
         $status = 'অনুমোদিত';
+    }elseif ($requestedRequisitionInfo->status == 4) {
+        $status = 'বিতরন করা হয়েছে';
+    }else{
+        $status = '';
     }
 @endphp
 
@@ -48,10 +52,11 @@
                     <tr>
                         <th class="text-left" width="10%">ক্রমিক নং:</th>
                         <th class="text-center">প্রোডাক্টের তথ্য</th>
-                        <th class="text-center">বর্তমান স্টক</th>
-                        <th class="text-center">চাহিদার পরিমাণ</th>
+                        <th class="text-center">ডিপি. বর্তমান স্টক</th>
+                        <th class="text-center">ডিপি. চাহিদার পরিমাণ</th>
                         <th class="text-center">ডিপি. মন্তব্য / যৌক্তিকতা</th>
                         <th class="text-center">সুপারিশ পরিমাণ</th>
+                        <th class="text-center">বিতরন পরিমাণ</th>
                         <th class="text-center">মন্তব্য / যৌক্তিকতা</th>
                     </tr>
                 </thead>
@@ -64,6 +69,7 @@
                             <td class="text-right">{{ en2bn($product['demand_quantity']) }}</td>
                             <td>{{ $product['remarks'] }}</td>
                             <td class="text-right">{{ en2bn($product['approve_quantity']) }}</td>
+                            <td class="text-right">{{ en2bn($product['total_distribute_quantity']) }}</td>
                             <td>{{ $product['approve_remarks'] }}</td>
                         </tr>
                         @endforeach

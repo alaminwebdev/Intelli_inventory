@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DefaultController;
 use App\Http\Controllers\Admin\RequisitionManagement\DepartmentRequisitionController;
 use App\Http\Controllers\Admin\RequisitionManagement\DistributionController;
 use App\Http\Controllers\Admin\RequisitionManagement\RequisitionApprovalController;
@@ -27,7 +28,6 @@ Route::prefix('/requisition')->group(function () {
     Route::get('/list', [RequisitionApprovalController::class, 'index'])->name('requisition.list');
     Route::get('/edit/{id}', [RequisitionApprovalController::class, 'edit'])->name('requisition.edit');
     Route::post('/update/{id}', [RequisitionApprovalController::class, 'update'])->name('requisition.update');
-    Route::get('/requisition-approval-report/{id}', [RequisitionApprovalController::class, 'requisitionApprovalReport'])->name('requisition.approval.report');
 });
 
 Route::prefix('/distribution-approval')->group(function () {
@@ -42,3 +42,4 @@ Route::prefix('/distribute')->group(function () {
     Route::get('/pending-distribute-edit/{id}', [DistributionController::class, 'productDistributeEdit'])->name('distribution.distribute.edit');
     Route::post('/distribute', [DistributionController::class, 'productDistribute'])->name('distribution.distribute');
 });
+

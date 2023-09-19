@@ -27,7 +27,7 @@
                                         @php
                                             $departmentRequisitionProducts = \App\Models\DepartmentRequisitionDetails::join('product_information', 'product_information.id', 'department_requisition_details.product_id')
                                                 ->where('department_requisition_id', $list->id)
-                                                ->select('department_requisition_details.current_stock as current_stock', 'department_requisition_details.demand_quantity as demand_quantity', 'department_requisition_details.remarks as remarks', 'product_information.name as product')
+                                                ->select('department_requisition_details.current_stock as current_stock', 'department_requisition_details.demand_quantity as demand_quantity','department_requisition_details.approve_quantity as approve_quantity', 'department_requisition_details.remarks as remarks', 'product_information.name as product')
                                                 ->get();
                                         @endphp
                                         <tr>
@@ -79,7 +79,7 @@
                             <tr>
                                 <th>প্রোডাক্ট</th>
                                 <th>বর্তমান স্টক</th>
-                                <th>চাহিদার পরিমাণ</th>
+                                <th>ডিপি. সুপারিশ পরিমাণ</th>
                                 <th>সংযুক্তি</th>
                             </tr>
                         </thead>
@@ -109,7 +109,7 @@
 
                     var productName = product.product;
                     var currentStock = product.current_stock;
-                    var demandQuantity = product.demand_quantity;
+                    var approveQuantity = product.approve_quantity;
                     var remarks = product.remarks;
 
                     // Append the product details to the table
@@ -117,7 +117,7 @@
                             <tr>
                                 <td>${productName}</td>
                                 <td class="text-right">${currentStock}</td>
-                                <td class="text-right">${demandQuantity}</td>
+                                <td class="text-right">${approveQuantity}</td>
                                 <td >${remarks}</td>
                             </tr>
                         `);

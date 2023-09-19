@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\DepartmentRequisitionDetails;
+use App\Models\Distribute;
+use App\Models\ProductInformation;
 use Illuminate\Http\Request;
 
 use App\Services\ProductInformationService;
@@ -12,6 +15,12 @@ use App\Services\SupplierService;
 use App\Services\SectionService;
 use App\Services\SectionRequisitionService;
 use App\Services\EmployeeService;
+use App\Services\DepartmentRequisitionService;
+
+use DateTime;
+use DateTimeZone;
+use PDF;
+use IntlDateFormatter;
 
 class DefaultController extends Controller
 {
@@ -22,6 +31,7 @@ class DefaultController extends Controller
     private $sectionService;
     private $sectionRequisitionService;
     private $employeeService;
+    private $departmentRequisitionService;
 
     public function __construct(
         ProductInformationService $productInformationService,
@@ -30,7 +40,8 @@ class DefaultController extends Controller
         SupplierService $supplierService,
         SectionService $sectionService,
         SectionRequisitionService $sectionRequisitionService,
-        EmployeeService $employeeService
+        EmployeeService $employeeService,
+        DepartmentRequisitionService $departmentRequisitionService,
 
     ) {
         $this->productInformationService    = $productInformationService;
@@ -40,6 +51,7 @@ class DefaultController extends Controller
         $this->sectionService               = $sectionService;
         $this->sectionRequisitionService    = $sectionRequisitionService;
         $this->employeeService              = $employeeService;
+        $this->departmentRequisitionService = $departmentRequisitionService;
     }
 
     public function getProductsByType(Request $request)
@@ -67,5 +79,69 @@ class DefaultController extends Controller
     {
         $data = $this->employeeService->getByID($request->employee_id);
         return response()->json($data);
+    }
+
+    public function requisitionReport($id)
+    {
+        $date                   = new DateTime('now', new DateTimeZone('Asia/Dhaka')); // Set your desired timezone
+        $formatter              = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+        $formatter->setPattern('d-MMMM-y'); // Customize the date format if needed
+        $data['date_in_bengali'] = $formatter->format($date);
+
+        $productTypeData = [];
+        $product_types = $this->productTypeService->getAll(1);
+
+        foreach ($product_types as $item) {
+            $productType = [
+                'id' => $item->id,
+                'name' => $item->name,
+                'products' => [],
+            ];
+
+            // Query products for this product type and push them into the products array
+            $productIds = ProductInformation::where('product_type_id', $item->id)
+                ->latest()
+                ->pluck('id');
+
+            $requisitionProducts = DepartmentRequisitionDetails::where('department_requisition_id', $id)
+                ->whereIn('product_id', $productIds)
+                ->get();
+
+            if (count($requisitionProducts) > 0) {
+
+                foreach ($requisitionProducts as $product) {
+
+                    // Get the total distribute_quantity for this product_id and department_requisition_id
+                    $totalDistributeQuantity = Distribute::where('department_requisition_id', $id)
+                        ->where('product_id', $product->product_id)
+                        ->sum('distribute_quantity');
+
+                    $productType['products'][$product->product_id] = [
+                        'product_id' => $product->product_id,
+                        'product_name' => $product->product->name,
+                        'current_stock' => $product->current_stock,
+                        'demand_quantity' => $product->demand_quantity,
+                        'remarks' => $product->remarks,
+                        'approve_quantity' => $product->approve_quantity ?? $product->demand_quantity,
+                        'approve_remarks' => $product->approve_remarks,
+                        'final_approve_quantity' => $product->final_approve_quantity,
+                        'final_approve_remarks' => $product->final_approve_remarks,
+                        'total_distribute_quantity' => $totalDistributeQuantity ?? 'N/A',
+                    ];
+                }
+
+                // Push this product type data into the main array AFTER adding products
+                $productTypeData[] = $productType;
+            }
+        }
+        $data['requisitionApprovalProducts']  = $productTypeData;
+        $data['requestedRequisitionInfo']     = $this->departmentRequisitionService->getByID($id);
+
+        // Generate a PDF
+        $pdf = PDF::loadView('admin.reports.requisition-pdf', $data);
+        $pdf->SetProtection(['copy', 'print'], '', 'pass');
+
+        $fileName = 'চাহিদাপত্র-' . $data['date_in_bengali'] . '.pdf';
+        return $pdf->stream($fileName);
     }
 }
