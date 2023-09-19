@@ -32,6 +32,16 @@ class ProductInformationService implements IService
         }
     }
 
+    public function getSpecificProducts($ids = null)
+    {
+        try {
+            $data = ProductInformation::whereIn('id', $ids)->where('status', 1)->latest()->get();;
+            return $data;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
     public function getProductsByTypeId($id)
     {
         try {

@@ -1,9 +1,5 @@
 @extends('admin.layouts.app')
 @section('content')
-    <style>
-
-
-    </style>
     <section class="content">
         <div class="container-fluid">
             <div class="row">
@@ -53,55 +49,35 @@
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-                                        <div class="accordion">
-                                            @foreach ($product_types as $item)
-                                                <div class="card" style="box-shadow: none;">
-                                                    <div class="card-header p-0" data-toggle="collapse" data-target="#collapse-{{ $item->id }}" aria-expanded="true" aria-controls="collapse-{{ $item->id }}" style="cursor: pointer;">
-                                                        <h5 class="mb-0">
-                                                            <button class="btn btn-link px-0" type="button">{{ $item->name }}</button>
-                                                        </h5>
-                                                        <i class="fas fa-chevron-down"></i>
-                                                    </div>
-
-                                                    <div id="collapse-{{ $item->id }}" class="collapse show">
-                                                        <div class="card-body ">
-                                                            <table id="" class="table table-bordered">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>প্রোডাক্ট</th>
-                                                                        <th>বর্তমান স্টক</th>
-                                                                        <th>চাহিদার পরিমাণ</th>
-                                                                        <th>মন্তব্য / যৌক্তিকতা </th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    @php
-                                                                        $products = App\Models\ProductInformation::where('product_type_id', $item->id)
-                                                                            ->where('status', 1)
-                                                                            ->latest()
-                                                                            ->get();
-                                                                    @endphp
-                                                                    @foreach ($products as $product)
-                                                                        <tr data-product-id="{{ $product->id }}">
-                                                                            <td class="product-name">{{ $product->name }}</td>
-                                                                            <td>
-                                                                                <input type="number" class="form-control form-control-sm @error('current_stock') is-invalid @enderror" id="current_stock_{{ $product->id }}" name="current_stock" data-product-id="{{ $product->id }}">
-                                                                            </td>
-                                                                            <td>
-                                                                                <input type="number" class="form-control form-control-sm @error('demand_quantity') is-invalid @enderror" id="demand_quantity_{{ $product->id }}" name="demand_quantity" data-product-id="{{ $product->id }}">
-                                                                            </td>
-                                                                            <td>
-                                                                                <input type="text" class="form-control form-control-sm @error('remarks') is-invalid @enderror" id="remarks_{{ $product->id }}" name="remarks" data-product-id="{{ $product->id }}">
-                                                                            </td>
-                                                                        </tr>
-                                                                        <input type="hidden" name="product_type[{{ $product->id }}]" value="{{ $item->id }}">
-                                                                    @endforeach
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
+                                        <div class="card-body ">
+                                            <table id="" class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>প্রোডাক্ট</th>
+                                                        <th>বর্তমান স্টক</th>
+                                                        <th>চাহিদার পরিমাণ</th>
+                                                        <th>মন্তব্য / যৌক্তিকতা </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($selected_products as $product)
+                                                        <tr data-product-id="{{ $product->id }}">
+                                                            <td class="product-name">{{ $product->name }}</td>
+                                                            <td>
+                                                                <input type="number" class="form-control form-control-sm @error('current_stock') is-invalid @enderror" id="current_stock_{{ $product->id }}" name="current_stock" data-product-id="{{ $product->id }}">
+                                                            </td>
+                                                            <td>
+                                                                <input type="number" class="form-control form-control-sm @error('demand_quantity') is-invalid @enderror" id="demand_quantity_{{ $product->id }}" name="demand_quantity" data-product-id="{{ $product->id }}">
+                                                            </td>
+                                                            <td>
+                                                                <textarea class="form-control form-control-sm @error('remarks') is-invalid @enderror" id="remarks_{{ $product->id }}" name="remarks" data-product-id="{{ $product->id }}" rows="1"></textarea>
+                                                                {{-- <input type="text" class="form-control form-control-sm @error('remarks') is-invalid @enderror" id="remarks_{{ $product->id }}" name="remarks" data-product-id="{{ $product->id }}"> --}}
+                                                            </td>
+                                                        </tr>
+                                                        <input type="hidden" name="product_type[{{ $product->id }}]" value="{{ $product->product_type_id }}">
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
 
@@ -111,10 +87,9 @@
                                                 <button type="submit" class="btn btn-success btn-sm">হালনাগাদ</button>
                                             @else
                                                 <button type="submit" class="btn btn-success btn-sm">সংরক্ষণ</button>
-                                                <button type="reset" class="btn btn-danger btn-sm">মুছুন</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.section.requisition.list') }}">পিছনে যান</a>
+                                                <a href="{{ route('admin.section.requisition.product.selection') }}">পিছনে যান</a>
                                             </button>
                                         </div>
                                     </div>
@@ -125,7 +100,6 @@
             </div>
         </div>
     </section>
-
 
     <script>
         $(function() {
@@ -184,67 +158,9 @@
                 }
 
 
-                // Get all elements with the name attribute "demand_quantity[]"
-                // var demandQuantityInputs = document.querySelectorAll('[id^="demand_quantity_"]');
-                // console.log(demandQuantityInputs);
-                // var hasUserInput = false; // Flag to track if at least one product has user input
-
-                // for (var i = 0; i < demandQuantityInputs.length; i++) {
-                //     var demandQuantityInput = demandQuantityInputs[i];
-
-                //     // Retrieve the parent <tr> element
-                //     var parentTr = demandQuantityInput.closest('tr');
-
-                //     // Retrieve the data-product-id attribute from the parent <tr>
-                //     var productId = parentTr.dataset.productId;
-
-                //     // Retrieve the product name associated with this product
-                //     var productName = parentTr.querySelector('td:first-child').innerText;
-
-                //     var currentStockInput = document.getElementById('current_stock_' + productId);
-
-                //     // Check if demand_quantity field is non-empty
-                //     if (demandQuantityInput.value.trim() !== '') {
-                //         var demandQuantityValue = parseFloat(demandQuantityInput.value);
-                //         var currentStockValue = parseFloat(currentStockInput.value);
-
-                //         // Check if demand_quantity is not empty and is a positive number
-                //         if (isNaN(demandQuantityValue) || demandQuantityValue <= 0) {
-                //             alert("Demand Quantity for product '" + productName + "' must be a positive number.");
-                //             demandQuantityInput.focus();
-                //             demandQuantityInput.classList.add('is-invalid'); // Add is-invalid class
-                //             return false;
-                //         }
-
-                //         // Check if current_stock is not empty and is a positive number
-                //         if (isNaN(currentStockValue) || currentStockValue <= 0) {
-                //             alert("Current Stock for product '" + productName + "' must be required and have a positive number.");
-                //             currentStockInput.focus();
-                //             currentStockInput.classList.add('is-invalid'); // Add is-invalid class
-                //             return false;
-                //         }
-
-                //         // If both fields are valid, remove the is-invalid class
-                //         demandQuantityInput.classList.remove('is-invalid');
-                //         currentStockInput.classList.remove('is-invalid');
-
-                //         // Set the flag to true since at least one product has user input
-                //         hasUserInput = true;
-                //     } else {
-                //         // If demand_quantity is empty, add the is-invalid class
-                //         // demandQuantityInput.classList.add('is-invalid');
-                //         demandQuantityInput.focus();
-                //     }
-                // }
-
-                // // Check if at least one product has user input
-                // if (!hasUserInput) {
-                //     alert("At least one product must have user input for the requisition.");
-                //     return false;
-                // }
-
+                // Check if all product rows have both "Demand Quantity" and "Current Stock" fields filled
                 var demandQuantityInputs = document.querySelectorAll('[id^="demand_quantity_"]');
-                var hasUserInput = false;
+                var hasMissingFields = false;
 
                 for (var i = 0; i < demandQuantityInputs.length; i++) {
                     var demandQuantityInput = demandQuantityInputs[i];
@@ -255,24 +171,17 @@
                     var currentStockInput = document.getElementById('current_stock_' + productId);
                     var currentStockValue = currentStockInput.value.trim();
 
-                    if (demandQuantityValue !== '') {
-                        hasUserInput = true;
-                        if (currentStockValue === '') {
-                            alert("When Demand Quantity is filled, Current Stock must also have a value.");
-                            demandQuantityInput.focus();
-                            return false;
-                        } else {
-                            // At least one field meets the condition, so stop the loop
-                            break;
-                        }
+                    if (demandQuantityValue === '' || currentStockValue === '') {
+                        hasMissingFields = true;
+                        alert("All product rows must have both 'Demand Quantity' and 'Current Stock' filled.");
+                        demandQuantityInput.focus();
+                        return false;
                     }
                 }
 
-                if (!hasUserInput) {
-                    alert("At least one product must have user input for the requisition.");
-                    return false;
+                if (hasMissingFields) {
+                    return false; // Prevent form submission if any row is missing fields
                 }
-
 
 
                 $('#loading-spinner').show(); // Show the spinner

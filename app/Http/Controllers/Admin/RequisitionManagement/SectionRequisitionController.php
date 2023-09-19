@@ -10,6 +10,7 @@ use App\Services\ProductTypeService;
 use App\Services\SectionRequisitionService;
 use App\Services\EmployeeService;
 use App\Services\SectionService;
+use App\Services\ProductInformationService;
 use Illuminate\Support\Facades\Auth;
 
 class SectionRequisitionController extends Controller
@@ -18,17 +19,20 @@ class SectionRequisitionController extends Controller
     private $productTypeService;
     private $employeeService;
     private $sectionService;
+    private $productInformationService;
 
     public function __construct(
         SectionRequisitionService $sectionRequisitionService,
         ProductTypeService $productTypeService,
         EmployeeService $employeeService,
-        SectionService $sectionService
+        SectionService $sectionService,
+        ProductInformationService $productInformationService
     ) {
         $this->sectionRequisitionService    = $sectionRequisitionService;
         $this->productTypeService           = $productTypeService;
         $this->employeeService              = $employeeService;
         $this->sectionService               = $sectionService;
+        $this->productInformationService    = $productInformationService;
     }
     public function index()
     {
@@ -38,17 +42,36 @@ class SectionRequisitionController extends Controller
             $employee                       = $this->employeeService->getByID($user->employee_id);
             $sectionIds                     = Employee::where('department_id', $employee->department_id)->whereNotNull('section_id')->pluck('section_id');
             $data['sectionRequisitions']    = $this->sectionRequisitionService->getAll(null, null, $sectionIds);
-        }else{
+        } else {
             $data['sectionRequisitions']    = $this->sectionRequisitionService->getAll();
         }
 
         return view('admin.requisition-management.section-requisition.list', $data);
     }
-    public function add()
+    public function selectProducts()
     {
-        $data['title']                  = 'চাহিদাপত্র যুক্ত করুন';
+        $data['title']                  = 'প্রোডাক্ট সেলেক্ট করুন';
         $data['product_types']          = $this->productTypeService->getAll(1);
+        return view('admin.requisition-management.section-requisition.product-selection', $data);
+    }
+    public function processSelectionProducts(Request $request)
+    {
+        // Retrieve the selected product IDs from the request
+        $selectedProductIds = $request->input('selected_products');
+
+        // Redirect to the "add" step for section requisition with selected product IDs
+        return redirect()->route('admin.section.requisition.add', ['sp' => $selectedProductIds]);
+    }
+    public function add(Request $request)
+    {
+        // Retrieve the selected product IDs from the query parameters
+        $selected_product_ids           = $request->input('sp', []);
+        $data['selected_products']      = $this->productInformationService->getSpecificProducts($selected_product_ids);
+
+        $data['title']                  = 'চাহিদাপত্র যুক্ত করুন';
+
         $data['uniqueRequisitionNo']    = $this->sectionRequisitionService->getUniqueRequisitionNo();
+
         $user = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
             $data['employee']           = $this->employeeService->getByID($user->employee_id);
@@ -57,6 +80,7 @@ class SectionRequisitionController extends Controller
             $data['employee']           = [];
             $data['sections']           = $this->sectionService->getAll();
         }
+
         return view('admin.requisition-management.section-requisition.add', $data);
     }
     public function store(Request $request)

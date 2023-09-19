@@ -7,7 +7,8 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.section.requisition.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> চাহিদাপত্র যুক্ত করুন</a>
+                            {{-- <a href="{{ route('admin.section.requisition.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> চাহিদাপত্র যুক্ত করুন</a> --}}
+                            <a href="{{ route('admin.section.requisition.product.selection') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> চাহিদাপত্র যুক্ত করুন</a>
                         </div>
                         <div class="card-body">
 
@@ -51,11 +52,11 @@
         </div>
     </section>
     <!-- Modal for Product Details -->
-    <div class="modal fade" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" id="productDetailsModalLabel"  style="font-weight: 600;color: #2a527b;text-transform: uppercase;">Product Details</h6>
+                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">প্রোডাক্ট এর বিবরনী</h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -65,8 +66,10 @@
                         <thead>
                             <tr>
                                 <th>প্রোডাক্ট</th>
-                                <th>বর্তমান স্টক</th>
-                                <th>চাহিদার পরিমাণ</th>
+                                <th>সেকশনের বর্তমান স্টক</th>
+                                <th>সেকশনের চাহিদার পরিমাণ</th>
+                                <th>সুপারিশ পরিমাণ</th>
+                                <th>বিতরনের পরিমাণ</th>
                                 <th>মন্তব্য / যৌক্তিকতা</th>
                             </tr>
                         </thead>
@@ -76,7 +79,7 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">বন্ধ করুন</button>
                 </div>
             </div>
         </div>
@@ -94,10 +97,11 @@
                 for (var i = 0; i < products.length; i++) {
                     var product = products[i];
 
-                    var productName     = product.product;
-                    var currentStock    = product.current_stock;
-                    var demandQuantity  = product.demand_quantity;
-                    var remarks         = product.remarks;
+                    var productName = product.product || "";
+                    var currentStock = product.current_stock || "";
+                    var demandQuantity = product.demand_quantity || "";
+                    var remarks = product.remarks || "";
+
 
                     // Append the product details to the table
                     $('#productDetailsTable').append(`
@@ -105,6 +109,8 @@
                             <td>${productName}</td>
                             <td class="text-right">${currentStock}</td>
                             <td class="text-right">${demandQuantity}</td>
+                            <td class="text-right"></td>
+                            <td class="text-right"></td>
                             <td>${remarks}</td>
                         </tr>
                     `);

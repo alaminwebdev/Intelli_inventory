@@ -96,7 +96,7 @@ if (!function_exists('activeRequisition')) {
     function activeRequisition($value)
     {
         if ($value == 1) {
-            $output = '<span class="badge badge-info">' . __('Department Approved') . '</span>';
+            $output = '<span class="badge badge-info">' . __('Approved') . '</span>';
         } elseif($value == 2) {
             $output = '<span class="badge badge-danger">' . __('Rejected') . '</span>';
         }elseif($value == 3) {
@@ -114,7 +114,7 @@ if (!function_exists('requisitionApprovalStatus')) {
     function requisitionApprovalStatus($value)
     {
         if ($value == 1) {
-            $output = '<span class="badge badge-info">' . __('Department Approved') . '</span>';
+            $output = '<span class="badge badge-info">' . __('Approved') . '</span>';
         } elseif($value == 2) {
             $output = '<span class="badge badge-danger">' . __('Rejected') . '</span>';
         }elseif($value == 3) {
