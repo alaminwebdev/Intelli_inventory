@@ -7,9 +7,25 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            
+
                         </div>
                         <div class="card-body">
+                            <div class="row text-left mb-3">
+                                <div class="col-md-12">
+                                    <a href="{{ route('admin.pending.distribute.list') }}" class="btn btn-warning btn-sm" style="color: white">
+                                        @if (request()->routeIs('admin.pending.distribute.list'))
+                                            <i class="fa fa-check-circle"></i>
+                                        @endif
+                                        Pending Distribution List
+                                    </a>
+                                    <a href="{{ route('admin.approve.distribute.list') }}" class="btn btn-primary btn-sm" style="color: white">
+                                        @if (request()->routeIs('admin.approve.distribute.list'))
+                                            <i class="fa fa-check-circle"></i>
+                                        @endif
+                                        Distributed List
+                                    </a>
+                                </div>
+                            </div>
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>

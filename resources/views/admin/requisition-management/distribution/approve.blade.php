@@ -7,9 +7,25 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            
+
                         </div>
                         <div class="card-body">
+                            <div class="row text-left mb-3">
+                                <div class="col-md-12">
+                                    <a href="{{ route('admin.pending.distribute.list') }}" class="btn btn-warning btn-sm" style="color: white">
+                                        @if (request()->routeIs('admin.pending.distribute.list'))
+                                            <i class="fa fa-check-circle"></i>
+                                        @endif
+                                        Pending Distribution List
+                                    </a>
+                                    <a href="{{ route('admin.approve.distribute.list') }}" class="btn btn-primary btn-sm" style="color: white">
+                                        @if (request()->routeIs('admin.approve.distribute.list'))
+                                            <i class="fa fa-check-circle"></i>
+                                        @endif
+                                        Distributed List
+                                    </a>
+                                </div>
+                            </div>
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -18,16 +34,15 @@
                                         <th>অনুরোধকৃত ডিপার্টমেন্ট</th>
                                         <th>প্রোডাক্ট দেখুন</th>
                                         <th>বর্তমান অবস্থা</th>
-                                        <th>অ্যাকশান</th>
                                     </tr>
                                 </thead>
                                 <tbody>
 
-                                    @foreach ($departmentRequisitions as $list)
+                                    @foreach ($approveDistributes as $list)
                                         @php
-                                            $departmentRequisitionProducts = \App\Models\DepartmentRequisitionDetails::join('product_information', 'product_information.id', 'department_requisition_details.product_id')
+                                            $DepartmentRequisitionDetails = \App\Models\DepartmentRequisitionDetails::join('product_information', 'product_information.id', 'department_requisition_details.product_id')
                                                 ->where('department_requisition_id', $list->id)
-                                                ->select('department_requisition_details.current_stock as current_stock', 'department_requisition_details.demand_quantity as demand_quantity', 'department_requisition_details.remarks as remarks', 'product_information.name as product')
+                                                ->select('department_requisition_details.final_approve_quantity as demand_quantity', 'department_requisition_details.final_approve_remarks as remarks', 'product_information.name as product')
                                                 ->get();
                                         @endphp
                                         <tr>
@@ -35,23 +50,11 @@
                                             <td>{{ @$list->requisition_no ?? 'N/A' }}</td>
                                             <td>{{ @$list->department->name ?? 'N/A' }}</td>
                                             <td class="text-center">
-                                                <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-products="{{ json_encode($departmentRequisitionProducts) }}">
+                                                <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-products="{{ json_encode($DepartmentRequisitionDetails) }}">
                                                     <i class="far fa-eye"></i>
                                                 </button>
                                             </td>
-                                            <td class="text-center">{!! requisitionApprovalStatus($list->status) !!}</td>
-                                            <td class="text-center">
-                                                @if (sorpermission('admin.distribution.edit'))
-                                                    <a class="btn btn-sm btn-success" href="{{ route('admin.distribution.edit', $list->id) }}">
-                                                        <i class="fa fa-edit"></i>
-                                                    </a>
-                                                @endif
-                                                {{-- @if (sorpermission('admin.requisition.delete'))
-                                                <a class="btn btn-sm btn-danger destroy" data-id="{{$list->id}}" data-route="{{route('admin.requisition.delete')}}">
-                                                    <i class="fa fa-trash"></i>
-                                                </a>
-                                                @endif --}}
-                                            </td>
+                                            <td class="text-center">{!! activeRequisition($list->status) !!}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -78,7 +81,7 @@
                         <thead>
                             <tr>
                                 <th>প্রোডাক্ট</th>
-                                <th>বর্তমান স্টক</th>
+                                {{-- <th>বর্তমান স্টক</th> --}}
                                 <th>চাহিদার পরিমাণ</th>
                                 <th>সংযুক্তি</th>
                             </tr>
@@ -116,7 +119,6 @@
                     $('#productDetailsTable').append(`
                             <tr>
                                 <td>${productName}</td>
-                                <td class="text-right">${currentStock}</td>
                                 <td class="text-right">${demandQuantity}</td>
                                 <td >${remarks}</td>
                             </tr>

@@ -60,7 +60,7 @@ class DistributionController extends Controller {
 
     public function store(Request $request, DistributionService $distribute) {
         $distribute->store($request);
-        return redirect()->route('admin.distribution.list')->with('success', 'Data successfully updated!');
+        return redirect()->route('admin.pending.distribute.list')->with('success', 'Data successfully updated!');
     }
 
     public function delete(Request $request) {
@@ -76,6 +76,11 @@ class DistributionController extends Controller {
         $data['title']              = 'প্রোডাক্ট বিতরনের তালিকা';
         $data['pendingDistributes'] = DepartmentRequisition::where('status', 3)->orderBy('id', 'desc')->get();
         return view('admin.requisition-management.distribution.pending', $data);
+    }
+    public function approveDistribute() {
+        $data['title']              = 'বিতরণ করা প্রোডাক্ট এর তালিকা';
+        $data['approveDistributes'] = DepartmentRequisition::where('status', 4)->orderBy('id', 'desc')->get();
+        return view('admin.requisition-management.distribution.approve', $data);
     }
     public function productDistributeEdit($id) {
         $data['title']         = 'প্রোডাক্ট বিতরন করুন';
@@ -147,6 +152,6 @@ class DistributionController extends Controller {
         DepartmentRequisition::where('id', $request->department_requisition_id)->update([
             'status' => 4,
         ]);
-        return redirect()->route('admin.pending.distribute.list');
+        return redirect()->route('admin.approve.distribute.list');
     }
 }
