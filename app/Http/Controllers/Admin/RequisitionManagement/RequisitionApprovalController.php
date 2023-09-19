@@ -94,7 +94,7 @@ class RequisitionApprovalController extends Controller
         $data['date_in_bengali'] = $formatter->format($date);
 
         $data['requisitionApprovalProducts']  = $this->requisitionApprovalService->getApprovedRequisitionProductsByType($id);
-        $data['requestedRequisitionInfo']                     = $this->departmentRequisitionService->getByID($id);
+        $data['requestedRequisitionInfo']     = $this->departmentRequisitionService->getByID($id);
 
         // Generate a PDF
         $pdf = PDF::loadView('admin.reports.approved-requisition-pdf', $data);
