@@ -13,12 +13,13 @@ class CreateDistributesTable extends Migration {
     public function up() {
         Schema::create('distributes', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('department_requisition_id');
+            $table->bigInteger('section_requisition_id');
+            $table->bigInteger('department_requisition_id')->nullable();
             $table->bigInteger('product_id');
             $table->bigInteger('stock_in_detail_id');
             $table->integer('distribute_quantity');
-            $table->integer('distribute_by');
-            $table->dateTime('distribute_at');
+            $table->integer('distribute_by')->nullable();
+            $table->dateTime('distribute_at')->nullable();
             $table->timestamps();
         });
     }

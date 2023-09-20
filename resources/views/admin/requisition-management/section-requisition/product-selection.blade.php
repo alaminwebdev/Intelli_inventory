@@ -35,7 +35,7 @@
                                         <thead>
                                             <tr>
                                                 <th style="width:5%;">বাছাই</th>
-                                                <th>প্রোডাক্ট</th>
+                                                <th>পন্য</th>
                                             </tr>
                                         </thead>
                                         <tbody>

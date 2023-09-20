@@ -24,7 +24,7 @@
 @section('pdf-header')
     <p style="font-size: 18px;">চাহিদাপত্র নাম্বার - {{ en2bn($requestedRequisitionInfo->requisition_no) }}</p>
 
-    <p style="font-size: 11px;">অনুরোধকৃত ডিপার্টমেন্ট : {{ $requestedRequisitionInfo->department->name }}</p>
+    <p style="font-size: 11px;">অনুরোধকৃত ডিপার্টমেন্ট : {{ $requestedRequisitionInfo->section->name }}</p>
     <p style="font-size: 11px;">বর্তমান অবস্থা : {{ $status }}</p>
     <p style="font-size: 11px;">তারিখ : {{ $date_in_bengali }}</p>
 @endsection
@@ -42,8 +42,8 @@
 
 @section('pdf-content')
 
-    @if (@$requisitionApprovalProducts && count(@$requisitionApprovalProducts) > 0)
-        @foreach ($requisitionApprovalProducts as $list)
+    @if (@$requisitionProducts && count(@$requisitionProducts) > 0)
+        @foreach ($requisitionProducts as $list)
             <div>
                 <p style="font-size: 12px; margin: 0; margin-top: 25px;">প্রোডাক্ট ক্যাটাগরি : {{ $list['name'] }}</p>
             </div>
@@ -51,13 +51,13 @@
                 <thead>
                     <tr>
                         <th class="text-left" width="10%">ক্রমিক নং:</th>
-                        <th class="text-center">প্রোডাক্টের তথ্য</th>
-                        <th class="text-center">ডিপি. বর্তমান স্টক</th>
-                        <th class="text-center">ডিপি. চাহিদার পরিমাণ</th>
-                        <th class="text-center">ডিপি. মন্তব্য / যৌক্তিকতা</th>
-                        <th class="text-center">সুপারিশ পরিমাণ</th>
-                        <th class="text-center">বিতরন পরিমাণ</th>
-                        <th class="text-center">মন্তব্য / যৌক্তিকতা</th>
+                        <th class="text-center">পন্যের তথ্য</th>
+                        <th class="text-center">বর্তমান মজূদ</th>
+                        <th class="text-center">চাহিদার পরিমান</th>
+                        <th class="text-center">সুপারিশ পরিমান</th>
+                        <th class="text-center">অনুমোদিত পরিমান</th>
+                        <th class="text-center">বিতরন পরিমান</th>
+                        <th class="text-center">যৌক্তিকতা</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -67,8 +67,8 @@
                             <td>{{ $product['product_name'] }}</td>
                             <td class="text-right">{{ en2bn($product['current_stock']) }}</td>
                             <td class="text-right">{{ en2bn($product['demand_quantity']) }}</td>
-                            <td>{{ $product['remarks'] }}</td>
-                            <td class="text-right">{{ en2bn($product['approve_quantity']) }}</td>
+                            <td class="text-right">{{ en2bn($product['recommended_quantity']) }}</td>
+                            <td class="text-right">{{ en2bn($product['final_approve_quantity']) }}</td>
                             <td class="text-right">{{ en2bn($product['total_distribute_quantity']) }}</td>
                             <td>{{ $product['approve_remarks'] }}</td>
                         </tr>

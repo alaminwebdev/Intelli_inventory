@@ -53,10 +53,10 @@
                                             <table id="" class="table table-bordered">
                                                 <thead>
                                                     <tr>
-                                                        <th>প্রোডাক্ট</th>
-                                                        <th>বর্তমান স্টক</th>
+                                                        <th>পন্য</th>
+                                                        <th>বর্তমান মজূদ</th>
                                                         <th>চাহিদার পরিমাণ</th>
-                                                        <th>মন্তব্য / যৌক্তিকতা </th>
+                                                        <th>যৌক্তিকতা </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

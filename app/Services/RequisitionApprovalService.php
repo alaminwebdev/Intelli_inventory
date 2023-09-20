@@ -8,6 +8,7 @@ use App\Models\DepartmentRequisitionDetails;
 use App\Models\ProductInformation;
 use App\Models\ProductType;
 use App\Models\SectionRequisition;
+use App\Models\SectionRequisitionDetails;
 use Illuminate\Support\Facades\DB;
 
 
@@ -39,41 +40,36 @@ class RequisitionApprovalService implements IService
         DB::beginTransaction();
         try {
 
-            $departmentRequisition                  = DepartmentRequisition::find($id);
-            $departmentRequisition->status          = $request->status;
+            $sectionRequisition                  = SectionRequisition::find($id);
+            $sectionRequisition->status          = $request->status;
 
-            if ($departmentRequisition->save()) {
+            if ($sectionRequisition->save()) {
                 if ($request->status == 1) {
 
                     // Get all form data arrays
                     $productTypesData               = $request->input('product_type');
-                    $departmentDemandQuantityData   = $request->input('department_demand_quantity');
-                    $approveQuantityData            = $request->input('approve_quantity');
-                    $remarksData                    = $request->input('remarks');
-                    $approveRemarksData             = $request->input('approve_remarks');
+                    $sectionDemandQuantityData      = $request->input('section_demand_quantity');
+                    $recommendedQuantityData        = $request->input('recommended_quantity');
+                    $recommendedRemarksData         = $request->input('recommended_remarks');
 
                     // Loop through the product types data (keys are product IDs, values are product type IDs)
                     foreach ($productTypesData as $productId => $productTypeId) {
                         // Retrieve data for the current product
-                        $departmentDemandQuantity   = $departmentDemandQuantityData[$productId];
-                        $approveQuantity            = $approveQuantityData[$productId];
-                        $remarks                    = $remarksData[$productId];
-                        $approveRemarks             = $approveRemarksData[$productId];
+                        $sectionDemandQuantity      = $sectionDemandQuantityData[$productId];
+                        $recommendedQuantity        = $recommendedQuantityData[$productId];
+                        $recommendedRemarks         = $recommendedRemarksData[$productId];
 
-                        if ($departmentDemandQuantity !== null) {
-                            // Store Data into DepartmentRequisitionDetails
-                            $departmentRequisitionDetails                               = DepartmentRequisitionDetails::where('department_requisition_id', $id)->where('product_id', $productId)->first();
-                            $departmentRequisitionDetails->approve_quantity             = $approveQuantity ?? $departmentDemandQuantity;
-                            $departmentRequisitionDetails->remarks                      = $remarks;
-                            $departmentRequisitionDetails->approve_remarks              = $approveRemarks;
-                            $departmentRequisitionDetails->status                       = 1;
-                            $departmentRequisitionDetails->save();
+                        if ($sectionDemandQuantity !== null) {
+                            // Store Data into SectionRequisitionDetails
+                            $sectionRequisitionDetails                          = SectionRequisitionDetails::where('section_requisition_id', $id)->where('product_id', $productId)->first();
+                            $sectionRequisitionDetails->recommended_quantity    = $recommendedQuantity ?? $sectionDemandQuantity;
+                            $sectionRequisitionDetails->recommended_remarks     = $recommendedRemarks;
+                            $sectionRequisitionDetails->status                  = 1;
+                            $sectionRequisitionDetails->save();
                         }
                     }
                 }
 
-                // Store department requisition status into SectionRequisition
-                SectionRequisition::where('department_requisition_id', $id)->update(['status' =>  $request->status]);
             }
             DB::commit();
             return true;

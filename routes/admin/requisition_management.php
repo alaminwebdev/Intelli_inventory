@@ -26,10 +26,12 @@ Route::prefix('/department-requisition')->group(function () {
     Route::post('/delete', [DepartmentRequisitionController::class, 'delete'])->name('department.requisition.delete');
 });
 
-Route::prefix('/requisition')->group(function () {
-    Route::get('/list', [RequisitionApprovalController::class, 'index'])->name('requisition.list');
-    Route::get('/edit/{id}', [RequisitionApprovalController::class, 'edit'])->name('requisition.edit');
-    Route::post('/update/{id}', [RequisitionApprovalController::class, 'update'])->name('requisition.update');
+
+// RequisitionApprovalController is responsible for Requisition Recommendation, after that it will go to next stage - Requisition/Distribution Approval
+Route::prefix('/recommended-requisition')->group(function () {
+    Route::get('/list', [RequisitionApprovalController::class, 'index'])->name('recommended.requisition.list');
+    Route::get('/edit/{id}', [RequisitionApprovalController::class, 'edit'])->name('recommended.requisition.edit');
+    Route::post('/update/{id}', [RequisitionApprovalController::class, 'update'])->name('recommended.requisition.update');
 });
 
 Route::prefix('/distribution-approval')->group(function () {

@@ -99,6 +99,7 @@ class SectionRequisitionService implements IService
                         // Store Data into SectionRequisitionDetails
                         $sectionRequisitionDetails                          = new SectionRequisitionDetails();
                         $sectionRequisitionDetails->section_requisition_id  = $sectionRequisition->id;
+                        $sectionRequisitionDetails->requisition_no          = $data['requisitionNumber'];
                         $sectionRequisitionDetails->product_id              = $productId;
                         $sectionRequisitionDetails->current_stock           = $currentStock;
                         $sectionRequisitionDetails->demand_quantity         = $demandQuantity;

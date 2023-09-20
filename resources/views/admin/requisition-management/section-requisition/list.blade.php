@@ -18,8 +18,8 @@
                                         <th width="5%">ক্রমিক নং.</th>
                                         <th>চাহিদাপত্র নাম্বার</th>
                                         <th>অনুরোধকৃত সেকশন</th>
-                                        <th>প্রোডাক্ট দেখুন</th>
                                         <th>বর্তমান অবস্থা</th>
+                                        <th>অ্যাকশন</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -27,19 +27,20 @@
                                         @php
                                             $sectionRequisitionProducts = \App\Models\SectionRequisitionDetails::join('product_information', 'product_information.id', 'section_requisition_details.product_id')
                                                 ->where('section_requisition_id', $list->id)
-                                                ->select('section_requisition_details.current_stock as current_stock', 'section_requisition_details.demand_quantity as demand_quantity', 'section_requisition_details.remarks as remarks', 'product_information.name as product')
+                                                ->select('section_requisition_details.current_stock as current_stock', 'section_requisition_details.demand_quantity as demand_quantity', 'section_requisition_details.recommended_quantity as recommended_quantity', 'section_requisition_details.final_approve_quantity as final_approve_quantity' , 'section_requisition_details.remarks as remarks', 'product_information.name as product')
                                                 ->get();
                                         @endphp
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ @$list->requisition_no ?? 'N/A' }}</td>
                                             <td>{{ @$list->section->name ?? 'N/A' }}</td>
+                                            <td class="text-center">{!! requisitionStatus($list->status) !!}</td>
                                             <td class="text-center">
                                                 <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-products="{{ json_encode($sectionRequisitionProducts) }}">
                                                     <i class="far fa-eye"></i>
                                                 </button>
+                                                <a class="btn btn-sm btn-primary" href="{{ route('admin.requisition.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ</a>
                                             </td>
-                                            <td class="text-center">{!! activeRequisition($list->status) !!}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -56,7 +57,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">প্রোডাক্ট এর বিবরনী</h6>
+                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">পন্যের বিবরনী</h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -65,12 +66,12 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>প্রোডাক্ট</th>
-                                <th>সেকশনের বর্তমান স্টক</th>
-                                <th>সেকশনের চাহিদার পরিমাণ</th>
-                                <th>সুপারিশ পরিমাণ</th>
-                                <th>বিতরনের পরিমাণ</th>
-                                <th>মন্তব্য / যৌক্তিকতা</th>
+                                <th>পন্য</th>
+                                <th>বর্তমান মজূদ</th>
+                                <th>চাহিদার পরিমান</th>
+                                <th>সুপারিশ পরিমান</th>
+                                <th>অনুমোদিত পরিমান</th>
+                                <th>যৌক্তিকতা</th>
                             </tr>
                         </thead>
                         <tbody id="productDetailsTable">
@@ -97,10 +98,12 @@
                 for (var i = 0; i < products.length; i++) {
                     var product = products[i];
 
-                    var productName = product.product || "";
-                    var currentStock = product.current_stock || "";
-                    var demandQuantity = product.demand_quantity || "";
-                    var remarks = product.remarks || "";
+                    var productName             = product.product || "";
+                    var currentStock            = product.current_stock || "";
+                    var demandQuantity          = product.demand_quantity || "";
+                    var recommendedQuantity     = product.recommended_quantity || "";
+                    var finalApproveQuantity    = product.final_approve_quantity || "";
+                    var remarks                 = product.remarks || "";
 
 
                     // Append the product details to the table
@@ -109,8 +112,8 @@
                             <td>${productName}</td>
                             <td class="text-right">${currentStock}</td>
                             <td class="text-right">${demandQuantity}</td>
-                            <td class="text-right"></td>
-                            <td class="text-right"></td>
+                            <td class="text-right">${recommendedQuantity}</td>
+                            <td class="text-right">${finalApproveQuantity}</td>
                             <td>${remarks}</td>
                         </tr>
                     `);

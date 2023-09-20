@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\RequisitionManagement;
 
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
+use App\Models\Section;
 use Illuminate\Http\Request;
 
 use App\Services\ProductTypeService;
@@ -40,7 +41,7 @@ class SectionRequisitionController extends Controller
         $user = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
             $employee                       = $this->employeeService->getByID($user->employee_id);
-            $sectionIds                     = Employee::where('department_id', $employee->department_id)->whereNotNull('section_id')->pluck('section_id');
+            $sectionIds                     = Section::where('department_id', $employee->department_id)->pluck('id');
             $data['sectionRequisitions']    = $this->sectionRequisitionService->getAll(null, null, $sectionIds);
         } else {
             $data['sectionRequisitions']    = $this->sectionRequisitionService->getAll();
@@ -50,7 +51,7 @@ class SectionRequisitionController extends Controller
     }
     public function selectProducts()
     {
-        $data['title']                  = 'প্রোডাক্ট সেলেক্ট করুন';
+        $data['title']                  = 'পন্য বাছাই করুন';
         $data['product_types']          = $this->productTypeService->getAll(1);
         return view('admin.requisition-management.section-requisition.product-selection', $data);
     }

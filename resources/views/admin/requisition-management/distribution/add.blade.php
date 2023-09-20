@@ -11,7 +11,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.distribution.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>প্রোডাক্ট বিতরনের তালিকা</a>
+                            <a href="{{ route('admin.distribution.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>পন্য বিতরনের তালিকা</a>
                         </div>
                         <div class="card-body">
                             <form id="submitForm" action="{{ isset($editData) ? route('admin.distribution.update', $editData->id) : route('admin.distribution.store') }} " method="post" enctype="multipart/form-data" autocomplete="off" >
@@ -21,17 +21,17 @@
                                     <div class="col-md-12">
                                         <div class="row px-3 py-4 border rounded shadow-sm mb-3">
                                             <div class="col-md-2">
-                                                <input type="hidden" value="{{ $editData->id }}" name="department_requisition_id">
+                                                <input type="hidden" value="{{ $editData->id }}" name="section_requisition_id">
                                                 <label class="control-label">চাহিদাপত্র নাম্বার :</label>
                                                 <input type="text" class="form-control form-control-sm" id="remarks" name="requisition_no" value="{{ $editData->requisition_no }}" readonly>
                                             </div>
                                             <div class="col-md-5">
-                                                <label class="control-label">ডিপার্টমেন্ট : <span class="text-red">*</span></label>
-                                                <select name="department_id" class="form-control form-control-sm select2" id="department_id" disabled>
+                                                <label class="control-label">সেকশন : <span class="text-red">*</span></label>
+                                                <select name="section_id" class="form-control form-control-sm select2" id="section_id" disabled>
                                                     <option value="">Select Department</option>
-                                                    @foreach ($departments as $department)
-                                                        <option value="{{ $department->id }}" {{ $editData->department_id == $department->id ?  'selected' : '' }}>
-                                                            {{ $department->name }}
+                                                    @foreach ($sections as $section)
+                                                        <option value="{{ $section->id }}" {{ $editData->section_id == $section->id ?  'selected' : '' }}>
+                                                            {{ $section->name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -54,13 +54,14 @@
                                                             <table id="" class="table table-bordered">
                                                                 <thead>
                                                                     <tr>
-                                                                        <th>প্রোডাক্ট</th>
-                                                                        <th>পূর্ববর্তী বিতরনের পরিমাণ</th>
-                                                                        <th>ডিপার্টমেন্টের স্টক</th>
-                                                                        <th>চাহিদার পরিমাণ</th>
-                                                                        <th>বিতরনযোগ্য স্টক</th>
-                                                                        <th>বিতরনের পরিমাণ</th>
-                                                                        <th>মন্তব্য / যৌক্তিকতা</th>
+                                                                        <th>পন্য</th>
+                                                                        <th>পূর্ববর্তী বিতরনের পরিমান</th>
+                                                                        <th>বর্তমান মজূদ</th>
+                                                                        <th>চাহিদার পরিমান</th>
+                                                                        <th>সুপারিশ পরিমান</th>
+                                                                        <th>বিতরনযোগ্য মজূদ</th>
+                                                                        <th>অনুমোদন পরিমান</th>
+                                                                        <th>যৌক্তিকতা</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -70,12 +71,12 @@
                                                                             ->pluck('id');
                                                                         
 
-                                                                        $requisitionProducts = \App\Models\DepartmentRequisitionDetails::with('StockDetail')->where('department_requisition_id', $editData->id)
+                                                                        $requisitionProducts = \App\Models\SectionRequisitionDetails::with('StockDetail')->where('section_requisition_id', $editData->id)
                                                                             ->whereIn('product_id', $productIds)
                                                                             ->get();
 
                                                                       
-                                                                        // dd($requisitionProducts->toArray());
+                                                                        //dd($requisitionProducts->toArray());
 
                                                                     @endphp
                                                                     @foreach ($requisitionProducts as $product)
@@ -97,16 +98,19 @@
                                                                                 <input type="number" class="form-control form-control-sm" id="previous_stock_{{ $product->product_id }}" value="{{ $lastDistribute->distribute_quantity ?? 0}}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="department_current_stock_{{ $product->product_id }}" name="department_current_stock[{{ $product->product_id }}]" value="{{ $product->current_stock }}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" id="current_stock_{{ $product->product_id }}" name="current_stock[{{ $product->product_id }}]" value="{{ $product->current_stock }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="department_demand_quantity_{{ $product->product_id }}" name="department_demand_quantity[{{ $product->product_id }}]" value="{{ $product->demand_quantity }}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" id="demand_quantity_{{ $product->product_id }}" name="demand_quantity[{{ $product->product_id }}]" value="{{ $product->demand_quantity }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="text" class="form-control form-control-sm" id="approve_quantity_{{ $product->product_id }}" value="{{ $product->StockDetail->sum('available_qty') }}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" id="recommended_quantity_{{ $product->product_id }}" name="recommended_quantity[{{ $product->product_id }}]" value="{{ $product->recommended_quantity }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="distribute_quantity_{{ $product->product_id }}" name="distribute_quantity[{{ $product->product_id }}]" >
+                                                                                <input type="text" class="form-control form-control-sm" id="available_quantity_{{ $product->product_id }}" value="{{ $product->StockDetail->sum('available_qty') }}" readonly>
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="number" class="form-control form-control-sm" id="approve_quantity_{{ $product->product_id }}" name="approve_quantity[{{ $product->product_id }}]" >
                                                                             </td>
                                                                             <td>
                                                                                 <input type="text" class="form-control form-control-sm" id="remarks_{{ $product->product_id }}" name="remarks[{{ $product->product_id }}]">
@@ -125,7 +129,7 @@
                                     <div class="col-md-12">
                                         <div class="text-right">
                                             @if (@$editData->id)
-                                                <button type="submit" class="btn btn-success btn-sm">হালনাগাদ</button>
+                                                <button type="submit" class="btn btn-success btn-sm">অনুমোদন করুন</button>
                                             @else
                                                 <button type="submit" class="btn btn-success btn-sm">সংরক্ষণ</button>
                                                 <button type="reset" class="btn btn-danger btn-sm">মুছুন</button>

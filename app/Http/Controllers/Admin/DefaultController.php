@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DepartmentRequisitionDetails;
 use App\Models\Distribute;
 use App\Models\ProductInformation;
+use App\Models\SectionRequisitionDetails;
 use Illuminate\Http\Request;
 
 use App\Services\ProductInformationService;
@@ -83,19 +84,19 @@ class DefaultController extends Controller
 
     public function requisitionReport($id)
     {
-        $date                   = new DateTime('now', new DateTimeZone('Asia/Dhaka')); // Set your desired timezone
-        $formatter              = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+        $date                       = new DateTime('now', new DateTimeZone('Asia/Dhaka')); // Set your desired timezone
+        $formatter                  = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
         $formatter->setPattern('d-MMMM-y'); // Customize the date format if needed
-        $data['date_in_bengali'] = $formatter->format($date);
+        $data['date_in_bengali']    = $formatter->format($date);
 
-        $productTypeData = [];
-        $product_types = $this->productTypeService->getAll(1);
+        $productTypeData    = [];
+        $product_types      = $this->productTypeService->getAll(1);
 
         foreach ($product_types as $item) {
             $productType = [
-                'id' => $item->id,
-                'name' => $item->name,
-                'products' => [],
+                'id'        => $item->id,
+                'name'      => $item->name,
+                'products'  => [],
             ];
 
             // Query products for this product type and push them into the products array
@@ -103,7 +104,7 @@ class DefaultController extends Controller
                 ->latest()
                 ->pluck('id');
 
-            $requisitionProducts = DepartmentRequisitionDetails::where('department_requisition_id', $id)
+            $requisitionProducts = SectionRequisitionDetails::where('section_requisition_id', $id)
                 ->whereIn('product_id', $productIds)
                 ->get();
 
@@ -111,21 +112,21 @@ class DefaultController extends Controller
 
                 foreach ($requisitionProducts as $product) {
 
-                    // Get the total distribute_quantity for this product_id and department_requisition_id
-                    $totalDistributeQuantity = Distribute::where('department_requisition_id', $id)
+                    // Get the total distribute_quantity for this product_id and section_requisition_id
+                    $totalDistributeQuantity = Distribute::where('section_requisition_id', $id)
                         ->where('product_id', $product->product_id)
                         ->sum('distribute_quantity');
 
                     $productType['products'][$product->product_id] = [
-                        'product_id' => $product->product_id,
-                        'product_name' => $product->product->name,
-                        'current_stock' => $product->current_stock,
-                        'demand_quantity' => $product->demand_quantity,
-                        'remarks' => $product->remarks,
-                        'approve_quantity' => $product->approve_quantity ?? $product->demand_quantity,
-                        'approve_remarks' => $product->approve_remarks,
-                        'final_approve_quantity' => $product->final_approve_quantity,
-                        'final_approve_remarks' => $product->final_approve_remarks,
+                        'product_id'                => $product->product_id,
+                        'product_name'              => $product->product->name,
+                        'current_stock'             => $product->current_stock,
+                        'demand_quantity'           => $product->demand_quantity,
+                        'remarks'                   => $product->remarks,
+                        'recommended_quantity'      => $product->recommended_quantity,
+                        'approve_remarks'           => $product->approve_remarks,
+                        'final_approve_quantity'    => $product->final_approve_quantity,
+                        'final_approve_remarks'     => $product->final_approve_remarks,
                         'total_distribute_quantity' => $totalDistributeQuantity ?? 'N/A',
                     ];
                 }
@@ -134,8 +135,8 @@ class DefaultController extends Controller
                 $productTypeData[] = $productType;
             }
         }
-        $data['requisitionApprovalProducts']  = $productTypeData;
-        $data['requestedRequisitionInfo']     = $this->departmentRequisitionService->getByID($id);
+        $data['requisitionProducts']            = $productTypeData;
+        $data['requestedRequisitionInfo']       = $this->sectionRequisitionService->getByID($id);
 
         // Generate a PDF
         $pdf = PDF::loadView('admin.reports.requisition-pdf', $data);

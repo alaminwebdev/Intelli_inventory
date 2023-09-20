@@ -96,7 +96,7 @@ if (!function_exists('activeRequisition')) {
     function activeRequisition($value)
     {
         if ($value == 1) {
-            $output = '<span class="badge badge-info">' . __('Approved') . '</span>';
+            $output = '<span class="badge badge-info">' . __('Recommended') . '</span>';
         } elseif($value == 2) {
             $output = '<span class="badge badge-danger">' . __('Rejected') . '</span>';
         }elseif($value == 3) {
@@ -110,19 +110,19 @@ if (!function_exists('activeRequisition')) {
     }
 }
 
-if (!function_exists('requisitionApprovalStatus')) {
-    function requisitionApprovalStatus($value)
+if (!function_exists('requisitionStatus')) {
+    function requisitionStatus($value)
     {
         if ($value == 1) {
-            $output = '<span class="badge badge-info">' . __('Approved') . '</span>';
+            $output = '<span class="badge badge-info">' . __('সুপারিশকৃত') . '</span>';
         } elseif($value == 2) {
-            $output = '<span class="badge badge-danger">' . __('Rejected') . '</span>';
+            $output = '<span class="badge badge-danger">' . __('প্রত্যাখ্যান') . '</span>';
         }elseif($value == 3) {
-            $output = '<span class="badge badge-success">' . __('Final Approved') . '</span>';
+            $output = '<span class="badge badge-success">' . __('অনুমোদিত') . '</span>';
         }elseif($value == 4) {
-            $output = '<span class="badge badge-success">' . __('Distributed') . '</span>';
+            $output = '<span class="badge badge-success">' . __('বিতরণ করা হয়েছে') . '</span>';
         } else {
-            $output = '<span class="badge badge-warning">' . __('Initiated') . '</span>';
+            $output = '<span class="badge badge-warning">' . __('গৃহীত') . '</span>';
         }
         return $output;
     }

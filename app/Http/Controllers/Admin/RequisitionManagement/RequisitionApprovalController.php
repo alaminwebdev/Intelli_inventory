@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Admin\RequisitionManagement;
 use App\Http\Controllers\Controller;
 use App\Models\DepartmentRequisitionDetails;
 use App\Models\ProductInformation;
+use App\Models\Section;
 use Illuminate\Http\Request;
 use App\Services\ProductTypeService;
 use App\Services\DepartmentRequisitionService;
 use App\Services\SectionRequisitionService;
 use App\Services\RequisitionApprovalService;
 use App\Services\EmployeeService;
+use App\Services\SectionService;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -21,19 +23,22 @@ class RequisitionApprovalController extends Controller
     private $departmentRequisitionService;
     private $requisitionApprovalService;
     private $employeeService;
+    private $sectionService;
 
     public function __construct(
         DepartmentRequisitionService $departmentRequisitionService,
         ProductTypeService $productTypeService,
         SectionRequisitionService $sectionRequisitionService,
         RequisitionApprovalService $requisitionApprovalService,
-        EmployeeService $employeeService
+        EmployeeService $employeeService,
+        SectionService $sectionService
     ) {
         $this->productTypeService               = $productTypeService;
         $this->departmentRequisitionService     = $departmentRequisitionService;
         $this->sectionRequisitionService        = $sectionRequisitionService;
         $this->requisitionApprovalService       = $requisitionApprovalService;
-        $this->employeeService              = $employeeService;
+        $this->employeeService                  = $employeeService;
+        $this->sectionService                   = $sectionService;
     }
     public function index()
     {
@@ -41,11 +46,19 @@ class RequisitionApprovalController extends Controller
         $user = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
             $employee                           = $this->employeeService->getByID($user->employee_id);
-            $data['departmentRequisitions']     = $this->departmentRequisitionService->getAll($employee->department_id);
+            $sections                           = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
+            
+            // Extract only the "id" values into a new array
+            $sectionIds = array_map(function ($section) {
+                return $section['id'];
+            }, $sections);
+            
+            $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll(null, null, $sectionIds);
         } else {
-            $data['departmentRequisitions']     = $this->departmentRequisitionService->getAll();
+
+            $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll();
         }
-        return view('admin.requisition-management.requisition.list', $data);
+        return view('admin.requisition-management.recommended-requisition.list', $data);
     }
     public function add()
     {
@@ -60,17 +73,16 @@ class RequisitionApprovalController extends Controller
 
     public function edit($id)
     {
-        $data['title']          = 'চাহিদাপত্র হালনাগাদ করুন';
-        $data['editData']       = $this->departmentRequisitionService->getByID($id);
+        $data['title']          = 'চাহিদাপত্র সুপারিশ করুন';
+        $data['editData']       = $this->sectionRequisitionService->getByID($id);
         $data['product_types']  = $this->productTypeService->getAll(1);
-
-        return view('admin.requisition-management.requisition.add', $data);
+        return view('admin.requisition-management.recommended-requisition.add', $data);
     }
 
     public function update(Request $request, $id)
     {
         $this->requisitionApprovalService->update($request, $id);
-        return redirect()->route('admin.requisition.list')->with('success', 'Data successfully updated!');
+        return redirect()->route('admin.recommended.requisition.list')->with('success', 'Data successfully updated!');
     }
 
     public function delete(Request $request)

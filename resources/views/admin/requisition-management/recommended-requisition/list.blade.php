@@ -7,9 +7,37 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-
+                            {{-- <a href="{{ route('admin.department.requisition.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Department Requisition</a> --}}
                         </div>
                         <div class="card-body">
+                            {{-- <form id="submitForm" action=" " method="post">
+                                <div class="row px-3 py-4 border rounded shadow-sm mb-3">
+                                    <div class="col-sm-5">
+                                        <label class="control-label">Department <span class="text-red">*</span></label>
+                                        <select name="department_id" id="department_id" class="form-control select2 @error('department_id') is-invalid @enderror">
+                                            <option value="" >Please Select</option>
+                                        </select>
+                                        @error('product_type_id')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <label class="control-label">Requisition Status <span class="text-red">*</span></label>
+                                        <select name="status" id="status" class="form-control select2 @error('status') is-invalid @enderror">
+                                            <option value="" disabled >Please Select</option>
+                                            <option value="0" >Initiated</option>
+                                            <option value="1" >Approved</option>
+                                            <option value="2" >Rejected</option>
+                                        </select>
+                                    </div> 
+                                    <div class="col-sm-2">
+                                        <label class="control-label" style="visibility: hidden;">Search</label>
+                                        <button type="submit" class="btn btn-block btn-success btn-sm" disabled>Search</button>
+                                    </div>
+                                </div>
+                            </form> --}}
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -17,11 +45,10 @@
                                         <th>চাহিদাপত্র নাম্বার</th>
                                         <th>অনুরোধকৃত সেকশন</th>
                                         <th>বর্তমান অবস্থা</th>
-                                        <th>অ্যাকশান</th>
+                                        <th>অ্যাকশন</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-
                                     @foreach ($sectionRequisitions as $list)
                                         @php
                                             $sectionRequisitionProducts = \App\Models\SectionRequisitionDetails::join('product_information', 'product_information.id', 'section_requisition_details.product_id')
@@ -35,15 +62,15 @@
                                             <td>{{ @$list->section->name ?? 'N/A' }}</td>
                                             <td class="text-center">{!! requisitionStatus($list->status) !!}</td>
                                             <td class="text-center">
-                                                @if (sorpermission('admin.distribution.edit'))
-                                                    <a class="btn btn-sm btn-success" href="{{ route('admin.distribution.edit', $list->id) }}">
+                                                @if (sorpermission('admin.recommended.requisition.edit'))
+                                                    <a class="btn btn-sm btn-success" href="{{ route('admin.recommended.requisition.edit', $list->id) }}">
                                                         <i class="fa fa-edit"></i>
                                                     </a>
                                                 @endif
-                                                <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-products="{{ json_encode($sectionRequisitionProducts) }}">
+                                                <button class="btn btn-sm btn-info view-products" data-toggle="modal" data-target="#productDetailsModal" data-products="{{ json_encode($sectionRequisitionProducts) }}">
                                                     <i class="far fa-eye"></i>
                                                 </button>
-                                                {{-- <a class="btn btn-sm btn-primary" href="{{ route('admin.requisition.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ</a> --}}
+                                                <a class="btn btn-sm btn-primary" href="{{ route('admin.requisition.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i>পিডিএফ</a>
                                                 {{-- @if (sorpermission('admin.requisition.delete'))
                                                 <a class="btn btn-sm btn-danger destroy" data-id="{{$list->id}}" data-route="{{route('admin.requisition.delete')}}">
                                                     <i class="fa fa-trash"></i>
@@ -60,7 +87,6 @@
             </div>
         </div>
     </section>
-
     <!-- Modal for Product Details -->
     <div class="modal" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -77,9 +103,9 @@
                             <tr>
                                 <th>পন্য</th>
                                 <th>বর্তমান মজূদ</th>
-                                <th>চাহিদার পরিমাণ</th>
-                                <th>সুপারিশ পরিমাণ</th>
-                                <th>অনুমোদিত পরিমাণ</th>
+                                <th>চাহিদার পরিমান</th>
+                                <th>সুপারিশ পরিমান</th>
+                                <th>অনুমোদিত পরিমান</th>
                                 <th>যৌক্তিকতা</th>
                             </tr>
                         </thead>

@@ -17,7 +17,9 @@ class CreateSectionRequisitionsTable extends Migration {
             $table->string('requisition_no');
             $table->bigInteger('user_id');
             $table->integer('section_id')->nullable();
-            $table->integer('status')->nullable();
+            $table->integer('status')->nullable()->comment('0=Created, 1=Recommended, 2=Reject, 3=Final Approved, 4=Distributed');
+            $table->bigInteger('final_approve_by')->nullable();
+            $table->dateTime('final_created_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

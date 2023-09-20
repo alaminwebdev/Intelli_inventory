@@ -9,18 +9,18 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.requisition.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>চাহিদাপত্রের তালিকা</a>
+                            <a href="{{ route('admin.recommended.requisition.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>সুপারিশকৃত চাহিদাপত্রের তালিকা</a>
                         </div>
                         <div class="card-body">
-                            <form id="submitForm" action="{{ route('admin.requisition.update', $editData->id) }} " method="post" enctype="multipart/form-data" autocomplete="off" onsubmit="return validateForm(event)">
+                            <form id="submitForm" action="{{ route('admin.recommended.requisition.update', $editData->id) }} " method="post" enctype="multipart/form-data" autocomplete="off" onsubmit="return validateForm(event)">
                                 @csrf
 
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="row px-3 py-4 border rounded shadow-sm mb-3">
                                             <div class="col-md-4">
-                                                <label class="control-label">ডিপার্টমেন্ট :</label>
-                                                <input type="text" class="form-control form-control-sm"  value="{{ $editData->department->name }}" readonly>
+                                                <label class="control-label">সেকশন :</label>
+                                                <input type="text" class="form-control form-control-sm"  value="{{ $editData->section->name }}" readonly>
                                             </div>
                                             <div class="col-md-4">
                                                 <label class="control-label">চাহিদাপত্রের নাম্বার :</label>
@@ -30,8 +30,8 @@
                                                 <label class="control-label">চাহিদাপত্রের অবস্থা <span class="text-red">*</span></label>
                                                 <select name="status" id="status" class="form-control select2 @error('status') is-invalid @enderror">
                                                     <option value="" disabled >Please Select</option>
-                                                    <option value="1" >Approved</option>
-                                                    <option value="2" >Rejected</option>
+                                                    <option value="1" {{ @$editData->status == 1 ? 'selected' : '' }} >সুপারিশ</option>
+                                                    <option value="2" {{ @$editData->status == 2 ? 'selected' : '' }} >প্রত্যাখ্যান</option>
                                                 </select>
                                             </div> 
                                         </div>
@@ -52,12 +52,12 @@
                                                             <table id="" class="table table-bordered">
                                                                 <thead>
                                                                     <tr>
-                                                                        <th>প্রোডাক্ট</th>
-                                                                        <th>বর্তমান স্টক</th>
+                                                                        <th>পন্য</th>
+                                                                        <th>বর্তমান মজূদ</th>
                                                                         <th>চাহিদার পরিমাণ</th>
-                                                                        <th>ডিপি. মন্তব্য / যৌক্তিকতা</th>
+                                                                        <th>সেকশন - যৌক্তিকতা</th>
                                                                         <th>সুপারিশ পরিমাণ</th>
-                                                                        <th>মন্তব্য / যৌক্তিকতা</th>
+                                                                        <th>যৌক্তিকতা</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -66,7 +66,7 @@
                                                                             ->latest()
                                                                             ->pluck('id');
 
-                                                                        $requisitionProducts = \App\Models\DepartmentRequisitionDetails::where('department_requisition_id', $editData->id)
+                                                                        $requisitionProducts = \App\Models\SectionRequisitionDetails::where('section_requisition_id', $editData->id)
                                                                             ->whereIn('product_id', $productIds)
                                                                             ->get();
                                                                         
@@ -75,19 +75,19 @@
                                                                         <tr data-product-id="{{ $product->product_id }}">
                                                                             <td class="product-name">{{ $product->product->name }}</td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="department_current_stock_{{ $product->product_id }}" name="department_current_stock[{{ $product->product_id }}]" value="{{ $product->current_stock }}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" id="section_current_stock_{{ $product->product_id }}" name="section_current_stock[{{ $product->product_id }}]" value="{{ $product->current_stock }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="department_demand_quantity_{{ $product->product_id }}" name="department_demand_quantity[{{ $product->product_id }}]" value="{{ $product->demand_quantity }}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" id="section_demand_quantity_{{ $product->product_id }}" name="section_demand_quantity[{{ $product->product_id }}]" value="{{ $product->demand_quantity }}" readonly>
                                                                             </td>
                                                                             <td>
                                                                                 <input type="text" class="form-control form-control-sm" id="remarks_{{ $product->product_id }}" name="remarks[{{ $product->product_id }}]" value="{{ $product->remarks }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="approve_quantity_{{ $product->product_id }}" name="approve_quantity[{{ $product->product_id }}]" value="{{ $product->approve_quantity ?? $product->demand_quantity  }}">
+                                                                                <input type="number" class="form-control form-control-sm" id="recommended_quantity_{{ $product->product_id }}" name="recommended_quantity[{{ $product->product_id }}]" value="{{ $product->recommended_quantity ?? $product->demand_quantity  }}">
                                                                             </td>
                                                                             <td>
-                                                                                <input type="text" class="form-control form-control-sm" id="approve_remarks_{{ $product->product_id }}" name="approve_remarks[{{ $product->product_id }}]" value="{{ $product->approve_remarks }}">
+                                                                                <input type="text" class="form-control form-control-sm" id="recommended_remarks_{{ $product->product_id }}" name="recommended_remarks[{{ $product->product_id }}]" value="{{ $product->recommended_remarks }}">
                                                                             </td>
                                                                         </tr>
                                                                         <input type="hidden" name="product_type[{{ $product->product_id }}]" value="{{ $item->id }}">
@@ -104,13 +104,13 @@
                                     <div class="col-md-12">
                                         <div class="text-right">
                                             @if (@$editData->id)
-                                                <button type="submit" class="btn btn-success btn-sm">হালনাগাদ</button>
+                                                <button type="submit" class="btn btn-success btn-sm" {{ @$editData->status == 0 ? '' : 'disabled'}}>সুপারিশ করুন</button>
                                             @else
                                                 <button type="submit" class="btn btn-success btn-sm">সংরক্ষণ</button>
                                                 <button type="reset" class="btn btn-danger btn-sm">মুছুন</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.requisition.list') }}">পিছনে যান</a>
+                                                <a href="{{ route('admin.recommended.requisition.list') }}">পিছনে যান</a>
                                             </button>
                                         </div>
                                     </div>
