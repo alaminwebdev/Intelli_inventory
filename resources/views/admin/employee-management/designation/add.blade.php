@@ -7,7 +7,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.employee.designation.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>Designation List</a>
+                            <a href="{{ route('admin.employee.designation.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>কর্মচারীদের পদবী তালিকা</a>
                         </div>
                         <div class="card-body">
                             <form id="submitForm" action="{{ isset($editData) ? route('admin.employee.designation.update', $editData->id) : route('admin.employee.designation.store') }} " method="post" enctype="multipart/form-data" autocomplete="off">
@@ -43,13 +43,13 @@
                                     <div class="col-md-12">
                                         <div class="text-right">
                                             @if (@$editData->id)
-                                                <button type="submit" class="btn btn-success btn-sm">Update</button>
+                                                <button type="submit" class="btn btn-success btn-sm">হালনাগাদ</button>
                                             @else
-                                                <button type="submit" class="btn btn-success btn-sm">Save</button>
-                                                <button type="reset" class="btn btn-danger btn-sm">Clear</button>
+                                                <button type="submit" class="btn btn-success btn-sm">সংরক্ষণ</button>
+                                                <button type="reset" class="btn btn-danger btn-sm">মুছুন</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.employee.designation.list') }}">Back</a>
+                                                <a href="{{ route('admin.employee.designation.list') }}">পিছনে যান</a>
                                             </button>
                                         </div>
                                     </div>

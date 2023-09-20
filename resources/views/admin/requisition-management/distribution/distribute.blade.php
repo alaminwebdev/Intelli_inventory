@@ -1,8 +1,12 @@
 @extends('admin.layouts.app')
 @section('content')
     <style>
-
-
+        table,
+        thead,
+        th,
+        tr {
+            color: #2a527b !important;
+        }
     </style>
     <section class="content">
         <div class="container-fluid">
@@ -30,7 +34,7 @@
                                                 <select name="section_id" class="form-control form-control-sm select2" id="section_id" disabled>
                                                     <option value="">Select Department</option>
                                                     @foreach ($sections as $section)
-                                                        <option value="{{ $section->id }}" {{ $editData->section_id == $section->id ?  'selected' : '' }}>
+                                                        <option value="{{ $section->id }}" {{ $editData->section_id == $section->id ? 'selected' : '' }}>
                                                             {{ $section->name }}
                                                         </option>
                                                     @endforeach
@@ -42,17 +46,17 @@
                                         <div class="accordion">
                                             @foreach ($product_types as $item)
                                                 <div class="card" style="box-shadow: none;">
-                                                    <div class="card-header p-0" data-toggle="collapse" data-target="#collapse-{{ $item->id }}" aria-expanded="true" aria-controls="collapse-{{ $item->id }}" style="cursor: pointer;">
+                                                    <div class="card-header rounded shadow-sm border-0" data-toggle="collapse" data-target="#collapse-{{ $item->id }}" aria-expanded="true" aria-controls="collapse-{{ $item->id }}" style="cursor: pointer;padding: 2px 10px; background: linear-gradient(90deg, #5b86e5b5 0%, #36D1DC 100%) !important;">
                                                         <h5 class="mb-0">
-                                                            <button class="btn btn-link px-0" type="button">{{ $item->name }}</button>
+                                                            <button class="btn btn-link px-0 text-white" type="button">{{ $item->name }}</button>
                                                         </h5>
-                                                        <i class="fas fa-chevron-down"></i>
+                                                        <i class="fas fa-chevron-down text-white"></i>
                                                     </div>
 
                                                     <div id="collapse-{{ $item->id }}" class="collapse show">
                                                         <div class="card-body ">
                                                             <table id="" class="table table-bordered">
-                                                                <thead>
+                                                                <thead style="background: #fff4f4 !important;">
                                                                     <tr>
                                                                         <th>পন্য</th>
                                                                         <th>পূর্ববর্তী বিতরনের পরিমাণ</th>
@@ -70,29 +74,28 @@
                                                                             ->latest()
                                                                             ->pluck('id');
                                                                         
-
-                                                                        $requisitionProducts = \App\Models\SectionRequisitionDetails::with('StockDetail')->where('section_requisition_id', $editData->id)
+                                                                        $requisitionProducts = \App\Models\SectionRequisitionDetails::with('StockDetail')
+                                                                            ->where('section_requisition_id', $editData->id)
                                                                             ->whereIn('product_id', $productIds)
                                                                             ->get();
-
+                                                                        
                                                                     @endphp
                                                                     @foreach ($requisitionProducts as $product)
-
                                                                         @php
                                                                             // $lastDistribute = \App\Models\RequisitionApproval::where('requisition_approval_details.department_id', $editData->department_id)
-                                                                            //                 ->select('requisition_approval_details.*', 'requisition_approvals.status as distribute_status')                
+                                                                            //                 ->select('requisition_approval_details.*', 'requisition_approvals.status as distribute_status')
                                                                             //                 ->join('requisition_approval_details', 'requisition_approval_details.distribute_id', '=','requisition_approvals.id' )
                                                                             //                 ->where('requisition_approval_details.product_id', $product->product_id)
                                                                             //                 ->where('requisition_approvals.status', 2)
                                                                             //                 ->orderBy('requisition_approval_details.id', 'desc')
                                                                             //                 ->first();
-                                                                         @endphp
-                                                                                          
+                                                                        @endphp
+
 
                                                                         <tr data-product-id="{{ $product->product_id }}">
-                                                                            <td class="product-name">{{ $product->product->name  }}</td>
+                                                                            <td class="product-name">{{ $product->product->name }}</td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="previous_stock_{{ $product->product_id }}" value="{{ $lastDistribute->distribute_quantity ?? 0}}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" id="previous_stock_{{ $product->product_id }}" value="{{ $lastDistribute->distribute_quantity ?? 0 }}" readonly>
                                                                             </td>
                                                                             <td>
                                                                                 <input type="number" class="form-control form-control-sm" id="current_stock_{{ $product->product_id }}" value="{{ $product->current_stock }}" readonly>
@@ -106,7 +109,7 @@
                                                                             <td>
                                                                                 <input type="text" class="form-control form-control-sm" id="available_quantity_{{ $product->product_id }}" value="{{ $product->StockDetail->sum('available_qty') }}" readonly>
                                                                             </td>
-                                                                            
+
                                                                             <td>
                                                                                 <input type="number" class="form-control form-control-sm" id="distribute_quantity_{{ $product->product_id }}" name="distribute_quantity[{{ $product->product_id }}]" value="{{ $product->final_approve_quantity }}" readonly>
                                                                             </td>
@@ -270,7 +273,7 @@
 
                 var sectionDemandQuantityInput = document.querySelector('[name="section_demand_quantity[' + productId + ']"]');
 
-               
+
                 // Check if Department demand_quantity field is non-empty
                 if (departmentDemandQuantityInput.value.trim() !== '') {
                     var sectionDemandQuantityValue = parseFloat(sectionDemandQuantityInput.value);

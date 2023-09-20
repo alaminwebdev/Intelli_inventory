@@ -24,6 +24,7 @@
     <title>{{ @$site_setting->title_suffix ? @$site_setting->title_suffix : 'Project Name' }} | {{ @$title ?? 'Dashboard' }}</title>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('plugins') }}/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('plugins') }}/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
     <link rel="stylesheet" href="{{ asset('plugins') }}/select2/css/select2.min.css">
@@ -35,6 +36,10 @@
     <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
     <script src="{{ asset('plugins') }}/jquery/jquery.min.js"></script>
     <style>
+        body {
+            font-family: 'Kalpurush', Arial, sans-serif !important;
+        }
+
         ::-webkit-scrollbar {
             width: 5px;
         }
@@ -82,7 +87,7 @@
 
         .table td,
         .table th {
-            padding: .5rem;
+            padding: .3rem;
             vertical-align: middle;
         }
 
@@ -151,7 +156,7 @@
             <span class="sr-only">Loading...</span>
         </div>
     </div>
-    
+
     <script src="{{ asset('plugins') }}/jquery-ui/jquery-ui.min.js"></script>
     <script src="{{ asset('plugins') }}/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('plugins') }}/sweetalert2/sweetalert2.min.js"></script>

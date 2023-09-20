@@ -1,6 +1,12 @@
 @extends('admin.layouts.app')
 @section('content')
     <style>
+        table,
+        thead,
+        th,
+        tr {
+            color: #2a527b !important;
+        }
     </style>
     <section class="content">
         <div class="container-fluid">
@@ -20,7 +26,7 @@
                                         <div class="row px-3 py-4 border rounded shadow-sm mb-3">
                                             <div class="col-md-4">
                                                 <label class="control-label">সেকশন :</label>
-                                                <input type="text" class="form-control form-control-sm"  value="{{ $editData->section->name }}" readonly>
+                                                <input type="text" class="form-control form-control-sm" value="{{ $editData->section->name }}" readonly>
                                             </div>
                                             <div class="col-md-4">
                                                 <label class="control-label">চাহিদাপত্রের নাম্বার :</label>
@@ -29,28 +35,28 @@
                                             <div class="col-md-4">
                                                 <label class="control-label">চাহিদাপত্রের অবস্থা <span class="text-red">*</span></label>
                                                 <select name="status" id="status" class="form-control select2 @error('status') is-invalid @enderror">
-                                                    <option value="" disabled >Please Select</option>
-                                                    <option value="1" {{ @$editData->status == 1 ? 'selected' : '' }} >সুপারিশ</option>
-                                                    <option value="2" {{ @$editData->status == 2 ? 'selected' : '' }} >প্রত্যাখ্যান</option>
+                                                    <option value="" disabled>Please Select</option>
+                                                    <option value="1" {{ @$editData->status == 1 ? 'selected' : '' }}>সুপারিশ</option>
+                                                    <option value="2" {{ @$editData->status == 2 ? 'selected' : '' }}>প্রত্যাখ্যান</option>
                                                 </select>
-                                            </div> 
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="accordion">
                                             @foreach ($product_types as $item)
                                                 <div class="card" style="box-shadow: none;">
-                                                    <div class="card-header p-0" data-toggle="collapse" data-target="#collapse-{{ $item->id }}" aria-expanded="true" aria-controls="collapse-{{ $item->id }}" style="cursor: pointer;">
+                                                    <div class="card-header rounded shadow-sm border-0" data-toggle="collapse" data-target="#collapse-{{ $item->id }}" aria-expanded="true" aria-controls="collapse-{{ $item->id }}" style="cursor: pointer;padding: 2px 10px; background: linear-gradient(90deg, #5b86e5b5 0%, #36D1DC 100%) !important;">
                                                         <h5 class="mb-0">
-                                                            <button class="btn btn-link px-0" type="button">{{ $item->name }}</button>
+                                                            <button class="btn btn-link px-0 text-white" type="button">{{ $item->name }}</button>
                                                         </h5>
-                                                        <i class="fas fa-chevron-down"></i>
+                                                        <i class="fas fa-chevron-down text-white"></i>
                                                     </div>
 
                                                     <div id="collapse-{{ $item->id }}" class="collapse show">
                                                         <div class="card-body ">
                                                             <table id="" class="table table-bordered">
-                                                                <thead>
+                                                                <thead style="background: #fff4f4 !important;">
                                                                     <tr>
                                                                         <th>পন্য</th>
                                                                         <th>বর্তমান মজূদ</th>
@@ -65,7 +71,7 @@
                                                                         $productIds = \App\Models\ProductInformation::where('product_type_id', $item->id)
                                                                             ->latest()
                                                                             ->pluck('id');
-
+                                                                        
                                                                         $requisitionProducts = \App\Models\SectionRequisitionDetails::where('section_requisition_id', $editData->id)
                                                                             ->whereIn('product_id', $productIds)
                                                                             ->get();
@@ -84,7 +90,7 @@
                                                                                 <input type="text" class="form-control form-control-sm" id="remarks_{{ $product->product_id }}" name="remarks[{{ $product->product_id }}]" value="{{ $product->remarks }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="recommended_quantity_{{ $product->product_id }}" name="recommended_quantity[{{ $product->product_id }}]" value="{{ $product->recommended_quantity ?? $product->demand_quantity  }}">
+                                                                                <input type="number" class="form-control form-control-sm" id="recommended_quantity_{{ $product->product_id }}" name="recommended_quantity[{{ $product->product_id }}]" value="{{ $product->recommended_quantity ?? $product->demand_quantity }}">
                                                                             </td>
                                                                             <td>
                                                                                 <input type="text" class="form-control form-control-sm" id="recommended_remarks_{{ $product->product_id }}" name="recommended_remarks[{{ $product->product_id }}]" value="{{ $product->recommended_remarks }}">
@@ -104,7 +110,7 @@
                                     <div class="col-md-12">
                                         <div class="text-right">
                                             @if (@$editData->id)
-                                                <button type="submit" class="btn btn-success btn-sm" {{ @$editData->status == 0 ? '' : 'disabled'}}>সুপারিশ করুন</button>
+                                                <button type="submit" class="btn btn-success btn-sm" {{ @$editData->status == 0 ? '' : 'disabled' }}>সুপারিশ করুন</button>
                                             @else
                                                 <button type="submit" class="btn btn-success btn-sm">সংরক্ষণ</button>
                                                 <button type="reset" class="btn btn-danger btn-sm">মুছুন</button>

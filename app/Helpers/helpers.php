@@ -71,9 +71,9 @@ if (!function_exists('activeStatus')) {
     function activeStatus($value)
     {
         if ($value == 1) {
-            $output = '<span class="badge badge-success">' . __('Active') . '</span>';
+            $output = '<span class="badge badge-success">' . __('সক্রিয়') . '</span>';
         } else {
-            $output = '<span class="badge badge-danger">' . __('Inactive') . '</span>';
+            $output = '<span class="badge badge-danger">' . __('নিষ্ক্রিয়') . '</span>';
         }
         return $output;
     }
