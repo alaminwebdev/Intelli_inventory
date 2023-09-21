@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 class SectionRequisitionService implements IService
 {
 
-    public function getAll($section_id = null, $status = null, $section_ids = null)
+    public function getAll($section_id = null, $status = null, $section_ids = null, $statuses = null)
     {
         try {
             $query = SectionRequisition::latest();
@@ -29,6 +29,9 @@ class SectionRequisitionService implements IService
             }
             if ($section_ids) {
                 $query->whereIn('section_id', $section_ids);
+            }
+            if ($statuses) {
+                $query->whereIn('status', $statuses);
             }
             $data = $query->get();
             return $data;

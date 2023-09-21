@@ -7,6 +7,7 @@ use App\Models\DepartmentRequisition;
 use App\Models\Distribute;
 use App\Models\Section;
 use App\Models\SectionRequisition;
+use App\Models\SectionRequisitionDetails;
 use App\Models\StockInDetail;
 use App\Services\DepartmentRequisitionService;
 use App\Services\DepartmentService;
@@ -46,21 +47,20 @@ class DistributionController extends Controller
     }
     public function index()
     {
-        $data['title']                          = 'অনুমোদিত চাহিদাপত্রের তালিকা';
+        $data['title']  = 'অনুমোদিত চাহিদাপত্রের তালিকা';
         $user = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
-            $employee                           = $this->employeeService->getByID($user->employee_id);
-            $sections                           = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
+            $employee = $this->employeeService->getByID($user->employee_id);
+            $sections = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
 
             // Extract only the "id" values into a new array
             $sectionIds = array_map(function ($section) {
                 return $section['id'];
             }, $sections);
 
-            $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll(null, 1, $sectionIds);
+            $data['sectionRequisitions'] = $this->sectionRequisitionService->getAll(null, null, $sectionIds, [1,3]);
         } else {
-
-            $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll(null, 1);
+            $data['sectionRequisitions'] = $this->sectionRequisitionService->getAll(null, null, null, [1,3]);
         }
 
         return view('admin.requisition-management.distribution.list', $data);
@@ -84,11 +84,11 @@ class DistributionController extends Controller
 
         $user = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
-            $data['employee']           = $this->employeeService->getByID($user->employee_id);
-            $data['sections']           = $this->sectionService->getSectionsByDepartment($data['employee']->department_id);
+            $data['employee']   = $this->employeeService->getByID($user->employee_id);
+            $data['sections']   = $this->sectionService->getSectionsByDepartment($data['employee']->department_id);
         } else {
-            $data['employee']           = [];
-            $data['sections']           = $this->sectionService->getAll();
+            $data['employee']   = [];
+            $data['sections']   = $this->sectionService->getAll();
         }
 
         return view('admin.requisition-management.distribution.add', $data);
@@ -97,7 +97,7 @@ class DistributionController extends Controller
     public function store(Request $request, DistributionService $distribute)
     {
         $distribute->store($request);
-        return redirect()->route('admin.pending.distribute.list')->with('success', 'Data successfully updated!');
+        return redirect()->route('admin.distribution.list')->with('success', 'Data successfully updated!');
     }
 
     public function delete(Request $request)
@@ -112,23 +112,50 @@ class DistributionController extends Controller
 
     public function pendingDistribute()
     {
-        $data['title']              = 'পন্য বিতরনের তালিকা';
-        $data['pendingDistributes'] = $this->sectionRequisitionService->getAll(null, 3);
+        $data['title'] = 'পন্য বিতরণের তালিকা';
+
+        $user = Auth::user();
+        if ($user->id !== 1 && $user->employee_id) {
+            $employee  = $this->employeeService->getByID($user->employee_id);
+            $sections  = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
+
+            // Extract only the "id" values into a new array
+            $sectionIds = array_map(function ($section) {
+                return $section['id'];
+            }, $sections);
+
+            $data['pendingDistributes'] = $this->sectionRequisitionService->getAll(null, 3, $sectionIds);
+        } else {
+            $data['pendingDistributes'] = $this->sectionRequisitionService->getAll(null, 3);
+        }
         return view('admin.requisition-management.distribution.pending', $data);
     }
     public function approveDistribute()
     {
-        $data['title']              = 'বিতরণ করা পন্যের এর তালিকা';
-        $data['approveDistributes'] = $this->sectionRequisitionService->getAll(null, 4);
+        $data['title']              = 'বিতরণ করা পন্যের তালিকা';
+
+        $user = Auth::user();
+        if ($user->id !== 1 && $user->employee_id) {
+            $employee  = $this->employeeService->getByID($user->employee_id);
+            $sections  = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
+
+            // Extract only the "id" values into a new array
+            $sectionIds = array_map(function ($section) {
+                return $section['id'];
+            }, $sections);
+
+            $data['approveDistributes'] = $this->sectionRequisitionService->getAll(null, 4, $sectionIds);
+        } else {
+            $data['approveDistributes'] = $this->sectionRequisitionService->getAll(null, 4);
+        }
+
         return view('admin.requisition-management.distribution.approve', $data);
     }
     public function productDistributeEdit($id)
     {
-        $data['title']         = 'পন্য বিতরন করুন';
+        $data['title']         = 'পন্য বিতরণ করুন';
         $data['editData']      = $this->sectionRequisitionService->getByID($id);
         $data['product_types'] = $this->productTypeService->getAll(1);
-
-        $data['departments'] = $this->departmentService->getAll(1);
 
         $user = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
@@ -204,6 +231,11 @@ class DistributionController extends Controller
             SectionRequisition::where('id', $request->section_requisition_id)->update([
                 'status' => 4,
             ]);
+
+            SectionRequisitionDetails::where('section_requisition_id', $request->section_requisition_id)->update([
+                'status' => 4,
+            ]);
+            
             DB::commit();
             return redirect()->route('admin.approve.distribute.list');
         } catch (\Exception $e) {

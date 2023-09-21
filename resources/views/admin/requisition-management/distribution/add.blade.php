@@ -111,10 +111,10 @@
                                                                                 <input type="text" class="form-control form-control-sm" id="available_quantity_{{ $product->product_id }}" value="{{ $product->StockDetail->sum('available_qty') }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="approve_quantity_{{ $product->product_id }}" name="approve_quantity[{{ $product->product_id }}]">
+                                                                                <input type="number" class="form-control form-control-sm" id="approve_quantity_{{ $product->product_id }}" name="approve_quantity[{{ $product->product_id }}]" value="{{ $product->final_approve_quantity ?? $product->recommended_quantity }}" {{ $editData->status == 3 ? 'readonly' : '' }} >
                                                                             </td>
                                                                             <td>
-                                                                                <input type="text" class="form-control form-control-sm" id="remarks_{{ $product->product_id }}" name="remarks[{{ $product->product_id }}]">
+                                                                                <input type="text" class="form-control form-control-sm" id="remarks_{{ $product->product_id }}" name="remarks[{{ $product->product_id }}]" value="{{ $product->final_approve_remarks }}" {{ $product->final_approve_remarks ? 'readonly' : '' }}>
                                                                             </td>
                                                                         </tr>
                                                                     @endforeach
@@ -130,7 +130,7 @@
                                     <div class="col-md-12">
                                         <div class="text-right">
                                             @if (@$editData->id)
-                                                <button type="submit" class="btn btn-success btn-sm">অনুমোদন করুন</button>
+                                                <button type="submit" class="btn btn-success btn-sm" {{ $editData->status == 3 ? 'disabled' : '' }}>অনুমোদন করুন</button>
                                             @else
                                                 <button type="submit" class="btn btn-success btn-sm">সংরক্ষণ</button>
                                                 <button type="reset" class="btn btn-danger btn-sm">মুছুন</button>

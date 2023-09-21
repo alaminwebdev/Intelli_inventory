@@ -124,7 +124,7 @@ class DefaultController extends Controller
                         'demand_quantity'           => $product->demand_quantity,
                         'remarks'                   => $product->remarks,
                         'recommended_quantity'      => $product->recommended_quantity,
-                        'approve_remarks'           => $product->approve_remarks,
+                        'recommended_remarks'       => $product->recommended_remarks,
                         'final_approve_quantity'    => $product->final_approve_quantity,
                         'final_approve_remarks'     => $product->final_approve_remarks,
                         'total_distribute_quantity' => $totalDistributeQuantity ?? 'N/A',

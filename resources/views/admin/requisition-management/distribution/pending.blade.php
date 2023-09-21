@@ -16,13 +16,13 @@
                                         @if (request()->routeIs('admin.pending.distribute.list'))
                                             <i class="fa fa-check-circle"></i>
                                         @endif
-                                        Pending Distribution List
+                                        বিতরণের অপেক্ষায় চাহিদাপত্রের তালিকা
                                     </a>
                                     <a href="{{ route('admin.approve.distribute.list') }}" class="btn btn-primary btn-sm" style="color: white">
                                         @if (request()->routeIs('admin.approve.distribute.list'))
                                             <i class="fa fa-check-circle"></i>
                                         @endif
-                                        Distributed List
+                                        বিতরণ করা চাহিদাপত্রের তালিকা
                                     </a>
                                 </div>
                             </div>

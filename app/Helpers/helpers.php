@@ -118,7 +118,7 @@ if (!function_exists('requisitionStatus')) {
         } elseif($value == 2) {
             $output = '<span class="badge badge-danger">' . __('প্রত্যাখ্যান') . '</span>';
         }elseif($value == 3) {
-            $output = '<span class="badge badge-success">' . __('অনুমোদিত') . '</span>';
+            $output = '<span class="badge badge-primary">' . __('অনুমোদিত') . '</span>';
         }elseif($value == 4) {
             $output = '<span class="badge badge-success">' . __('বিতরণ করা হয়েছে') . '</span>';
         } else {

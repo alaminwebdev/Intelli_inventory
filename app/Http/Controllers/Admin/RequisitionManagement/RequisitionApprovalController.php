@@ -52,11 +52,12 @@ class RequisitionApprovalController extends Controller
             $sectionIds = array_map(function ($section) {
                 return $section['id'];
             }, $sections);
+
             
-            $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll(null, null, $sectionIds);
+            $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll(null, null, $sectionIds, [0,1,2]);
         } else {
 
-            $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll();
+            $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll(null, null, null, [0,1,2]);
         }
         return view('admin.requisition-management.recommended-requisition.list', $data);
     }

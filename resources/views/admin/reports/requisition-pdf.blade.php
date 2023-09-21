@@ -13,9 +13,9 @@
         $status = 'প্রত্যাখ্যাত';
     } elseif ($requestedRequisitionInfo->status == 3) {
         $status = 'অনুমোদিত';
-    }elseif ($requestedRequisitionInfo->status == 4) {
+    } elseif ($requestedRequisitionInfo->status == 4) {
         $status = 'বিতরন করা হয়েছে';
-    }else{
+    } else {
         $status = '';
     }
 @endphp
@@ -61,7 +61,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                        @foreach ($list['products'] as $product)
+                    @foreach ($list['products'] as $product)
                         <tr>
                             <td>{{ en2bn($loop->iteration) }}</td>
                             <td>{{ $product['product_name'] }}</td>
@@ -70,11 +70,25 @@
                             <td class="text-right">{{ en2bn($product['recommended_quantity']) }}</td>
                             <td class="text-right">{{ en2bn($product['final_approve_quantity']) }}</td>
                             <td class="text-right">{{ en2bn($product['total_distribute_quantity']) }}</td>
-                            <td>{{ $product['approve_remarks'] }}</td>
+                            <td>
+                                @php
+                                    if ($requestedRequisitionInfo->status == 0) {
+                                        echo $product['remarks'];
+                                    } elseif ($requestedRequisitionInfo->status == 1 || $requestedRequisitionInfo->status == 2) {
+                                        echo $product['recommended_remarks'];
+                                    } elseif ($requestedRequisitionInfo->status == 3) {
+                                        echo $product['final_approve_remarks'];
+                                    } elseif ($requestedRequisitionInfo->status == 4) {
+                                        echo $product['final_approve_remarks'];
+                                    }else{
+                                        echo '';
+                                    }
+                                @endphp
+                            </td>
                         </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                    @endforeach
+                </tbody>
+            </table>
         @endforeach
     @endif
 @endsection
