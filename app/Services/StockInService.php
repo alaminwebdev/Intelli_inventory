@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\ProductPoInfo;
 use App\Models\StockIn;
 use App\Models\StockInDetail;
 use App\Services\IService;
@@ -13,9 +14,11 @@ use Illuminate\Support\Facades\DB;
  * Class StockInService
  * @package App\Services
  */
-class StockInService implements IService {
+class StockInService implements IService
+{
 
-    public function getAll() {
+    public function getAll()
+    {
         try {
             $data = StockIn::leftjoin('suppliers', 'suppliers.id', 'stock_ins.supplier_id')
                 ->select(
@@ -30,7 +33,8 @@ class StockInService implements IService {
         }
     }
 
-    public function getUniqueGRNNo() {
+    public function getUniqueGRNNo()
+    {
         do {
             $grnNo = rand(10000, 99999);
         } while (StockIn::where('grn_no', $grnNo)->exists());
@@ -38,39 +42,63 @@ class StockInService implements IService {
         return $grnNo;
     }
 
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
 
         DB::beginTransaction();
         try {
-            $data = $request->input('data'); // Access the 'data' key in the payload
 
-            $stockInData              = new StockIn();
-            $stockInData->user_id     = Auth::id();
-            $stockInData->grn_no      = $data['grn_no'];
-            $stockInData->entry_date  = $data['entry_date'];
-            $stockInData->challan_no  = $data['challan_no'];
-            $stockInData->supplier_id = $data['supplier_id'];
-            $stockInData->status      = 0; // You may need to adjust how 'status' is passed
-            $stockInData->created_by  = Auth::id();
+            $data = $request->all(); // Access all data from the request
+
+            // Create a new StockIn record
+            $stockInData                = new StockIn();
+            $stockInData->user_id       = Auth::id();
+            $stockInData->grn_no        = $data['grn_no'];
+
+            $entryDate                  = date('Y-m-d', strtotime($data['entry_date']));
+            $stockInData->entry_date    = $entryDate;
+
+            $stockInData->challan_no    = $data['challan_no'];
+            $stockInData->supplier_id   = $data['supplier_id'];
+            $stockInData->status        = 0; // You may need to adjust how 'status' is passed
+            $stockInData->created_by    = Auth::id();
 
             if ($stockInData->save()) {
-                $stockInDetails = $data['stockInDetail'] ?? []; // Access the 'stockInDetail' array
+                // Access the nested arrays within the 'data' key
+                $po_qty         = $data['po_qty'];
+                $receive_qty    = $data['receive_qty'];
+                $reject_qty     = $data['reject_qty'];
+                $mfg_date       = $data['mfg_date'];
+                $expire_date    = $data['expire_date'];
+                $remarks        = $data['remarks'];
 
-                foreach ($stockInDetails as $key => $value) {
-                    $stockInDetailData                         = new StockInDetail();
-                    $stockInDetailData->stock_in_id            = $stockInData->id;
-                    $stockInDetailData->product_information_id = $value['productInformationId'];
-                    $stockInDetailData->po_no                  = $value['poNo'];
-                    $stockInDetailData->po_date                = $value['poDate'];
-                    $stockInDetailData->mfg_date               = $value['mfgDate'];
-                    $stockInDetailData->expire_date            = $value['expireDate'];
-                    $stockInDetailData->invoice_qty            = $value['invoiceQty'];
-                    $stockInDetailData->receive_qty            = $value['receiveQty'];
-                    $stockInDetailData->reject_qty             = $value['rejectQty'];
-                    $stockInDetailData->available_qty          = $value['receiveQty'];
-                    $stockInDetailData->dispatch_qty           = 0;
-                    $stockInDetailData->remarks                = $value['remarks'];
+                foreach ($po_qty as $productId => $poQty) {
+                    $stockInDetailData                          = new StockInDetail();
+                    $stockInDetailData->stock_in_id             = $stockInData->id;
+                    $stockInDetailData->product_information_id  = $productId;
+                    $stockInDetailData->po_no                   = $data['po_no'];
+
+                    $poDate                                     = date('Y-m-d', strtotime($data['po_date']));
+                    $mfgDate                                    = date('Y-m-d', strtotime($mfg_date[$productId]));
+                    $expireDate                                 = date('Y-m-d', strtotime($expire_date[$productId]));
+                    $stockInDetailData->po_date                 = $poDate;
+                    $stockInDetailData->mfg_date                = $mfgDate;
+                    $stockInDetailData->expire_date             = $expireDate;
+                    $stockInDetailData->po_qty                  = $poQty; // Assuming it corresponds to 'po_qty'
+                    $stockInDetailData->receive_qty             = $receive_qty[$productId];
+                    $stockInDetailData->reject_qty              = $reject_qty[$productId];
+                    $stockInDetailData->available_qty           = $receive_qty[$productId];
+                    $stockInDetailData->dispatch_qty            = 0;
+                    $stockInDetailData->remarks                 = $remarks[$productId];
                     $stockInDetailData->save();
+
+                    $productPoInfo                          = new ProductPoInfo();
+                    $productPoInfo->po_no                   = $data['po_no'];
+                    $productPoInfo->po_date                 = $poDate;
+                    $productPoInfo->stock_in_id             = $stockInData->id;
+                    $productPoInfo->product_information_id  = $productId;
+                    $productPoInfo->reject_qty              = $reject_qty[$productId];
+                    $productPoInfo->save();
                 }
             }
             DB::commit();
@@ -81,11 +109,13 @@ class StockInService implements IService {
         }
     }
 
-    public function getByID($id) {
+    public function getByID($id)
+    {
         $data = StockIn::find($id);
         return $data;
     }
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         // try {
         //     $data                   = ProductInformation::find($id);
         //     $data->code             = $request->code;
@@ -100,12 +130,14 @@ class StockInService implements IService {
         // }
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         // $user = ProductInformation::find($id);
         // $user->delete();
         // return true;
     }
-    public function active($id) {
+    public function active($id)
+    {
         $data         = StockIn::find($id);
         $data->status = 1;
         $data->save();

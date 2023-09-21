@@ -19,13 +19,13 @@ class CreateStockInDetailsTable extends Migration
             $table->integer('product_information_id')->nullable();
             $table->string('po_no')->nullable();
             $table->date('po_date')->nullable();
-            $table->date('mfg_date')->nullable();
-            $table->date('expire_date')->nullable();
-            $table->integer('invoice_qty')->nullable();
+            $table->integer('po_qty')->nullable();
             $table->integer('receive_qty')->nullable();
             $table->integer('reject_qty')->nullable();
             $table->integer('available_qty')->nullable();
             $table->integer('dispatch_qty')->nullable();
+            $table->date('mfg_date')->nullable();
+            $table->date('expire_date')->nullable();
             $table->text('remarks')->nullable();
             $table->timestamps();
         });

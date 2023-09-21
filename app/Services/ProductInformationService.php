@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\ProductInformation;
-
+use App\Models\ProductType;
 use App\Services\IService;
 use Illuminate\Http\Request;
 
@@ -47,6 +47,42 @@ class ProductInformationService implements IService
         try {
             $data = ProductInformation::where('product_type_id', $id)->where('status', 1)->latest()->get();
             return $data;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function getProductTypeAndProducts(){
+        try {
+            $productTypeData    = [];
+            $product_types      = ProductType::where('status', 1)->latest()->get();
+
+            foreach ($product_types as $item) {
+                $productType = [
+                    'id'        => $item->id,
+                    'name'      => $item->name,
+                    'products'  => [],
+                ];
+    
+                // Query products for this product type and push them into the products array
+                $products = ProductInformation::where('product_type_id', $item->id)
+                    ->latest()
+                    ->get();
+        
+                if (count($products) > 0) {
+    
+                    foreach ($products as $product) {
+                        $productType['products'][$product->id] = [
+                            'id'                => $product->id,
+                            'name'              => $product->name,
+                            'unit'              => $product->unit->name,
+                        ];
+                    }
+                    // Push this product type data into the main array AFTER adding products
+                    $productTypeData[] = $productType;
+                }
+            }
+            return $productTypeData;
         } catch (\Exception $e) {
             return $e->getMessage();
         }

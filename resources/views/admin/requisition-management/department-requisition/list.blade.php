@@ -13,7 +13,7 @@
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th width="5%">ক্রমিক নং.</th>
+                                        <th width="5%">নং.</th>
                                         <th>চাহিদাপত্র নাম্বার</th>
                                         <th>অনুরোধকৃত ডিপার্টমেন্ট</th>
                                         <th>প্রোডাক্ট দেখুন</th>

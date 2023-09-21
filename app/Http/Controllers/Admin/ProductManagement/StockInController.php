@@ -32,16 +32,38 @@ class StockInController extends Controller
     }
     public function index()
     {
-        $data['title']          = 'Stock-In List';
+        $data['title']          = 'স্টক তালিকা';
         $data['stock_in_data']  = $this->stockInService->getAll();
         return view('admin.product-management.stock-in.list', $data);
     }
-    public function add()
+
+    public function selectProducts()
     {
-        $data['title']          = 'Add Stock';
-        $data['product_types']  = $this->productTypeService->getAll(1);
-        $data['suppliers']      = $this->supplierService->getSupplierByStatus();
-        $data['uniqueGRNNo']    = $this->stockInService->getUniqueGRNNo();
+        $data['title']                  = 'পন্য বাছাই করুন';
+        $data['product_types']          = $this->productInformationService->getProductTypeAndProducts();
+        return view('admin.product-management.stock-in.product-selection', $data);
+    }
+    public function processSelectionProducts(Request $request)
+    {
+        // Retrieve the selected product IDs from the request
+        $selectedProductIds = $request->input('selected_products');
+        $po_no              = $request->input('po_no');
+        $po_date            = $request->input('po_date');
+        // Redirect to the "add" step for section requisition with selected product IDs
+        return redirect()->route('admin.stock.in.add', ['sp' => $selectedProductIds, 'po_no' => $po_no, 'po_date' => $po_date]);
+    }
+
+    public function add(Request $request)
+    {
+        // Retrieve the selected product IDs from the query parameters
+        $data['title']              = 'স্টক যুক্ত করুন';
+        $selected_product_ids       = $request->input('sp', []);
+        $data['selected_po_no']     = $request->input('po_no', '');
+        $data['selected_po_date']   = $request->input('po_date', '');
+        $data['selected_products']  = $this->productInformationService->getSpecificProducts($selected_product_ids);
+        // $data['product_types']      = $this->productTypeService->getAll(1);
+        $data['suppliers']          = $this->supplierService->getSupplierByStatus();
+        $data['uniqueGRNNo']        = $this->stockInService->getUniqueGRNNo();
         return view('admin.product-management.stock-in.add', $data);
     }
     /*
@@ -54,6 +76,7 @@ class StockInController extends Controller
         //     'product_type'  => 'required',
         //     'unit'          => 'required',
         // ]);
+        // dd($request->all());
         $data = $this->stockInService->create($request);
         return response()->json($data);
     }

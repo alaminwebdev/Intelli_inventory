@@ -7,29 +7,29 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.stock.in.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>স্টক তালিকা</a>
+                            <a href="{{ route('admin.stock.in.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>Stock-In List</a>
                         </div>
                         <div class="card-body">
-                            <form id="stockInForm" method="post" action="{{ route('admin.stock.in.store') }}" enctype="multipart/form-data" autocomplete="off">
+                            <form id="stockInForm" method="post" enctype="multipart/form-data" autocomplete="off">
                                 @csrf
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-row border-bottom">
-                                            <div class="form-group col-md-4">
-                                                <label class="control-label">জি. আর. এন. নং. <span class="text-red">*</span></label>
+                                            <div class="form-group col-md-3">
+                                                <label class="control-label">GRN No. <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm grn_no @error('grn_no') is-invalid @enderror" id="grn_no" name="grn_no" value="{{ @$editData ? @$editData->grn_no : $uniqueGRNNo }}" readonly>
                                             </div>
-                                            <div class="form-group col-md-4">
-                                                <label class="control-label">এন্ট্রি তারিখ <span class="text-red">*</span></label>
-                                                <input type="text" class="form-control form-control-sm entry_date @error('entry_date') is-invalid @enderror singledatepicker" id="entry_date" name="entry_date" value="{{ @$editData->entry_date }}">
+                                            <div class="form-group col-md-3">
+                                                <label class="control-label">Entry Date <span class="text-red">*</span></label>
+                                                <input type="date" class="form-control form-control-sm entry_date @error('entry_date') is-invalid @enderror" id="entry_date" name="entry_date" value="{{ @$editData->entry_date }}">
                                                 @error('entry_date')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
                                             </div>
-                                            <div class="form-group col-md-4">
-                                                <label class="control-label">চালান নং <span class="text-red">*</span></label>
+                                            <div class="form-group col-md-3">
+                                                <label class="control-label">Challan Number <span class="text-red">*</span></label>
                                                 <input type="number" class="form-control form-control-sm challan_no @error('challan_no') is-invalid @enderror" id="challan_no" name="challan_no" value="{{ @$editData->challan_no }}">
                                                 @error('challan_no')
                                                     <span class="invalid-feedback" role="alert">
@@ -37,8 +37,8 @@
                                                     </span>
                                                 @enderror
                                             </div>
-                                            <div class="form-group col-md-4">
-                                                <label class="control-label">সরবরাহকারী <span class="text-red">*</span></label>
+                                            <div class="form-group col-md-3">
+                                                <label class="control-label">Supplier <span class="text-red">*</span></label>
                                                 <select name="supplier_id" id="supplier_id" class="form-control select2 ">
                                                     <option value="">Please Select</option>
                                                     @foreach ($suppliers as $item)
@@ -46,57 +46,8 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div class="form-group col-md-4 ">
-                                                <label class="control-label">ক্রয় অর্ডার নং. : <span class="text-red">*</span></label>
-                                                <input type="number" class="form-control form-control-sm " id="po_no" name="po_no" value="{{ $selected_po_no }}" readonly>
-                                            </div>
-                                            <div class="form-group col-md-4 ">
-                                                <label class="control-label">ক্রয় অর্ডারের তারিখ : <span class="text-red">*</span></label>
-                                                <input type="text" class="form-control form-control-sm singledatepicker" id="" name="" @if ($selected_po_date) value="{{ date('d/m/Y', strtotime($selected_po_date)) }}" @endif disabled >
-                                                <input type="hidden" name="po_date" value="{{ $selected_po_date }}">
-                                            </div>
                                         </div>
-                                        <div class="my-3">
-                                            <table id="" class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="width:20%;">পন্য</th>
-                                                        <th>অর্ডার পরিমাণ</th>
-                                                        <th>রিসিভ পরিমাণ</th>
-                                                        <th>বাকি</th>
-                                                        <th>উৎপাদন তারিখ</th>
-                                                        <th>মেয়াদ উত্তীর্ণের তারিখ</th>
-                                                        <th>মন্তব্য</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($selected_products as $product)
-                                                        <tr data-product-id="{{ $product->id }}">
-                                                            <td class="product-name">{{ $product->name }}({{ $product->unit->name }})</td>
-                                                            <td>
-                                                                <input type="number" class="form-control form-control-sm po_qty @error('po_qty') is-invalid @enderror" id="po_qty_{{ $product->id }}" name="po_qty[{{ $product->id }}]" data-product-id="{{ $product->id }}">
-                                                            </td>
-                                                            <td>
-                                                                <input type="number" class="form-control form-control-sm receive_qty @error('receive_qty') is-invalid @enderror " id="receive_qty_{{ $product->id }}" name="receive_qty[{{ $product->id }}]" data-product-id="{{ $product->id }}">
-                                                            </td>
-                                                            <td>
-                                                                <input type="number" class="form-control form-control-sm reject_qty @error('reject_qty') is-invalid @enderror" id="reject_qty_{{ $product->id }}" name="reject_qty[{{ $product->id }}]" data-product-id="{{ $product->id }}" readonly>
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" class="form-control form-control-sm @error('mfg_date') is-invalid @enderror singledatepicker" id="mfg_date_{{ $product->id }}" name="mfg_date[{{ $product->id }}]" data-product-id="{{ $product->id }}">
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" class="form-control form-control-sm @error('expire_date') is-invalid @enderror singledatepicker" id="expire_date_{{ $product->id }}" name="expire_date[{{ $product->id }}]" data-product-id="{{ $product->id }}">
-                                                            </td>
-                                                            <td>
-                                                                <textarea class="form-control form-control-sm @error('remarks') is-invalid @enderror" id="remarks_{{ $product->id }}" name="remarks[{{ $product->id }}]" data-product-id="{{ $product->id }}" rows="1"></textarea>
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        {{-- <div class="row my-3 border rounded p-3" id="stockInData">
+                                        <div class="row my-3 border rounded p-3" id="stockInData">
                                             <div class="col-md-11 px-0">
                                                 <div class="form-row">
                                                     <div class="form-group col-md-4">
@@ -161,8 +112,8 @@
                                             <div class="col-md-1 pr-0 text-center">
                                                 <button type="button" class="h-100 w-100 btn btn-info" id="product_data_add">Add</button>
                                             </div>
-                                        </div> --}}
-                                        {{-- <div class="row">
+                                        </div>
+                                        <div class="row">
                                             <table width="100%" class="table table-bordered">
                                                 <thead>
                                                     <tr>
@@ -180,7 +131,7 @@
 
                                                 </tbody>
                                             </table>
-                                        </div> --}}
+                                        </div>
                                     </div>
 
                                     <div class="col-md-12">
@@ -188,10 +139,11 @@
                                             @if (@$editData->id)
                                                 <button type="submit" class="btn btn-success btn-sm">Update</button>
                                             @else
-                                                <button type="submit" class="btn btn-success btn-sm">যুক্ত করুন</button>
+                                                <button type="submit" class="btn btn-success btn-sm">Save</button>
+                                                <button type="reset" class="btn btn-danger btn-sm">Clear</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.stock.in.product.selection') }}">পিছনে যান</a>
+                                                <a href="{{ route('admin.stock.in.list') }}">Back</a>
                                             </button>
                                         </div>
                                     </div>
@@ -204,120 +156,39 @@
     </section>
     <script>
         // Get references to the input fields
-        const poQtyInputs = document.querySelectorAll(".po_qty");
-        const receiveQtyInputs = document.querySelectorAll(".receive_qty");
-        const rejectQtyInputs = document.querySelectorAll(".reject_qty");
+        const invoiceQtyInput = document.getElementById("invoice_qty");
+        const receiveQtyInput = document.getElementById("receive_qty");
+        const rejectQtyInput = document.getElementById("reject_qty");
 
-        // Add event listeners to detect changes for each set of inputs
-        for (let i = 0; i < poQtyInputs.length; i++) {
-            poQtyInputs[i].addEventListener("input", updateRejectQty);
-            receiveQtyInputs[i].addEventListener("input", updateRejectQty);
-        }
+        // Add event listeners to detect changes
+        invoiceQtyInput.addEventListener("input", updateRejectQty);
+        receiveQtyInput.addEventListener("input", updateRejectQty);
 
-        // Function to update the reject_qty fields based on input values
+        // Function to update the reject_qty field based on input values
         function updateRejectQty() {
-            for (let i = 0; i < poQtyInputs.length; i++) {
-                const invoiceQtyInput = poQtyInputs[i];
-                const receiveQtyInput = receiveQtyInputs[i];
-                const rejectQtyInput = rejectQtyInputs[i];
+            const invoiceQty = parseFloat(invoiceQtyInput.value) || 0;
+            const receiveQty = parseFloat(receiveQtyInput.value) || 0;
 
-                const invoiceQty = parseFloat(invoiceQtyInput.value) || 0;
-                const receiveQty = parseFloat(receiveQtyInput.value) || 0;
-
-                // Validate that receive_qty is not greater than invoice_qty
-                if (receiveQty > invoiceQty) {
-                    receiveQtyInput.setCustomValidity("Receive quantity cannot be greater than invoice quantity.");
-                } else {
-                    receiveQtyInput.setCustomValidity(""); // Clear any validation message
-                }
-
-                // Calculate reject_qty based on your logic
-                let rejectQty = invoiceQty - receiveQty;
-
-                // Ensure reject_qty is not negative
-                if (rejectQty < 0) {
-                    rejectQty = 0; // Set to zero if negative
-                }
-
-                // Update the reject_qty input field
-                rejectQtyInput.value = rejectQty;
+            // Validate that receive_qty is less than or equal to invoice_qty
+            if (receiveQty > invoiceQty) {
+                receiveQtyInput.setCustomValidity("Receive quantity cannot be greater than invoice quantity.");
+            } else {
+                receiveQtyInput.setCustomValidity(""); // Clear any validation message
             }
+
+            // Calculate reject_qty based on your logic
+            let rejectQty = invoiceQty - receiveQty;
+
+            // Ensure reject_qty is not negative
+            if (rejectQty < 0) {
+                rejectQty = 0; // Set to zero if negative
+            }
+
+            // Update the reject_qty input field
+            rejectQtyInput.value = rejectQty;
         }
     </script>
-
     <script>
-        $(function() {
-            // Submit Stock-In Data
-            let stockInForm = document.getElementById('stockInForm');
-
-            stockInForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-
-                $('#loading-spinner').show(); // Show the spinner
-
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-
-                // Serialize the form data
-                var formData = $(stockInForm).serialize();
-
-                $.post("{{ route('admin.stock.in.store') }}", formData, function(response) {
-
-                    $('#loading-spinner').hide();
-                    console.log(response);
-                    var result = response.original;
-
-                    if (result.success && result.success.trim() !== "") {
-
-                        console.log("Success message:", result.success);
-                        Swal.fire({
-                            toast: true,
-                            customClass: {
-                                popup: 'colored-toast'
-                            },
-                            iconColor: 'white',
-                            icon: "success",
-                            title: result.success,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000,
-                            timerProgressBar: true
-                        });
-
-                        setTimeout(function() {
-                            location.href = "{{ route('admin.stock.in.list') }}";
-                        }, 1000);
-
-                    } else if (result.error) {
-
-                        console.log("Error message:", result.error);
-                        Swal.fire({
-                            toast: true,
-                            customClass: {
-                                popup: 'colored-toast'
-                            },
-                            iconColor: 'white',
-                            icon: "error",
-                            title: result.error,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000,
-                            timerProgressBar: true
-                        });
-
-                    } else {
-                        console.log("Unexpected response:", result);
-                    }
-                });
-            });
-
-
-        });
-    </script>
-    {{-- <script>
         $(function() {
 
             $(document).on('change', '#product_type_id', function() {
@@ -342,9 +213,9 @@
                 });
             });
         });
-    </script> --}}
+    </script>
 
-    {{-- <script>
+    <script>
         function generateUniqueIdentifier() {
             // Generate a timestamp in milliseconds and concatenate a random number
             return Date.now() + Math.floor(Math.random() * 1000);
@@ -481,7 +352,7 @@
 
             stockInForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-
+                
                 // Check if rowData array is empty
                 if (rowData.length === 0) {
                     alert("Please add at least one product row.");
@@ -559,5 +430,5 @@
                 });
             })
         });
-    </script> --}}
+    </script>
 @endsection

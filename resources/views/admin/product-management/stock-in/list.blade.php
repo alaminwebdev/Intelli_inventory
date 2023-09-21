@@ -7,19 +7,19 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.stock.in.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Stock</a>
+                            <a href="{{ route('admin.stock.in.product.selection') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> স্টক যুক্ত করুন</a>
                         </div>
                         <div class="card-body">
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th width="5%">SL.</th>
-                                        <th>GRN No</th>
-                                        <th>Entry Date</th>
-                                        <th>Challan No</th>
-                                        <th>Supplier</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
+                                        <th width="5%">নং.</th>
+                                        <th>জি. আর. এন.</th>
+                                        <th>প্রবেশের তারিখ</th>
+                                        <th>চালান নং</th>
+                                        <th>সরবরাহকারী</th>
+                                        <th>অবস্থা</th>
+                                        <th>অ্যাকশন</th>
                                         {{-- <th width="15%" class="text-center">Action</th> --}}
                                     </tr>
                                 </thead>
@@ -73,8 +73,8 @@
         </div>
     </section>
     <!-- Modal for Product Details -->
-    <div class="modal fade" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">Product Details</h6>

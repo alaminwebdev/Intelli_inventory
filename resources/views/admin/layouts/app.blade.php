@@ -28,12 +28,13 @@
     <link rel="stylesheet" href="{{ asset('plugins') }}/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('plugins') }}/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
     <link rel="stylesheet" href="{{ asset('plugins') }}/select2/css/select2.min.css">
-    <link rel="stylesheet" href="{{ asset('plugins') }}/icheck-bootstrap/icheck-bootstrap.min.css">
+    {{-- <link rel="stylesheet" href="{{ asset('plugins') }}/icheck-bootstrap/icheck-bootstrap.min.css"> --}}
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <link rel="stylesheet" href="{{ asset('admin') }}/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="{{ asset('common') }}/css/common.css">
 
     <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <script src="{{ asset('plugins') }}/jquery/jquery.min.js"></script>
     <style>
         body {
@@ -75,11 +76,11 @@
             width: 100%;
         }
 
-        table :where(thead) {
+        .table thead {
             background: linear-gradient(180deg, #5b86e5b5 0%, #36D1DC 100%) !important;
         }
 
-        table :where(thead th) {
+        .table thead th {
             vertical-align: middle !important;
             text-align: center;
             color: #fff;
@@ -166,6 +167,9 @@
     <script src="{{ asset('admin') }}/dist/js/adminlte.js"></script>
     <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="{{ asset('common') }}/js/common.js"></script>
 
 </body>

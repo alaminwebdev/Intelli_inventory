@@ -23,7 +23,7 @@ class CreateSectionRequisitionDetailsTable extends Migration {
             $table->longText('remarks')->nullable();
             $table->longText('recommended_remarks')->nullable();
             $table->longText('final_approve_remarks')->nullable();
-            $table->integer('status')->nullable()->comment('0=Created, 1=Recommended, 2=Reject, 3=Final Approved, 4=Distributed');;
+            $table->integer('status')->nullable()->comment('0=Created, 1=Recommended, 2=Reject, 3=Final Approved, 4=Distributed');
             $table->timestamps();
         });
     }
