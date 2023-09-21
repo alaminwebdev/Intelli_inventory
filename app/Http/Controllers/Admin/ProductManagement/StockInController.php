@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\ProductManagement;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProductPoInfo;
 use Illuminate\Http\Request;
 
 use App\Services\ProductInformationService;
@@ -40,7 +41,7 @@ class StockInController extends Controller
     public function selectProducts()
     {
         $data['title']                  = 'পন্য বাছাই করুন';
-        $data['product_types']          = $this->productInformationService->getProductTypeAndProducts();
+        // $data['product_types']          = $this->productInformationService->getProductTypeAndProducts();
         return view('admin.product-management.stock-in.product-selection', $data);
     }
     public function processSelectionProducts(Request $request)
@@ -53,8 +54,27 @@ class StockInController extends Controller
         return redirect()->route('admin.stock.in.add', ['sp' => $selectedProductIds, 'po_no' => $po_no, 'po_date' => $po_date]);
     }
 
+    public function checkPo(Request $request)
+    {
+        $poNo = $request->input('po_no');
+
+        // Check if the PO number exists in your database
+        $poExists =  ProductPoInfo::where('po_no', $poNo)->exists();
+
+        if ($poExists) {
+            // Return product data based on the PO number
+            return response()->json(['exists' => true, 'products' => $poNo]);
+        } else {
+            // Return default product data
+            $productTypes = $this->productInformationService->getProductTypeAndProducts();
+            $defaultProductTable = view('admin.product-management.stock-in.default-product-table')->with('product_types', $productTypes)->render();
+            return response()->json(['exists' => false, 'products' => $defaultProductTable]);
+        }
+    }
+
     public function add(Request $request)
     {
+        dd($request->all());
         // Retrieve the selected product IDs from the query parameters
         $data['title']              = 'স্টক যুক্ত করুন';
         $selected_product_ids       = $request->input('sp', []);

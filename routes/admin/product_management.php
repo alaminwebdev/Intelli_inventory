@@ -7,6 +7,7 @@ Route::prefix('/stock-in')->group(function () {
     Route::get('/list', [StockInController::class, 'index'])->name('stock.in.list');
     Route::get('/product-selection', [StockInController::class, 'selectProducts'])->name('stock.in.product.selection');
     Route::post('/product-selection/process', [StockInController::class, 'processSelectionProducts'])->name('stock.in.product.selection.process');
+    Route::post('/check-po', [StockInController::class, 'checkPo'])->name('stock.in.check.po');
     Route::get('/add', [StockInController::class, 'add'])->name('stock.in.add');
     Route::post('/store', [StockInController::class, 'store'])->name('stock.in.store');
     Route::get('/edit/{id}', [StockInController::class, 'edit'])->name('stock.in.edit');

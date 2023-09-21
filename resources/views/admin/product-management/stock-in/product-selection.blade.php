@@ -1,19 +1,7 @@
 @extends('admin.layouts.app')
 @section('content')
     <style>
-        .expand-icon {
-            /* background-color: #007bff;
-        color: #fff;
-        padding: 5px 10px;
-        border-radius: 50%;
-        display: inline-block;
-        cursor: pointer;
-        transition: background-color 0.3s ease-in-out;  */
-        }
 
-        .expand-icon:hover {
-            /* background-color: #0056b3; */
-        }
     </style>
     <section class="content">
         <div class="container-fluid">
@@ -28,20 +16,24 @@
                             </div>
                             <div class="card-body">
                                 <div class="row px-3 pb-4 border rounded shadow-sm mb-4">
-                                    <div class="col-md-6 pt-4">
+                                    <div class="col-md-5 pt-4">
                                         <label class="control-label">ক্রয় অর্ডার নং. : <span class="text-red">*</span></label>
                                         <input type="number" class="form-control form-control-sm " id="po_no" name="po_no" value="">
                                     </div>
-                                    <div class="col-md-6 pt-4">
+                                    <div class="col-md-4 pt-4">
                                         <label class="control-label">ক্রয় অর্ডারের তারিখ : <span class="text-red">*</span></label>
                                         <input type="text" class="form-control form-control-sm singledatepicker" id="po_date" name="po_date" value="">
+                                    </div>
+                                    <div class="col-md-3 pt-4">
+                                        <label class="control-label" style="visibility: hidden;">Check</label>
+                                        <button class="btn btn-primary btn-sm btn-block" id="checkPoBtn">ক্রয় অর্ডার আছে কিনা যাচাই করুন</button>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 px-0">
                                         <div class="table-responsive mb-3">
                                             <div id="productTypesTable">
-                                                <table class="table border table-bordered">
+                                                {{-- <table class="table border table-bordered">
                                                     <thead>
                                                         <tr>
                                                             <th style="width:4%;text-align:center;">বাছাই</th>
@@ -49,7 +41,6 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-            
                                                         @foreach ($product_types as $product_type)
                                                             <tr class="group-header collapsed " data-toggle="collapse" data-target="#{{ 'group_' . $product_type['id'] }}" style="cursor: pointer; background: #f8f9fa;">
                                                                 <td class="text-center">
@@ -59,8 +50,8 @@
                                                                     <strong class="text-gray">{{ $product_type['name'] }}</strong>
                                                                 </td>
                                                             </tr>
-                                                            <tr id="{{ 'group_' . $product_type['id'] }}" class="collapse" >
-                                                                <td colspan="2"  class="p-2">
+                                                            <tr id="{{ 'group_' . $product_type['id'] }}" class="collapse">
+                                                                <td colspan="2" class="p-2">
                                                                     <table class="table table-bordered sub-table">
                                                                         <tbody>
                                                                             @foreach ($product_type['products'] as $product)
@@ -80,7 +71,7 @@
                                                             </tr>
                                                         @endforeach
                                                     </tbody>
-                                                </table>
+                                                </table> --}}
                                             </div>
                                             <div>
                                             </div>
@@ -104,22 +95,76 @@
             </div>
         </div>
     </section>
-    <script>
-        $(document).ready(function () {
 
-            $(".group-header").on("click", function () {
-                var span = $(this).find(".expand-icon");
-                var icon = span.find("i");
-                
-                if ($(this).hasClass("collapsed")) {
-                    icon.removeClass("fa-plus").addClass("fa-minus");
-                    span.removeClass("badge-success").addClass("badge-danger");
-                } else {
-                    icon.removeClass("fa-minus").addClass("fa-plus");
-                    span.removeClass("badge-danger").addClass("badge-success");
+    <script>
+        $(document).ready(function() {
+            $("#checkPoBtn").on("click", function(e) {
+                e.preventDefault();
+
+                var poNoInput = document.getElementById('po_no');
+                var poNo = poNoInput.value;
+                console.log(poNo);
+
+                if (poNo === '') {
+                    alert("Please select a PO Number.");
+                    poNoInput.focus();
+                    return false;
                 }
+
+                $('#loading-spinner').show();
+
+                // Send an AJAX request to check if PO number exists
+                $.ajax({
+                    url: "{{ route('admin.stock.in.check.po') }}",
+                    method: "POST",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "po_no": poNo
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        console.log(response);
+        
+                        if (response.exists) {
+                            Swal.fire({
+                                toast: true,
+                                customClass: {
+                                    popup: 'colored-toast'
+                                },
+                                iconColor: 'white',
+                                icon: "success",
+                                title: "PO number exists !",
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                            $('#loading-spinner').hide();
+
+                        } else {
+                            Swal.fire({
+                                toast: true,
+                                customClass: {
+                                    popup: 'colored-toast'
+                                },
+                                iconColor: 'white',
+                                icon: "info",
+                                title: "PO number doesn't exist !",
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                            $('#productTypesTable').html(response.products);
+                            $('#loading-spinner').hide();
+                        }
+                    },
+                    error: function() {
+                        // Handle any AJAX errors here
+                        alert("An error occurred while checking the PO number.");
+                    }
+                });
             });
         });
     </script>
-    
 @endsection
