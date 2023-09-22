@@ -124,7 +124,7 @@
                     dataType: "json",
                     success: function(response) {
                         console.log(response);
-        
+
                         if (response.exists) {
                             Swal.fire({
                                 toast: true,
@@ -139,6 +139,18 @@
                                 timer: 3000,
                                 timerProgressBar: true
                             });
+                            // Construct an HTML table with the received products data
+                            var products = response.products;
+                            var tableHTML = '<table class="table border table-bordered"><thead><tr><th>ক্রয় অর্ডার নং.</th><th>পন্য</th><th>বাকি</th></tr></thead><tbody>';
+
+                            products.forEach(function(product) {
+                                var productNameWithUnit = product.product + ' (' + product.unit + ')';
+                                tableHTML += '<tr><td>' + product.po_no + '</td><td>' + productNameWithUnit + '</td><td class="text-right">' + product.reject_qty + '</td></tr>';
+                            });
+
+                            tableHTML += '</tbody></table>';
+
+                            $('#productTypesTable').html(tableHTML);
                             $('#loading-spinner').hide();
 
                         } else {

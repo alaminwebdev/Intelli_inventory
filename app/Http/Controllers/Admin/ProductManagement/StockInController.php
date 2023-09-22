@@ -62,8 +62,18 @@ class StockInController extends Controller
         $poExists =  ProductPoInfo::where('po_no', $poNo)->exists();
 
         if ($poExists) {
+            $poProducts = ProductPoInfo::join('product_information', 'product_information.id', 'product_po_infos.product_information_id')
+                ->leftjoin('units', 'units.id', 'product_information.unit_id')
+                ->where('po_no', $poNo)
+                ->select(
+                    'product_information.name as product',
+                    'units.name as unit',
+                    'product_po_infos.reject_qty as reject_qty',
+                    'product_po_infos.po_no as po_no'
+                )
+                ->get();
             // Return product data based on the PO number
-            return response()->json(['exists' => true, 'products' => $poNo]);
+            return response()->json(['exists' => true, 'products' => $poProducts]);
         } else {
             // Return default product data
             $productTypes = $this->productInformationService->getProductTypeAndProducts();
@@ -74,7 +84,7 @@ class StockInController extends Controller
 
     public function add(Request $request)
     {
-        dd($request->all());
+        //dd($request->all());
         // Retrieve the selected product IDs from the query parameters
         $data['title']              = 'স্টক যুক্ত করুন';
         $selected_product_ids       = $request->input('sp', []);

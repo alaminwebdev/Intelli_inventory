@@ -1,4 +1,4 @@
-<table class="table border table-bordered">
+<table class="table ">
     <thead>
         <tr>
             <th style="width:4%;text-align:center;">বাছাই</th>
@@ -19,6 +19,25 @@
                 <td colspan="2" class="p-2">
                     <table class="table table-bordered sub-table">
                         <tbody>
+                            @foreach ($product_type['products'] as $key => $product)
+                                @if ($key % 2 === 0)
+                                    <tr>
+                                @endif
+                                <td>
+                                    <div class="custom-control custom-checkbox">
+                                        <input class="custom-control-input" type="checkbox" id="selected_products_{{ $product['id'] }}" name="selected_products[]" value="{{ $product['id'] }}" style="cursor: pointer">
+                                        <label for="selected_products_{{ $product['id'] }}" class="custom-control-label" style="cursor: pointer">{{ $product['name'] }} ({{ $product['unit'] }})</label>
+                                    </div>
+                                </td>
+                                @if ($key % 2 === 1 || $loop->last)
+                                    </tr>
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                    
+                    {{-- <table class="table table-bordered sub-table">
+                        <tbody>
                             @foreach ($product_type['products'] as $product)
                                 <tr>
                                     <td class="text-center" style="width:5%;">
@@ -31,7 +50,7 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>
+                    </table> --}}
                 </td>
             </tr>
         @endforeach
