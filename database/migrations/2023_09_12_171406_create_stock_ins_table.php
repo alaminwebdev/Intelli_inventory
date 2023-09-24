@@ -19,6 +19,7 @@ class CreateStockInsTable extends Migration
             $table->string('grn_no')->nullable();
             $table->date('entry_date')->nullable();
             $table->string('challan_no')->nullable();
+            $table->string('po_no')->nullable();
             $table->integer('supplier_id')->nullable();
             $table->tinyInteger('status')->nullable();
             $table->integer('created_by')->nullable();

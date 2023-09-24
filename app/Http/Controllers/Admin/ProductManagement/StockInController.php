@@ -41,17 +41,7 @@ class StockInController extends Controller
     public function selectProducts()
     {
         $data['title']                  = 'পন্য বাছাই করুন';
-        // $data['product_types']          = $this->productInformationService->getProductTypeAndProducts();
         return view('admin.product-management.stock-in.product-selection', $data);
-    }
-    public function processSelectionProducts(Request $request)
-    {
-        // Retrieve the selected product IDs from the request
-        $selectedProductIds = $request->input('selected_products');
-        $po_no              = $request->input('po_no');
-        $po_date            = $request->input('po_date');
-        // Redirect to the "add" step for section requisition with selected product IDs
-        return redirect()->route('admin.stock.in.add', ['sp' => $selectedProductIds, 'po_no' => $po_no, 'po_date' => $po_date]);
     }
 
     public function checkPo(Request $request)
@@ -62,18 +52,11 @@ class StockInController extends Controller
         $poExists =  ProductPoInfo::where('po_no', $poNo)->exists();
 
         if ($poExists) {
-            $poProducts = ProductPoInfo::join('product_information', 'product_information.id', 'product_po_infos.product_information_id')
-                ->leftjoin('units', 'units.id', 'product_information.unit_id')
-                ->where('po_no', $poNo)
-                ->select(
-                    'product_information.name as product',
-                    'units.name as unit',
-                    'product_po_infos.reject_qty as reject_qty',
-                    'product_po_infos.po_no as po_no'
-                )
-                ->get();
-            // Return product data based on the PO number
-            return response()->json(['exists' => true, 'products' => $poProducts]);
+            // Retrieve the first po_date associated with the PO number
+            $poDate             = ProductPoInfo::where('po_no', $poNo)->value('po_date');
+            $formattedPoDate    = date('d/m/Y', strtotime($poDate));
+            $poProducts         = $this->productInformationService->getPoProducts($poNo);
+            return response()->json(['exists' => true, 'po_date' =>$formattedPoDate, 'products' => $poProducts]);
         } else {
             // Return default product data
             $productTypes = $this->productInformationService->getProductTypeAndProducts();
@@ -84,31 +67,36 @@ class StockInController extends Controller
 
     public function add(Request $request)
     {
-        //dd($request->all());
-        // Retrieve the selected product IDs from the query parameters
-        $data['title']              = 'স্টক যুক্ত করুন';
-        $selected_product_ids       = $request->input('sp', []);
-        $data['selected_po_no']     = $request->input('po_no', '');
-        $data['selected_po_date']   = $request->input('po_date', '');
-        $data['selected_products']  = $this->productInformationService->getSpecificProducts($selected_product_ids);
-        // $data['product_types']      = $this->productTypeService->getAll(1);
-        $data['suppliers']          = $this->supplierService->getSupplierByStatus();
-        $data['uniqueGRNNo']        = $this->stockInService->getUniqueGRNNo();
-        return view('admin.product-management.stock-in.add', $data);
+        if ($request->isMethod('post')) {
+            $data['title']              = 'স্টক যুক্ত করুন';
+            $selected_product_ids       = $request->input('selected_products', []);
+            $data['selected_po_no']     = $request->input('po_no', '');
+            $data['is_po_product']      = $request->input('is_po_product', '');
+            $data['suppliers']          = $this->supplierService->getSupplierByStatus();
+            $data['uniqueGRNNo']        = $this->stockInService->getUniqueGRNNo();
+            if ($data['is_po_product'] == 1) {
+                $data['selected_po_date']   = $request->input('old_po_date', '');
+                $data['selected_products']  = $this->productInformationService->getPoProducts($data['selected_po_no'], $selected_product_ids);
+                return view('admin.product-management.stock-in.add-po-products',$data);
+            }else{
+                $data['selected_po_date']   = $request->input('po_date', '');
+                $data['selected_products']  = $this->productInformationService->getSpecificProducts($selected_product_ids);
+                return view('admin.product-management.stock-in.add',$data);
+            }
+        }else{
+            return redirect()->route('admin.stock.in.product.selection');
+        }
     }
-    /*
-    */
+
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'code'          => 'required',
-        //     'name'          => 'required',
-        //     'product_type'  => 'required',
-        //     'unit'          => 'required',
-        // ]);
-        // dd($request->all());
         $data = $this->stockInService->create($request);
         return response()->json($data);
+    }
+    public function updatePoProducts(Request $request)
+    {
+        // $data = $this->stockInService->updatePoProducts($request);
+        // return response()->json($request);
     }
     public function edit($id)
     {

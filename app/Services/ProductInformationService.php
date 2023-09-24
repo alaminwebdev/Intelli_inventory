@@ -3,9 +3,12 @@
 namespace App\Services;
 
 use App\Models\ProductInformation;
+use App\Models\ProductPoInfo;
 use App\Models\ProductType;
+use App\Models\StockInDetail;
 use App\Services\IService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class ProductInformationService
@@ -35,7 +38,57 @@ class ProductInformationService implements IService
     public function getSpecificProducts($ids = null)
     {
         try {
-            $data = ProductInformation::whereIn('id', $ids)->where('status', 1)->latest()->get();;
+            $data = ProductInformation::whereIn('id', $ids)->where('status', 1)->latest()->get();
+            return $data;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+    public function getPoProducts($po_no, $product_ids = null)
+    {
+        try {
+            // $data = ProductPoInfo::join('product_information', 'product_information.id', 'product_po_infos.product_information_id')
+            //     ->join('stock_in_details', 'stock_in_details.id', 'product_po_infos.stock_in_detail_id' )
+            //     ->leftjoin('units', 'units.id', 'product_information.unit_id')
+            //     ->where('product_po_infos.po_no', '=',  $po_no)
+            //     ->when($product_ids, function ($query, $product_ids) {
+            //         if ($product_ids != null) {
+            //             $query->whereIn('product_po_infos.product_information_id', $product_ids);
+            //         }
+            //     })
+            //     ->where('product_po_infos.reject_qty', '>', 0)
+            //     ->select(
+            //         'product_information.name as product',
+            //         'units.name as unit',
+            //         'stock_in_details.po_qty as po_qty',
+            //         'stock_in_details.receive_qty as receive_qty',
+            //         'product_po_infos.reject_qty as reject_qty',
+            //         'product_po_infos.po_no as po_no',
+            //         'product_po_infos.product_information_id as product_id'
+            //     )
+            //     ->get();
+
+            $data = StockInDetail::join('product_information', 'product_information.id', 'stock_in_details.product_information_id')
+                ->leftjoin('units', 'units.id', 'product_information.unit_id')
+                ->where('stock_in_details.po_no', '=',  $po_no)
+                ->when($product_ids, function ($query, $product_ids) {
+                    if ($product_ids != null) {
+                        $query->whereIn('stock_in_details.product_information_id', $product_ids);
+                    }
+                })
+                ->where('stock_in_details.reject_qty', '>', 0)
+                ->select(
+                    'product_information.id as product_id',
+                    'product_information.name as product',
+                    'units.name as unit',
+                    // 'stock_in_details.po_qty as po_qty',
+                    // 'stock_in_details.receive_qty as receive_qty',
+                    DB::raw('MAX(stock_in_details.po_qty) as po_qty'),
+                    DB::raw('sum(stock_in_details.receive_qty) as receive_qty'),
+                    DB::raw('sum(stock_in_details.reject_qty) as reject_qty'),
+                )
+                ->groupBy('stock_in_details.product_information_id')
+                ->get();
             return $data;
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -52,7 +105,8 @@ class ProductInformationService implements IService
         }
     }
 
-    public function getProductTypeAndProducts(){
+    public function getProductTypeAndProducts()
+    {
         try {
             $productTypeData    = [];
             $product_types      = ProductType::where('status', 1)->latest()->get();
@@ -63,14 +117,14 @@ class ProductInformationService implements IService
                     'name'      => $item->name,
                     'products'  => [],
                 ];
-    
+
                 // Query products for this product type and push them into the products array
                 $products = ProductInformation::where('product_type_id', $item->id)
                     ->latest()
                     ->get();
-        
+
                 if (count($products) > 0) {
-    
+
                     foreach ($products as $product) {
                         $productType['products'][$product->id] = [
                             'id'                => $product->id,

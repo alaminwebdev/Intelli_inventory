@@ -59,8 +59,9 @@ class StockInService implements IService
             $stockInData->entry_date    = $entryDate;
 
             $stockInData->challan_no    = $data['challan_no'];
+            $stockInData->po_no         = $data['po_no'];
             $stockInData->supplier_id   = $data['supplier_id'];
-            $stockInData->status        = 0; // You may need to adjust how 'status' is passed
+            $stockInData->status        = 1; // You may need to adjust how 'status' is passed
             $stockInData->created_by    = Auth::id();
 
             if ($stockInData->save()) {
@@ -92,14 +93,75 @@ class StockInService implements IService
                     $stockInDetailData->remarks                 = $remarks[$productId];
                     $stockInDetailData->save();
 
-                    $productPoInfo                          = new ProductPoInfo();
-                    $productPoInfo->po_no                   = $data['po_no'];
-                    $productPoInfo->po_date                 = $poDate;
-                    $productPoInfo->stock_in_id             = $stockInData->id;
-                    $productPoInfo->product_information_id  = $productId;
-                    $productPoInfo->reject_qty              = $reject_qty[$productId];
-                    $productPoInfo->save();
+                    if($stockInDetailData->save()){
+
+                        $productPoInfo                          = new ProductPoInfo();
+                        $productPoInfo->po_no                   = $data['po_no'];
+                        $productPoInfo->po_date                 = $poDate;
+                        $productPoInfo->stock_in_detail_id      = $stockInDetailData->id;
+                        $productPoInfo->product_information_id  = $productId;
+                        $productPoInfo->reject_qty              = $reject_qty[$productId];
+                        $productPoInfo->save();
+                    }
+
                 }
+            }
+            DB::commit();
+            return response()->json(['success' => 'Stock Information Inserted']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()]);
+        }
+    }
+    public function updatePoProducts(Request $request)
+    {
+
+        DB::beginTransaction();
+        try {
+
+            $data = $request->all(); // Access all data from the request
+
+            // Access the nested arrays within the 'data' key
+            $stock_in_id    = $data['stock_in_id'];
+            $po_no          = $data['po_no'];
+            $po_qty         = $data['po_qty'];
+            $receive_qty    = $data['receive_qty'];
+            $reject_qty     = $data['reject_qty'];
+            $mfg_date       = $data['mfg_date'];
+            $expire_date    = $data['expire_date'];
+            $remarks        = $data['remarks'];
+
+            foreach ($po_qty as $productId => $poQty) {
+
+                $stockInDetailData = StockInDetail::where('stock_in_id', $stock_in_id)
+                    ->where('product_information_id', $productId)
+                    ->where('po_no', $po_no)
+                    ->firstOrFail();
+
+                // Check and update mfg_date if it's not null
+                if (!is_null($mfg_date[$productId])) {
+                    $stockInDetailData->mfg_date = date('Y-m-d', strtotime($mfg_date[$productId]));
+                }
+
+                // Check and update expire_date if it's not null
+                if (!is_null($expire_date[$productId])) {
+                    $stockInDetailData->expire_date = date('Y-m-d', strtotime($expire_date[$productId]));
+                }
+
+                $stockInDetailData->receive_qty             = $stockInDetailData->receive_qty + $receive_qty[$productId];
+                $stockInDetailData->reject_qty              = $reject_qty[$productId];
+                $stockInDetailData->available_qty           = $stockInDetailData->available_qty + $receive_qty[$productId];
+                $stockInDetailData->dispatch_qty            = 0;
+                $stockInDetailData->remarks                 = $remarks[$productId];
+                $stockInDetailData->save();
+
+                $productPoInfo = ProductPoInfo::where('stock_in_id', $stock_in_id)
+                    ->where('product_information_id', $productId)
+                    ->where('po_no', $po_no)
+                    ->firstOrFail();
+
+                $productPoInfo->reject_qty = $reject_qty[$productId];
+                $productPoInfo->save();
             }
             DB::commit();
             return response()->json(['success' => 'Stock Information Inserted']);

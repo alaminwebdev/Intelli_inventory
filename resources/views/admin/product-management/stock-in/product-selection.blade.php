@@ -7,12 +7,17 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
-                    <form id="productSelectionForm" action="{{ route('admin.stock.in.product.selection.process') }} " method="post" enctype="multipart/form-data" autocomplete="off">
+                    <form id="productSelectionForm" action="{{ route('admin.stock.in.add') }} " method="post" enctype="multipart/form-data" autocomplete="off">
                         @csrf
+                        <input type="hidden" name="is_po_product" id="is_po_product" value="0">
+                        <input type="hidden" name="old_po_date" id="old_po_date" value="">
                         <div class="card shadow-sm">
                             <div class="card-header text-right">
                                 <h4 class="card-title">{{ @$title }}</h4>
-                                <button type="submit" class="btn btn-success btn-sm">সামনে এগিয়ে যান</button>
+                                <div>
+                                    <button type="submit" class="btn btn-success btn-sm">সামনে এগিয়ে যান</button>
+                                    <a class="btn btn-default btn-sm ion-android-arrow-back" href="{{ route('admin.stock.in.list') }}">পিছনে যান</a>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <div class="row px-3 pb-4 border rounded shadow-sm mb-4">
@@ -21,12 +26,12 @@
                                         <input type="number" class="form-control form-control-sm " id="po_no" name="po_no" value="">
                                     </div>
                                     <div class="col-md-4 pt-4">
-                                        <label class="control-label">ক্রয় অর্ডারের তারিখ : <span class="text-red">*</span></label>
+                                        <label class="control-label">ক্রয় অর্ডারের তারিখ :</label>
                                         <input type="text" class="form-control form-control-sm singledatepicker" id="po_date" name="po_date" value="">
                                     </div>
                                     <div class="col-md-3 pt-4">
                                         <label class="control-label" style="visibility: hidden;">Check</label>
-                                        <button class="btn btn-primary btn-sm btn-block" id="checkPoBtn">ক্রয় অর্ডার আছে কিনা যাচাই করুন</button>
+                                        <button class="btn btn-primary btn-sm btn-block" id="checkPoBtn">পন্য বাছাই করুন</button>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -82,9 +87,7 @@
                                     <div class="col-md-12">
                                         <div class="text-right">
                                             <button type="submit" class="btn btn-success btn-sm">সামনে এগিয়ে যান</button>
-                                            <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.section.requisition.list') }}">পিছনে যান</a>
-                                            </button>
+                                            <a class="btn btn-default btn-sm ion-android-arrow-back" href="{{ route('admin.stock.in.list') }}">পিছনে যান</a>
                                         </div>
                                     </div>
                                 </div>
@@ -98,18 +101,43 @@
 
     <script>
         $(document).ready(function() {
+
+            $("#productSelectionForm").on("submit", function(e) {
+
+                var poDateInput = document.getElementById('po_date');
+                var poDate = poDateInput.value;
+
+                if (poDate === '') {
+                    alert("Please select a PO Date.");
+                    poDateInput.focus();
+                    return false;
+                }
+                // Check if there are any checkboxes with the name "selected_products[]" that are checked
+                const checkedCheckboxes = document.querySelectorAll('input[name="selected_products[]"]:checked');
+
+                if (checkedCheckboxes.length === 0) {
+                    // No checkboxes are checked, so prevent form submission
+                    alert("Please select at least one product.");
+                    e.preventDefault(); // Prevent form submission
+                }
+
+            });
+
             $("#checkPoBtn").on("click", function(e) {
                 e.preventDefault();
 
                 var poNoInput = document.getElementById('po_no');
                 var poNo = poNoInput.value;
-                console.log(poNo);
+
+                var poDateInput = document.getElementById('po_date');
+                var poDate = poDateInput.value;
 
                 if (poNo === '') {
                     alert("Please select a PO Number.");
                     poNoInput.focus();
                     return false;
                 }
+
 
                 $('#loading-spinner').show();
 
@@ -126,6 +154,42 @@
                         console.log(response);
 
                         if (response.exists) {
+
+                            if (response.po_date) {
+
+                                // Set the formatted date as the value of the po_dateInput field
+                                poDateInput.value = response.po_date;
+
+                                document.getElementById('old_po_date').value = response.po_date;
+
+                                // Disable the po_date input field
+                                poDateInput.disabled = true;
+                            }
+
+
+                            // Construct an HTML table with the received products data, one product per row
+                            var products = response.products;
+                            var tableHTML = '<table class="table border table-bordered"><thead><tr><th>পন্য বাছাই</th><th>বাকি</th></tr></thead><tbody>';
+
+                            products.forEach(function(product) {
+                                var productNameWithUnit = product.product + ' (' + product.unit + ')';
+                                tableHTML += '<tr>' +
+                                    '<td>' +
+                                    '<div class="custom-control custom-checkbox">' +
+                                    '<input class="custom-control-input" type="checkbox" id="selected_products_' + product.product_id + '" name="selected_products[]" value="' + product.product_id + '" style="cursor: pointer">' +
+                                    '<label for="selected_products_' + product.product_id + '" class="custom-control-label" style="cursor: pointer">' + productNameWithUnit + '</label>' +
+                                    '</div>' +
+                                    '</td>' +
+                                    '<td class="text-right">' + product.reject_qty + '</td>' +
+                                    '</tr>';
+                            });
+
+                            tableHTML += '</tbody></table>';
+
+                            $('#productTypesTable').html(tableHTML);
+                            $('#loading-spinner').hide();
+                            document.getElementById('is_po_product').value = '1';
+
                             Swal.fire({
                                 toast: true,
                                 customClass: {
@@ -133,42 +197,26 @@
                                 },
                                 iconColor: 'white',
                                 icon: "success",
-                                title: "PO number exists !",
+                                title: "আপনার একটি ক্রয় অর্ডার নং আছে ।",
                                 position: 'top-end',
                                 showConfirmButton: false,
                                 timer: 3000,
                                 timerProgressBar: true
                             });
-                            // Construct an HTML table with the received products data
-                            var products = response.products;
-                            var tableHTML = '<table class="table border table-bordered"><thead><tr><th>ক্রয় অর্ডার নং.</th><th>পন্য</th><th>বাকি</th></tr></thead><tbody>';
-
-                            products.forEach(function(product) {
-                                var productNameWithUnit = product.product + ' (' + product.unit + ')';
-                                tableHTML += '<tr><td>' + product.po_no + '</td><td>' + productNameWithUnit + '</td><td class="text-right">' + product.reject_qty + '</td></tr>';
-                            });
-
-                            tableHTML += '</tbody></table>';
-
-                            $('#productTypesTable').html(tableHTML);
-                            $('#loading-spinner').hide();
 
                         } else {
-                            Swal.fire({
-                                toast: true,
-                                customClass: {
-                                    popup: 'colored-toast'
-                                },
-                                iconColor: 'white',
-                                icon: "info",
-                                title: "PO number doesn't exist !",
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true
-                            });
+
+                            // Set the formatted date as the value of the po_dateInput field
+                            poDateInput.value = '';
+
+                            document.getElementById('old_po_date').value = '';
+
+                            // Disable the po_date input field
+                            poDateInput.disabled = false;
+                            
                             $('#productTypesTable').html(response.products);
                             $('#loading-spinner').hide();
+                            document.getElementById('is_po_product').value = '0';
                         }
                     },
                     error: function() {

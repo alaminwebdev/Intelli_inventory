@@ -15,9 +15,9 @@ class CreateProductPoInfosTable extends Migration
     {
         Schema::create('product_po_infos', function (Blueprint $table) {
             $table->id();
-            $table->integer('po_no')->nullable();
+            $table->string('po_no')->nullable();
             $table->date('po_date')->nullable();
-            $table->integer('stock_in_id')->nullable();
+            $table->integer('stock_in_detail_id')->nullable();
             $table->integer('product_information_id')->nullable();
             $table->integer('reject_qty')->nullable();
             $table->integer('status')->nullable();
