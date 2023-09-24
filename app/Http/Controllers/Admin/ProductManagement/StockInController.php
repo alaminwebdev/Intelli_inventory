@@ -54,7 +54,7 @@ class StockInController extends Controller
         if ($poExists) {
             // Retrieve the first po_date associated with the PO number
             $poDate             = ProductPoInfo::where('po_no', $poNo)->value('po_date');
-            $formattedPoDate    = date('d/m/Y', strtotime($poDate));
+            $formattedPoDate    = date('d-m-Y', strtotime($poDate));
             $poProducts         = $this->productInformationService->getPoProducts($poNo);
             return response()->json(['exists' => true, 'po_date' =>$formattedPoDate, 'products' => $poProducts]);
         } else {

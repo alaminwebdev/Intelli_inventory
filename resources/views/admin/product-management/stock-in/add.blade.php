@@ -52,7 +52,7 @@
                                             </div>
                                             <div class="form-group col-md-4 ">
                                                 <label class="control-label">ক্রয় অর্ডারের তারিখ : <span class="text-red">*</span></label>
-                                                <input type="text" class="form-control form-control-sm singledatepicker" id="" name="" @if ($selected_po_date) value="{{ date('d/m/Y', strtotime($selected_po_date)) }}" @endif disabled>
+                                                <input type="text" class="form-control form-control-sm singledatepicker" id="" name="" @if ($selected_po_date) value="{{ date('d-m-Y', strtotime($selected_po_date)) }}" @endif disabled>
                                                 <input type="hidden" name="po_date" value="{{ $selected_po_date }}">
                                             </div>
                                         </div>
@@ -214,79 +214,87 @@
     </script>
 
     <script>
-        $(function() {
-            // Submit Stock-In Data
-            let stockInForm = document.getElementById('stockInForm');
+        document.addEventListener('DOMContentLoaded', function() {
+            const stockInForm = document.getElementById('stockInForm');
+            const receiveQtyInputs = document.querySelectorAll('.receive_qty');
 
-            stockInForm.addEventListener('submit', (e) => {
+
+            stockInForm.addEventListener('submit', function(e) {
                 e.preventDefault();
 
-
                 if (validateForm()) {
+                    // Serialize form data
+                    const formData = new FormData(stockInForm);
+                    document.getElementById('loading-spinner').style.display = 'block';
 
-                    $('#loading-spinner').show(); // Show the spinner
-                    $.ajaxSetup({
+                    // Perform AJAX form submission
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ route('admin.stock.in.store') }}",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
-    
-                    // Serialize the form data
-                    var formData = $(stockInForm).serialize();
-    
-                    $.post("{{ route('admin.stock.in.store') }}", formData, function(response) {
-    
-                        $('#loading-spinner').hide();
-                        console.log(response);
-                        var result = response.original;
-    
-                        if (result.success && result.success.trim() !== "") {
-    
-                            console.log("Success message:", result.success);
-                            Swal.fire({
-                                toast: true,
-                                customClass: {
-                                    popup: 'colored-toast'
-                                },
-                                iconColor: 'white',
-                                icon: "success",
-                                title: result.success,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true
-                            });
-    
-                            setTimeout(function() {
-                                location.href = "{{ route('admin.stock.in.list') }}";
-                            }, 1000);
-    
-                        } else if (result.error) {
-    
-                            console.log("Error message:", result.error);
-                            Swal.fire({
-                                toast: true,
-                                customClass: {
-                                    popup: 'colored-toast'
-                                },
-                                iconColor: 'white',
-                                icon: "error",
-                                title: result.error,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true
-                            });
-    
-                        } else {
-                            console.log("Unexpected response:", result);
-                        }
-                    });
-                }
+                        },
+                        success: function(response) {
+                            console.log(response);
+                            var result = response.original;
+                            document.getElementById('loading-spinner').style.display = 'none';
 
+                            if (result.success && result.success.trim() !== "") {
+                                console.log("Success message:", result.success);
+                                showAlert('success', result.success);
+                                setTimeout(function() {
+                                    location.href = "{{ route('admin.stock.in.list') }}";
+                                }, 1000);
+                            } else if (result.error) {
+                                console.log("Error message:", result.error);
+                                showAlert('error', result.error);
+                            } else {
+                                console.log("Unexpected response:", result);
+                            }
+                        },
+                        error: function(error) {
+                            document.getElementById('loading-spinner').style.display = 'none';
+                            console.error("Error:", error);
+                        }
+                    });
+                } else {
+                    // Show a SweetAlert error for validation errors
+                    showAlert('error', 'Please check the form for validation errors.');
+                }
             });
 
+            // Handle the case when receive_qty inputs are empty
+            receiveQtyInputs.forEach(function(receiveQtyInput) {
+                receiveQtyInput.addEventListener('input', function() {
+                    const parentRow = receiveQtyInput.closest('tr');
+                    const rejectQtyInput = parentRow.querySelector('.reject_qty');
+                    const defaultRejectQty = parseFloat(rejectQtyInput.getAttribute('data-default-value')) || 0;
 
+                    if (receiveQtyInput.value === "") {
+                        // Set the reject_qty input to the default value
+                        rejectQtyInput.value = defaultRejectQty;
+                    }
+                });
+            });
+
+            function showAlert(type, message) {
+                Swal.fire({
+                    toast: true,
+                    customClass: {
+                        popup: 'colored-toast'
+                    },
+                    iconColor: 'white',
+                    icon: type,
+                    title: message,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            }
         });
     </script>
 @endsection

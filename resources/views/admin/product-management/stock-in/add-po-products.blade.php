@@ -39,7 +39,7 @@
                                             </div>
                                             <div class="form-group col-md-4">
                                                 <label class="control-label">সরবরাহকারী <span class="text-red">*</span></label>
-                                                <select name="supplier_id" id="supplier_id" class="form-control select2">
+                                                <select name="supplier_id" id="supplier_id" class="form-control form-control-sm">
                                                     <option value="">Please Select</option>
                                                     @foreach ($suppliers as $item)
                                                         <option value="{{ $item->id }}" {{ @$stock_in_infos->supplier_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
@@ -179,53 +179,8 @@
         });
     </script>
 
-    <script>
-        function validateForm() {
-            // Reset any previous validation error messages
-            $('.is-invalid').removeClass('is-invalid');
 
-            // Flag to track whether validation passes
-            var isValid = true;
-
-            // Validate common fields
-            var entryDate = $('#entry_date').val().trim();
-            var challanNo = $('#challan_no').val().trim();
-            var supplierId = $('#supplier_id').val();
-
-            if (entryDate === '') {
-                $('#entry_date').addClass('is-invalid');
-                isValid = false;
-            }
-
-            if (challanNo === '') {
-                $('#challan_no').addClass('is-invalid');
-                isValid = false;
-            }
-
-            if (supplierId === '') {
-                $('#supplier_id').addClass('is-invalid');
-                isValid = false;
-            }
-
-            // Validate product-specific fields
-            $('.po_qty').each(function() {
-                var productId = $(this).data('product-id');
-                var poQty = $(this).val().trim();
-                var receiveQty = $('#receive_qty_' + productId).val().trim();
-
-
-                if (receiveQty === '') {
-                    $('#receive_qty_' + productId).addClass('is-invalid');
-                    isValid = false;
-                }
-
-            });
-
-            return isValid;
-        }
-    </script>
-
-    <script>
+    {{-- <script>
         $(function() {
             // Submit Stock-In Data
             let stockInForm = document.getElementById('stockInForm');
@@ -327,6 +282,161 @@
             });
 
 
+        });
+    </script> --}}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const stockInForm = document.getElementById('stockInForm');
+            const receiveQtyInputs = document.querySelectorAll('.receive_qty');
+            console.log(receiveQtyInputs);
+
+            stockInForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Reset previous validation errors
+                clearValidationErrors();
+
+                // Validate product-specific fields
+                let isValid = true;
+
+                // Validate common fields
+                const entryDate = document.getElementById('entry_date').value.trim();
+                const challanNo = document.getElementById('challan_no').value.trim();
+                const supplierId = document.getElementById('supplier_id').value;
+
+                if (!entryDate) {
+                    markInvalidField('entry_date');
+                    isValid = false;
+                }
+
+                if (!challanNo) {
+                    markInvalidField('challan_no');
+                    isValid = false;
+                }
+
+                if (!supplierId) {
+                    markInvalidField('supplier_id');
+                    isValid = false;
+                }
+
+
+
+                receiveQtyInputs.forEach(function(receiveQtyInput) {
+
+                    const parentRow = receiveQtyInput.closest('tr');
+                    const rejectQtyInput = parentRow.querySelector('.reject_qty');
+                    const receiveQty = parseFloat(receiveQtyInput.value) || 0;
+                    const rejectQty = parseFloat(rejectQtyInput.value) || 0;
+                    const defaultRejectQty = parseFloat(rejectQtyInput.getAttribute('data-default-value')) || 0;
+
+                    // Check if receiveQty is empty
+                    if (receiveQty === 0) {
+                        markInvalidField(receiveQtyInput.id);
+                        receiveQtyInput.setCustomValidity('Receive quantity is required.');
+                        isValid = false;
+                    } else if (receiveQty > defaultRejectQty) {
+                        // Additional validation logic
+                        markInvalidField(receiveQtyInput.id);
+                        markInvalidField(rejectQtyInput.id);
+                        receiveQtyInput.setCustomValidity('Receive quantity cannot be greater than Reject quantity.');
+                        isValid = false;
+                    }
+
+                    if (isNaN(receiveQty) || receiveQty < 0) {
+                        console.log('Event listener attached'); // Add this line
+                        isValid = false;
+                        markInvalidField(receiveQtyInput.id);
+                        receiveQtyInput.setCustomValidity('Receive quantity must be a valid positive number.');
+                    }
+
+                });
+
+                if (isValid) {
+                    // Serialize form data
+                    const formData = new FormData(stockInForm);
+                    document.getElementById('loading-spinner').style.display = 'block';
+
+                    // Perform AJAX form submission
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ route('admin.stock.in.store') }}",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            console.log(response);
+                            var result = response.original;
+                            document.getElementById('loading-spinner').style.display = 'none';
+
+                            if (result.success && result.success.trim() !== "") {
+                                console.log("Success message:", result.success);
+                                showAlert('success', result.success);
+                                setTimeout(function() {
+                                    location.href = "{{ route('admin.stock.in.list') }}";
+                                }, 1000);
+                            } else if (result.error) {
+                                console.log("Error message:", result.error);
+                                showAlert('error', result.error);
+                            } else {
+                                console.log("Unexpected response:", result);
+                            }
+                        },
+                        error: function(error) {
+                            document.getElementById('loading-spinner').style.display = 'none';
+                            console.error("Error:", error);
+                        }
+                    });
+                } else {
+                    // Show a SweetAlert error for validation errors
+                    showAlert('error', 'Please check the form for validation errors.');
+                }
+            });
+
+            // Handle the case when receive_qty inputs are empty
+            receiveQtyInputs.forEach(function(receiveQtyInput) {
+                receiveQtyInput.addEventListener('input', function() {
+                    const parentRow = receiveQtyInput.closest('tr');
+                    const rejectQtyInput = parentRow.querySelector('.reject_qty');
+                    const defaultRejectQty = parseFloat(rejectQtyInput.getAttribute('data-default-value')) || 0;
+
+                    if (receiveQtyInput.value === "") {
+                        // Set the reject_qty input to the default value
+                        rejectQtyInput.value = defaultRejectQty;
+                    }
+                });
+            });
+
+            function markInvalidField(fieldId) {
+                const field = document.getElementById(fieldId);
+                field.classList.add('is-invalid');
+            }
+
+            function clearValidationErrors() {
+                const invalidFields = document.querySelectorAll('.is-invalid');
+                invalidFields.forEach(function(field) {
+                    field.classList.remove('is-invalid');
+                });
+            }
+
+            function showAlert(type, message) {
+                Swal.fire({
+                    toast: true,
+                    customClass: {
+                        popup: 'colored-toast'
+                    },
+                    iconColor: 'white',
+                    icon: type,
+                    title: message,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            }
         });
     </script>
 @endsection
