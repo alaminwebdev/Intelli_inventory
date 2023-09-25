@@ -6,15 +6,15 @@
 
 @php
     if ($requestedRequisitionInfo->status == 0) {
-        $status = 'অপেক্ষারত';
+        $status = 'সুপারিশের জন্য প্রেরন করা হয়েছে';
     } elseif ($requestedRequisitionInfo->status == 1) {
-        $status = 'সুপারিশ সম্পন্ন';
+        $status = 'সুপারিশ করা হয়েছে';
     } elseif ($requestedRequisitionInfo->status == 2) {
-        $status = 'প্রত্যাখ্যাত';
+        $status = 'প্রত্যাখ্যান করা হয়েছে';
     } elseif ($requestedRequisitionInfo->status == 3) {
-        $status = 'অনুমোদিত';
+        $status = 'অনুমোদন করা হয়েছে';
     } elseif ($requestedRequisitionInfo->status == 4) {
-        $status = 'বিতরন করা হয়েছে';
+        $status = 'বিতরণ করা হয়েছে';
     } else {
         $status = '';
     }

@@ -26,7 +26,7 @@
     table {
         border-collapse: collapse;
         width: 100%;
-        margin-top: 25px;
+        margin-top: 15px;
     }
 
     .table tr td {
@@ -44,8 +44,8 @@
     .table-bordered td,
     .table-bordered tr {
         vertical-align: middle;
-        padding: 0.75rem;
-        border: .5px solid #a9a8a8;
+        padding: 0.5rem;
+        border: .1px solid #888;
         font-size: 12px;
     }
 
@@ -60,6 +60,7 @@
     .text-left {
         text-align: left;
     }
+
     .text-right {
         text-align: right;
     }
@@ -110,12 +111,13 @@
         width: 30%;
         text-align: right;
     }
+
 </style>
 
 <body>
     <div class="header">
         <div class="left">
-            <img src="{{ fileExist(['url' => @$site_setting->logo, 'type' => 'logo']) }}" alt="report_logo" width="100%">
+            <img src="{{ fileExist(['url' => @$site_setting->logo, 'type' => 'logo']) }}" alt="report_logo" style="padding-top: 10px; width:40px;">
         </div>
         <div class="center">
             <div class="content">

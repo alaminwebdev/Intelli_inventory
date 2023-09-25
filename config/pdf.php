@@ -23,5 +23,10 @@ return [
 			'useKashida' => 75,  // required for complicated langs like Persian, Arabic and Chinese
 		]
 		// ...add as many as you want.
-	]
+	],
+	// Set margins (in millimeters)
+	'margin_top' => 5,
+	'margin_right' => 10,
+	'margin_bottom' => 5,
+	'margin_left' => 10,
 ];

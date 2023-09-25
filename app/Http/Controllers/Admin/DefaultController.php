@@ -147,6 +147,7 @@ class DefaultController extends Controller
         $data['requisitionProducts']            = $productTypeData;
         $data['requestedRequisitionInfo']       = $this->sectionRequisitionService->getByID($id);
 
+
         // Generate a PDF
         $pdf = PDF::loadView('admin.reports.requisition-pdf', $data);
         $pdf->SetProtection(['copy', 'print'], '', 'pass');
@@ -160,13 +161,17 @@ class DefaultController extends Controller
         $formatter                  = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
         $formatter->setPattern('d-MMMM-y'); // Customize the date format if needed
         $data['date_in_bengali']    = $formatter->format($date);
+        
+        $data['stock_info']     = $this->stockInService->getByID($id);
+        $data['stock_details']  = $this->stockInService->getStockDetails($id);
 
-dd($id);
+        // return view('admin.reports.stock-pdf', $data);
+
         // Generate a PDF
-        $pdf = PDF::loadView('admin.reports.requisition-pdf', $data);
+        $pdf = PDF::loadView('admin.reports.stock-pdf', $data);
         $pdf->SetProtection(['copy', 'print'], '', 'pass');
 
-        $fileName = 'চাহিদাপত্র-' . $data['date_in_bengali'] . '.pdf';
+        $fileName = 'ক্রয় অর্ডার-' . $data['stock_info']->po_no . '.pdf';
         return $pdf->stream($fileName);
     }
 }
