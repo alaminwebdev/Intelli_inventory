@@ -15,7 +15,8 @@
                                     <tr>
                                         <th width="5%">ক্রমিক নং.</th>
                                         <th>চাহিদাপত্র নাম্বার</th>
-                                        <th>অনুরোধকৃত সেকশন</th>
+                                        <th>অনুরোধকৃত শাখা</th>
+                                        <th>অনুরোধকৃত দপ্তর</th>
                                         <th>বর্তমান অবস্থা</th>
                                         <th>অ্যাকশান</th>
                                     </tr>
@@ -33,6 +34,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ @$list->requisition_no ?? 'N/A' }}</td>
                                             <td>{{ @$list->section->name ?? 'N/A' }}</td>
+                                            <td>{{ @$list->section->department->name ?? 'N/A' }}</td>
                                             <td class="text-center">{!! requisitionStatus($list->status) !!}</td>
                                             <td class="text-center">
                                                 @if (sorpermission('admin.distribution.edit'))
@@ -43,7 +45,7 @@
                                                 <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-products="{{ json_encode($sectionRequisitionProducts) }}">
                                                     <i class="far fa-eye"></i>
                                                 </button>
-                                                {{-- <a class="btn btn-sm btn-primary" href="{{ route('admin.requisition.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ</a> --}}
+                                                <a class="btn btn-sm btn-primary" href="{{ route('admin.requisition.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ</a>
                                                 {{-- @if (sorpermission('admin.requisition.delete'))
                                                 <a class="btn btn-sm btn-danger destroy" data-id="{{$list->id}}" data-route="{{route('admin.requisition.delete')}}">
                                                     <i class="fa fa-trash"></i>

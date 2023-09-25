@@ -114,15 +114,15 @@ if (!function_exists('requisitionStatus')) {
     function requisitionStatus($value)
     {
         if ($value == 1) {
-            $output = '<span class="badge badge-info">' . __('সুপারিশকৃত') . '</span>';
+            $output = '<span class="badge badge-info">' . __('সুপারিশ করা হয়েছে') . '</span>';
         } elseif($value == 2) {
-            $output = '<span class="badge badge-danger">' . __('প্রত্যাখ্যান') . '</span>';
+            $output = '<span class="badge badge-danger">' . __('প্রত্যাখ্যান করা হয়েছে') . '</span>';
         }elseif($value == 3) {
-            $output = '<span class="badge badge-primary">' . __('অনুমোদিত') . '</span>';
+            $output = '<span class="badge badge-primary">' . __('অনুমোদন করা হয়েছে') . '</span>';
         }elseif($value == 4) {
             $output = '<span class="badge badge-success">' . __('বিতরণ করা হয়েছে') . '</span>';
         } else {
-            $output = '<span class="badge badge-warning">' . __('গৃহীত') . '</span>';
+            $output = '<span class="badge badge-warning">' . __('সুপারিশের জন্য প্রেরন করা হয়েছে') . '</span>';
         }
         return $output;
     }

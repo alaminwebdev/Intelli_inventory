@@ -17,6 +17,7 @@ use App\Services\SectionService;
 use App\Services\SectionRequisitionService;
 use App\Services\EmployeeService;
 use App\Services\DepartmentRequisitionService;
+use App\Services\StockInService;
 
 use DateTime;
 use DateTimeZone;
@@ -33,6 +34,7 @@ class DefaultController extends Controller
     private $sectionRequisitionService;
     private $employeeService;
     private $departmentRequisitionService;
+    private $stockInService;
 
     public function __construct(
         ProductInformationService $productInformationService,
@@ -43,6 +45,7 @@ class DefaultController extends Controller
         SectionRequisitionService $sectionRequisitionService,
         EmployeeService $employeeService,
         DepartmentRequisitionService $departmentRequisitionService,
+        StockInService $stockInService,
 
     ) {
         $this->productInformationService    = $productInformationService;
@@ -53,6 +56,7 @@ class DefaultController extends Controller
         $this->sectionRequisitionService    = $sectionRequisitionService;
         $this->employeeService              = $employeeService;
         $this->departmentRequisitionService = $departmentRequisitionService;
+        $this->stockInService               = $stockInService;
     }
 
     public function getProductsByType(Request $request)
@@ -79,6 +83,11 @@ class DefaultController extends Controller
     public function getEmployeeById(Request $request)
     {
         $data = $this->employeeService->getByID($request->employee_id);
+        return response()->json($data);
+    }
+    public function getStockInDetailsByStockId(Request $request)
+    {
+        $data = $this->stockInService->getStockDetails($request->stock_id);
         return response()->json($data);
     }
 
@@ -138,6 +147,21 @@ class DefaultController extends Controller
         $data['requisitionProducts']            = $productTypeData;
         $data['requestedRequisitionInfo']       = $this->sectionRequisitionService->getByID($id);
 
+        // Generate a PDF
+        $pdf = PDF::loadView('admin.reports.requisition-pdf', $data);
+        $pdf->SetProtection(['copy', 'print'], '', 'pass');
+
+        $fileName = 'চাহিদাপত্র-' . $data['date_in_bengali'] . '.pdf';
+        return $pdf->stream($fileName);
+    }
+    public function stockReport($id)
+    {
+        $date                       = new DateTime('now', new DateTimeZone('Asia/Dhaka')); // Set your desired timezone
+        $formatter                  = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+        $formatter->setPattern('d-MMMM-y'); // Customize the date format if needed
+        $data['date_in_bengali']    = $formatter->format($date);
+
+dd($id);
         // Generate a PDF
         $pdf = PDF::loadView('admin.reports.requisition-pdf', $data);
         $pdf->SetProtection(['copy', 'print'], '', 'pass');

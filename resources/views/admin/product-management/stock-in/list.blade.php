@@ -26,28 +26,22 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($stock_in_data as $list)
-                                        @php
-                                            $stockInProducts = \App\Models\StockInDetail::join('product_information', 'product_information.id', 'stock_in_details.product_information_id')
-                                                ->where('stock_in_id', $list->id)
-                                                ->select('stock_in_details.receive_qty as receive_qty', 'stock_in_details.po_qty as po_qty', 'stock_in_details.reject_qty as reject_qty', 'product_information.name as product')
-                                                ->get();
-                                            
-                                        @endphp
                                         <tr>
                                             <td>{{ en2bn($loop->iteration) }}</td>
                                             <td>{{ en2bn(@$list->grn_no) ?? 'N/A' }}</td>
                                             <td>{{ en2bn(@$list->challan_no) ?? 'N/A' }}</td>
-                                            <td>{{ en2bn( @$list->po_no) ?? 'N/A' }}</td>
+                                            <td>{{ en2bn(@$list->po_no) ?? 'N/A' }}</td>
                                             <td>{{ @$list->entry_date ? date('d-M-Y', strtotime($list->entry_date)) : 'N/A' }}</td>
                                             <td>{{ @$list->supplier ?? 'N/A' }}</td>
                                             {{-- <td>{!! activeStock($list->status) !!}</td> --}}
                                             <td class="text-center">
-                                                <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-products="{{ json_encode($stockInProducts) }}">
+                                                <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-stock-id="{{ $list->id }}">
                                                     <i class="far fa-eye"></i>
                                                 </button>
+                                                <a class="btn btn-sm btn-primary" href="{{ route('admin.stock.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ</a>
                                                 @if ($list->status == 0)
                                                     <a class="btn btn-sm btn-success " href="{{ route('admin.stock.in.active', $list->id) }}">
-                                                       <i class="fa fa-check"></i> Approve
+                                                        <i class="fa fa-check"></i> Approve
                                                     </a>
                                                 @endif
                                             </td>
@@ -90,6 +84,7 @@
                             <tr>
                                 <th>পন্য</th>
                                 <th>অর্ডার পরিমাণ</th>
+                                <th>পূর্ববর্তী রিসিভ পরিমাণ</th>
                                 <th>রিসিভ পরিমাণ</th>
                                 <th>বাকি</th>
                             </tr>
@@ -108,31 +103,53 @@
     <script>
         $(document).ready(function() {
             $('.view-products').on('click', function() {
-                var products = $(this).data('products');
+                var stockID = $(this).data('stock-id');
 
-                // Clear any existing content in the modal table
-                $('#productDetailsTable').html('');
+                document.getElementById('loading-spinner').style.display = 'block';
+                $.ajax({
+                    url: "{{ route('admin.get.stock.in.details.by.stock.id') }}",
+                    type: "GET",
+                    data: {
+                        stock_id: stockID
+                    },
+                    success: function(products) {
+                        console.log(products);
+                        // Handle the data here
+                        // Clear any existing content in the modal table
+                        $('#productDetailsTable').html('');
 
-                // Loop through the products and add them to the table
-                for (var i = 0; i < products.length; i++) {
-                    var product = products[i];
+                        // Loop through the products and add them to the table
+                        for (var i = 0; i < products.length; i++) {
+                            var product = products[i];
 
-                    var productName = product.product;
-                    var poQuantity = product.po_qty;
-                    var receiveQuantity = product.receive_qty;
-                    var rejectQuantity = product.reject_qty;
+                            var productName = product.product;
+                            var poQuantity = product.po_qty;
+                            var prevReceiveQuantity = product.prev_receive_qty || 0;
+                            var receiveQuantity = product.receive_qty;
+                            var rejectQuantity = product.reject_qty;
 
-                    // Append the product details to the table
-                    $('#productDetailsTable').append(`
-                            <tr>
-                                <td>${productName}</td>
-                                <td class="text-right">${poQuantity}</td>
-                                <td class="text-right">${receiveQuantity}</td>
-                                <td class="text-right">${rejectQuantity}</td>
-                            </tr>
-                        `);
-                }
+                            // Append the product details to the table
+                            $('#productDetailsTable').append(`
+                                <tr>
+                                    <td>${productName}</td>
+                                    <td class="text-right">${poQuantity}</td>
+                                    <td class="text-right">${prevReceiveQuantity}</td>
+                                    <td class="text-right">${receiveQuantity}</td>
+                                    <td class="text-right">${rejectQuantity}</td>
+                                </tr>
+                            `);
+                        }
+                        document.getElementById('loading-spinner').style.display = 'none';
+                    },
+                    error: function(error) {
+                        document.getElementById('loading-spinner').style.display = 'none';
+                        console.error("Error:", error);
+
+                    }
+                });
+
             });
+
         });
     </script>
 @endsection

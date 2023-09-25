@@ -17,6 +17,8 @@ Route::get('/get-sections-by-department', [DefaultController::class, 'getSection
 Route::get('/get-products-by-section-requisition', [DefaultController::class, 'getProductsBySectionRequisition'])->name('get.products.by.section.requisition');
 Route::get('/get-employee-by-id', [DefaultController::class, 'getEmployeeById'])->name('get.employee.by.id');
 Route::get('/get-sections-requisitions-by-department', [DefaultController::class, 'getSectionsRequisitionsByDepartment'])->name('get.sections.requisitions.by.department');
+Route::get('/get-stock-in-details-by-stock-id', [DefaultController::class, 'getStockInDetailsByStockId'])->name('get.stock.in.details.by.stock.id');
+
 
 // System Setup
 include 'admin/system_setup.php';

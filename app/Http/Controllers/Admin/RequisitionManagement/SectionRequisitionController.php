@@ -37,7 +37,7 @@ class SectionRequisitionController extends Controller
     }
     public function index()
     {
-        $data['title']                  = 'চাহিদাপত্রের তালিকা - সেকশন';
+        $data['title']                  = 'চাহিদাপত্রের তালিকা - শাখা';
         $user = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
             $employee                       = $this->employeeService->getByID($user->employee_id);
@@ -52,37 +52,30 @@ class SectionRequisitionController extends Controller
     public function selectProducts()
     {
         $data['title']                  = 'পন্য বাছাই করুন';
-        $data['product_types']          = $this->productTypeService->getAll(1);
+        $data['product_types']          = $this->productInformationService->getProductTypeAndProducts();
         return view('admin.requisition-management.section-requisition.product-selection', $data);
     }
-    public function processSelectionProducts(Request $request)
-    {
-        // Retrieve the selected product IDs from the request
-        $selectedProductIds = $request->input('selected_products');
 
-        // Redirect to the "add" step for section requisition with selected product IDs
-        return redirect()->route('admin.section.requisition.add', ['sp' => $selectedProductIds]);
-    }
     public function add(Request $request)
     {
-        // Retrieve the selected product IDs from the query parameters
-        $selected_product_ids           = $request->input('sp', []);
-        $data['selected_products']      = $this->productInformationService->getSpecificProducts($selected_product_ids);
-
-        $data['title']                  = 'চাহিদাপত্র যুক্ত করুন';
-
-        $data['uniqueRequisitionNo']    = $this->sectionRequisitionService->getUniqueRequisitionNo();
-
-        $user = Auth::user();
-        if ($user->id !== 1 && $user->employee_id) {
-            $data['employee']           = $this->employeeService->getByID($user->employee_id);
-            $data['sections']           = $this->sectionService->getSectionsByDepartment($data['employee']->department_id);
+        if ($request->isMethod('post')) {
+            $data['title']                  = 'চাহিদাপত্র যুক্ত করুন';
+            $selected_product_ids           = $request->input('selected_products', []);
+            $data['selected_products']      = $this->productInformationService->getSpecificProducts($selected_product_ids);
+            $data['uniqueRequisitionNo']    = $this->sectionRequisitionService->getUniqueRequisitionNo();
+            
+            $user = Auth::user();
+            if ($user->id !== 1 && $user->employee_id) {
+                $data['employee']           = $this->employeeService->getByID($user->employee_id);
+                $data['sections']           = $this->sectionService->getSectionsByDepartment($data['employee']->department_id);
+            } else {
+                $data['employee']           = [];
+                $data['sections']           = $this->sectionService->getAll();
+            }
+            return view('admin.requisition-management.section-requisition.add', $data);
         } else {
-            $data['employee']           = [];
-            $data['sections']           = $this->sectionService->getAll();
+            return view('admin.requisition-management.section-requisition.product-selection',);
         }
-
-        return view('admin.requisition-management.section-requisition.add', $data);
     }
     public function store(Request $request)
     {

@@ -257,7 +257,30 @@
                         },
                         error: function(error) {
                             document.getElementById('loading-spinner').style.display = 'none';
-                            console.error("Error:", error);
+                            // Parse the JSON error response
+                            let errorResponse = JSON.parse(error.responseText);
+                            console.error("Error:", errorResponse);
+
+                            if (errorResponse && errorResponse.errors) {
+                                const validationErrors = errorResponse.errors;
+                                const errorFields = Object.keys(validationErrors);
+                                let index = 0;
+                                function displayNextError() {
+                                    if (index < errorFields.length) {
+                                        const field = errorFields[index];
+                                        const errorMessage = validationErrors[field][0];
+                                        showAlert('error', errorMessage);
+                                        index++;
+                                        // Delay before displaying the next error (e.g., 1000 milliseconds)
+                                        setTimeout(displayNextError, 1000);
+                                    }
+                                }
+                                // Start displaying errors one by one
+                                displayNextError();
+
+                            } else {
+                                showAlert('error', 'An unexpected error occurred.');
+                            }
                         }
                     });
                 } else {

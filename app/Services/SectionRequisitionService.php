@@ -20,7 +20,11 @@ class SectionRequisitionService implements IService
     public function getAll($section_id = null, $status = null, $section_ids = null, $statuses = null)
     {
         try {
-            $query = SectionRequisition::latest();
+            $query = SectionRequisition::with(
+                'section:id,name,department_id',
+                'section.department:id,name',
+            )
+                ->latest();
             if ($section_id) {
                 $query->where('section_id', $section_id);
             }
@@ -96,7 +100,7 @@ class SectionRequisitionService implements IService
                     $currentStock   = $productDetails['current_stock'] ?? null;
                     $demandQuantity = $productDetails['demand_quantity'] ?? null;
                     $remarks        = $productDetails['remarks'] ?? null;
-                    
+
 
                     if ($demandQuantity !== null && $demandQuantity > 0) {
                         // Store Data into SectionRequisitionDetails

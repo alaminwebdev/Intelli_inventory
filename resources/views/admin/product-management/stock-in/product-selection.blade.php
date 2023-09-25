@@ -167,26 +167,7 @@
                             }
 
 
-                            // Construct an HTML table with the received products data, one product per row
-                            var products = response.products;
-                            var tableHTML = '<table class="table border table-bordered"><thead><tr><th>পন্য বাছাই</th><th>বাকি</th></tr></thead><tbody>';
-
-                            products.forEach(function(product) {
-                                var productNameWithUnit = product.product + ' (' + product.unit + ')';
-                                tableHTML += '<tr>' +
-                                    '<td>' +
-                                    '<div class="custom-control custom-checkbox">' +
-                                    '<input class="custom-control-input" type="checkbox" id="selected_products_' + product.product_id + '" name="selected_products[]" value="' + product.product_id + '" style="cursor: pointer">' +
-                                    '<label for="selected_products_' + product.product_id + '" class="custom-control-label" style="cursor: pointer">' + productNameWithUnit + '</label>' +
-                                    '</div>' +
-                                    '</td>' +
-                                    '<td class="text-right">' + product.reject_qty + '</td>' +
-                                    '</tr>';
-                            });
-
-                            tableHTML += '</tbody></table>';
-
-                            $('#productTypesTable').html(tableHTML);
+                            $('#productTypesTable').html(response.products);
                             $('#loading-spinner').hide();
                             document.getElementById('is_po_product').value = '1';
 
@@ -197,7 +178,7 @@
                                 },
                                 iconColor: 'white',
                                 icon: "success",
-                                title: "আপনার একটি ক্রয় অর্ডার নং আছে ।",
+                                title: "আপনার একটি ক্রয় অর্ডার আছে ।",
                                 position: 'top-end',
                                 showConfirmButton: false,
                                 timer: 3000,

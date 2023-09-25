@@ -107,7 +107,7 @@
                                             @if (@$editData->id)
                                                 <button type="submit" class="btn btn-success btn-sm">Update</button>
                                             @else
-                                                <button type="submit" class="btn btn-success btn-sm">হালনাগাদ করুন</button>
+                                                <button type="submit" class="btn btn-success btn-sm">সংরক্ষন করুন</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
                                                 <a href="{{ route('admin.stock.in.product.selection') }}">পিছনে যান</a>
@@ -179,111 +179,6 @@
         });
     </script>
 
-
-    {{-- <script>
-        $(function() {
-            // Submit Stock-In Data
-            let stockInForm = document.getElementById('stockInForm');
-
-            stockInForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-
-                // Validate receive_qty fields
-                let isValid = true;
-                const receiveQtyInputs = document.querySelectorAll(".receive_qty");
-
-                receiveQtyInputs.forEach((receiveQtyInput) => {
-                    const parentRow = receiveQtyInput.closest("tr");
-                    const rejectQtyInput = parentRow.querySelector(".reject_qty");
-                    const receiveQty = parseFloat(receiveQtyInput.value) || 0;
-                    const rejectQty = parseFloat(rejectQtyInput.value) || 0;
-                    const defaultRejectQty = parseFloat(rejectQtyInput.getAttribute("data-default-value")) || 0;
-
-                    if (receiveQty > defaultRejectQty) {
-                        isValid = false;
-                        receiveQtyInput.setCustomValidity("Receive quantity cannot be greater than Reject quantity.");
-                    } else {
-                        receiveQtyInput.setCustomValidity(""); // Clear any validation message
-                    }
-
-                    // Check if receive_qty is empty or not a number
-                    if (isNaN(receiveQty) || receiveQty === 0) {
-                        isValid = false;
-                        receiveQtyInput.setCustomValidity("Receive quantity must be a non-empty number.");
-                    }
-                });
-
-                if (!isValid) {
-                    // Show an alert if there are validation errors
-                    alert("Please ensure Receive Qty is a valid number and not greater than Reject Qty in any row.");
-                    return;
-                }
-
-
-                $('#loading-spinner').show(); // Show the spinner
-
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-
-                // Serialize the form data
-                var formData = $(stockInForm).serialize();
-
-                $.post("{{ route('admin.stock.in.store') }}", formData, function(response) {
-
-                    $('#loading-spinner').hide();
-                    console.log(response);
-                    var result = response.original;
-
-                    if (result.success && result.success.trim() !== "") {
-
-                        console.log("Success message:", result.success);
-                        Swal.fire({
-                            toast: true,
-                            customClass: {
-                                popup: 'colored-toast'
-                            },
-                            iconColor: 'white',
-                            icon: "success",
-                            title: result.success,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000,
-                            timerProgressBar: true
-                        });
-
-                        setTimeout(function() {
-                            location.href = "{{ route('admin.stock.in.list') }}";
-                        }, 1000);
-
-                    } else if (result.error) {
-
-                        console.log("Error message:", result.error);
-                        Swal.fire({
-                            toast: true,
-                            customClass: {
-                                popup: 'colored-toast'
-                            },
-                            iconColor: 'white',
-                            icon: "error",
-                            title: result.error,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000,
-                            timerProgressBar: true
-                        });
-
-                    } else {
-                        console.log("Unexpected response:", result);
-                    }
-                });
-            });
-
-
-        });
-    </script> --}}
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -387,7 +282,31 @@
                         },
                         error: function(error) {
                             document.getElementById('loading-spinner').style.display = 'none';
-                            console.error("Error:", error);
+                            // Parse the JSON error response
+                            let errorResponse = JSON.parse(error.responseText);
+                            console.error("Error:", errorResponse);
+
+                            if (errorResponse && errorResponse.errors) {
+                                const validationErrors = errorResponse.errors;
+                                const errorFields = Object.keys(validationErrors);
+                                let index = 0;
+
+                                function displayNextError() {
+                                    if (index < errorFields.length) {
+                                        const field = errorFields[index];
+                                        const errorMessage = validationErrors[field][0];
+                                        showAlert('error', errorMessage);
+                                        index++;
+                                        // Delay before displaying the next error (e.g., 1000 milliseconds)
+                                        setTimeout(displayNextError, 1000);
+                                    }
+                                }
+                                // Start displaying errors one by one
+                                displayNextError();
+
+                            } else {
+                                showAlert('error', 'An unexpected error occurred.');
+                            }
                         }
                     });
                 } else {

@@ -66,12 +66,12 @@ class StockInService implements IService
 
             if ($stockInData->save()) {
                 // Access the nested arrays within the 'data' key
-                $po_qty         = $data['po_qty'];
-                $receive_qty    = $data['receive_qty'];
-                $reject_qty     = $data['reject_qty'];
-                $mfg_date       = $data['mfg_date'];
-                $expire_date    = $data['expire_date'];
-                $remarks        = $data['remarks'];
+                $po_qty             = $data['po_qty'];
+                $receive_qty        = $data['receive_qty'];
+                $reject_qty         = $data['reject_qty'];
+                $mfg_date           = $data['mfg_date'];
+                $expire_date        = $data['expire_date'];
+                $remarks            = $data['remarks'];
 
                 foreach ($po_qty as $productId => $poQty) {
                     $stockInDetailData                          = new StockInDetail();
@@ -90,10 +90,11 @@ class StockInService implements IService
                     $stockInDetailData->reject_qty              = $reject_qty[$productId];
                     $stockInDetailData->available_qty           = $receive_qty[$productId];
                     $stockInDetailData->dispatch_qty            = 0;
+                    $stockInDetailData->prev_receive_qty        = isset($data['prev_receive_qty'][$productId]) ? $data['prev_receive_qty'][$productId] : null;
                     $stockInDetailData->remarks                 = $remarks[$productId];
                     $stockInDetailData->save();
 
-                    if($stockInDetailData->save()){
+                    if ($stockInDetailData->save()) {
 
                         $productPoInfo                          = new ProductPoInfo();
                         $productPoInfo->po_no                   = $data['po_no'];
@@ -103,7 +104,6 @@ class StockInService implements IService
                         $productPoInfo->reject_qty              = $reject_qty[$productId];
                         $productPoInfo->save();
                     }
-
                 }
             }
             DB::commit();
@@ -174,6 +174,20 @@ class StockInService implements IService
     public function getByID($id)
     {
         $data = StockIn::find($id);
+        return $data;
+    }
+    public function getStockDetails($id)
+    {
+        $data = StockInDetail::join('product_information', 'product_information.id', 'stock_in_details.product_information_id')
+            ->where('stock_in_id', $id)
+            ->select(
+                'stock_in_details.po_qty as po_qty',
+                'stock_in_details.prev_receive_qty as prev_receive_qty',
+                'stock_in_details.receive_qty as receive_qty',
+                'stock_in_details.reject_qty as reject_qty',
+                'product_information.name as product'
+            )
+            ->get();
         return $data;
     }
     public function update(Request $request, $id)

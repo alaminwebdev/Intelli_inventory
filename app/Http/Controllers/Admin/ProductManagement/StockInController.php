@@ -10,7 +10,7 @@ use App\Services\ProductInformationService;
 use App\Services\ProductTypeService;
 use App\Services\SupplierService;
 use App\Services\StockInService;
-
+use Illuminate\Support\Facades\Validator;
 
 class StockInController extends Controller
 {
@@ -56,7 +56,8 @@ class StockInController extends Controller
             $poDate             = ProductPoInfo::where('po_no', $poNo)->value('po_date');
             $formattedPoDate    = date('d-m-Y', strtotime($poDate));
             $poProducts         = $this->productInformationService->getPoProducts($poNo);
-            return response()->json(['exists' => true, 'po_date' =>$formattedPoDate, 'products' => $poProducts]);
+            $productsTable      = view('admin.product-management.stock-in.po-product-table')->with('products', $poProducts)->render();
+            return response()->json(['exists' => true, 'po_date' =>$formattedPoDate, 'products' => $productsTable]);
         } else {
             // Return default product data
             $productTypes = $this->productInformationService->getProductTypeAndProducts();
@@ -90,6 +91,18 @@ class StockInController extends Controller
 
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'grn_no'        => 'required',
+            'entry_date'    => 'required',
+            'challan_no'    => 'required',
+            'supplier_id'   => 'required',
+            'po_no'         => 'required',
+            'po_qty'        => 'required',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
         $data = $this->stockInService->create($request);
         return response()->json($data);
     }

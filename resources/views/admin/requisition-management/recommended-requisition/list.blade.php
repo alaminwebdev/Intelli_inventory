@@ -43,7 +43,8 @@
                                     <tr>
                                         <th width="5%">ক্রমিক নং.</th>
                                         <th>চাহিদাপত্র নাম্বার</th>
-                                        <th>অনুরোধকৃত সেকশন</th>
+                                        <th>অনুরোধকৃত শাখা</th>
+                                        <th>অনুরোধকৃত দপ্তর</th>
                                         <th>বর্তমান অবস্থা</th>
                                         <th>অ্যাকশন</th>
                                     </tr>
@@ -60,6 +61,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ @$list->requisition_no ?? 'N/A' }}</td>
                                             <td>{{ @$list->section->name ?? 'N/A' }}</td>
+                                            <td>{{ @$list->section->department->name ?? 'N/A' }}</td>
                                             <td class="text-center">{!! requisitionStatus($list->status) !!}</td>
                                             <td class="text-center">
                                                 @if (sorpermission('admin.recommended.requisition.edit'))

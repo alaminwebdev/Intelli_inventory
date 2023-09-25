@@ -44,16 +44,16 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="accordion">
-                                            @foreach ($product_types as $item)
+                                            @foreach ($requisition_product_types as $type)
                                                 <div class="card" style="box-shadow: none;">
-                                                    <div class="card-header rounded shadow-sm border-0" data-toggle="collapse" data-target="#collapse-{{ $item->id }}" aria-expanded="true" aria-controls="collapse-{{ $item->id }}" style="cursor: pointer;padding: 2px 10px; background: linear-gradient(90deg, #5b86e5b5 0%, #36D1DC 100%) !important;">
+                                                    <div class="card-header rounded shadow-sm border-0" data-toggle="collapse" data-target="#collapse-{{ $type['id'] }}" aria-expanded="true" aria-controls="collapse-{{ $type['id'] }}" style="cursor: pointer;padding: 2px 10px; background: linear-gradient(90deg, #5b86e5b5 0%, #36D1DC 100%) !important;">
                                                         <h5 class="mb-0">
-                                                            <button class="btn btn-link px-0 text-white" type="button">{{ $item->name }}</button>
+                                                            <button class="btn btn-link px-0 text-white" type="button">{{ $type['name'] }}</button>
                                                         </h5>
                                                         <i class="fas fa-chevron-down text-white"></i>
                                                     </div>
 
-                                                    <div id="collapse-{{ $item->id }}" class="collapse show">
+                                                    <div id="collapse-{{ $type['id'] }}" class="collapse show">
                                                         <div class="card-body ">
                                                             <table id="" class="table table-bordered">
                                                                 <thead style="background: #fff4f4 !important;">
@@ -67,36 +67,26 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    @php
-                                                                        $productIds = \App\Models\ProductInformation::where('product_type_id', $item->id)
-                                                                            ->latest()
-                                                                            ->pluck('id');
-                                                                        
-                                                                        $requisitionProducts = \App\Models\SectionRequisitionDetails::where('section_requisition_id', $editData->id)
-                                                                            ->whereIn('product_id', $productIds)
-                                                                            ->get();
-                                                                        
-                                                                    @endphp
-                                                                    @foreach ($requisitionProducts as $product)
-                                                                        <tr data-product-id="{{ $product->product_id }}">
-                                                                            <td class="product-name">{{ $product->product->name }}</td>
+                                                                    @foreach ($type['products'] as $product)
+                                                                        <tr data-product-id="{{ $product['product_id'] }}">
+                                                                            <td class="product-name">{{ $product['product_name'] }}</td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="section_current_stock_{{ $product->product_id }}" name="section_current_stock[{{ $product->product_id }}]" value="{{ $product->current_stock }}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" id="section_current_stock_{{ $product['product_id'] }}" name="section_current_stock[{{ $product['product_id'] }}]" value="{{ $product['current_stock'] }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="section_demand_quantity_{{ $product->product_id }}" name="section_demand_quantity[{{ $product->product_id }}]" value="{{ $product->demand_quantity }}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" id="section_demand_quantity_{{ $product['product_id'] }}" name="section_demand_quantity[{{ $product['product_id'] }}]" value="{{ $product['demand_quantity'] }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="text" class="form-control form-control-sm" id="remarks_{{ $product->product_id }}" name="remarks[{{ $product->product_id }}]" value="{{ $product->remarks }}" readonly>
+                                                                                <input type="text" class="form-control form-control-sm" id="remarks_{{ $product['product_id'] }}" name="remarks[{{ $product['product_id'] }}]" value="{{ $product['remarks'] }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="recommended_quantity_{{ $product->product_id }}" name="recommended_quantity[{{ $product->product_id }}]" value="{{ $product->recommended_quantity ?? $product->demand_quantity }}">
+                                                                                <input type="number" class="form-control form-control-sm" id="recommended_quantity_{{ $product['product_id'] }}" name="recommended_quantity[{{ $product['product_id'] }}]" value="{{ $product['recommended_quantity'] ?? $product['demand_quantity'] }}">
                                                                             </td>
                                                                             <td>
-                                                                                <input type="text" class="form-control form-control-sm" id="recommended_remarks_{{ $product->product_id }}" name="recommended_remarks[{{ $product->product_id }}]" value="{{ $product->recommended_remarks }}">
+                                                                                <input type="text" class="form-control form-control-sm" id="recommended_remarks_{{ $product['product_id'] }}" name="recommended_remarks[{{ $product['product_id'] }}]" value="{{ $product['recommended_remarks'] }}">
                                                                             </td>
                                                                         </tr>
-                                                                        <input type="hidden" name="product_type[{{ $product->product_id }}]" value="{{ $item->id }}">
+                                                                        <input type="hidden" name="product_type[{{ $product['product_id'] }}]" value="{{ $type['id'] }}">
                                                                     @endforeach
                                                                 </tbody>
                                                             </table>

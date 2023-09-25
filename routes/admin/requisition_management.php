@@ -9,8 +9,7 @@ use App\Http\Controllers\Admin\RequisitionManagement\SectionRequisitionControlle
 Route::prefix('/section-requisition')->group(function () {
     Route::get('/list', [SectionRequisitionController::class, 'index'])->name('section.requisition.list');
     Route::get('/product-selection', [SectionRequisitionController::class, 'selectProducts'])->name('section.requisition.product.selection');
-    Route::post('/product-selection/process', [SectionRequisitionController::class, 'processSelectionProducts'])->name('section.requisition.product.selection.process');
-    Route::get('/add', [SectionRequisitionController::class, 'add'])->name('section.requisition.add');
+    Route::match(['get', 'post'],'/add', [SectionRequisitionController::class, 'add'])->name('section.requisition.add');
     Route::post('/store', [SectionRequisitionController::class, 'store'])->name('section.requisition.store');
     Route::get('/edit/{id}', [SectionRequisitionController::class, 'edit'])->name('section.requisition.edit');
     Route::post('/update/{id}', [SectionRequisitionController::class, 'update'])->name('section.requisition.update');

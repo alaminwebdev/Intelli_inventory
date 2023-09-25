@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DepartmentRequisitionDetails;
 use App\Models\ProductInformation;
 use App\Models\Section;
+use App\Models\SectionRequisitionDetails;
 use Illuminate\Http\Request;
 use App\Services\ProductTypeService;
 use App\Services\DepartmentRequisitionService;
@@ -47,17 +48,17 @@ class RequisitionApprovalController extends Controller
         if ($user->id !== 1 && $user->employee_id) {
             $employee                           = $this->employeeService->getByID($user->employee_id);
             $sections                           = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
-            
+
             // Extract only the "id" values into a new array
             $sectionIds = array_map(function ($section) {
                 return $section['id'];
             }, $sections);
 
-            
-            $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll(null, null, $sectionIds, [0,1,2]);
+
+            $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll(null, null, $sectionIds, [0, 1, 2]);
         } else {
 
-            $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll(null, null, null, [0,1,2]);
+            $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll(null, null, null, [0, 1, 2]);
         }
         return view('admin.requisition-management.recommended-requisition.list', $data);
     }
@@ -74,9 +75,52 @@ class RequisitionApprovalController extends Controller
 
     public function edit($id)
     {
-        $data['title']          = 'চাহিদাপত্র সুপারিশ করুন';
-        $data['editData']       = $this->sectionRequisitionService->getByID($id);
-        $data['product_types']  = $this->productTypeService->getAll(1);
+        $data['title']      = 'চাহিদাপত্র সুপারিশ করুন';
+        $data['editData']   = $this->sectionRequisitionService->getByID($id);
+        $productTypeData    = [];
+
+        $product_types      = $this->productTypeService->getAll(1);
+
+        foreach ($product_types as $item) {
+            $productType = [
+                'id'        => $item->id,
+                'name'      => $item->name,
+                'products'  => [],
+            ];
+
+            // Query products for this product type and push them into the products array
+            $productIds = ProductInformation::where('product_type_id', $item->id)
+                ->latest()
+                ->pluck('id');
+
+            $requisitionProducts = SectionRequisitionDetails::where('section_requisition_id', $id)
+                ->whereIn('product_id', $productIds)
+                ->get();
+
+            if (count($requisitionProducts) > 0) {
+
+                foreach ($requisitionProducts as $product) {
+
+                    $productType['products'][$product->product_id] = [
+                        'product_id'                => $product->product_id,
+                        'product_name'              => $product->product->name,
+                        'current_stock'             => $product->current_stock,
+                        'demand_quantity'           => $product->demand_quantity,
+                        'remarks'                   => $product->remarks,
+                        'recommended_quantity'      => $product->recommended_quantity,
+                        'recommended_remarks'       => $product->recommended_remarks,
+                        'final_approve_quantity'    => $product->final_approve_quantity,
+                        'final_approve_remarks'     => $product->final_approve_remarks,
+                    ];
+                }
+
+                // Push this product type data into the main array AFTER adding products
+                $productTypeData[] = $productType;
+            }
+        }
+
+        $data['requisition_product_types']  = $productTypeData;
+
         return view('admin.requisition-management.recommended-requisition.add', $data);
     }
 
@@ -95,5 +139,4 @@ class RequisitionApprovalController extends Controller
         //     return response()->json(['status' => 'error', 'message' => 'Sorry something wrong']);
         // }
     }
-
 }

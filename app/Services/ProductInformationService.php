@@ -47,29 +47,6 @@ class ProductInformationService implements IService
     public function getPoProducts($po_no, $product_ids = null)
     {
         try {
-
-            // $data = StockInDetail::join('product_information', 'product_information.id', 'stock_in_details.product_information_id')
-            //     ->leftjoin('units', 'units.id', 'product_information.unit_id')
-            //     ->where('stock_in_details.po_no', '=',  $po_no)
-            //     ->when($product_ids, function ($query, $product_ids) {
-            //         if ($product_ids != null) {
-            //             $query->whereIn('stock_in_details.product_information_id', $product_ids);
-            //         }
-            //     })
-            //     ->where('stock_in_details.reject_qty', '>', 0)
-            //     ->select(
-            //         'product_information.id as product_id',
-            //         'product_information.name as product',
-            //         'units.name as unit',
-            //         // 'stock_in_details.po_qty as po_qty',
-            //         // 'stock_in_details.receive_qty as receive_qty',
-            //         DB::raw('MAX(stock_in_details.po_qty) as po_qty'),
-            //         DB::raw('sum(stock_in_details.receive_qty) as receive_qty'),
-            //         DB::raw('sum(stock_in_details.reject_qty) as reject_qty'),
-            //     )
-            //     ->groupBy('stock_in_details.product_information_id')
-            //     ->get();
-
             $data =  DB::table('product_information')
                 ->select(
                     'product_information.id as product_id',
