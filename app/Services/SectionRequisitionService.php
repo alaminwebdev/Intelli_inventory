@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Employee;
+use App\Models\ProductInformation;
+use App\Models\ProductType;
 use App\Models\SectionRequisition;
 use App\Models\SectionRequisitionDetails;
 use App\Services\IService;
@@ -128,6 +130,73 @@ class SectionRequisitionService implements IService
     {
         $data = SectionRequisition::find($id);
         return $data;
+    }
+
+    public function getProductRequisitionInfoByID($requistion_id)
+    {
+        try {
+
+            $data = SectionRequisitionDetails::join('product_information', 'product_information.id', 'section_requisition_details.product_id')
+                ->where('section_requisition_id', $requistion_id)
+                ->select(
+                    'section_requisition_details.current_stock as current_stock',
+                    'section_requisition_details.demand_quantity as demand_quantity',
+                    'section_requisition_details.recommended_quantity as recommended_quantity',
+                    'section_requisition_details.final_approve_quantity as final_approve_quantity',
+                    'section_requisition_details.remarks as remarks',
+                    'product_information.name as product'
+                )
+                ->get();
+            return $data;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function getRequisitionProductsWithTypeById($requistion_id){
+
+        $productTypeData    = [];
+        $product_types      = ProductType::latest()->where('status', 1)->get();
+
+        foreach ($product_types as $item) {
+            $productType = [
+                'id'        => $item->id,
+                'name'      => $item->name,
+                'products'  => [],
+            ];
+
+            // Query products for this product type and push them into the products array
+            $productIds = ProductInformation::where('product_type_id', $item->id)
+                ->latest()
+                ->pluck('id');
+
+            $requisitionProducts = SectionRequisitionDetails::where('section_requisition_id', $requistion_id)
+                ->whereIn('product_id', $productIds)
+                ->get();
+
+            if (count($requisitionProducts) > 0) {
+
+                foreach ($requisitionProducts as $product) {
+
+                    $productType['products'][$product->product_id] = [
+                        'product_id'                => $product->product_id,
+                        'product_name'              => $product->product->name,
+                        'current_stock'             => $product->current_stock,
+                        'demand_quantity'           => $product->demand_quantity,
+                        'remarks'                   => $product->remarks,
+                        'recommended_quantity'      => $product->recommended_quantity,
+                        'recommended_remarks'       => $product->recommended_remarks,
+                        'final_approve_quantity'    => $product->final_approve_quantity,
+                        'final_approve_remarks'     => $product->final_approve_remarks,
+                        'available_quantity'        => $product->StockDetail->sum('available_qty')
+                    ];
+                }
+
+                // Push this product type data into the main array AFTER adding products
+                $productTypeData[] = $productType;
+            }
+        }
+        return $productTypeData;
     }
 
     public function update(Request $request, $id)

@@ -90,6 +90,11 @@ class DefaultController extends Controller
         $data = $this->stockInService->getStockDetails($request->stock_id);
         return response()->json($data);
     }
+    public function getRequistionDetailsById(Request $request)
+    {
+        $data = $this->sectionRequisitionService->getProductRequisitionInfoByID($request->requisition_id);
+        return response()->json($data);
+    }
 
     public function requisitionReport($id)
     {

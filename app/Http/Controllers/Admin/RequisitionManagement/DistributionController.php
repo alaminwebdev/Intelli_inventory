@@ -76,11 +76,10 @@ class DistributionController extends Controller
     public function edit($id)
     {
 
-        $data['title']         = 'চাহিদাপত্র অনুমোদন করুন';
-        $data['editData']      = $this->sectionRequisitionService->getByID($id);
-        $data['product_types'] = $this->productTypeService->getAll(1);
-
-        $data['departments']    = $this->departmentService->getAll(1);
+        $data['title']                      = 'চাহিদাপত্র অনুমোদন করুন';
+        $data['editData']                   = $this->sectionRequisitionService->getByID($id);
+        $data['requisition_product_types']  = $this->sectionRequisitionService->getRequisitionProductsWithTypeById($id);
+        $data['departments']                = $this->departmentService->getAll(1);
 
         $user = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {

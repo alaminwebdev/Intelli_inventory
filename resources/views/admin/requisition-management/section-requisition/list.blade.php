@@ -15,7 +15,7 @@
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th width="5%">ক্রমিক নং.</th>
+                                        <th width="5%">নং.</th>
                                         <th>চাহিদাপত্র নাম্বার</th>
                                         <th>অনুরোধকৃত শাখা</th>
                                         <th>অনুরোধকৃত দপ্তর</th>
@@ -25,12 +25,6 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($sectionRequisitions as $list)
-                                        @php
-                                            $sectionRequisitionProducts = \App\Models\SectionRequisitionDetails::join('product_information', 'product_information.id', 'section_requisition_details.product_id')
-                                                ->where('section_requisition_id', $list->id)
-                                                ->select('section_requisition_details.current_stock as current_stock', 'section_requisition_details.demand_quantity as demand_quantity', 'section_requisition_details.recommended_quantity as recommended_quantity', 'section_requisition_details.final_approve_quantity as final_approve_quantity' , 'section_requisition_details.remarks as remarks', 'product_information.name as product')
-                                                ->get();
-                                        @endphp
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ @$list->requisition_no ?? 'N/A' }}</td>
@@ -38,7 +32,7 @@
                                             <td>{{ @$list->section->department->name ?? 'N/A' }}</td>
                                             <td class="text-center">{!! requisitionStatus($list->status) !!}</td>
                                             <td class="text-center">
-                                                <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-products="{{ json_encode($sectionRequisitionProducts) }}">
+                                                <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id="{{ $list->id }}">
                                                     <i class="far fa-eye"></i>
                                                 </button>
                                                 <a class="btn btn-sm btn-primary" href="{{ route('admin.requisition.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ</a>
@@ -91,36 +85,55 @@
     <script>
         $(document).ready(function() {
             $('.view-products').on('click', function() {
-                var products = $(this).data('products');
+                var requistionID = $(this).data('requisition-id');
 
-                // Clear any existing content in the modal table
-                $('#productDetailsTable').html('');
+                document.getElementById('loading-spinner').style.display = 'block';
+                $.ajax({
+                    url: "{{ route('admin.get.requistion.in.details.by.id') }}",
+                    type: "GET",
+                    data: {
+                        requisition_id: requistionID
+                    },
+                    success: function(products) {
 
-                // Loop through the products and add them to the table
-                for (var i = 0; i < products.length; i++) {
-                    var product = products[i];
+                        // Clear any existing content in the modal table
+                        $('#productDetailsTable').html('');
 
-                    var productName             = product.product || "";
-                    var currentStock            = product.current_stock || "";
-                    var demandQuantity          = product.demand_quantity || "";
-                    var recommendedQuantity     = product.recommended_quantity || "";
-                    var finalApproveQuantity    = product.final_approve_quantity || "";
-                    var remarks                 = product.remarks || "";
+                        // Loop through the products and add them to the table
+                        for (var i = 0; i < products.length; i++) {
+                            var product = products[i];
+
+                            var productName = product.product || "";
+                            var currentStock = product.current_stock || "";
+                            var demandQuantity = product.demand_quantity || "";
+                            var recommendedQuantity = product.recommended_quantity || "";
+                            var finalApproveQuantity = product.final_approve_quantity || "";
+                            var remarks = product.remarks || "";
 
 
-                    // Append the product details to the table
-                    $('#productDetailsTable').append(`
-                        <tr>
-                            <td>${productName}</td>
-                            <td class="text-right">${currentStock}</td>
-                            <td class="text-right">${demandQuantity}</td>
-                            <td class="text-right">${recommendedQuantity}</td>
-                            <td class="text-right">${finalApproveQuantity}</td>
-                            <td>${remarks}</td>
-                        </tr>
-                    `);
-                }
+                            // Append the product details to the table
+                            $('#productDetailsTable').append(`
+                                <tr>
+                                    <td>${productName}</td>
+                                    <td class="text-right">${currentStock}</td>
+                                    <td class="text-right">${demandQuantity}</td>
+                                    <td class="text-right">${recommendedQuantity}</td>
+                                    <td class="text-right">${finalApproveQuantity}</td>
+                                    <td>${remarks}</td>
+                                </tr>
+                            `);
+                        }
+                        document.getElementById('loading-spinner').style.display = 'none';
+                    },
+                    error: function(error) {
+                        document.getElementById('loading-spinner').style.display = 'none';
+                        console.error("Error:", error);
+
+                    }
+                });
+
             });
+
         });
     </script>
 @endsection

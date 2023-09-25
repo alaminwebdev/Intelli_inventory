@@ -24,7 +24,7 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($product_types as $product_type)
-                                                <tr class="group-header collapsed " data-toggle="collapse" data-target="#{{ 'group_' . $product_type['id'] }}" style="cursor: pointer; background: #f8f9fa;">
+                                                <tr class="group-header collapsed " data-toggle="collapse" data-target="#{{ 'group_' . $product_type['id'] }}"  aria-expanded="true" aria-controls="{{ 'group_' . $product_type['id'] }}"style="cursor: pointer; background: #f8f9fa;">
                                                     <td class="text-center" style="width: 4%">
                                                         <span class="expand-icon badge badge-success" style="transition: all .2s linear"><i class="fas fa-plus" style="transition: all .2s linear"></i></span>
                                                     </td>
