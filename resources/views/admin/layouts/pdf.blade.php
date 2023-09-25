@@ -26,7 +26,6 @@
     table {
         border-collapse: collapse;
         width: 100%;
-        margin-top: 15px;
     }
 
     .table tr td {
@@ -117,7 +116,7 @@
 <body>
     <div class="header">
         <div class="left">
-            <img src="{{ fileExist(['url' => @$site_setting->logo, 'type' => 'logo']) }}" alt="report_logo" style="padding-top: 10px; width:40px;">
+            <img src="{{ fileExist(['url' => @$site_setting->logo, 'type' => 'logo']) }}" alt="report_logo" style="padding-top: 8px; width:40px;">
         </div>
         <div class="center">
             <div class="content">

@@ -24,7 +24,7 @@
 
 @section('pdf-content')
 
-    <table class="table table-bordered">
+    <table class="table table-bordered" style="margin-top: 10px;">
         <thead>
             <tr>
                 <th class="text-left" width="10%">ক্রমিক নং:</th>

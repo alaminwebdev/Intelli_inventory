@@ -45,7 +45,7 @@
     @if (@$requisitionProducts && count(@$requisitionProducts) > 0)
         @foreach ($requisitionProducts as $list)
             <div>
-                <p style="font-size: 12px; margin: 0; margin-top: 25px;">প্রোডাক্ট ক্যাটাগরি : {{ $list['name'] }}</p>
+                <p style="font-size: 12px; margin: 0; margin: 10px 0;">প্রোডাক্ট ক্যাটাগরি : {{ $list['name'] }}</p>
             </div>
             <table class="table table-bordered">
                 <thead>

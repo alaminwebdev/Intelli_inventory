@@ -25,7 +25,7 @@
 @section('pdf-content')
 
     <div>
-        <p style="font-size: 12px; margin: 0; margin-top: 15px;">ক্রয় অর্ডার নাম্বার :  {{ $stock_info->po_no }}</p>
+        <p style="font-size: 12px; margin: 0; margin: 10px 0;">ক্রয় অর্ডার নাম্বার :  {{ $stock_info->po_no }}</p>
     </div>
 
     @if (@$stock_details && count(@$stock_details) > 0)

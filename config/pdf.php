@@ -25,8 +25,8 @@ return [
 		// ...add as many as you want.
 	],
 	// Set margins (in millimeters)
-	'margin_top' => 5,
+	'margin_top' => 8,
 	'margin_right' => 10,
-	'margin_bottom' => 5,
+	'margin_bottom' => 10,
 	'margin_left' => 10,
 ];
