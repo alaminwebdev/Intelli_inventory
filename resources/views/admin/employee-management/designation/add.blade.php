@@ -16,7 +16,7 @@
                                     <div class="col-md-12">
                                         <div class="form-row">
                                             <div class="form-group col-sm-4">
-                                                <label class="control-label">Name <span class="text-red">*</span></label>
+                                                <label class="control-label">পদবী <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm name @error('name') is-invalid @enderror" id="name" name="name" value="{{ @$editData->name }}" placeholder="Name">
                                                 @error('name')
                                                     <span class="invalid-feedback" role="alert">
@@ -25,11 +25,11 @@
                                                 @enderror
                                             </div>
                                             <div class="form-group col-sm-4">
-                                                <label class="control-label">Sort</label>
+                                                <label class="control-label">সাজানো</label>
                                                 <input type="text" class="form-control form-control-sm sort @error('sort') is-invalid @enderror" id="sort" name="sort" value="{{ @$editData->sort }}" placeholder="Sort">
                                             </div>
                                             <div class="form-group col-sm-4">
-                                                <label class="control-label">Status <span class="text-red">*</span></label>
+                                                <label class="control-label">অবস্থান <span class="text-red">*</span></label>
                                                 <select name="status" id="status" class="form-control select2 ">
                                                     <option value="1" {{ @$editData->status == '1' ? 'selected' : '' }}>Active
                                                     </option>

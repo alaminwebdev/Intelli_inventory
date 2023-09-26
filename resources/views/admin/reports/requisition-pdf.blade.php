@@ -22,11 +22,9 @@
 
 
 @section('pdf-header')
-    <p style="font-size: 18px;">চাহিদাপত্র নাম্বার - {{ en2bn($requestedRequisitionInfo->requisition_no) }}</p>
-
-    <p style="font-size: 11px;">অনুরোধকৃত ডিপার্টমেন্ট : {{ $requestedRequisitionInfo->section->name }}</p>
-    <p style="font-size: 11px;">বর্তমান অবস্থা : {{ $status }}</p>
-    <p style="font-size: 11px;">তারিখ : {{ $date_in_bengali }}</p>
+    <p style="font-size: 12px;">গণপ্রজাতন্ত্রী বাংলাদেশ সরকার</p>
+    <p style="font-size: 12px;">বাংলাদেশ পুলিশ</p>
+    <p style="font-size: 12px;">স্পেশাল ব্রাঞ্চ , ঢাকা।</p>
 @endsection
 
 @section('pdf-header-partner')
@@ -41,29 +39,37 @@
 @endsection
 
 @section('pdf-content')
-
+    <div style="margin-top: 10px; font-size: 12px;">
+        <div style="width:100%">
+            <p style="margin: 0; width:50%; float:left;">চাহিদাপত্র নাম্বার : {{ en2bn($requestedRequisitionInfo->requisition_no) }}</p>
+            <p style="margin: 0; width:50%; float:right; text-align:right">তারিখ : {{ $date_in_bengali }}</p>
+        </div>
+        <p style="margin: 0;">অনুরোধকৃত শাখা : {{ $requestedRequisitionInfo->section->name }}</p>
+        <p style="margin: 0;">বর্তমান অবস্থা : {{ $status }}</p>
+    </div>
     @if (@$requisitionProducts && count(@$requisitionProducts) > 0)
-        @foreach ($requisitionProducts as $list)
-            <div>
-                <p style="font-size: 12px; margin: 0; margin: 10px 0;">প্রোডাক্ট ক্যাটাগরি : {{ $list['name'] }}</p>
-            </div>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th class="text-left" width="10%">ক্রমিক নং:</th>
-                        <th class="text-center">পন্যের তথ্য</th>
-                        <th class="text-center">বর্তমান মজূদ</th>
-                        <th class="text-center">চাহিদার পরিমান</th>
-                        <th class="text-center">সুপারিশ পরিমান</th>
-                        <th class="text-center">অনুমোদিত পরিমান</th>
-                        <th class="text-center">বিতরন পরিমান</th>
-                        <th class="text-center">যৌক্তিকতা</th>
-                    </tr>
-                </thead>
-                <tbody>
+        <table class="table table-bordered" style="margin-top: 10px;">
+            <thead>
+                <tr>
+                    <th class="text-left" width="10%">ক্রমিক নং:</th>
+                    <th class="text-center" width="30%">পন্য</th>
+                    <th class="text-center">বর্তমান মজূদ</th>
+                    <th class="text-center">চাহিদার পরিমান</th>
+                    <th class="text-center">সুপারিশ পরিমান</th>
+                    <th class="text-center">অনুমোদিত পরিমান</th>
+                    <th class="text-center">বিতরন পরিমান</th>
+                    <th class="text-center">যৌক্তিকতা</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $counter = 0;
+                @endphp
+
+                @foreach ($requisitionProducts as $list)
                     @foreach ($list['products'] as $product)
                         <tr>
-                            <td>{{ en2bn($loop->iteration) }}</td>
+                            <td>{{ en2bn(++$counter) }}</td>
                             <td>{{ $product['product_name'] }}</td>
                             <td class="text-right">{{ en2bn($product['current_stock']) }}</td>
                             <td class="text-right">{{ en2bn($product['demand_quantity']) }}</td>
@@ -80,15 +86,42 @@
                                         echo $product['final_approve_remarks'];
                                     } elseif ($requestedRequisitionInfo->status == 4) {
                                         echo $product['final_approve_remarks'];
-                                    }else{
+                                    } else {
                                         echo '';
                                     }
                                 @endphp
                             </td>
                         </tr>
                     @endforeach
-                </tbody>
-            </table>
-        @endforeach
+                @endforeach
+            </tbody>
+        </table>
+
+        <div style="width: 100%; margin-top: 80px; font-size: 12px;">
+            @if ($requestedRequisitionInfo->status == 0 || $requestedRequisitionInfo->status == 1 || $requestedRequisitionInfo->status == 3)
+                <div style="width: 30%; float: left; text-align: center;">
+                    <p style="margin:0">{{ @$requestedRequisitionInfo->requisition_owner->name }}</p>
+                    <p style="margin:0 50px; padding: 5px; border-top: 1px dotted black;">চাহিদাকারী</p>
+                </div>
+                <div style="width: 40%; float: left; text-align: center;">
+                    <p style="margin:0">{{ @$requestedRequisitionInfo->recommended_user->name }}</p>
+                    <p style="margin:0 80px; padding: 5px; border-top: 1px dotted black;">সুপারিশকারী</p>
+                </div>
+                <div style="width: 30%; float: left; text-align: center;">
+                    <p style="margin:0">{{ @$requestedRequisitionInfo->approve_user->name }}</p>
+                    <p style="margin:0 50px; padding: 5px; border-top: 1px dotted black;">মঞ্জুরকারী</p>
+                </div>
+            @elseif ($requestedRequisitionInfo->status == 4)
+                <div style="width: 50%; float: left; text-align: center;">
+                    <p style="margin:0">{{ @$requestedRequisitionInfo->requisition_owner->name }}</p>
+                    <p style="margin:0 80px; padding: 5px; border-top: 1px dotted black;">চাহিদাকারী</p>
+                </div>
+                <div style="width: 50%; float: left; text-align: center;">
+                    <p style="margin:0">{{ @$requestedRequisitionInfo->distribute_user->name }}</p>
+                    <p style="margin:0 80px; padding: 5px; border-top: 1px dotted black;">বিতরনকারী</p>
+                </div>
+            @endif
+        </div>
+
     @endif
 @endsection

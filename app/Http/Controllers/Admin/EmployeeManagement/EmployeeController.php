@@ -26,13 +26,13 @@ class EmployeeController extends Controller
     }
     public function index()
     {
-        $data['title']      = 'Employee List';
+        $data['title']      = 'কর্মচারীদের তালিকা';
         $data['employees']  = $this->employeeService->getAll();
         return view('admin.employee-management.employee.list', $data);
     }
     public function add()
     {
-        $data['title']          = 'Add Employee';
+        $data['title']          = 'কর্মচারী যুক্ত করুন';
         $data['designations']   = $this->designationService->getAll(1);
         $data['departments']    = $this->departmentService->getAll(1);
         return view('admin.employee-management.employee.add', $data);
@@ -53,7 +53,7 @@ class EmployeeController extends Controller
     }
     public function edit($id)
     {
-        $data['title']          = 'Edit Department';
+        $data['title']          = 'কর্মচারীর তথ্য হালনাগাদ করুন';
         $data['editData']       = $this->employeeService->getByID($id);
         $data['designations']   = $this->designationService->getAll(1);
         $data['departments']    = $this->departmentService->getAll(1);

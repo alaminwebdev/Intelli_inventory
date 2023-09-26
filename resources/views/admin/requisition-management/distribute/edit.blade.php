@@ -15,10 +15,10 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.pending.distribute.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>পন্য বিতরনের তালিকা</a>
+                            <a href="{{ route('admin.distribute.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>পন্য বিতরনের তালিকা</a>
                         </div>
                         <div class="card-body">
-                            <form id="submitForm" action="{{ route('admin.distribution.distribute') }} " method="post">
+                            <form id="submitForm" action="{{ route('admin.distribute.store') }} " method="post">
                                 @csrf
 
                                 <div class="row">
@@ -44,16 +44,16 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="accordion">
-                                            @foreach ($product_types as $item)
+                                            @foreach ($requisition_product_types as $type)
                                                 <div class="card" style="box-shadow: none;">
-                                                    <div class="card-header rounded shadow-sm border-0" data-toggle="collapse" data-target="#collapse-{{ $item->id }}" aria-expanded="true" aria-controls="collapse-{{ $item->id }}" style="cursor: pointer;padding: 2px 10px; background: linear-gradient(90deg, #5b86e5b5 0%, #36D1DC 100%) !important;">
+                                                    <div class="card-header rounded shadow-sm border-0" data-toggle="collapse" data-target="#collapse-{{ $type['id'] }}" aria-expanded="true" aria-controls="collapse-{{ $type['id'] }}" style="cursor: pointer;padding: 2px 10px; background: linear-gradient(90deg, #5b86e5b5 0%, #36D1DC 100%) !important;">
                                                         <h5 class="mb-0">
-                                                            <button class="btn btn-link px-0 text-white" type="button">{{ $item->name }}</button>
+                                                            <button class="btn btn-link px-0 text-white" type="button">{{ $type['name'] }}</button>
                                                         </h5>
                                                         <i class="fas fa-chevron-down text-white"></i>
                                                     </div>
 
-                                                    <div id="collapse-{{ $item->id }}" class="collapse show">
+                                                    <div id="collapse-{{ $type['id'] }}" class="collapse show">
                                                         <div class="card-body ">
                                                             <table id="" class="table table-bordered">
                                                                 <thead style="background: #fff4f4 !important;">
@@ -69,18 +69,8 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    @php
-                                                                        $productIds = \App\Models\ProductInformation::where('product_type_id', $item->id)
-                                                                            ->latest()
-                                                                            ->pluck('id');
-                                                                        
-                                                                        $requisitionProducts = \App\Models\SectionRequisitionDetails::with('StockDetail')
-                                                                            ->where('section_requisition_id', $editData->id)
-                                                                            ->whereIn('product_id', $productIds)
-                                                                            ->get();
-                                                                        
-                                                                    @endphp
-                                                                    @foreach ($requisitionProducts as $product)
+
+                                                                    @foreach ($type['products'] as $product)
                                                                         @php
                                                                             // $lastDistribute = \App\Models\RequisitionApproval::where('requisition_approval_details.department_id', $editData->department_id)
                                                                             //                 ->select('requisition_approval_details.*', 'requisition_approvals.status as distribute_status')
@@ -91,30 +81,29 @@
                                                                             //                 ->first();
                                                                         @endphp
 
+                                                                        <tr data-product-id="{{ $product['product_id'] }}">
+                                                                            <td class="product-name">{{ $product['product_name'] }}</td>
+                                                                            <td>
+                                                                                <input type="number" class="form-control form-control-sm" id="previous_stock_{{ $product['product_id'] }}" value="{{ $lastDistribute->distribute_quantity ?? 0 }}" readonly>
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="number" class="form-control form-control-sm" id="current_stock_{{ $product['product_id'] }}" value="{{ $product['current_stock'] }}" readonly>
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="number" class="form-control form-control-sm" id="demand_quantity_{{ $product['product_id'] }}" name="demand_quantity[{{ $product['product_id'] }}]" value="{{ $product['demand_quantity'] }}" readonly>
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="number" class="form-control form-control-sm" id="recommended_quantity_{{ $product['product_id'] }}" name="recommended_quantity[{{ $product['product_id'] }}]" value="{{ $product['recommended_quantity'] }}" readonly>
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="text" class="form-control form-control-sm" id="available_quantity_{{ $product['product_id'] }}" value="{{ $product['available_quantity'] }}" readonly>
+                                                                            </td>
 
-                                                                        <tr data-product-id="{{ $product->product_id }}">
-                                                                            <td class="product-name">{{ $product->product->name }}</td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="previous_stock_{{ $product->product_id }}" value="{{ $lastDistribute->distribute_quantity ?? 0 }}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" id="distribute_quantity_{{ $product['product_id'] }}" name="distribute_quantity[{{ $product['product_id'] }}]" value="{{ $product['final_approve_quantity'] }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="current_stock_{{ $product->product_id }}" value="{{ $product->current_stock }}" readonly>
-                                                                            </td>
-                                                                            <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="demand_quantity_{{ $product->product_id }}" name="demand_quantity[{{ $product->product_id }}]" value="{{ $product->demand_quantity }}" readonly>
-                                                                            </td>
-                                                                            <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="recommended_quantity_{{ $product->product_id }}" name="recommended_quantity[{{ $product->product_id }}]" value="{{ $product->recommended_quantity }}" readonly>
-                                                                            </td>
-                                                                            <td>
-                                                                                <input type="text" class="form-control form-control-sm" id="available_quantity_{{ $product->product_id }}" value="{{ $product->StockDetail->sum('available_qty') }}" readonly>
-                                                                            </td>
-
-                                                                            <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="distribute_quantity_{{ $product->product_id }}" name="distribute_quantity[{{ $product->product_id }}]" value="{{ $product->final_approve_quantity }}" readonly>
-                                                                            </td>
-                                                                            <td>
-                                                                                <input type="text" class="form-control form-control-sm" id="remarks_{{ $product->product_id }}" name="remarks[{{ $product->product_id }}]" value="{{ $product->final_approve_remarks }}" readonly>
+                                                                                <input type="text" class="form-control form-control-sm" id="remarks_{{ $product['product_id'] }}" name="remarks[{{ $product['product_id'] }}]" value="{{ $product['final_approve_remarks'] }}" readonly>
                                                                             </td>
                                                                         </tr>
                                                                     @endforeach
@@ -131,7 +120,7 @@
                                         <div class="text-right">
                                             <button type="submit" class="btn btn-success btn-sm">বিতরন করুন</button>
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.pending.distribute.list') }}">পিছনে যান</a>
+                                                <a href="{{ route('admin.distribute.list') }}">পিছনে যান</a>
                                             </button>
                                         </div>
                                     </div>

@@ -48,7 +48,7 @@
                                             </div>
                                             <div class="form-group col-md-4 ">
                                                 <label class="control-label">ক্রয় অর্ডার নং. : <span class="text-red">*</span></label>
-                                                <input type="number" class="form-control form-control-sm " id="po_no" name="po_no" value="{{ $selected_po_no }}" readonly>
+                                                <input type="text" class="form-control form-control-sm " id="po_no" name="po_no" value="{{ $selected_po_no }}" readonly>
                                             </div>
                                             <div class="form-group col-md-4 ">
                                                 <label class="control-label">ক্রয় অর্ডারের তারিখ : <span class="text-red">*</span></label>

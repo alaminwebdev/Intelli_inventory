@@ -11,4 +11,16 @@ class SectionRequisition extends Model {
     public function section() {
         return $this->hasOne(Section::class, 'id', 'section_id' );
     }
+    public function requisition_owner() {
+        return $this->hasOne(User::class, 'id', 'user_id' );
+    }
+    public function recommended_user() {
+        return $this->hasOne(User::class, 'id', 'recommended_by' );
+    }
+    public function approve_user() {
+        return $this->hasOne(User::class, 'id', 'final_approve_by' );
+    }
+    public function distribute_user() {
+        return $this->hasOne(User::class, 'id', 'distribute_by' );
+    }
 }

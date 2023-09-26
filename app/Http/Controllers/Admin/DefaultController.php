@@ -21,6 +21,7 @@ use App\Services\StockInService;
 
 use DateTime;
 use DateTimeZone;
+use Illuminate\Support\Facades\Auth;
 use PDF;
 use IntlDateFormatter;
 
@@ -95,6 +96,25 @@ class DefaultController extends Controller
         $data = $this->sectionRequisitionService->getProductRequisitionInfoByID($request->requisition_id);
         return response()->json($data);
     }
+    public function getDistributeRequistionByStatus(Request $request)
+    {
+        $user = Auth::user();
+        if ($user->id !== 1 && $user->employee_id) {
+            $employee  = $this->employeeService->getByID($user->employee_id);
+            $sections  = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
+
+            // Extract only the "id" values into a new array
+            $sectionIds = array_map(function ($section) {
+                return $section['id'];
+            }, $sections);
+
+            $distributeRequisitions = $this->sectionRequisitionService->getAll(null, $request->requistition_status, $sectionIds);
+        } else {
+            $distributeRequisitions = $this->sectionRequisitionService->getAll(null, $request->requistition_status);
+        }
+        $data = view('admin.requisition-management.distribute.list-by-status')->with('distributeRequisitions', $distributeRequisitions)->render();
+        return response()->json($data);
+    }
 
     public function requisitionReport($id)
     {
@@ -152,7 +172,6 @@ class DefaultController extends Controller
         $data['requisitionProducts']            = $productTypeData;
         $data['requestedRequisitionInfo']       = $this->sectionRequisitionService->getByID($id);
 
-
         // Generate a PDF
         $pdf = PDF::loadView('admin.reports.requisition-pdf', $data);
         $pdf->SetProtection(['copy', 'print'], '', 'pass');
@@ -166,7 +185,7 @@ class DefaultController extends Controller
         $formatter                  = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
         $formatter->setPattern('d-MMMM-y'); // Customize the date format if needed
         $data['date_in_bengali']    = $formatter->format($date);
-        
+
         $data['stock_info']     = $this->stockInService->getByID($id);
         $data['stock_details']  = $this->stockInService->getStockDetails($id);
 

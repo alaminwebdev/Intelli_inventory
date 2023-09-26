@@ -9,6 +9,7 @@ use App\Models\SectionRequisitionDetails;
 use App\Services\IService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -43,10 +44,10 @@ class DistributionService implements IService
         DB::beginTransaction();
         try {
 
-            $sectionRequisition = SectionRequisition::find($request->section_requisition_id);
-            $sectionRequisition->final_approve_by = auth()->user()->id;
-            $sectionRequisition->final_created_at = Carbon::now();
-            $sectionRequisition->status           = 3;
+            $sectionRequisition                     = SectionRequisition::find($request->section_requisition_id);
+            $sectionRequisition->final_approve_by   = Auth::id();
+            $sectionRequisition->final_approve_at   = Carbon::now();
+            $sectionRequisition->status             = 3;
             $sectionRequisition->save();
 
             foreach ($request->approve_quantity as $productId => $approve_quantity_value) {

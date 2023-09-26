@@ -10,6 +10,18 @@
 
                         </div>
                         <div class="card-body">
+                            <div class="row text-left mb-3">
+                                <div class="col-md-12">
+                                    <a class="btn btn-warning btn-sm distributeListBtn text-white" data-requistition-status="3">
+                                        <i class="fa "></i>
+                                        বিতরণের অপেক্ষায় চাহিদাপত্রের তালিকা
+                                    </a>
+                                    <a class="btn btn-primary btn-sm distributeListBtn" data-requistition-status="4">
+                                        <i class="fa "></i>
+                                        বিতরণ করা চাহিদাপত্রের তালিকা
+                                    </a>
+                                </div>
+                            </div>
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -21,9 +33,8 @@
                                         <th>অ্যাকশান</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-
-                                    @foreach ($sectionRequisitions as $list)
+                                <tbody id="requistionProductsTable">
+                                    @foreach ($distributeRequisitions as $list)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ @$list->requisition_no ?? 'N/A' }}</td>
@@ -31,20 +42,14 @@
                                             <td>{{ @$list->section->department->name ?? 'N/A' }}</td>
                                             <td class="text-center">{!! requisitionStatus($list->status) !!}</td>
                                             <td class="text-center">
-                                                @if (sorpermission('admin.distribution.edit'))
-                                                    <a class="btn btn-sm btn-success" href="{{ route('admin.distribution.edit', $list->id) }}">
+                                                <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id="{{ $list->id }}" data-modal-id="productDetailsModal">
+                                                    <i class="far fa-eye"></i>
+                                                </button>
+                                                @if (sorpermission('admin.distribute.edit'))
+                                                    <a class="btn btn-sm btn-success" href="{{ route('admin.distribute.edit', $list->id) }}">
                                                         <i class="fa fa-edit"></i>
                                                     </a>
                                                 @endif
-                                                <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id="{{ $list->id }}">
-                                                    <i class="far fa-eye"></i>
-                                                </button>
-                                                <a class="btn btn-sm btn-primary" href="{{ route('admin.requisition.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ</a>
-                                                {{-- @if (sorpermission('admin.requisition.delete'))
-                                                <a class="btn btn-sm btn-danger destroy" data-id="{{$list->id}}" data-route="{{route('admin.requisition.delete')}}">
-                                                    <i class="fa fa-trash"></i>
-                                                </a>
-                                                @endif --}}
                                             </td>
                                         </tr>
                                     @endforeach
@@ -56,6 +61,46 @@
             </div>
         </div>
     </section>
+
+    <script>
+        $(document).ready(function() {
+            $('.distributeListBtn').on('click', function() {
+                var requistitionStatus = $(this).data('requistition-status');
+                document.getElementById('loading-spinner').style.display = 'block';
+                $.ajax({
+                    url: "{{ route('admin.get.distribute.requistion.by.status') }}",
+                    type: "GET",
+                    data: {
+                        requistition_status: requistitionStatus
+                    },
+                    success: function(response) {
+
+                        // Clear existing table rows
+                        $("#requistionProductsTable").empty();
+                        $("#requistionProductsTable").html(response);
+
+                        // Toggle the visibility of the checkmark icon for all buttons
+                        $('.distributeListBtn').each(function() {
+                            var icon = $(this).find('i');
+                            if ($(this).data('requistition-status') === requistitionStatus) {
+                                icon.toggleClass('fa-check-circle'); // Toggle the checkmark icon
+                            } else {
+                                icon.removeClass('fa-check-circle'); // Remove the checkmark icon from other buttons
+                            }
+                        });
+
+                        document.getElementById('loading-spinner').style.display = 'none';
+                    },
+                    error: function(error) {
+                        document.getElementById('loading-spinner').style.display = 'none';
+                        console.error("Error:", error);
+
+                    }
+                });
+            });
+
+        });
+    </script>
 
     <!-- Modal for Product Details -->
     <div class="modal" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
@@ -73,9 +118,9 @@
                             <tr>
                                 <th>পন্য</th>
                                 <th>বর্তমান মজূদ</th>
-                                <th>চাহিদার পরিমাণ</th>
-                                <th>সুপারিশ পরিমাণ</th>
-                                <th>অনুমোদিত পরিমাণ</th>
+                                <th>চাহিদার পরিমান</th>
+                                <th>সুপারিশ পরিমান</th>
+                                <th>অনুমোদিত পরিমান</th>
                                 <th>যৌক্তিকতা</th>
                             </tr>
                         </thead>
@@ -93,19 +138,21 @@
 
     <script>
         $(document).ready(function() {
-            $('.view-products').on('click', function() {
+            $(document).on('click', '.view-products', function() {
                 var requistionID = $(this).data('requisition-id');
+                var modalID = $(this).data('modal-id');
+                console.log(requistionID);
 
                 document.getElementById('loading-spinner').style.display = 'block';
                 $.ajax({
-                    url: "{{ route('admin.get.requistion.in.details.by.id') }}",
+                    url: "{{ route('admin.get.requistion.details.by.id') }}",
                     type: "GET",
                     data: {
                         requisition_id: requistionID
                     },
                     success: function(products) {
                         // Clear any existing content in the modal table
-                        $('#productDetailsTable').html('');
+                        $('#' + modalID + ' #productDetailsTable').html('');
 
                         // Loop through the products and add them to the table
                         for (var i = 0; i < products.length; i++) {
@@ -118,30 +165,26 @@
                             var finalApproveQuantity = product.final_approve_quantity || "";
                             var remarks = product.remarks || "";
 
-
                             // Append the product details to the table
-                            $('#productDetailsTable').append(`
-                                <tr>
-                                    <td>${productName}</td>
-                                    <td class="text-right">${currentStock}</td>
-                                    <td class="text-right">${demandQuantity}</td>
-                                    <td class="text-right">${recommendedQuantity}</td>
-                                    <td class="text-right">${finalApproveQuantity}</td>
-                                    <td>${remarks}</td>
-                                </tr>
-                            `);
+                            $('#' + modalID + ' #productDetailsTable').append(`
+                        <tr>
+                            <td>${productName}</td>
+                            <td class="text-right">${currentStock}</td>
+                            <td class="text-right">${demandQuantity}</td>
+                            <td class="text-right">${recommendedQuantity}</td>
+                            <td class="text-right">${finalApproveQuantity}</td>
+                            <td>${remarks}</td>
+                        </tr>
+                    `);
                         }
                         document.getElementById('loading-spinner').style.display = 'none';
                     },
                     error: function(error) {
                         document.getElementById('loading-spinner').style.display = 'none';
                         console.error("Error:", error);
-
                     }
                 });
-
             });
-
         });
     </script>
 @endsection

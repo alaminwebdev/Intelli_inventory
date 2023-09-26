@@ -58,12 +58,12 @@ class DistributionController extends Controller
                 return $section['id'];
             }, $sections);
 
-            $data['sectionRequisitions'] = $this->sectionRequisitionService->getAll(null, null, $sectionIds, [1,3]);
+            $data['sectionRequisitions'] = $this->sectionRequisitionService->getAll(null, null, $sectionIds, [1, 3]);
         } else {
-            $data['sectionRequisitions'] = $this->sectionRequisitionService->getAll(null, null, null, [1,3]);
+            $data['sectionRequisitions'] = $this->sectionRequisitionService->getAll(null, null, null, [1, 3]);
         }
 
-        return view('admin.requisition-management.distribution.list', $data);
+        return view('admin.requisition-management.distribution-approval.list', $data);
     }
     public function add()
     {
@@ -90,7 +90,7 @@ class DistributionController extends Controller
             $data['sections']   = $this->sectionService->getAll();
         }
 
-        return view('admin.requisition-management.distribution.add', $data);
+        return view('admin.requisition-management.distribution-approval.add', $data);
     }
 
     public function store(Request $request, DistributionService $distribute)
@@ -109,7 +109,7 @@ class DistributionController extends Controller
         // }
     }
 
-    public function pendingDistribute()
+    public function distributeList()
     {
         $data['title'] = 'পন্য বিতরণের তালিকা';
 
@@ -123,38 +123,20 @@ class DistributionController extends Controller
                 return $section['id'];
             }, $sections);
 
-            $data['pendingDistributes'] = $this->sectionRequisitionService->getAll(null, 3, $sectionIds);
+            $data['distributeRequisitions'] = $this->sectionRequisitionService->getAll(null, null, $sectionIds, [3,4]);
         } else {
-            $data['pendingDistributes'] = $this->sectionRequisitionService->getAll(null, 3);
+            $data['distributeRequisitions'] = $this->sectionRequisitionService->getAll(null, null, null, [3,4]);
         }
-        return view('admin.requisition-management.distribution.pending', $data);
+        return view('admin.requisition-management.distribute.list', $data);
     }
-    public function approveDistribute()
-    {
-        $data['title']              = 'বিতরণ করা পন্যের তালিকা';
 
-        $user = Auth::user();
-        if ($user->id !== 1 && $user->employee_id) {
-            $employee  = $this->employeeService->getByID($user->employee_id);
-            $sections  = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
 
-            // Extract only the "id" values into a new array
-            $sectionIds = array_map(function ($section) {
-                return $section['id'];
-            }, $sections);
 
-            $data['approveDistributes'] = $this->sectionRequisitionService->getAll(null, 4, $sectionIds);
-        } else {
-            $data['approveDistributes'] = $this->sectionRequisitionService->getAll(null, 4);
-        }
-
-        return view('admin.requisition-management.distribution.approve', $data);
-    }
     public function productDistributeEdit($id)
     {
-        $data['title']         = 'পন্য বিতরণ করুন';
-        $data['editData']      = $this->sectionRequisitionService->getByID($id);
-        $data['product_types'] = $this->productTypeService->getAll(1);
+        $data['title']                      = 'পন্য বিতরণ করুন';
+        $data['editData']                   = $this->sectionRequisitionService->getByID($id);
+        $data['requisition_product_types']  = $this->sectionRequisitionService->getRequisitionProductsWithTypeById($id);
 
         $user = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
@@ -165,12 +147,11 @@ class DistributionController extends Controller
             $data['sections']           = $this->sectionService->getAll();
         }
 
-        return view('admin.requisition-management.distribution.distribute', $data);
+        return view('admin.requisition-management.distribute.edit', $data);
     }
 
-    public function productDistribute(Request $request)
+    public function productDistributeStore(Request $request)
     {
-
         DB::beginTransaction();
 
         try {
@@ -228,15 +209,17 @@ class DistributionController extends Controller
             }
 
             SectionRequisition::where('id', $request->section_requisition_id)->update([
-                'status' => 4,
+                'distribute_by'  => Auth::id(),
+                'distribute_at'  => Carbon::now(),
+                'status'         => 4,
             ]);
 
             SectionRequisitionDetails::where('section_requisition_id', $request->section_requisition_id)->update([
                 'status' => 4,
             ]);
-            
+
             DB::commit();
-            return redirect()->route('admin.approve.distribute.list');
+            return redirect()->route('admin.distribute.list');
         } catch (\Exception $e) {
             DB::rollBack();
             return $e->getMessage();

@@ -23,7 +23,7 @@
                                 <div class="row px-3 pb-4 border rounded shadow-sm mb-4">
                                     <div class="col-md-5 pt-4">
                                         <label class="control-label">ক্রয় অর্ডার নং. : <span class="text-red">*</span></label>
-                                        <input type="number" class="form-control form-control-sm " id="po_no" name="po_no" value="">
+                                        <input type="text" class="form-control form-control-sm " id="po_no" name="po_no" value="">
                                     </div>
                                     <div class="col-md-4 pt-4">
                                         <label class="control-label">ক্রয় অর্ডারের তারিখ :</label>

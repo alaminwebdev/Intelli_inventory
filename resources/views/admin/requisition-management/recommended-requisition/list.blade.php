@@ -124,7 +124,7 @@
 
                 document.getElementById('loading-spinner').style.display = 'block';
                 $.ajax({
-                    url: "{{ route('admin.get.requistion.in.details.by.id') }}",
+                    url: "{{ route('admin.get.requistion.details.by.id') }}",
                     type: "GET",
                     data: {
                         requisition_id: requistionID

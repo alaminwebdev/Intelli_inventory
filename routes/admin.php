@@ -18,7 +18,8 @@ Route::get('/get-products-by-section-requisition', [DefaultController::class, 'g
 Route::get('/get-employee-by-id', [DefaultController::class, 'getEmployeeById'])->name('get.employee.by.id');
 Route::get('/get-sections-requisitions-by-department', [DefaultController::class, 'getSectionsRequisitionsByDepartment'])->name('get.sections.requisitions.by.department');
 Route::get('/get-stock-in-details-by-stock-id', [DefaultController::class, 'getStockInDetailsByStockId'])->name('get.stock.in.details.by.stock.id');
-Route::get('/get-requistion-in-details-by-id', [DefaultController::class, 'getRequistionDetailsById'])->name('get.requistion.in.details.by.id');
+Route::get('/get-requistion-details-by-id', [DefaultController::class, 'getRequistionDetailsById'])->name('get.requistion.details.by.id');
+Route::get('/get-distribute-requistion-by-status', [DefaultController::class, 'getDistributeRequistionByStatus'])->name('get.distribute.requistion.by.status');
 
 
 // System Setup

@@ -8,7 +8,7 @@
 @section('pdf-header')
     <p style="font-size: 11px;">গণপ্রজাতন্ত্রী বাংলাদেশ সরকার</p>
     <p style="font-size: 11px;">বাংলাদেশ পুলিশ</p>
-    <p style="font-size: 11px;">স্পেশাল ব্রাঞ্চ - পুলিশ হেডকোয়ার্টার্স, ঢাকা।</p>
+    <p style="font-size: 11px;">স্পেশাল ব্রাঞ্চ , ঢাকা।</p>
 @endsection
 
 @section('pdf-header-partner')
@@ -23,17 +23,19 @@
 @endsection
 
 @section('pdf-content')
-
-    <div>
-        <p style="font-size: 12px; margin: 0; margin: 10px 0;">ক্রয় অর্ডার নাম্বার :  {{ $stock_info->po_no }}</p>
+    <div style="margin-top: 10px; font-size: 12px;">
+        <div style="width:100%">
+            <p style="margin: 0; width:50%; float:left;">ক্রয় অর্ডার নাম্বার :  {{ $stock_info->po_no }}</p>
+            <p style="margin: 0; width:50%; float:right; text-align:right">তারিখ : {{ $date_in_bengali }}</p>
+        </div>
     </div>
 
     @if (@$stock_details && count(@$stock_details) > 0)
-        <table class="table table-bordered">
+        <table class="table table-bordered" style="margin-top: 10px;">
             <thead>
                 <tr>
                     <th class="text-left" width="10%">ক্রমিক নং.</th>
-                    <th class="text-center">পন্য</th>
+                    <th class="text-center" width="30%">পন্য</th>
                     <th class="text-center">অর্ডার পরিমাণ</th>
                     <th class="text-center">পূর্ববর্তী রিসিভ পরিমাণ</th>
                     <th class="text-center">রিসিভ পরিমাণ</th>

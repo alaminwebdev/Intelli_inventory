@@ -26,7 +26,7 @@ class CurrentStockController extends Controller
 
     public function index(Request $request)
     {
-        $data['title']          = 'বর্তমান স্টক রিপোর্ট';
+        $data['title']          = 'বর্তমান মজুদ রিপোর্ট';
 
         $date                   = new DateTime('now', new DateTimeZone('Asia/Dhaka')); // Set your desired timezone
         $formatter              = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
@@ -52,7 +52,7 @@ class CurrentStockController extends Controller
         $pdf = PDF::loadView('admin.reports.current-stock-list-pdf', $data);
         $pdf->SetProtection(['copy', 'print'], '', 'pass');
 
-        $fileName = 'বর্তমান স্টক-' . $data['date_in_bengali'] . '.pdf';
+        $fileName = 'বর্তমান মজুদ-' . $data['date_in_bengali'] . '.pdf';
         return $pdf->stream($fileName);
     }
 }

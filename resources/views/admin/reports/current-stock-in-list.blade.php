@@ -16,9 +16,9 @@
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th width="5%">ক্রমিক নং:</th>
-                                        <th>প্রোডাক্টের তথ্য</th>
-                                        <th>বর্তমান স্টক</th>
+                                        <th width="5%">নং:</th>
+                                        <th>পন্যের তথ্য</th>
+                                        <th>বর্তমান মজুদ</th>
                                     </tr>
                                 </thead>
                                 <tbody>

@@ -177,7 +177,6 @@ class SectionRequisitionService implements IService
             if (count($requisitionProducts) > 0) {
 
                 foreach ($requisitionProducts as $product) {
-
                     $productType['products'][$product->product_id] = [
                         'product_id'                => $product->product_id,
                         'product_name'              => $product->product->name,

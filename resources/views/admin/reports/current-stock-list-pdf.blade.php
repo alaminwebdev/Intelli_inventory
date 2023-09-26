@@ -1,14 +1,13 @@
 @extends('admin.layouts.pdf')
 
 @section('pdf-title')
-    বর্তমান স্টক - {{ $date_in_bengali }}
+    বর্তমান মজুদ - {{ $date_in_bengali }}
 @endsection
 
 @section('pdf-header')
-    <p style="font-size: 18px;">বর্তমান স্টক রিপোর্ট</p>
-    <p style="font-size: 11px;">
-        তারিখ : {{ $date_in_bengali }}
-    </p>
+    <p style="font-size: 12px;">গণপ্রজাতন্ত্রী বাংলাদেশ সরকার</p>
+    <p style="font-size: 12px;">বাংলাদেশ পুলিশ</p>
+    <p style="font-size: 12px;">স্পেশাল ব্রাঞ্চ , ঢাকা।</p>
 @endsection
 
 @section('pdf-header-partner')
@@ -23,13 +22,19 @@
 @endsection
 
 @section('pdf-content')
+    <div style="margin-top: 10px; font-size: 12px;">
+        <div style="width:100%">
+            <p style="margin: 0; width:50%; float:left;">বর্তমান মজুদ রিপোর্ট</p>
+            <p style="margin: 0; width:50%; float:right; text-align:right">তারিখ : {{ $date_in_bengali }}</p>
+        </div>
+    </div>
 
     <table class="table table-bordered" style="margin-top: 10px;">
         <thead>
             <tr>
                 <th class="text-left" width="10%">ক্রমিক নং:</th>
-                <th class="text-center">প্রোডাক্টের তথ্য</th>
-                <th class="text-center">বর্তমান স্টক</th>
+                <th class="text-center" width="70%">পন্য</th>
+                <th class="text-center" width="20%">বর্তমান মজুদ</th>
             </tr>
         </thead>
         <tbody>

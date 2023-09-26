@@ -13,7 +13,7 @@
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th width="5%">ক্রমিক নং.</th>
+                                        <th width="5%">নং.</th>
                                         <th>পদবী</th>
                                         <th>সাজানো</th>
                                         <th>অবস্থান</th>

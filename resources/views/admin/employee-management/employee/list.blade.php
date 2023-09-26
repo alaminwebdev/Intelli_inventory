@@ -7,20 +7,20 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.employee.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Employee</a>
+                            <a href="{{ route('admin.employee.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> কর্মচারী যুক্ত করুন</a>
                         </div>
                         <div class="card-body">
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th width="5%">SL.</th>
-                                        <th>Name</th>
-                                        <th>BP No.</th>
-                                        <th>Department</th>
-                                        <th>Section</th>
-                                        <th>Designations</th>
-                                        <th>Status</th>
-                                        <th width="15%">Action</th>
+                                        <th width="5%">নং.</th>
+                                        <th>কর্মচারীর নাম</th>
+                                        <th>বি. পি. নং.</th>
+                                        <th>দপ্তর</th>
+                                        <th>শাখা</th>
+                                        <th>পদবী</th>
+                                        <th>অবস্থান</th>
+                                        <th width="15%">অ্যাকশন</th>
                                     </tr>
                                 </thead>
                                 <tbody>

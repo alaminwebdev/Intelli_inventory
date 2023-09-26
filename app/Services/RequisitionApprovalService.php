@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 
 use App\Services\IService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -40,8 +41,10 @@ class RequisitionApprovalService implements IService
         DB::beginTransaction();
         try {
 
-            $sectionRequisition                  = SectionRequisition::find($id);
-            $sectionRequisition->status          = $request->status;
+            $sectionRequisition                         = SectionRequisition::find($id);
+            $sectionRequisition->status                 = $request->status;
+            $sectionRequisition->recommended_by         = Auth::id();
+            $sectionRequisition->recommended_at         = Carbon::now();
 
             if ($sectionRequisition->save()) {
                 if ($request->status == 1) {
