@@ -116,6 +116,15 @@
         .text-gray {
             color: #6c757d;
         }
+        .main-footer.text-sm, .text-sm .main-footer {
+            padding: 0.55rem;
+        }
+        .main-footer {
+            background-color: #fff;
+            border-top: none;
+            color: #2a527b;
+            font-size: 12px;
+        }
     </style>
 
 </head>

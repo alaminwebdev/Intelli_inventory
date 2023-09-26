@@ -41,10 +41,10 @@ $(document).ready(function () {
         Swal.fire({
             icon: 'error',
             iconHtml: '<i class="fa fa-trash"></i>',
-            title: 'Delete',
+            title: 'মুছে ফেলুন',
             showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'No, cancel!',
+            confirmButtonText: 'হ্যাঁ, এটি মুছুন!',
+            cancelButtonText: 'না, বাতিল!',
             showLoaderOnConfirm: true,
             preConfirm: () => {
                 return $.ajax({
@@ -69,7 +69,7 @@ $(document).ready(function () {
             if (result.isConfirmed) {
                 Swal.fire({
                     icon: "success",
-                    title: 'successfully deleted',
+                    title: 'সফলভাবে মুছে ফেলা হয়েছে',
                 });
                 $(thisBtn).parents('tr').hide('');
 

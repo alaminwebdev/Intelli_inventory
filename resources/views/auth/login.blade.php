@@ -15,6 +15,7 @@
         html {
             font-family: "Roboto", sans-serif;
             background: linear-gradient(to left, #5b86e51f, #36d1dc0d);
+            height: 100%;
         }
 
         .card-container.card {
@@ -49,8 +50,8 @@
             background-color: #fff;
             background-clip: border-box;
             border: 0 solid rgba(0, 0, 0, .125);
-            border-radius: 0.25rem;
-            box-shadow: 0 .125rem .25rem rgba(0 0 0 / 30%) !important;
+            border-radius: 15px;
+            box-shadow: 0 0.125rem 20rem rgb(0 0 0 / 10%) !important ;
         }
 
         .profile-img-card {
