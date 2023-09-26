@@ -108,7 +108,12 @@ class DefaultController extends Controller
                 return $section['id'];
             }, $sections);
 
-            $distributeRequisitions = $this->sectionRequisitionService->getAll(null, $request->requistition_status, $sectionIds);
+            if ($sectionIds) {
+                $distributeRequisitions = $this->sectionRequisitionService->getAll(null, $request->requistition_status, $sectionIds);
+            }else{
+                $distributeRequisitions = [];
+            }
+
         } else {
             $distributeRequisitions = $this->sectionRequisitionService->getAll(null, $request->requistition_status);
         }

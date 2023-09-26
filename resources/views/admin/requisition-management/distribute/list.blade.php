@@ -30,7 +30,7 @@
                                         <th>অনুরোধকৃত শাখা</th>
                                         <th>অনুরোধকৃত দপ্তর</th>
                                         <th>বর্তমান অবস্থা</th>
-                                        <th>অ্যাকশান</th>
+                                        <th>অ্যাকশন</th>
                                     </tr>
                                 </thead>
                                 <tbody id="requistionProductsTable">
@@ -45,10 +45,13 @@
                                                 <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id="{{ $list->id }}" data-modal-id="productDetailsModal">
                                                     <i class="far fa-eye"></i>
                                                 </button>
-                                                @if (sorpermission('admin.distribute.edit'))
-                                                    <a class="btn btn-sm btn-success" href="{{ route('admin.distribute.edit', $list->id) }}">
-                                                        <i class="fa fa-edit"></i>
-                                                    </a>
+                                                <a class="btn btn-sm btn-primary" href="{{ route('admin.requisition.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ</a>
+                                                @if ($list->status === 3)
+                                                    @if (sorpermission('admin.distribute.edit'))
+                                                        <a class="btn btn-sm btn-success" href="{{ route('admin.distribute.edit', $list->id) }}">
+                                                            <i class="fa fa-edit"></i>
+                                                        </a>
+                                                    @endif
                                                 @endif
                                             </td>
                                         </tr>

@@ -100,24 +100,24 @@
         <div style="width: 100%; margin-top: 80px; font-size: 12px;">
             @if ($requestedRequisitionInfo->status == 0 || $requestedRequisitionInfo->status == 1 || $requestedRequisitionInfo->status == 3)
                 <div style="width: 30%; float: left; text-align: center;">
-                    <p style="margin:0">{{ @$requestedRequisitionInfo->requisition_owner->name }}</p>
+                    <p style="margin:0; {{ @$requestedRequisitionInfo->requisition_owner->name ? '' : 'visibility: hidden;'  }}">{{ @$requestedRequisitionInfo->requisition_owner->name ?? 'Not available' }}</p>
                     <p style="margin:0 50px; padding: 5px; border-top: 1px dotted black;">চাহিদাকারী</p>
                 </div>
                 <div style="width: 40%; float: left; text-align: center;">
-                    <p style="margin:0">{{ @$requestedRequisitionInfo->recommended_user->name }}</p>
+                    <p style="margin: 0; {{ @$requestedRequisitionInfo->recommended_user->name ? '' : 'visibility: hidden;'  }}" >{{ @$requestedRequisitionInfo->recommended_user->name ?? 'Not available'}}</p>
                     <p style="margin:0 80px; padding: 5px; border-top: 1px dotted black;">সুপারিশকারী</p>
                 </div>
                 <div style="width: 30%; float: left; text-align: center;">
-                    <p style="margin:0">{{ @$requestedRequisitionInfo->approve_user->name }}</p>
+                    <p style="margin:0; {{ @$requestedRequisitionInfo->approve_user->name ? '' : 'visibility: hidden;'  }}">{{ @$requestedRequisitionInfo->approve_user->name ?? 'Not available' }}</p>
                     <p style="margin:0 50px; padding: 5px; border-top: 1px dotted black;">মঞ্জুরকারী</p>
                 </div>
             @elseif ($requestedRequisitionInfo->status == 4)
                 <div style="width: 50%; float: left; text-align: center;">
-                    <p style="margin:0">{{ @$requestedRequisitionInfo->requisition_owner->name }}</p>
+                    <p style="margin:0; {{ @$requestedRequisitionInfo->requisition_owner->name ? '' : 'visibility: hidden;'  }}">{{ @$requestedRequisitionInfo->requisition_owner->name ?? 'Not available' }}</p>
                     <p style="margin:0 80px; padding: 5px; border-top: 1px dotted black;">চাহিদাকারী</p>
                 </div>
                 <div style="width: 50%; float: left; text-align: center;">
-                    <p style="margin:0">{{ @$requestedRequisitionInfo->distribute_user->name }}</p>
+                    <p style="margin:0; {{ @$requestedRequisitionInfo->distribute_user->name ? '' : 'visibility: hidden;'  }}">{{ @$requestedRequisitionInfo->distribute_user->name ?? 'Not available' }}</p>
                     <p style="margin:0 80px; padding: 5px; border-top: 1px dotted black;">বিতরনকারী</p>
                 </div>
             @endif

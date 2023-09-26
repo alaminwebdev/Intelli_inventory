@@ -54,8 +54,12 @@ class RequisitionApprovalController extends Controller
                 return $section['id'];
             }, $sections);
 
+            if ($sectionIds) {
+                $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll(null, null, $sectionIds, [0, 1, 2]);
+            }else{
+                $data['sectionRequisitions']        = [];
+            }
 
-            $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll(null, null, $sectionIds, [0, 1, 2]);
         } else {
 
             $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll(null, null, null, [0, 1, 2]);

@@ -16,7 +16,7 @@
 									<th width="5%">নং.</th>
 									<th>ইউনিট</th>
 									<th>বর্তমান অবস্থা</th>
-									<th width="15%" class="text-center">অ্যাকশান</th>
+									<th width="15%" class="text-center">অ্যাকশন</th>
 								</tr>
 							</thead>
 							<tbody >

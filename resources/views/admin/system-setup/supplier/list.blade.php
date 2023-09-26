@@ -7,16 +7,16 @@
 				<div class="card shadow-sm">
 					<div class="card-header text-right">
 						<h4 class="card-title">{{@$title}}</h4>
-						<a href="{{route('admin.supplier.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Supplier</a>
+						<a href="{{route('admin.supplier.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> সরবরাহকারী যুক্ত করুন</a>
 					</div>
 					<div class="card-body">
 						<table id="sb-data-table" class="table table-bordered">
 							<thead>
 								<tr>
-									<th width="5%">SL.</th>
-									<th>Supplier Name</th>
-									<th>Status</th>
-									<th width="15%" class="text-center">Action</th>
+									<th width="5%">নং.</th>
+									<th>সরবরাহকারী</th>
+									<th>বর্তমান অবস্থা</th>
+									<th width="15%" class="text-center">অ্যাকশন</th>
 								</tr>
 							</thead>
 							<tbody >

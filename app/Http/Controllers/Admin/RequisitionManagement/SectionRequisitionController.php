@@ -42,7 +42,11 @@ class SectionRequisitionController extends Controller
         if ($user->id !== 1 && $user->employee_id) {
             $employee                       = $this->employeeService->getByID($user->employee_id);
             $sectionIds                     = Section::where('department_id', $employee->department_id)->pluck('id');
-            $data['sectionRequisitions']    = $this->sectionRequisitionService->getAll(null, null, $sectionIds);
+            if ($sectionIds) {
+                $data['sectionRequisitions']    = $this->sectionRequisitionService->getAll(null, null, $sectionIds);
+            }else{
+                $data['sectionRequisitions']    = [];
+            }
         } else {
             $data['sectionRequisitions']    = $this->sectionRequisitionService->getAll();
         }

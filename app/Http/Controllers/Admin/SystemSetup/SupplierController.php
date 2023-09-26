@@ -16,13 +16,13 @@ class SupplierController extends Controller
         $this->supplierService  = $supplierService;
     }
     public function index(){
-        $data['title']      = 'Supplier List';
+        $data['title']      = 'সরবরাহকারীর তালিকা';
         $data['suppliers']  = $this->supplierService->getAll();
         return view('admin.system-setup.supplier.list', $data);
     }
     public function add()
     {
-        $data['title'] = 'Add Supplier';
+        $data['title'] = 'সরবরাহকারী যুক্ত করুন';
         return view('admin.system-setup.supplier.add', $data);
     }
     public function store(Request $request)
@@ -35,7 +35,7 @@ class SupplierController extends Controller
     }
     public function edit($id)
     {
-        $data['title'] = 'Edit Supplier';
+        $data['title'] = 'সরবরাহকারী হালনাগাদ করুন';
         $data['editData'] = $this->supplierService->getByID($id);
         return view('admin.system-setup.supplier.add', $data);
     }
