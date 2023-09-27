@@ -236,7 +236,7 @@ $nav_menus = [];
         <span class="brand-text">{{(@$site_setting->name)?(@$site_setting->name):'Project Name'}}</span>
     </a>
     <div class="sidebar">
-        <div class="form-inline mt-2">
+        {{-- <div class="form-inline mt-2">
             <div class="input-group" data-widget="sidebar-search">
                 <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
                 <div class="input-group-append">
@@ -245,13 +245,13 @@ $nav_menus = [];
                     </button>
                 </div>
             </div>
-        </div>
-        <nav class="mt-2">
+        </div> --}}
+        <nav class="mt-3">
             <ul class="nav nav-pills nav-sidebar flex-column nav-compact nav-child-indent" data-widget="treeview" role="menu" data-accordion="true">
                 <li class="nav-item">
                     <a href="{{ route('admin.dashboard') }}" class="nav-link">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
-                        <p>Dashboard</p>
+                        <p>ড্যাশবোর্ড</p>
                     </a>
                 </li>
                 @foreach ($nav_menus as $nav_menu)
