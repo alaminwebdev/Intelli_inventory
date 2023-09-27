@@ -7,25 +7,8 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-
                         </div>
                         <div class="card-body">
-                            <div class="row text-left mb-3">
-                                <div class="col-md-12">
-                                    <a class="btn btn-warning btn-sm distributeListBtn text-white" data-requistition-status="3">
-                                        <i class="fa "></i>
-                                        বিতরণের অপেক্ষায় চাহিদাপত্রের তালিকা
-                                    </a>
-                                    <a class="btn btn-primary btn-sm distributeListBtn" data-requistition-status="4">
-                                        <i class="fa "></i>
-                                        বিতরণ করা চাহিদাপত্রের তালিকা
-                                    </a>
-                                    <a class="btn btn-info btn-sm distributeListBtn" data-requistition-status="5">
-                                        <i class="fa "></i>
-                                        গ্রহন করা চাহিদাপত্রের তালিকা
-                                    </a>
-                                </div>
-                            </div>
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -34,11 +17,11 @@
                                         <th>অনুরোধকৃত শাখা</th>
                                         <th>অনুরোধকৃত দপ্তর</th>
                                         <th>বর্তমান অবস্থা</th>
-                                        <th width="20%">অ্যাকশন</th>
+                                        <th>অ্যাকশন</th>
                                     </tr>
                                 </thead>
                                 <tbody id="requistionProductsTable">
-                                    @foreach ($distributeRequisitions as $list)
+                                    @foreach ($sectionRequisitions as $list)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ @$list->requisition_no ?? 'N/A' }}</td>
@@ -50,9 +33,9 @@
                                                     <i class="far fa-eye"></i>
                                                 </button>
                                                 <a class="btn btn-sm btn-primary" href="{{ route('admin.requisition.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ</a>
-                                                @if ($list->status === 3)
-                                                    @if (sorpermission('admin.distribute.edit'))
-                                                        <a class="btn btn-sm btn-success" href="{{ route('admin.distribute.edit', $list->id) }}">
+                                                @if ($list->status === 4)
+                                                    @if (sorpermission('admin.section.requisition.receive.edit'))
+                                                        <a class="btn btn-sm btn-success" href="{{ route('admin.section.requisition.receive.edit', $list->id) }}">
                                                             <i class="fa fa-edit"></i>
                                                         </a>
                                                     @endif
@@ -68,46 +51,6 @@
             </div>
         </div>
     </section>
-
-    <script>
-        $(document).ready(function() {
-            $('.distributeListBtn').on('click', function() {
-                var requistitionStatus = $(this).data('requistition-status');
-                document.getElementById('loading-spinner').style.display = 'block';
-                $.ajax({
-                    url: "{{ route('admin.get.distribute.requistion.by.status') }}",
-                    type: "GET",
-                    data: {
-                        requistition_status: requistitionStatus
-                    },
-                    success: function(response) {
-
-                        // Clear existing table rows
-                        $("#requistionProductsTable").empty();
-                        $("#requistionProductsTable").html(response);
-
-                        // Toggle the visibility of the checkmark icon for all buttons
-                        $('.distributeListBtn').each(function() {
-                            var icon = $(this).find('i');
-                            if ($(this).data('requistition-status') === requistitionStatus) {
-                                icon.toggleClass('fa-check-circle'); // Toggle the checkmark icon
-                            } else {
-                                icon.removeClass('fa-check-circle'); // Remove the checkmark icon from other buttons
-                            }
-                        });
-
-                        document.getElementById('loading-spinner').style.display = 'none';
-                    },
-                    error: function(error) {
-                        document.getElementById('loading-spinner').style.display = 'none';
-                        console.error("Error:", error);
-
-                    }
-                });
-            });
-
-        });
-    </script>
 
     <!-- Modal for Product Details -->
     <div class="modal" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">

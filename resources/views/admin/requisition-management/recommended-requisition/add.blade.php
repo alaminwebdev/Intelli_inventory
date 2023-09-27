@@ -24,15 +24,19 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="row px-3 py-4 border rounded shadow-sm mb-3">
-                                            <div class="col-md-4">
-                                                <label class="control-label">সেকশন :</label>
-                                                <input type="text" class="form-control form-control-sm" value="{{ $editData->section->name }}" readonly>
-                                            </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <label class="control-label">চাহিদাপত্রের নাম্বার :</label>
                                                 <input type="text" class="form-control form-control-sm" id="requisition_no" name="requisition_no" value="{{ $editData->requisition_no }}" readonly>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
+                                                <label class="control-label">দপ্তর :</label>
+                                                <input type="text" class="form-control form-control-sm" value="{{ $editData->section->department->name }}" readonly>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="control-label">শাখা :</label>
+                                                <input type="text" class="form-control form-control-sm" value="{{ $editData->section->name }}" readonly>
+                                            </div>
+                                            <div class="col-md-3">
                                                 <label class="control-label">চাহিদাপত্রের অবস্থা <span class="text-red">*</span></label>
                                                 <select name="status" id="status" class="form-control select2 @error('status') is-invalid @enderror">
                                                     <option value="" disabled>Please Select</option>
@@ -61,7 +65,7 @@
                                                                         <th>পন্য</th>
                                                                         <th>বর্তমান মজূদ</th>
                                                                         <th>চাহিদার পরিমাণ</th>
-                                                                        <th>সেকশন - যৌক্তিকতা</th>
+                                                                        <th>শাখা - যৌক্তিকতা</th>
                                                                         <th>সুপারিশ পরিমাণ</th>
                                                                         <th>যৌক্তিকতা</th>
                                                                     </tr>

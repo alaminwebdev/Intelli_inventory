@@ -30,15 +30,12 @@
                                                 <input type="text" class="form-control form-control-sm" id="remarks" name="requisition_no" value="{{ $editData->requisition_no }}" readonly>
                                             </div>
                                             <div class="col-md-5">
-                                                <label class="control-label">সেকশন : <span class="text-red">*</span></label>
-                                                <select name="section_id" class="form-control form-control-sm select2" id="section_id" disabled>
-                                                    <option value="">Select Section</option>
-                                                    @foreach ($sections as $section)
-                                                        <option value="{{ $section->id }}" {{ $editData->section_id == $section->id ? 'selected' : '' }}>
-                                                            {{ $section->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
+                                                <label class="control-label">দপ্তর : <span class="text-red">*</span></label>
+                                                <input type="text" class="form-control form-control-sm" id="department_id" name="department_id" value="{{ $editData->section->department->name }}" readonly>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <label class="control-label">শাখা : <span class="text-red">*</span></label>
+                                                <input type="text" class="form-control form-control-sm" id="section_id" name="section_id" value="{{ $editData->section->name }}" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -118,7 +115,7 @@
 
                                     <div class="col-md-12">
                                         <div class="text-right">
-                                            <button type="submit" class="btn btn-success btn-sm">বিতরন করুন</button>
+                                            <button type="submit" class="btn btn-success btn-sm" {{ $editData->status === 3 ? '' : 'disabled'  }}>বিতরন করুন</button>
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
                                                 <a href="{{ route('admin.distribute.list') }}">পিছনে যান</a>
                                             </button>

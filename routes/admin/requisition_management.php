@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\RequisitionManagement\DepartmentRequisitionContro
 use App\Http\Controllers\Admin\RequisitionManagement\DistributionController;
 use App\Http\Controllers\Admin\RequisitionManagement\RequisitionApprovalController;
 use App\Http\Controllers\Admin\RequisitionManagement\SectionRequisitionController;
+use App\Http\Controllers\Admin\RequisitionManagement\RequisitionReceiveController;
 
 Route::prefix('/section-requisition')->group(function () {
     Route::get('/list', [SectionRequisitionController::class, 'index'])->name('section.requisition.list');
@@ -14,6 +15,12 @@ Route::prefix('/section-requisition')->group(function () {
     Route::get('/edit/{id}', [SectionRequisitionController::class, 'edit'])->name('section.requisition.edit');
     Route::post('/update/{id}', [SectionRequisitionController::class, 'update'])->name('section.requisition.update');
     Route::post('/delete', [SectionRequisitionController::class, 'delete'])->name('section.requisition.delete');
+});
+
+Route::prefix('/section-requisition-receive')->group(function () {
+    Route::get('/list', [RequisitionReceiveController::class, 'index'])->name('section.requisition.receive.list');
+    Route::get('/edit/{id}', [RequisitionReceiveController::class, 'edit'])->name('section.requisition.receive.edit');
+    Route::post('/update/{id}', [RequisitionReceiveController::class, 'update'])->name('section.requisition.receive.update');
 });
 
 Route::prefix('/department-requisition')->group(function () {

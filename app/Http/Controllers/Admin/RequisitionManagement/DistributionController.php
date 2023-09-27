@@ -84,18 +84,6 @@ class DistributionController extends Controller
         $data['title']                      = 'চাহিদাপত্র অনুমোদন করুন';
         $data['editData']                   = $this->sectionRequisitionService->getByID($id);
         $data['requisition_product_types']  = $this->sectionRequisitionService->getRequisitionProductsWithTypeById($id);
-        $data['departments']                = $this->departmentService->getAll(1);
-
-        $user = Auth::user();
-        if ($user->id !== 1 && $user->employee_id) {
-            $data['employee']   = $this->employeeService->getByID($user->employee_id);
-            $data['sections']   = $this->sectionService->getSectionsByDepartment($data['employee']->department_id);
-        } else {
-            $data['employee']   = [];
-            $data['sections']   = $this->sectionService->getAll();
-        }
-
-
         return view('admin.requisition-management.distribution-approval.add', $data);
     }
 
@@ -148,16 +136,6 @@ class DistributionController extends Controller
         $data['title']                      = 'পন্য বিতরণ করুন';
         $data['editData']                   = $this->sectionRequisitionService->getByID($id);
         $data['requisition_product_types']  = $this->sectionRequisitionService->getRequisitionProductsWithTypeById($id);
-
-        $user = Auth::user();
-        if ($user->id !== 1 && $user->employee_id) {
-            $data['employee']           = $this->employeeService->getByID($user->employee_id);
-            $data['sections']           = $this->sectionService->getSectionsByDepartment($data['employee']->department_id);
-        } else {
-            $data['employee']           = [];
-            $data['sections']           = $this->sectionService->getAll();
-        }
-
         return view('admin.requisition-management.distribute.edit', $data);
     }
 

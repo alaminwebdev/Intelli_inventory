@@ -17,13 +17,15 @@ class CreateSectionRequisitionsTable extends Migration {
             $table->string('requisition_no');
             $table->integer('user_id');
             $table->integer('section_id')->nullable();
-            $table->integer('status')->nullable()->comment('0=Created, 1=Recommended, 2=Reject, 3=Final Approved, 4=Distributed');
+            $table->integer('status')->nullable()->comment('0=Created, 1=Recommended, 2=Reject, 3=Final Approved, 4=Distributed, 5=Received');
             $table->integer('recommended_by')->nullable();
             $table->dateTime('recommended_at')->nullable();
             $table->integer('final_approve_by')->nullable();
             $table->dateTime('final_approve_at')->nullable();
             $table->integer('distribute_by')->nullable();
             $table->dateTime('distribute_at')->nullable();
+            $table->integer('receive_by')->nullable();
+            $table->dateTime('receive_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

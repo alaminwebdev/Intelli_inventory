@@ -15,10 +15,10 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.distribution.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>পন্য বিতরনের তালিকা</a>
+                            <a href="{{ route('admin.section.requisition.receive.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>চাহিদাপত্র গ্রহনের তালিকা</a>
                         </div>
                         <div class="card-body">
-                            <form id="submitForm" action="{{ isset($editData) ? route('admin.distribution.update', $editData->id) : route('admin.distribution.store') }} " method="post" enctype="multipart/form-data" autocomplete="off">
+                            <form id="submitForm" action="{{ route('admin.section.requisition.receive.update', $editData->id) }} " method="post">
                                 @csrf
 
                                 <div class="row">
@@ -56,17 +56,17 @@
                                                                 <thead style="background: #fff4f4 !important;">
                                                                     <tr>
                                                                         <th>পন্য</th>
-                                                                        <th>পূর্ববর্তী বিতরনের পরিমান</th>
+                                                                        <th>পূর্ববর্তী বিতরনের পরিমাণ</th>
                                                                         <th>বর্তমান মজূদ</th>
-                                                                        <th>চাহিদার পরিমান</th>
+                                                                        <th>চাহিদার পরিমাণ</th>
                                                                         <th>সুপারিশ পরিমান</th>
                                                                         <th>বিতরনযোগ্য মজূদ</th>
-                                                                        <th>অনুমোদন পরিমান</th>
+                                                                        <th>বিতরনের পরিমাণ</th>
                                                                         <th>যৌক্তিকতা</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    
+
                                                                     @foreach ($type['products'] as $product)
                                                                         @php
                                                                             // $lastDistribute = \App\Models\RequisitionApproval::where('requisition_approval_details.department_id', $editData->department_id)
@@ -84,7 +84,7 @@
                                                                                 <input type="number" class="form-control form-control-sm" id="previous_stock_{{ $product['product_id'] }}" value="{{ $lastDistribute->distribute_quantity ?? 0 }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="current_stock_{{ $product['product_id'] }}" name="current_stock[{{ $product['product_id'] }}]" value="{{ $product['current_stock'] }}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" id="current_stock_{{ $product['product_id'] }}" value="{{ $product['current_stock'] }}" readonly>
                                                                             </td>
                                                                             <td>
                                                                                 <input type="number" class="form-control form-control-sm" id="demand_quantity_{{ $product['product_id'] }}" name="demand_quantity[{{ $product['product_id'] }}]" value="{{ $product['demand_quantity'] }}" readonly>
@@ -95,11 +95,12 @@
                                                                             <td>
                                                                                 <input type="text" class="form-control form-control-sm" id="available_quantity_{{ $product['product_id'] }}" value="{{ $product['available_quantity'] }}" readonly>
                                                                             </td>
+
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="approve_quantity_{{ $product['product_id'] }}" name="approve_quantity[{{ $product['product_id'] }}]" value="{{ $product['final_approve_quantity'] ?? $product['recommended_quantity'] }}" {{ $editData->status == 3 ? 'readonly' : '' }} >
+                                                                                <input type="number" class="form-control form-control-sm" id="distribute_quantity_{{ $product['product_id'] }}" name="distribute_quantity[{{ $product['product_id'] }}]" value="{{ $product['final_approve_quantity'] }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="text" class="form-control form-control-sm" id="remarks_{{ $product['product_id'] }}" name="remarks[{{ $product['product_id'] }}]" value="{{ $product['final_approve_remarks'] }}" {{ $product['final_approve_remarks'] ? 'readonly' : '' }}>
+                                                                                <input type="text" class="form-control form-control-sm" id="remarks_{{ $product['product_id'] }}" name="remarks[{{ $product['product_id'] }}]" value="{{ $product['final_approve_remarks'] }}" readonly>
                                                                             </td>
                                                                         </tr>
                                                                     @endforeach
@@ -114,14 +115,9 @@
 
                                     <div class="col-md-12">
                                         <div class="text-right">
-                                            @if (@$editData->id)
-                                                <button type="submit" class="btn btn-success btn-sm" {{ $editData->status == 3 ? 'disabled' : '' }}>অনুমোদন করুন</button>
-                                            @else
-                                                <button type="submit" class="btn btn-success btn-sm">সংরক্ষণ</button>
-                                                <button type="reset" class="btn btn-danger btn-sm">মুছুন</button>
-                                            @endif
+                                            <button type="submit" class="btn btn-success btn-sm" {{ $editData->status === 4 ? '' : 'disabled'  }}>গ্রহন করুন</button>
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.distribution.list') }}">পিছনে যান</a>
+                                                <a href="{{ route('admin.section.requisition.receive.list') }}">পিছনে যান</a>
                                             </button>
                                         </div>
                                     </div>
@@ -132,4 +128,5 @@
             </div>
         </div>
     </section>
+
 @endsection
