@@ -53,7 +53,7 @@
         /* Handle */
         ::-webkit-scrollbar-thumb {
             /* background: #888; */
-            background: linear-gradient(180deg, #5b86e5b5 0%, #36D1DC 100%);
+            background: linear-gradient(180deg, #5b86e5b5 0%, rgb(62, 151, 255) 100%);
 
         }
 
@@ -77,7 +77,8 @@
         }
 
         .table thead {
-            background: linear-gradient(180deg, #5b86e5b5 0%, #36D1DC 100%) !important;
+            background: linear-gradient(90deg, #5B86E5 0%, #5b86e5b5 100%) !important;
+            /* background: linear-gradient(180deg, #5b86e5b5 0%, #36D1DC 100%) !important; */
         }
 
         .table thead th {

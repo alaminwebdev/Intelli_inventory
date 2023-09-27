@@ -30,9 +30,10 @@ $nav_menus = [];
     border-left: 1px dashed rgba(255,255,255,0.5);
 }
 .layout-navbar-fixed .wrapper .sidebar-dark-primary .brand-link:not([class*=navbar]) {
-    background: #36D1DC;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to left, #5B86E5, #36D1DC);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to left, #5B86E5, #36D1DC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: #5B86E5;
+    /* background: #36D1DC;  */
+    /* background: -webkit-linear-gradient(to left, #5B86E5, #36D1DC);   */
+    /* background: linear-gradient(to left, #5B86E5, #36D1DC); */
     font-weight: 600 !important;
     box-shadow: rgb(83 91 101 / 33%) 0px 7px 20px 0px;
 }
@@ -52,9 +53,10 @@ $nav_menus = [];
 }
 
 [class*=sidebar-dark-] {
-    background: #36D1DC;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #5B86E5, #36D1DC);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #5B86E5, #36D1DC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: #5B86E5;
+    /* background: #36D1DC;
+    background: -webkit-linear-gradient(to right, #5B86E5, #36D1DC);  
+    background: linear-gradient(to right, #5B86E5, #36D1DC);  */
 
 }
 
