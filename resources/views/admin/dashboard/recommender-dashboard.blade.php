@@ -79,7 +79,7 @@
                         <div class="bg">
                             <div class="content px-3 py-4 text-white">
                                 <h4 class="m-0" style="font-weight: 600;">আমার টাস্ক</h4>
-                                <p class="m-0" style="font-weight: 600;">আপনার {{ en2bn($pendingRequistion) }} টি অপেক্ষমান চাহিদাপত্র আছে।</p>
+                                <p class="m-0" style="font-weight: 600;">আপনার {{ en2bn($pendingRequistion) }} টি চাহিদাপত্র সুপারিশের অপেক্ষায় রয়েছে।</p>
                                 <span class="mt-1 rounded" style="display:block; background: #fff; width:30px; height:2px;"></span>
                             </div>
                         </div>
@@ -91,7 +91,7 @@
                                             <img src="{{ asset('common/images/icon1.png') }}" alt="requisition-make">
                                         </div>
                                         <div class="text pt-1">
-                                            <a href="{{ route('admin.section.requisition.product.selection') }}">চাহিদাপত্র তৈরি করুন</a>
+                                            <a href="{{ route('admin.recommended.requisition.list') }}">সুপারিশের অপেক্ষায় চাহিদাপত্র</a>
                                         </div>
                                     </div>
                                 </div>
@@ -101,7 +101,7 @@
                                             <img src="{{ asset('common/images/icon2.png') }}" alt="product-reecive">
                                         </div>
                                         <div class="text pt-1">
-                                            <a href="{{ route('admin.section.requisition.receive.list') }}">পন্য গ্রহন করুন</a>
+                                            <a href="#">পন্য গ্রহন করুন</a>
                                         </div>
                                     </div>
                                 </div>
@@ -132,15 +132,16 @@
                         <div class="card shadow-sm">
                             <div class="card-header text-right border-0">
                                 <h4 class="card-title">চাহিদাপত্র <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
-                                <a href="{{ route('admin.section.requisition.list') }}" class="btn btn-sm btn-light" style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
+                                <a href="{{ route('admin.recommended.requisition.list') }}" class="btn btn-sm btn-light" style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
                             </div>
                             <div class="card-body pt-0">
                                 <table class="table">
                                     <thead style="background: #fff !important;">
                                         <tr>
                                             <th width="30%">চাহিদাপত্র নাম্বার</th>
-                                            <th width="30%">তৈরি সময়</th>
-                                            <th width="30%">অবস্থা</th>
+                                            <th width="20%">তৈরি সময়</th>
+                                            <th width="20%">শাখা</th>
+                                            <th width="20%">অবস্থা</th>
                                             <th width="10%">অ্যাকশন</th>
                                         </tr>
                                     </thead>
@@ -155,6 +156,7 @@
                                                 <td>{{ en2bn($item->requisition_no) }}</td>
                                                 {{-- <td>{{ date('d-M-Y', strtotime($item->created_at)) }}</td> --}}
                                                 <td>{{ $date }}</td>
+                                                <td>{{ $item->section->name }}</td>
                                                 <td>{!! requisitionStatus($item->status) !!}</td>
                                                 <td><button class="btn btn-sm btn-light px-1 py-0 view-products" style="font-size: 11px !important;" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id="{{ $item->id }}"><i class="fas fa-plus"></i></button></td>
                                             </tr>
@@ -176,8 +178,9 @@
                                 <table class="table">
                                     <thead style="background: #fff !important;">
                                         <tr>
-                                            <th width="30%">চাহিদাপত্র নাম্বার</th>
-                                            <th width="50%">পন্যের নাম</th>
+                                            <th width="20%">চাহিদাপত্র নাম্বার</th>
+                                            <th width="20%">শাখা</th>
+                                            <th width="40%">পন্যের নাম</th>
                                             <th width="20%" class="text-right">পরিমান</th>
                                         </tr>
                                     </thead>
@@ -185,6 +188,7 @@
                                         @foreach ($sectionRequisitionProducts as $item)
                                             <tr>
                                                 <td>{{ en2bn($item->requisition_no) }}</td>
+                                                <td>{{ $item->section }}</td>
                                                 <td>{{ $item->product }} ({{ $item->unit }})</td>
                                                 <td class="text-right">{{ en2bn($item->final_approve_quantity) }}</td>
                                             </tr>

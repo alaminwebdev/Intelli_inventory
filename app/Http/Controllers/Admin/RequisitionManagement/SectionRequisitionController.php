@@ -41,11 +41,23 @@ class SectionRequisitionController extends Controller
         $user = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
             $employee                       = $this->employeeService->getByID($user->employee_id);
-            $sectionIds                     = Section::where('department_id', $employee->department_id)->pluck('id');
-            if ($sectionIds) {
-                $data['sectionRequisitions']    = $this->sectionRequisitionService->getAll(null, null, $sectionIds);
-            }else{
-                $data['sectionRequisitions']    = [];
+
+            if ($employee->section_id) {
+                $data['sectionRequisitions'] = $this->sectionRequisitionService->getAll($employee->section_id);
+                
+            } else {
+                $sections = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
+
+                // Extract only the "id" values into a new array
+                $sectionIds = array_map(function ($section) {
+                    return $section['id'];
+                }, $sections);
+
+                if ($sectionIds) {
+                    $data['sectionRequisitions']    = $this->sectionRequisitionService->getAll(null, null, $sectionIds);
+                } else {
+                    $data['sectionRequisitions']    = [];
+                }
             }
         } else {
             $data['sectionRequisitions']    = $this->sectionRequisitionService->getAll();
@@ -67,7 +79,7 @@ class SectionRequisitionController extends Controller
             $selected_product_ids           = $request->input('selected_products', []);
             $data['selected_products']      = $this->productInformationService->getSpecificProducts($selected_product_ids);
             $data['uniqueRequisitionNo']    = $this->sectionRequisitionService->getUniqueRequisitionNo();
-            
+
             $user = Auth::user();
             if ($user->id !== 1 && $user->employee_id) {
                 $data['employee']           = $this->employeeService->getByID($user->employee_id);

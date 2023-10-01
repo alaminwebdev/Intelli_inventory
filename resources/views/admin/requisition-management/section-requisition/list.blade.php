@@ -104,6 +104,7 @@
                             var product = products[i];
 
                             var productName = product.product || "";
+                            var unitName = product.unit || "";
                             var currentStock = product.current_stock || "";
                             var demandQuantity = product.demand_quantity || "";
                             var recommendedQuantity = product.recommended_quantity || "";
@@ -114,7 +115,7 @@
                             // Append the product details to the table
                             $('#productDetailsTable').append(`
                                 <tr>
-                                    <td>${productName}</td>
+                                    <td>${productName} (${unitName})</td>
                                     <td class="text-right">${currentStock}</td>
                                     <td class="text-right">${demandQuantity}</td>
                                     <td class="text-right">${recommendedQuantity}</td>

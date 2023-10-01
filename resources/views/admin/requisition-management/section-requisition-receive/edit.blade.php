@@ -60,7 +60,7 @@
                                                                         <th>বর্তমান মজূদ</th>
                                                                         <th>চাহিদার পরিমাণ</th>
                                                                         <th>সুপারিশ পরিমান</th>
-                                                                        <th>বিতরনযোগ্য মজূদ</th>
+                                                                        {{-- <th>বিতরনযোগ্য মজূদ</th> --}}
                                                                         <th>বিতরনের পরিমাণ</th>
                                                                         <th>যৌক্তিকতা</th>
                                                                     </tr>
@@ -92,9 +92,10 @@
                                                                             <td>
                                                                                 <input type="number" class="form-control form-control-sm" id="recommended_quantity_{{ $product['product_id'] }}" name="recommended_quantity[{{ $product['product_id'] }}]" value="{{ $product['recommended_quantity'] }}" readonly>
                                                                             </td>
-                                                                            <td>
+
+                                                                            {{-- <td>
                                                                                 <input type="text" class="form-control form-control-sm" id="available_quantity_{{ $product['product_id'] }}" value="{{ $product['available_quantity'] }}" readonly>
-                                                                            </td>
+                                                                            </td> --}}
 
                                                                             <td>
                                                                                 <input type="number" class="form-control form-control-sm" id="distribute_quantity_{{ $product['product_id'] }}" name="distribute_quantity[{{ $product['product_id'] }}]" value="{{ $product['final_approve_quantity'] }}" readonly>

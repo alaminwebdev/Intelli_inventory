@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\DB;
 class SectionRequisitionService implements IService
 {
 
-    public function getAll($section_id = null, $status = null, $section_ids = null, $statuses = null)
+    public function getAll($section_id = null, $status = null, $section_ids = null, $statuses = null, $take = null)
     {
         try {
             $query = SectionRequisition::with(
@@ -38,6 +38,9 @@ class SectionRequisitionService implements IService
             }
             if ($statuses) {
                 $query->whereIn('status', $statuses);
+            }
+            if ($take) {
+                $query->take($take);
             }
             $data = $query->get();
             return $data;
@@ -132,19 +135,34 @@ class SectionRequisitionService implements IService
         return $data;
     }
 
-    public function getProductRequisitionInfoByID($requistion_id)
+    public function getProductRequisitionInfoByID($requistion_id = null, $section_ids = null, $take = null)
     {
         try {
 
             $data = SectionRequisitionDetails::join('product_information', 'product_information.id', 'section_requisition_details.product_id')
-                ->where('section_requisition_id', $requistion_id)
+                // ->where('section_requisition_id', $requistion_id)
+                ->leftjoin('units', 'units.id', 'product_information.unit_id')
+                ->join('section_requisitions', 'section_requisitions.id', 'section_requisition_details.section_requisition_id')
+                ->join('sections', 'sections.id', 'section_requisitions.section_id')
+                ->when($requistion_id, function ($q, $requistion_id){
+                    $q->where('section_requisition_id', $requistion_id);
+                })
+                ->when($section_ids, function ($q, $section_ids){
+                    $q->whereIn('section_requisitions.section_id', $section_ids)->where('section_requisitions.status', 5);
+                })
+                ->when($take, function ($q, $take){
+                    $q->orderBy('section_requisition_details.created_at', 'desc')->take($take);
+                })
                 ->select(
+                    'section_requisitions.requisition_no as requisition_no',
                     'section_requisition_details.current_stock as current_stock',
                     'section_requisition_details.demand_quantity as demand_quantity',
                     'section_requisition_details.recommended_quantity as recommended_quantity',
                     'section_requisition_details.final_approve_quantity as final_approve_quantity',
                     'section_requisition_details.remarks as remarks',
-                    'product_information.name as product'
+                    'product_information.name as product',
+                    'units.name as unit',
+                    'sections.name as section'
                 )
                 ->get();
             return $data;

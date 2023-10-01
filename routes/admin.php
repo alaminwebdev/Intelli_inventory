@@ -2,6 +2,7 @@
 use App\Http\Controllers\Admin\DefaultController;
 
 Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+Route::get('/received-products', 'DashboardController@receivedProducts')->name('dashboard.received-products');
 
 Route::name('site-setting-management.')->prefix('site-setting-management')->namespace('SiteSettingManagement')->group(base_path('routes/admin/site_setting_management.php'));
 Route::name('role-management.')->prefix('role-management')->namespace('RoleManagement')->group(base_path('routes/admin/role_management.php'));
