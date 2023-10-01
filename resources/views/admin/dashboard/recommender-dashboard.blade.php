@@ -75,6 +75,7 @@
             font-size: 12px;
             font-weight: 600;
         }
+
     </style>
     <section class="content">
         <div class="container-fluid">
@@ -321,7 +322,7 @@
                 panX: false,
                 panY: false,
                 wheelX: "none",
-                wheelY: "none"
+                wheelY: "none",
             }));
 
             // We don't want zoom-out button to appear while animating, so we hide it
@@ -336,7 +337,6 @@
             yRenderer.labels.template.setAll({
                 strokeDasharray: [2, 2],
                 fontSize: 10,
-                textAlign: "start",
             });
             yRenderer.grid.template.setAll({
                 strokeOpacity: 0.1,
@@ -347,15 +347,15 @@
                 maxDeviation: 0.3,
                 categoryField: "product",
                 renderer: yRenderer,
-                tooltip: am5.Tooltip.new(root, {
-                    themeTags: ["axis"]
-                })
+                // tooltip: am5.Tooltip.new(root, {
+                //     themeTags: ["axis"]
+                // })
             }));
 
             var xRenderer = am5xy.AxisRendererX.new(root, {});
             xRenderer.labels.template.setAll({
                 strokeDasharray: [2, 2],
-                fontSize: 10
+                fontSize: 10,
             });
 
             xRenderer.grid.template.setAll({
