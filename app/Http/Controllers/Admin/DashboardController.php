@@ -79,7 +79,7 @@ class DashboardController extends Controller
                         }
 
                         break;
-                    case 4: // Role Id 6 = Verifier/Recommender
+                    case 4: // Role Id 4 = Verifier/Recommender
                         $dashboard  = 'admin.dashboard.recommender-dashboard';
                         $employee   = $this->employeeService->getByID($user->employee_id);
                         $sections   = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
@@ -100,10 +100,10 @@ class DashboardController extends Controller
                         }
 
                         break;
-                    case 5: // Role Id 7 = Approver
+                    case 5: // Role Id 5 = Approver
                         $dashboard = 'admin.dashboard.dashboard';
                         break;
-                    case 6: // Role Id 8 = Issuer/Distributor
+                    case 6: // Role Id 6 = Issuer/Distributor
                         $dashboard = 'admin.dashboard.dashboard';
                         break;
                     default:
@@ -121,8 +121,8 @@ class DashboardController extends Controller
     public function receivedProducts()
     {
 
-        $data['title']                      = 'সর্বশেষ প্রাপ্ত পণ্য';
-        $user = Auth::user();
+        $data['title']  = 'সর্বশেষ প্রাপ্ত পণ্য';
+        $user           = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
             $userRoleIds = UserRole::where('user_id', $user->id)->pluck('role_id');
 
@@ -151,7 +151,7 @@ class DashboardController extends Controller
                         }
 
                         break;
-                    case 4: // Role Id 6 = Verifier/Recommender
+                    case 4: // Role Id 4 = Verifier/Recommender
 
                         $employee   = $this->employeeService->getByID($user->employee_id);
                         $sections   = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
@@ -168,10 +168,10 @@ class DashboardController extends Controller
                         }
 
                         break;
-                    case 5: // Role Id 7 = Approver
+                    case 5: // Role Id 5 = Approver
                         
                         break;
-                    case 6: // Role Id 8 = Issuer/Distributor
+                    case 6: // Role Id 6 = Issuer/Distributor
                         
                         break;
                     default:

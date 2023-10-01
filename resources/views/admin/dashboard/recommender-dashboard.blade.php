@@ -1,9 +1,14 @@
 @extends('admin.layouts.app')
 @section('content')
     <style>
+        #chartdiv {
+            width: 100%;
+            height: 300px;
+        }
+
         .requisition-div {
             border-radius: 15px;
-            height: 300px;
+            height: 360px;
             background: #fff;
             position: relative;
         }
@@ -16,7 +21,7 @@
 
         .requisition-div .bg {
             position: relative;
-            height: 185px;
+            height: 220px;
             border-radius: 12px;
             background: linear-gradient(102deg, #33B46E 0%, #44D486 100%);
             overflow: hidden;
@@ -48,7 +53,7 @@
 
         .requisition-card .box {
             background: #fff;
-            height: 120px;
+            height: 140px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -110,19 +115,17 @@
                     </div>
                 </div>
                 <div class="col-md-8">
-                    <div class="dashboard-banner p-5 d-flex align-items-center">
-                        <div class="row">
-                            <div class="col-lg-7 text d-flex align-items-center">
-                                <h3 style="font-weight: 600; color:#fff;">
-                                    সহজেই আপনার চাহিদাপত্রের পন্য বুঝে নিন।
-                                </h3>
+                    <div class="most-requisition-products">
+                        <div class="card shadow-sm" style="border-radius: 12px;">
+                            <div class="card-header text-right border-0 pb-0">
+                                <h4 class="card-title">সর্বাধিক চাহিদাকৃত পণ্য <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
+                                <a href="{{ route('admin.recommended.requisition.list') }}" class="btn btn-sm btn-light" style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
                             </div>
-                            <div class="col-lg-5 image d-flex align-items-center">
-                                <img src="{{ asset('common/images/payment_by_phone.png') }}" class="img-fluid" alt="payment_by_phone">
+                            <div class="card-body pt-0">
+                                <div id="chartdiv"></div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -290,5 +293,172 @@
             });
 
         });
+    </script>
+
+    <!-- Resources -->
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+
+    <!-- Chart code -->
+    <script>
+        am5.ready(function() {
+
+            // Create root element
+            var root = am5.Root.new("chartdiv");
+
+
+            // Set themes
+            // https://www.amcharts.com/docs/v5/concepts/themes/
+            root.setThemes([
+                am5themes_Animated.new(root),
+            ]);
+
+
+            // Create chart
+            // https://www.amcharts.com/docs/v5/charts/xy-chart/
+            var chart = root.container.children.push(am5xy.XYChart.new(root, {
+                panX: false,
+                panY: false,
+                wheelX: "none",
+                wheelY: "none"
+            }));
+
+            // We don't want zoom-out button to appear while animating, so we hide it
+            chart.zoomOutButton.set("forceHidden", true);
+
+
+            // Create axes
+            // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
+            var yRenderer = am5xy.AxisRendererY.new(root, {
+                minGridDistance: 10,
+            });
+            yRenderer.labels.template.setAll({
+                strokeDasharray: [2, 2],
+                fontSize: 10,
+                textAlign: "start",
+            });
+            yRenderer.grid.template.setAll({
+                strokeOpacity: 0.1,
+            });
+
+
+            var yAxis = chart.yAxes.push(am5xy.CategoryAxis.new(root, {
+                maxDeviation: 0.3,
+                categoryField: "product",
+                renderer: yRenderer,
+                tooltip: am5.Tooltip.new(root, {
+                    themeTags: ["axis"]
+                })
+            }));
+
+            var xRenderer = am5xy.AxisRendererX.new(root, {});
+            xRenderer.labels.template.setAll({
+                strokeDasharray: [2, 2],
+                fontSize: 10
+            });
+
+            xRenderer.grid.template.setAll({
+                strokeOpacity: 0.1,
+            })
+
+            var xAxis = chart.xAxes.push(am5xy.ValueAxis.new(root, {
+                maxDeviation: 0,
+                min: 0,
+                extraMax: 0.1,
+                renderer: xRenderer,
+            }));
+
+
+            // Add series
+            // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+            var series = chart.series.push(am5xy.ColumnSeries.new(root, {
+                name: "Series 1",
+                xAxis: xAxis,
+                yAxis: yAxis,
+                valueXField: "quantity",
+                categoryYField: "product",
+                tooltip: am5.Tooltip.new(root, {
+                    pointerOrientation: "left",
+                    labelText: "{valueX}"
+                })
+            }));
+
+
+            // Rounded corners for columns
+            series.columns.template.setAll({
+                cornerRadiusTR: 5,
+                cornerRadiusBR: 5,
+                strokeOpacity: 0
+            });
+
+            // Make each column to be of a different color
+            series.columns.template.adapters.add("fill", function(fill, target) {
+                return chart.get("colors").getIndex(series.columns.indexOf(target));
+            });
+
+            series.columns.template.adapters.add("stroke", function(stroke, target) {
+                return chart.get("colors").getIndex(series.columns.indexOf(target));
+            });
+
+
+            // Set data
+            var data = [{
+                    "product": "ফ্যান ক্যাপাসিটার ২.৫/৩.৫(N/A)",
+                    "quantity": 2255250000
+                },
+                {
+                    "product": "টেবিল গ্লাস (ফোমসহ)(N/A)",
+                    "quantity": 430000000
+                },
+                {
+                    "product": "হ্যান্ড ড্রিল মেশিন(N/A)",
+                    "quantity": 1000000000
+                },
+                {
+                    "product": "ডিস লাইনের জ্যাক(N/A)",
+                    "quantity": 246500000
+                },
+                {
+                    "product": "রয়েল প্লাগ প্লাস্টিকের(N/A)",
+                    "quantity": 355000000
+                },
+                {
+                    "product": "টু পিন প্লাগ(N/A)",
+                    "quantity": 500000000
+                },
+                {
+                    "product": "ওয়াল ফ্যান ১৮(N/A)",
+                    "quantity": 624000000
+                },
+                {
+                    "product": "ভ্যাকুয়াম ক্লিনার(N/A)",
+                    "quantity": 329500000
+                },
+                {
+                    "product": "গ্লাস লক(N/A)",
+                    "quantity": 1433333333
+                },
+                {
+                    "product": "ওয়াটার পিউরিফিকেশন ফিল্টার (পিপি)(N/A)",
+                    "quantity": 1900000000
+                }
+            ];
+
+            yAxis.data.setAll(data);
+            series.data.setAll(data);
+
+            chart.set("cursor", am5xy.XYCursor.new(root, {
+                behavior: "none",
+                xAxis: xAxis,
+                yAxis: yAxis
+            }));
+
+            // Make stuff animate on load
+            // https://www.amcharts.com/docs/v5/concepts/animations/
+            series.appear(1000);
+            chart.appear(1000, 100);
+
+        }); // end am5.ready()
     </script>
 @endsection
