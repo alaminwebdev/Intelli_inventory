@@ -48,25 +48,27 @@ class DistributionController extends Controller
     public function index()
     {
         $data['title']  = 'অনুমোদিত চাহিদাপত্রের তালিকা';
-        $user = Auth::user();
-        if ($user->id !== 1 && $user->employee_id) {
-            $employee = $this->employeeService->getByID($user->employee_id);
-            $sections = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
+        // $user = Auth::user();
+        // if ($user->id !== 1 && $user->employee_id) {
+        //     $employee = $this->employeeService->getByID($user->employee_id);
+        //     $sections = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
 
-            // Extract only the "id" values into a new array
-            $sectionIds = array_map(function ($section) {
-                return $section['id'];
-            }, $sections);
+        //     // Extract only the "id" values into a new array
+        //     $sectionIds = array_map(function ($section) {
+        //         return $section['id'];
+        //     }, $sections);
+        //     dd($sectionIds);
 
-            if ($sectionIds) {
-                $data['sectionRequisitions'] = $this->sectionRequisitionService->getAll(null, null, $sectionIds, [1, 3]);
-            }else{
-                $data['sectionRequisitions'] = [];
-            }
+        //     if ($sectionIds) {
+        //         $data['sectionRequisitions'] = $this->sectionRequisitionService->getAll(null, null, $sectionIds, [1, 3]);
+        //     }else{
+        //         $data['sectionRequisitions'] = [];
+        //     }
 
-        } else {
-            $data['sectionRequisitions'] = $this->sectionRequisitionService->getAll(null, null, null, [1, 3]);
-        }
+        // } else {
+        //     $data['sectionRequisitions'] = $this->sectionRequisitionService->getAll(null, null, null, [1, 3]);
+        // }
+        $data['sectionRequisitions'] = $this->sectionRequisitionService->getAll(null, null, null, [1, 3]);
 
         return view('admin.requisition-management.distribution-approval.list', $data);
     }

@@ -6,7 +6,7 @@
             height: 300px;
         }
 
-        #totalProductsInRequisitionChart {
+        #productsInRequisitionChart {
             width: 100%;
             height: 300px;
         }
@@ -95,7 +95,7 @@
                         </div>
                         <div class="requisition-card p-3" style="margin-top: -55px;">
                             <div class="row">
-                                <div class="col-sm-6 col-6">
+                                <div class="col-sm-12 col-12">
                                     <div class="box requisition-make p-3 rounded shadow-sm" style="background: #FFF5F8">
                                         <div class="icon">
                                             <img src="{{ asset('common/images/icon1.png') }}" alt="requisition-make">
@@ -105,7 +105,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-6 col-6">
+                                {{-- <div class="col-sm-6 col-6">
                                     <div class="box product-receive p-3 rounded shadow-sm" style="background: #E8FFF3">
                                         <div class="icon">
                                             <img src="{{ asset('common/images/icon2.png') }}" alt="product-reecive">
@@ -114,7 +114,7 @@
                                             <a href="#">পন্য গ্রহন করুন</a>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -174,7 +174,7 @@
                             </div>
                         </div>
                         <div class="card-body pt-0">
-                            <div id="totalProductsInRequisitionChart"></div>
+                            <div id="productsInRequisitionChart"></div>
                         </div>
                     </div>
                 </div>
@@ -346,10 +346,6 @@
         });
     </script>
 
-    <!-- Resources -->
-    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
-    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
-    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
 
     <!-- mostProductsChart code -->
     <script>
@@ -486,62 +482,71 @@
         });
     </script>
 
-
     <script>
-        let chart2;
-        let xAxis2, series2, series1, spacerSeries;
-        let totalProductsInRequisition = <?php echo json_encode(@$totalProductsInRequisition); ?>;
-
         am5.ready(function() {
-
             // Create root element
-            var root = am5.Root.new("totalProductsInRequisitionChart");
+            var root = am5.Root.new("productsInRequisitionChart");
 
             // Set themes
-            // https://www.amcharts.com/docs/v5/concepts/themes/
-            root.setThemes([
-                am5themes_Animated.new(root)
-            ]);
+            root.setThemes([am5themes_Animated.new(root)]);
 
             // Create chart
-            // https://www.amcharts.com/docs/v5/charts/xy-chart/
-            chart2 = root.container.children.push(am5xy.XYChart.new(root, {
-                panX: true,
-                panY: true,
+            var chart = root.container.children.push(am5xy.XYChart.new(root, {
+                panX: false,
+                panY: false,
                 wheelX: "panX",
                 wheelY: "zoomX",
-                pinchZoomX: true
+                layout: root.verticalLayout
             }));
 
-            // Add cursor
-            // https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
-            var cursor = chart2.set("cursor", am5xy.XYCursor.new(root, {}));
-            cursor.lineY.set("visible", false);
+            // Add legend
+            var legend = chart.children.push(am5.Legend.new(root, {
+                centerX: am5.p50,
+                x: am5.p50
+            }));
+
+            var data = [{
+                "department": "2021",
+                "totalRequisition": 12,
+                "section1": 45,
+                "section2": 124,
+                "section3": 56
+            }, {
+                "department": "2022",
+                "totalRequisition": 23,
+                "section4": 23,
+                "section5": 89,
+                "section6": 123
+            }, {
+                "department": "2023",
+                "totalRequisition": 15,
+                "section7": 79,
+                "section8": 34,
+                "section9": 45
+            }];
 
             // Create axes
-            // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
             var xRenderer = am5xy.AxisRendererX.new(root, {
-                minGridDistance: 30
+                cellStartLocation: 0.1,
+                cellEndLocation: 0.9
             });
+
+            var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+                categoryField: "department",
+                renderer: xRenderer,
+                tooltip: am5.Tooltip.new(root, {})
+            }));
+
             xRenderer.labels.template.setAll({
-                rotation: 0,
-                centerY: am5.p50,
-                centerX: am5.p100,
-                paddingRight: 15,
-                fontSize: 12
+                strokeDasharray: [2, 2],
+                fontSize: 12,
             });
 
             xRenderer.grid.template.setAll({
                 location: 1,
-                strokeOpacity: 0
-            });
+                strokeOpacity: 0.1,
+            })
 
-            xAxis2 = chart2.xAxes.push(am5xy.CategoryAxis.new(root, {
-                maxDeviation: 0.3,
-                categoryField: "section",
-                renderer: xRenderer,
-                tooltip: am5.Tooltip.new(root, {})
-            }));
 
             var yRenderer = am5xy.AxisRendererY.new(root, {
                 strokeOpacity: 0.1,
@@ -553,186 +558,73 @@
                 strokeDasharray: [2, 2]
             });
 
-            var yAxis2 = chart2.yAxes.push(am5xy.ValueAxis.new(root, {
-                maxDeviation: 0.3,
+            var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                min: 0,
                 // renderer: am5xy.AxisRendererY.new(root, {
                 //     strokeOpacity: 0.1
                 // }),
                 renderer: yRenderer
             }));
 
-            // Create extra series (Series 2) for the extra bars
-            series2 = chart2.series.push(am5xy.ColumnSeries.new(root, {
-                name: "Series 2",
-                xAxis: xAxis2,
-                yAxis: yAxis2,
-                valueYField: "totalRequisitions", // Use the same value field as the main series
-                sequencedInterpolation: true,
-                categoryXField: "section",
-                tooltip: am5.Tooltip.new(root, {
-                    labelText: "Total Requisitions: {valueY}"
-                }),
-                clustered: true,
-                clusterGutter: am5.percent(5)
+            // Add series
+            // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+            function makeSeries(name, fieldName, stacked) {
+                var series = chart.series.push(am5xy.ColumnSeries.new(root, {
+                    stacked: stacked,
+                    name: name,
+                    xAxis: xAxis,
+                    yAxis: yAxis,
+                    valueYField: fieldName,
+                    categoryXField: "department",
+                }));
 
-            }));
+                series.columns.template.setAll({
+                    tooltipText: "{name}, {categoryX}:{valueY}",
+                    width: am5.percent(100),
+                    tooltipY: am5.percent(10)
+                });
+                series.data.setAll(data);
 
-            series2.columns.template.setAll({
-                cornerRadiusTL: 0,
-                cornerRadiusTR: 0,
-                strokeOpacity: 0,
-                width: am5.percent(100),
-                fill: "#F1F1F2",
+                // Make stuff animate on load
+                // https://www.amcharts.com/docs/v5/concepts/animations/
+                series.appear();
+
+                series.bullets.push(function() {
+                    return am5.Bullet.new(root, {
+                        locationY: 0.5,
+                        sprite: am5.Label.new(root, {
+                            text: "{valueY}",
+                            fill: root.interfaceColors.get("alternativeText"),
+                            centerY: am5.percent(50),
+                            centerX: am5.percent(50),
+                            populateText: true
+                        })
+                    });
+                });
+
+                legend.data.push(series);
+            }
+
+            // Loop through data to create series for each section in each department
+            data.forEach((item) => {
+                console.log(item);
+                let hasTotalRequisition = false; 
+                for (var key in item) {
+                    // console.log(item[key]);
+                    if (key !== "department" && key !== "totalRequisition") {
+                        makeSeries(key, key, true);
+                    }
+                    if (key == "totalRequisition" && !hasTotalRequisition) {
+                        hasTotalRequisition = true; // Mark as created
+                    }
+                }
             });
 
-            // Create main series (Series 1)
-            series1 = chart2.series.push(am5xy.ColumnSeries.new(root, {
-                name: "Series 1",
-                xAxis: xAxis2,
-                yAxis: yAxis2,
-                valueYField: "totalProducts",
-                sequencedInterpolation: true,
-                categoryXField: "section",
-                tooltip: am5.Tooltip.new(root, {
-                    labelText: "Number of Products: {valueY}"
-                }),
-                clustered: true,
-                clusterGutter: am5.percent(0)
-            }));
+            makeSeries("Total Requisition", "totalRequisition", false);
 
-            series1.columns.template.setAll({
-                cornerRadiusTL: 0,
-                cornerRadiusTR: 0,
-                strokeOpacity: 0,
-                width: am5.percent(100),
-            });
-
-            series1.columns.template.adapters.add("fill", function(fill, target) {
-                return chart2.get("colors").getIndex(series1.columns.indexOf(target));
-            });
-
-            series1.columns.template.adapters.add("stroke", function(stroke, target) {
-                return chart2.get("colors").getIndex(series1.columns.indexOf(target));
-            });
-
-
-            // Add a transparent spacer bar after each extra bar
-            spacerSeries = chart2.series.push(am5xy.ColumnSeries.new(root, {
-                name: "Spacer Series",
-                xAxis: xAxis2,
-                yAxis: yAxis2,
-                valueYField: "totalProducts",
-                sequencedInterpolation: true,
-                categoryXField: "section",
-                clustered: true, // Enable clustering
-                clusterGutter: am5.percent(0),
-                hiddenInLegend: true, // Hide this series in the legend
-            }));
-
-            spacerSeries.columns.template.setAll({
-                cornerRadiusTL: 0,
-                cornerRadiusTR: 0,
-                strokeOpacity: 0,
-                width: am5.percent(100),
-                fill: "transparent", // Set the fill color to transparent
-            });
-
-
-            // Set data for both series
-            // var data = [{
-            //     section: "USA",
-            //     totalRequisitions: 876,
-            //     totalProducts: 2025
-            // }, {
-            //     section: "USA",
-            //     totalRequisitions: 4545,
-            //     totalProducts: 1882
-            // }, {
-            //     section: "Japan",
-            //     totalRequisitions: 56,
-            //     totalProducts: 1809
-            // }, {
-            //     section: "Germany",
-            //     totalRequisitions: 5656,
-            //     totalProducts: 1322
-            // }, {
-            //     section: "UK",
-            //     totalRequisitions: 234,
-            //     totalProducts: 1122
-            // }];
-            var data = totalProductsInRequisition;
-
-            xAxis2.data.setAll(data);
-            series1.data.setAll(data);
-            series2.data.setAll(data);
-            spacerSeries.data.setAll(data);
-
+            xAxis.data.setAll(data);
             // Make stuff animate on load
-            // https://www.amcharts.com/docs/v5/concepts/animations/
-            series1.appear(1000);
-            series2.appear(1000);
-            spacerSeries.appear(1000);
-            chart2.appear(1000, 100);
-
-        }); // end am5.ready()
-
-        $(document).on('submit', '#requisitionProductsForm', function(e) {
-            e.preventDefault();
-            let date_from = $('#date_from').val();
-            let date_to = $('#date_to').val();
-            // Set up CSRF token for all AJAX requests
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                url: "{{ route('admin.dashboard.total-products-in-requisition-by-section') }}",
-                type: "POST",
-                data: {
-                    date_from: date_from,
-                    date_to: date_to
-                },
-                beforeSend: function() {
-                    // $('.preload').show();
-                },
-                success: function(response) {
-                    var newData = response;
-                    console.log(newData);
-
-                    // Hide the existing chart div
-                    $("#totalProductsInRequisitionChart").css({
-                        display: "none"
-                    });
-
-                    // Update the chart data and show the chart div
-                    var data = newData;
-
-                    // Shuffle the data array randomly
-                    // data = data.sort(function() {
-                    //     return 0.5 - Math.random();
-                    // });
-
-                    xAxis2.data.setAll(newData);
-                    series1.data.setAll(newData);
-                    series2.data.setAll(newData);
-                    spacerSeries.data.setAll(newData);
-
-                    // Update the content of the card title
-                    // $('.receive-time').text(date_from + ' - ' + date_to);
-
-                    // Show the chart div again
-                    $("#totalProductsInRequisitionChart").css({
-                        display: "block"
-                    });
-                },
-                error: function() {
-                    console.log('error');
-                },
-                complete: function() {
-                    // $('.preload').hide();
-                }
-            });
+            chart.appear(1000, 100);
         });
     </script>
 @endsection

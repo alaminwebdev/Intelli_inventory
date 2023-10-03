@@ -228,6 +228,7 @@ class SectionRequisitionService implements IService
         $totalSectionRequisition = SectionRequisition::when($section_ids, function ($q, $section_ids) {
             $q->whereIn('section_id', $section_ids);
         })->pluck('id');
+        
 
         if ($totalSectionRequisition) {
             $mostRequestedProducts = SectionRequisitionDetails::whereIn('section_requisition_id', $totalSectionRequisition)
@@ -239,7 +240,7 @@ class SectionRequisitionService implements IService
                     'units.name as unit',
                     DB::raw('SUM(demand_quantity) as total_demand_qty')
                 )
-                ->groupBy('product_id')
+                ->groupBy('section_requisition_details.product_id', 'product_information.name', 'units.name')
                 ->orderByDesc('total_demand_qty')
                 ->take(10)
                 ->get();

@@ -36,6 +36,9 @@
     <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <script src="{{ asset('plugins') }}/jquery/jquery.min.js"></script>
+    <script src="{{ asset('plugins/amcharts/index.js') }}"></script>
+    <script src="{{ asset('plugins/amcharts/xy.js') }}"></script>
+    <script src="{{ asset('plugins/amcharts/animated.js') }}"></script>
     <style>
         body {
             font-family: 'Kalpurush', Arial, sans-serif !important;
@@ -178,7 +181,6 @@
     <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="{{ asset('common') }}/js/common.js"></script>
 
