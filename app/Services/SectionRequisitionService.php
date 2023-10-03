@@ -135,7 +135,7 @@ class SectionRequisitionService implements IService
         return $data;
     }
 
-    public function getProductRequisitionInfoByID($requistion_id = null, $section_ids = null, $take = null)
+    public function getProductRequisitionInfoByID($requistion_id = null, $section_ids = null, $take = null, $status = null)
     {
         try {
 
@@ -144,13 +144,16 @@ class SectionRequisitionService implements IService
                 ->leftjoin('units', 'units.id', 'product_information.unit_id')
                 ->join('section_requisitions', 'section_requisitions.id', 'section_requisition_details.section_requisition_id')
                 ->join('sections', 'sections.id', 'section_requisitions.section_id')
-                ->when($requistion_id, function ($q, $requistion_id){
+                ->when($requistion_id, function ($q, $requistion_id) {
                     $q->where('section_requisition_id', $requistion_id);
                 })
-                ->when($section_ids, function ($q, $section_ids){
-                    $q->whereIn('section_requisitions.section_id', $section_ids)->where('section_requisitions.status', 5);
+                ->when($section_ids, function ($q, $section_ids) {
+                    $q->whereIn('section_requisitions.section_id', $section_ids);
                 })
-                ->when($take, function ($q, $take){
+                ->when($status, function ($q, $status) {
+                    $q->where('section_requisitions.status', $status);
+                })
+                ->when($take, function ($q, $take) {
                     $q->orderBy('section_requisition_details.created_at', 'desc')->take($take);
                 })
                 ->select(
@@ -171,7 +174,8 @@ class SectionRequisitionService implements IService
         }
     }
 
-    public function getRequisitionProductsWithTypeById($requistion_id){
+    public function getRequisitionProductsWithTypeById($requistion_id)
+    {
 
         $productTypeData    = [];
         $product_types      = ProductType::latest()->where('status', 1)->get();
@@ -215,6 +219,156 @@ class SectionRequisitionService implements IService
         }
         return $productTypeData;
     }
+
+    public function getMostRequestedProducts($section_ids = null)
+    {
+        // Initialize an empty array to store the formatted data
+        $formattedData = [];
+
+        $totalSectionRequisition = SectionRequisition::when($section_ids, function ($q, $section_ids) {
+            $q->whereIn('section_id', $section_ids);
+        })->pluck('id');
+
+        if ($totalSectionRequisition) {
+            $mostRequestedProducts = SectionRequisitionDetails::whereIn('section_requisition_id', $totalSectionRequisition)
+                ->join('product_information', 'product_information.id', 'section_requisition_details.product_id')
+                ->leftjoin('units', 'units.id', 'product_information.unit_id')
+                ->select(
+                    'product_id',
+                    'product_information.name as product',
+                    'units.name as unit',
+                    DB::raw('SUM(demand_quantity) as total_demand_qty')
+                )
+                ->groupBy('product_id')
+                ->orderByDesc('total_demand_qty')
+                ->take(10)
+                ->get();
+
+
+            // Iterate through the retrieved data and format it
+            foreach ($mostRequestedProducts as $product) {
+                $formattedData[] = [
+                    'product'   => $product->product . ' (' . $product->unit . ')',
+                    'quantity'  => (int) $product->total_demand_qty,
+                ];
+            }
+        }
+
+        // Return the formatted data
+        return $formattedData;
+    }
+    public function getProductsInRequisitionBySection($request = null, $section_ids)
+    {
+        // Initialize an empty array to store the formatted data
+        $formattedData = [];
+
+        // Initialize an array to store section totals
+        $sectionTotals = [];
+
+        $totalSectionRequisition = SectionRequisition::whereIn('section_id', $section_ids)
+            ->when($request, function ($q, $request) {
+                if (($request['date_from'] != null || $request['date_to'] != null)) {
+                    $fromDate   = date('Y-m-d', strtotime($request['date_from']));
+                    $toDate     = date('Y-m-d', strtotime($request['date_to']));
+                    $q->whereDate('updated_at', '>=', $fromDate);
+                    $q->whereDate('updated_at', '<=', $toDate);
+                } else {
+                    $today_date = date('Y-m-d');
+                    $q->whereDate('updated_at', $today_date);
+                }
+            })
+            ->get();
+
+        if ($totalSectionRequisition) {
+            foreach ($totalSectionRequisition as $requisition) {
+                $total_products = SectionRequisitionDetails::where('section_requisition_id', $requisition->id)->count();
+                $sectionName = $requisition->section->name;
+
+                // Increment section totals
+                if (!isset($sectionTotals[$sectionName])) {
+                    $sectionTotals[$sectionName] = [
+                        'totalRequisitions' => 0,
+                        'totalProducts'     => 0,
+                    ];
+                }
+
+                $sectionTotals[$sectionName]['totalRequisitions']++;
+                $sectionTotals[$sectionName]['totalProducts'] += $total_products;
+            }
+
+            // Format the data with unique section names
+            foreach ($sectionTotals as $sectionName => $totals) {
+                $formattedData[] = [
+                    'section'           => $sectionName,
+                    'totalRequisitions' => $totals['totalRequisitions'],
+                    'totalProducts'     => $totals['totalProducts'],
+                ];
+            }
+        }
+
+        // Return the formatted data
+        return $formattedData;
+    }
+
+
+    public function getProductsInRequisitionByDepartment($request = null, $section_ids)
+    {
+        // Initialize an empty array to store the formatted data
+        $formattedData = [];
+
+        // Initialize an array to store section totals
+        $departmentTotals = [];
+
+        $totalSectionRequisition = SectionRequisition::whereIn('section_id', $section_ids)
+            ->when($request, function ($q, $request) {
+                if (($request['date_from'] != null || $request['date_to'] != null)) {
+                    $fromDate   = date('Y-m-d', strtotime($request['date_from']));
+                    $toDate     = date('Y-m-d', strtotime($request['date_to']));
+                    $q->whereDate('updated_at', '>=', $fromDate);
+                    $q->whereDate('updated_at', '<=', $toDate);
+                } else {
+                    $today_date = date('Y-m-d');
+                    $q->whereDate('updated_at', $today_date);
+                }
+            })
+            ->get();
+
+        if ($totalSectionRequisition) {
+            foreach ($totalSectionRequisition as $requisition) {
+                $total_products = SectionRequisitionDetails::where('section_requisition_id', $requisition->id)->count();
+                $departmentName = $requisition->section->department->name;
+
+                // Increment section totals
+                if (!isset($departmentTotals[$departmentName])) {
+                    $departmentTotals[$departmentName] = [
+                        'totalRequisitions' => 0,
+                        'totalProducts'     => 0,
+                    ];
+                }
+
+                $departmentTotals[$departmentName]['totalRequisitions']++;
+                $departmentTotals[$departmentName]['totalProducts'] += $total_products;
+            }
+
+            // Format the data with unique section names
+            foreach ($departmentTotals as $departmentName => $totals) {
+                $formattedData[] = [
+                    'department'        => $departmentName,
+                    'totalRequisitions' => $totals['totalRequisitions'],
+                    'totalProducts'     => $totals['totalProducts'],
+                ];
+            }
+        }
+
+        // Return the formatted data
+        return $formattedData;
+    }
+
+
+
+
+
+
 
     public function update(Request $request, $id)
     {

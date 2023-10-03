@@ -89,7 +89,7 @@
                         <div class="bg">
                             <div class="content px-3 py-4 text-white">
                                 <h4 class="m-0" style="font-weight: 600;">আমার টাস্ক</h4>
-                                <p class="m-0" style="font-weight: 600;">আপনার {{ en2bn($pendingRequistion) }} টি চাহিদাপত্র সুপারিশের অপেক্ষায় রয়েছে।</p>
+                                <p class="m-0" style="font-weight: 600;">আপনার {{ en2bn($pendingRequistion ?? 0) }} টি চাহিদাপত্র অনুমোদনের অপেক্ষায় রয়েছে।</p>
                                 <span class="mt-1 rounded" style="display:block; background: #fff; width:30px; height:2px;"></span>
                             </div>
                         </div>
@@ -101,7 +101,7 @@
                                             <img src="{{ asset('common/images/icon1.png') }}" alt="requisition-make">
                                         </div>
                                         <div class="text pt-1">
-                                            <a href="{{ route('admin.recommended.requisition.list') }}">সুপারিশের অপেক্ষায় চাহিদাপত্র</a>
+                                            <a href="{{ route('admin.distribution.list') }}">অনুমোদনের অপেক্ষায় চাহিদাপত্র</a>
                                         </div>
                                     </div>
                                 </div>
@@ -133,7 +133,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="row mt-3">
                 <div class="col-md-12">
                     <div class="card shadow-sm" style="border-radius: 12px;">
@@ -484,8 +483,9 @@
             series.appear(1000);
             chart.appear(1000, 100);
 
-        }); // end am5.ready()
+        });
     </script>
+
 
     <script>
         let chart2;
@@ -694,7 +694,7 @@
                     date_to: date_to
                 },
                 beforeSend: function() {
-                    $('#loading-spinner').show();
+                    // $('.preload').show();
                 },
                 success: function(response) {
                     var newData = response;
@@ -725,13 +725,12 @@
                     $("#totalProductsInRequisitionChart").css({
                         display: "block"
                     });
-                    $('#loading-spinner').hide();
                 },
                 error: function() {
                     console.log('error');
                 },
                 complete: function() {
-                    $('#loading-spinner').hide();
+                    // $('.preload').hide();
                 }
             });
         });
