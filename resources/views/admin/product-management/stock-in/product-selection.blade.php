@@ -27,7 +27,7 @@
                                     </div>
                                     <div class="col-md-4 pt-4">
                                         <label class="control-label">ক্রয় অর্ডারের তারিখ :</label>
-                                        <input type="text" class="form-control form-control-sm singledatepicker" id="po_date" name="po_date" value="">
+                                        <input type="text" class="form-control form-control-sm singledatefromtoday" id="po_date" name="po_date" value="">
                                     </div>
                                     <div class="col-md-3 pt-4">
                                         <label class="control-label" style="visibility: hidden;">Check</label>
@@ -188,7 +188,7 @@
                         } else {
 
                             // Set the formatted date as the value of the po_dateInput field
-                            poDateInput.value = '';
+                            poDateInput.value = poDate;
 
                             document.getElementById('old_po_date').value = '';
 

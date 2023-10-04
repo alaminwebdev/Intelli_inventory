@@ -190,6 +190,50 @@ class StockInService implements IService
             ->get();
         return $data;
     }
+
+    public function getMostStockProducts($request = null , $take = null)
+    {
+        // Initialize an empty array to store the formatted data
+        $formattedData = [];
+
+        $mostStockInProducts = StockInDetail::join('product_information', 'product_information.id', 'stock_in_details.product_information_id')
+            ->leftjoin('units', 'units.id', 'product_information.unit_id')
+            ->when($request, function ($q, $request) {
+                if (($request['date_from'] != null || $request['date_to'] != null)) {
+                    $fromDate   = date('Y-m-d', strtotime($request['date_from']));
+                    $toDate     = date('Y-m-d', strtotime($request['date_to']));
+                    $q->whereDate('stock_in_details.updated_at', '>=', $fromDate);
+                    $q->whereDate('stock_in_details.updated_at', '<=', $toDate);
+                } else {
+                    $today_date = date('Y-m-d');
+                    $q->whereDate('stock_in_details.updated_at', $today_date);
+                }
+            })
+            ->select(
+                'product_information_id',
+                'product_information.name as product',
+                'units.name as unit',
+                DB::raw('SUM(available_qty) as total_available_qty')
+            )
+            ->groupBy('stock_in_details.product_information_id', 'product_information.name', 'units.name')
+            ->orderByDesc('total_available_qty')
+            ->when($take, function ($q, $take) {
+                $q->take($take);
+            })
+            ->get();
+
+
+        // Iterate through the retrieved data and format it
+        foreach ($mostStockInProducts as $product) {
+            $formattedData[] = [
+                'product'   => $product->product . ' (' . $product->unit . ')',
+                'quantity'  => (int) $product->total_available_qty,
+            ];
+        }
+
+        // Return the formatted data
+        return $formattedData;
+    }
     public function update(Request $request, $id)
     {
         // try {

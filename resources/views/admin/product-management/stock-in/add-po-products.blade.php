@@ -90,7 +90,7 @@
                                                                 <input type="text" class="form-control form-control-sm @error('mfg_date') is-invalid @enderror singledatepicker" id="mfg_date_{{ $product->product_id }}" name="mfg_date[{{ $product->product_id }}]" data-product-id="{{ $product->product_id }}">
                                                             </td>
                                                             <td>
-                                                                <input type="text" class="form-control form-control-sm @error('expire_date') is-invalid @enderror singledatepicker" id="expire_date_{{ $product->product_id }}" name="expire_date[{{ $product->product_id }}]" data-product-id="{{ $product->product_id }}">
+                                                                <input type="text" class="form-control form-control-sm @error('expire_date') is-invalid @enderror singledatefromtoday" id="expire_date_{{ $product->product_id }}" name="expire_date[{{ $product->product_id }}]" data-product-id="{{ $product->product_id }}">
                                                             </td>
                                                             <td>
                                                                 <textarea class="form-control form-control-sm @error('remarks') is-invalid @enderror" id="remarks_{{ $product->product_id }}" name="remarks[{{ $product->product_id }}]" data-product-id="{{ $product->product_id }}" rows="1"></textarea>

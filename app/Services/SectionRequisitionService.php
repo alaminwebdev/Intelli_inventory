@@ -222,14 +222,26 @@ class SectionRequisitionService implements IService
         return $productTypeData;
     }
 
-    public function getMostRequestedProducts($section_ids = null)
+    public function getMostRequestedProducts($section_ids = null, $request = null, $take = null)
     {
         // Initialize an empty array to store the formatted data
         $formattedData = [];
 
         $totalSectionRequisition = SectionRequisition::when($section_ids, function ($q, $section_ids) {
             $q->whereIn('section_id', $section_ids);
-        })->pluck('id');
+        })
+            ->when($request, function ($q, $request) {
+                if (($request['date_from'] != null || $request['date_to'] != null)) {
+                    $fromDate   = date('Y-m-d', strtotime($request['date_from']));
+                    $toDate     = date('Y-m-d', strtotime($request['date_to']));
+                    $q->whereDate('updated_at', '>=', $fromDate);
+                    $q->whereDate('updated_at', '<=', $toDate);
+                } else {
+                    $today_date = date('Y-m-d');
+                    $q->whereDate('updated_at', $today_date);
+                }
+            })
+            ->pluck('id');
 
 
         if ($totalSectionRequisition) {
@@ -244,7 +256,10 @@ class SectionRequisitionService implements IService
                 )
                 ->groupBy('section_requisition_details.product_id', 'product_information.name', 'units.name')
                 ->orderByDesc('total_demand_qty')
-                ->take(10)
+                ->when($take, function ($q, $take) {
+                    $q->take($take);
+                })
+                // ->take(10)
                 ->get();
 
 

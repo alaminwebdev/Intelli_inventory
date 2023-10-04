@@ -39,6 +39,7 @@
     <script src="{{ asset('plugins/amcharts/index.js') }}"></script>
     <script src="{{ asset('plugins/amcharts/xy.js') }}"></script>
     <script src="{{ asset('plugins/amcharts/animated.js') }}"></script>
+    <script src="{{ asset('plugins/amcharts/exporting.js') }}"></script>
     <style>
         body {
             font-family: 'Kalpurush', Arial, sans-serif !important;
@@ -120,6 +121,9 @@
         .text-gray {
             color: #6c757d;
         }
+        .text-navy {
+            color: #2a527b;
+        }
         .main-footer.text-sm, .text-sm .main-footer {
             padding: 0.55rem;
         }
@@ -129,6 +133,37 @@
             color: #2a527b;
             font-size: 12px;
         }
+
+        .am5exporting-menu.am5exporting-align-right,
+        .am5exporting-icon.am5exporting-align-right,
+        .am5exporting-list.am5exporting-align-right {
+            right: 6px !important;
+        }
+
+        .am5exporting-menu.am5exporting-valign-top,
+        .am5exporting-icon.am5exporting-valign-top,
+        .am5exporting-list.am5exporting-align-top {
+            top: 5px !important;
+        }
+
+        .am5exporting-icon:focus,
+        .am5exporting-icon:hover,
+        .am5exporting-menu-open .am5exporting-icon {
+            background: #ececec !important;
+            opacity: 1;
+        }
+
+        .am5exporting-list {
+            margin: 10px !important;
+            background: #ececec !important;
+            padding: 5px 0px !important;
+            border: none !important;
+        }
+
+        .am5exporting-list.am5exporting-align-right {
+            margin-right: 45px !important;
+        }
+        
     </style>
 
 </head>

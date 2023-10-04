@@ -16,9 +16,14 @@
             height: 300px;
         }
 
+        #stockProductsChart {
+            width: 100%;
+            height: 300px;
+        }
+
         .requisition-div {
             border-radius: 15px;
-            height: 355px;
+            height: 362px;
             background: #fff;
             position: relative;
         }
@@ -31,7 +36,7 @@
 
         .requisition-div .bg {
             position: relative;
-            height: 220px;
+            height: 230px;
             border-radius: 12px;
             background: linear-gradient(102deg, #33B46E 0%, #44D486 100%);
             overflow: hidden;
@@ -129,7 +134,41 @@
                         <div class="card shadow-sm" style="border-radius: 12px;">
                             <div class="card-header text-right border-0 pb-0 pt-3">
                                 <h4 class="card-title">সর্বাধিক চাহিদাকৃত পণ্য <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
-                                {{-- <a href="{{ route('admin.recommended.requisition.list') }}" class="btn btn-sm btn-light" style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a> --}}
+                                <div class="card-tools mr-0 d-flex align-items-center">
+                                    <a href="#" class="btn btn-sm btn-light mr-1" style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
+                                    <div class="dropdown show">
+                                        <a class="btn btn-sm btn-light" data-toggle="dropdown" href="#" aria-expanded="true" style="margin-right:2rem; padding: 1px 6px;">
+                                            <i class="far fa-calendar-alt"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right p-3 border-0" style="min-width: 200px !important;">
+                                            {{-- <button type="button" class="close" aria-label="Close" id="closeDropdown">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button> --}}
+                                            <form action="" method="post" id="mostRequisitionProductsForm" autocomplete="off">
+                                                @csrf
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label for="most_req_date_from" class="text-navy">শুরুর তারিখ :</label>
+                                                            <input required="" type="text" value="" name="most_req_date_from" class="form-control form-control-sm text-gray singledatepicker" id="most_req_date_from" placeholder="শুরুর তারিখ">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label for="most_req_date_to" class="text-navy">শেষ তারিখ :</label>
+                                                            <input required="" type="text" value="" name="most_req_date_to" class="form-control form-control-sm text-gray singledatepicker" id="most_req_date_to" placeholder="শেষ তারিখ">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group mb-0 d-flex">
+                                                            <input required="" type="submit" value="খুজুন" class="form-control form-control-sm btn btn-sm btn-primary" id="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="card-body pt-0">
                                 <div id="mostProductsChart"></div>
@@ -145,31 +184,31 @@
                             <h4 class="card-title">চাহিদাপত্রের পরিসংখ্যান <span>( দপ্তর অনুসারে )</span></h4>
                             <div class="card-tools mr-0">
                                 <div class="dropdown show">
-                                    <a class="btn btn-sm btn-primary" data-toggle="dropdown" href="#" aria-expanded="true">
+                                    <a class="btn btn-sm btn-light" data-toggle="dropdown" href="#" aria-expanded="true" style="margin-right:2rem; padding: 1px 6px;">
                                         <i class="far fa-calendar-alt"></i>
                                     </a>
-                                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right p-3 border-0" style="min-width: 250px !important;">
+                                    <div class="dropdown-menu dropdown-menu-right p-3 border-0" style="min-width: 200px !important;">
                                         {{-- <button type="button" class="close" aria-label="Close" id="closeDropdown">
                                             <span aria-hidden="true">&times;</span>
                                         </button> --}}
-                                        <form action="" method="post" id="requisitionProductsForm">
+                                        <form action="" method="post" id="requisitionProductsForm" autocomplete="off">
                                             @csrf
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <label for="date_from" class="navy-color">Date From:</label>
-                                                        <input required="" type="text" value="" name="date_from" class="form-control form-control-sm singledatepicker" id="date_from">
+                                                        <label for="date_from" class="text-navy">শুরুর তারিখ :</label>
+                                                        <input required="" type="text" value="" name="date_from" class="form-control form-control-sm text-gray singledatepicker" id="date_from" placeholder="শুরুর তারিখ">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <label for="date_to" class="navy-color">Date To:</label>
-                                                        <input required="" type="text" value="" name="date_to" class="form-control form-control-sm singledatepicker" id="date_to">
+                                                        <label for="date_to" class="text-navy">শেষ তারিখ :</label>
+                                                        <input required="" type="text" value="" name="date_to" class="form-control form-control-sm text-gray singledatepicker" id="date_to" placeholder="শেষ তারিখ">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group mb-0 d-flex">
-                                                        <input required="" type="submit" value="Search" class="form-control form-control-sm btn btn-sm btn-primary" id="">
+                                                        <input required="" type="submit" value="খুজুন" class="form-control form-control-sm btn btn-sm btn-primary" id="">
                                                     </div>
                                                 </div>
                                             </div>
@@ -192,31 +231,31 @@
                             <h4 class="card-title">চাহিদাপত্র এবং পন্য পরিসংখ্যান <span>( শাখা অনুসারে )</span></h4>
                             <div class="card-tools mr-0">
                                 <div class="dropdown show">
-                                    <a class="btn btn-sm btn-primary" data-toggle="dropdown" href="#" aria-expanded="true">
+                                    <a class="btn btn-sm btn-light" data-toggle="dropdown" href="#" aria-expanded="true" style="margin-right:2rem; padding: 1px 6px;">
                                         <i class="far fa-calendar-alt"></i>
                                     </a>
-                                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right p-3 border-0" style="min-width: 250px !important;">
+                                    <div class="dropdown-menu dropdown-menu-right p-3 border-0" style="min-width: 200px !important;">
                                         {{-- <button type="button" class="close" aria-label="Close" id="closeDropdown">
                                             <span aria-hidden="true">&times;</span>
                                         </button> --}}
-                                        <form action="" method="post" id="totalSectionRequisitionForm">
+                                        <form action="" method="post" id="totalSectionRequisitionForm" autocomplete="off">
                                             @csrf
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <label for="req_date_from" class="navy-color">Date From:</label>
-                                                        <input required="" type="text" value="" name="req_date_from" class="form-control form-control-sm singledatepicker" id="req_date_from">
+                                                        <label for="req_date_from" class="text-navy">শুরুর তারিখ :</label>
+                                                        <input required="" type="text" value="" name="req_date_from" class="form-control form-control-sm singledatepicker text-gray" id="req_date_from" placeholder="শুরুর তারিখ">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <label for="req_date_to" class="navy-color">Date To:</label>
-                                                        <input required="" type="text" value="" name="req_date_to" class="form-control form-control-sm singledatepicker" id="req_date_to">
+                                                        <label for="req_date_to" class="text-navy">শেষ তারিখ:</label>
+                                                        <input required="" type="text" value="" name="req_date_to" class="form-control form-control-sm singledatepicker text-gray" id="req_date_to" placeholder="শেষ তারিখ">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group mb-0 d-flex">
-                                                        <input required="" type="submit" value="Search" class="form-control form-control-sm btn btn-sm btn-primary" id="">
+                                                        <input required="" type="submit" value="খুজুন" class="form-control form-control-sm btn btn-sm btn-primary" id="">
                                                     </div>
                                                 </div>
                                             </div>
@@ -227,6 +266,54 @@
                         </div>
                         <div class="card-body pt-0">
                             <div id="totalProductsInRequisitionChart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <div class="card shadow-sm" style="border-radius: 12px;">
+                        <div class="card-header text-right border-0 pb-0 pt-3">
+                            <h4 class="card-title">সর্বাধিক মজুদকৃত পণ্য <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
+                            <div class="card-tools mr-0 d-flex align-items-center">
+                                <a href="#" class="btn btn-sm btn-light mr-1" style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
+                                <div class="dropdown show">
+                                    <a class="btn btn-sm btn-light" data-toggle="dropdown" href="#" aria-expanded="true" style="margin-right:2rem; padding: 1px 6px;">
+                                        <i class="far fa-calendar-alt"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right p-3 border-0" style="min-width: 200px !important;">
+                                        {{-- <button type="button" class="close" aria-label="Close" id="closeDropdown">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button> --}}
+                                        <form action="" method="post" id="stockProductsForm" autocomplete="off">
+                                            @csrf
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <div class="form-group">
+                                                        <label for="stock_date_from" class="text-navy">শুরুর তারিখ :</label>
+                                                        <input required="" type="text" value="" name="stock_date_from" class="form-control form-control-sm text-gray singledatepicker" id="stock_date_from" placeholder="শুরুর তারিখ">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <div class="form-group">
+                                                        <label for="stock_date_to" class="text-navy">শেষ তারিখ :</label>
+                                                        <input required="" type="text" value="" name="stock_date_to" class="form-control form-control-sm text-gray singledatepicker" id="stock_date_to" placeholder="শেষ তারিখ">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <div class="form-group mb-0 d-flex">
+                                                        <input required="" type="submit" value="খুজুন" class="form-control form-control-sm btn btn-sm btn-primary" id="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div id="stockProductsChart"></div>
                         </div>
                     </div>
                 </div>
@@ -398,7 +485,6 @@
         });
     </script>
 
-
     <!-- mostProductsChart code -->
     <script>
         let chart2;
@@ -533,6 +619,87 @@
             series2.appear(1000);
             chart2.appear(1000, 100);
 
+            var exporting = am5plugins_exporting.Exporting.new(root, {
+                menu: am5plugins_exporting.ExportingMenu.new(root, {
+                    container: document.getElementById("mostProductsChart")
+                }),
+                dataSource: data
+            });
+
+            exporting.events.on("dataprocessed", function(ev) {
+                for (var i = 0; i < ev.data.length; i++) {
+                    ev.data[i].sum = ev.data[i].value + ev.data[i].value2;
+                }
+            });
+            exporting.get("menu").set("items", [{
+                    type: "format",
+                    format: "png",
+                    label: "Export as Image"
+                }, {
+                    type: "format",
+                    format: "json",
+                    label: "Export as JSON"
+                },
+                {
+                    type: "format",
+                    format: "csv",
+                    label: "Export as CSV"
+                }, {
+                    type: "format",
+                    format: "print",
+                    label: "Print"
+                }
+            ]);
+
+        });
+        $(document).on('submit', '#mostRequisitionProductsForm', function(e) {
+            e.preventDefault();
+            let most_req_date_from = $('#most_req_date_from').val();
+            let most_req_date_to = $('#most_req_date_to').val();
+            // Set up CSRF token for all AJAX requests
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{ route('admin.dashboard.total-requisition-products') }}",
+                type: "POST",
+                data: {
+                    date_from: most_req_date_from,
+                    date_to: most_req_date_to
+                },
+                beforeSend: function() {
+                    $('#loading-spinner').show();
+                },
+                success: function(response) {
+                    var newData = response.reverse();
+                    console.log(newData);
+
+                    // Hide the existing chart div
+                    $("#mostProductsChart").css({
+                        display: "none"
+                    });
+
+                    // Update the chart data and show the chart div
+                    var data = newData;
+
+                    yAxis2.data.setAll(newData);
+                    series2.data.setAll(newData);
+
+                    // Show the chart div again
+                    $("#mostProductsChart").css({
+                        display: "block"
+                    });
+                    $('#loading-spinner').hide();
+                },
+                error: function() {
+                    console.log('error');
+                },
+                complete: function() {
+                    $('#loading-spinner').hide();
+                }
+            });
         });
     </script>
 
@@ -790,6 +957,38 @@
                     }
                 });
             });
+
+            var exporting3 = am5plugins_exporting.Exporting.new(root, {
+                menu: am5plugins_exporting.ExportingMenu.new(root, {
+                    container: document.getElementById("productsInRequisitionChart")
+                }),
+                dataSource: data
+            });
+
+            exporting3.events.on("dataprocessed", function(ev) {
+                for (var i = 0; i < ev.data.length; i++) {
+                    ev.data[i].sum = ev.data[i].value + ev.data[i].value2;
+                }
+            });
+            exporting3.get("menu").set("items", [{
+                    type: "format",
+                    format: "png",
+                    label: "Export as Image"
+                }, {
+                    type: "format",
+                    format: "json",
+                    label: "Export as JSON"
+                },
+                {
+                    type: "format",
+                    format: "csv",
+                    label: "Export as CSV"
+                }, {
+                    type: "format",
+                    format: "print",
+                    label: "Print"
+                }
+            ]);
         });
     </script>
 
@@ -981,12 +1180,44 @@
             spacerSeries.appear(1000);
             chart3.appear(1000, 100);
 
+            var exporting2 = am5plugins_exporting.Exporting.new(root, {
+                menu: am5plugins_exporting.ExportingMenu.new(root, {
+                    container: document.getElementById("totalProductsInRequisitionChart")
+                }),
+                dataSource: data
+            });
+
+            exporting2.events.on("dataprocessed", function(ev) {
+                for (var i = 0; i < ev.data.length; i++) {
+                    ev.data[i].sum = ev.data[i].value + ev.data[i].value2;
+                }
+            });
+            exporting2.get("menu").set("items", [{
+                    type: "format",
+                    format: "png",
+                    label: "Export as Image"
+                }, {
+                    type: "format",
+                    format: "json",
+                    label: "Export as JSON"
+                },
+                {
+                    type: "format",
+                    format: "csv",
+                    label: "Export as CSV"
+                }, {
+                    type: "format",
+                    format: "print",
+                    label: "Print"
+                }
+            ]);
+
         }); // end am5.ready()
 
         $(document).on('submit', '#totalSectionRequisitionForm', function(e) {
             e.preventDefault();
-            let req_date_from   = $('#req_date_from').val();
-            let req_date_to     = $('#req_date_to').val();
+            let req_date_from = $('#req_date_from').val();
+            let req_date_to = $('#req_date_to').val();
             // Set up CSRF token for all AJAX requests
             $.ajaxSetup({
                 headers: {
@@ -1030,6 +1261,232 @@
 
                     // Show the chart div again
                     $("#totalProductsInRequisitionChart").css({
+                        display: "block"
+                    });
+                    $('#loading-spinner').hide();
+                },
+                error: function() {
+                    console.log('error');
+                },
+                complete: function() {
+                    $('#loading-spinner').hide();
+                }
+            });
+        });
+    </script>
+
+    <script>
+        let chart4;
+        let xAxis4, yAxis4, series4;
+        let mostStockProducts = <?php echo json_encode(@$mostStockProducts); ?>;
+        am5.ready(function() {
+
+            // Create root element
+            var root = am5.Root.new("stockProductsChart");
+
+
+            // Set themes
+            // https://www.amcharts.com/docs/v5/concepts/themes/
+            root.setThemes([
+                am5themes_Animated.new(root),
+            ]);
+
+
+            // Create chart
+            // https://www.amcharts.com/docs/v5/charts/xy-chart/
+            chart4 = root.container.children.push(am5xy.XYChart.new(root, {
+                panX: false,
+                panY: false,
+                wheelX: "none",
+                wheelY: "none",
+            }));
+
+            // We don't want zoom-out button to appear while animating, so we hide it
+            chart4.zoomOutButton.set("forceHidden", true);
+
+
+            // Create axes
+            // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
+            var yRenderer = am5xy.AxisRendererY.new(root, {
+                minGridDistance: 10,
+            });
+            yRenderer.labels.template.setAll({
+                strokeDasharray: [2, 2],
+                fontSize: 10,
+            });
+            yRenderer.grid.template.setAll({
+                strokeOpacity: 0.1,
+            });
+
+
+            yAxis4 = chart4.yAxes.push(am5xy.CategoryAxis.new(root, {
+                maxDeviation: 0.3,
+                categoryField: "product",
+                renderer: yRenderer,
+                // tooltip: am5.Tooltip.new(root, {
+                //     themeTags: ["axis"]
+                // })
+            }));
+
+            var xRenderer = am5xy.AxisRendererX.new(root, {});
+            xRenderer.labels.template.setAll({
+                strokeDasharray: [2, 2],
+                fontSize: 10,
+            });
+
+            xRenderer.grid.template.setAll({
+                strokeOpacity: 0.1,
+            })
+
+            xAxis4 = chart4.xAxes.push(am5xy.ValueAxis.new(root, {
+                maxDeviation: 0,
+                min: 0,
+                extraMax: 0.1,
+                renderer: xRenderer,
+            }));
+
+
+            // Add series
+            // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+            series4 = chart4.series.push(am5xy.ColumnSeries.new(root, {
+                name: "Series 1",
+                xAxis: xAxis4,
+                yAxis: yAxis4,
+                valueXField: "quantity",
+                categoryYField: "product",
+                tooltip: am5.Tooltip.new(root, {
+                    pointerOrientation: "left",
+                    labelText: "{valueX}"
+                })
+            }));
+
+
+            // Rounded corners for columns
+            series4.columns.template.setAll({
+                cornerRadiusTR: 5,
+                cornerRadiusBR: 5,
+                strokeOpacity: 0
+            });
+
+            // Make each column to be of a different color
+            series4.columns.template.adapters.add("fill", function(fill, target) {
+                return chart4.get("colors").getIndex(series4.columns.indexOf(target));
+            });
+
+            series4.columns.template.adapters.add("stroke", function(stroke, target) {
+                return chart4.get("colors").getIndex(series4.columns.indexOf(target));
+            });
+
+
+            // Set data
+            // var data = [{
+            //         "product": "ফ্যান ক্যাপাসিটার ২.৫/৩.৫(N/A)",
+            //         "quantity": 2255250000
+            //     },
+            //     {
+            //         "product": "টেবিল গ্লাস (ফোমসহ)(N/A)",
+            //         "quantity": 430000000
+            //     },
+            //     {
+            //         "product": "হ্যান্ড ড্রিল মেশিন(N/A)",
+            //         "quantity": 1000000000
+            //     }
+            // ];
+            var data = mostStockProducts.reverse();
+
+            yAxis4.data.setAll(data);
+            series4.data.setAll(data);
+
+            chart4.set("cursor", am5xy.XYCursor.new(root, {
+                behavior: "none",
+                xAxis: xAxis4,
+                yAxis: yAxis4
+            }));
+
+            // Make stuff animate on load
+            // https://www.amcharts.com/docs/v5/concepts/animations/
+            series4.appear(1000);
+            chart4.appear(1000, 100);
+
+            var exporting4 = am5plugins_exporting.Exporting.new(root, {
+                menu: am5plugins_exporting.ExportingMenu.new(root, {
+                    container: document.getElementById("stockProductsChart")
+                }),
+                dataSource: data
+            });
+
+            exporting4.events.on("dataprocessed", function(ev) {
+                for (var i = 0; i < ev.data.length; i++) {
+                    ev.data[i].sum = ev.data[i].value + ev.data[i].value2;
+                }
+            });
+            exporting4.get("menu").set("items", [{
+                    type: "format",
+                    format: "png",
+                    label: "Export as Image"
+                }, {
+                    type: "format",
+                    format: "json",
+                    label: "Export as JSON"
+                },
+                {
+                    type: "format",
+                    format: "csv",
+                    label: "Export as CSV"
+                }, {
+                    type: "format",
+                    format: "print",
+                    label: "Print"
+                }
+            ]);
+
+        });
+
+        $(document).on('submit', '#stockProductsForm', function(e) {
+            e.preventDefault();
+            let stock_date_from = $('#stock_date_from').val();
+            let stock_date_to = $('#stock_date_to').val();
+            // Set up CSRF token for all AJAX requests
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{ route('admin.dashboard.total-stock-products') }}",
+                type: "POST",
+                data: {
+                    date_from: stock_date_from,
+                    date_to: stock_date_to
+                },
+                beforeSend: function() {
+                    $('#loading-spinner').show();
+                },
+                success: function(response) {
+                    var newData = response.reverse();
+                    console.log(newData);
+
+                    // Hide the existing chart div
+                    $("#stockProductsChart").css({
+                        display: "none"
+                    });
+
+                    // Update the chart data and show the chart div
+                    var data = newData;
+
+                    // Shuffle the data array randomly
+                    // data = data.sort(function() {
+                    //     return 0.5 - Math.random();
+                    // });
+
+                    yAxis4.data.setAll(newData);
+                    series4.data.setAll(newData);
+
+                    // Update the content of the card title
+                    // $('.receive-time').text(date_from + ' - ' + date_to);
+
+                    // Show the chart div again
+                    $("#stockProductsChart").css({
                         display: "block"
                     });
                     $('#loading-spinner').hide();

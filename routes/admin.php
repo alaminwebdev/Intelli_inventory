@@ -2,9 +2,16 @@
 use App\Http\Controllers\Admin\DefaultController;
 
 Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+
 Route::get('/received-products', 'DashboardController@receivedProducts')->name('dashboard.received-products');
+Route::get('/requisition-products', 'DashboardController@requisitionProducts')->name('dashboard.requisition-products');
+Route::get('/stock-in-products', 'DashboardController@stockInProducts')->name('dashboard.stock-in-products');
+
 Route::post('/total-products-in-requisition-by-section', 'DashboardController@getProductsInRequisitionBySection')->name('dashboard.total-products-in-requisition-by-section');
 Route::post('/requisition-info-by-department', 'DashboardController@getRequisitionInfoByDepartment')->name('dashboard.requisition-info-by-department');
+
+Route::post('/total-requisition-products', 'DashboardController@getTotalRequisitionProducts')->name('dashboard.total-requisition-products');
+Route::post('/total-stock-products', 'DashboardController@getTotalStockProducts')->name('dashboard.total-stock-products');
 
 Route::name('site-setting-management.')->prefix('site-setting-management')->namespace('SiteSettingManagement')->group(base_path('routes/admin/site_setting_management.php'));
 Route::name('role-management.')->prefix('role-management')->namespace('RoleManagement')->group(base_path('routes/admin/role_management.php'));

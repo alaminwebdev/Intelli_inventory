@@ -98,6 +98,7 @@ class ProductInformationService implements IService
 
                 // Query products for this product type and push them into the products array
                 $products = ProductInformation::where('product_type_id', $item->id)
+                    ->where('status', 1)
                     ->latest()
                     ->get();
 

@@ -11,7 +11,7 @@
                         </div>
                         <div class="card-body">
 
-                            {{-- <table id="sb-data-table" class="table table-bordered">
+                            <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th width="5%">নং.</th>
@@ -38,7 +38,7 @@
                                         </tr>
                                     @endforeach
                                 </tbody>
-                            </table> --}}
+                            </table>
                         </div>
                     </div>
                 </div>

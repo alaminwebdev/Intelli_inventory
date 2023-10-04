@@ -33,6 +33,31 @@ $(document).ready(function () {
         $(this).val(picker.startDate.format('DD-MM-YYYY'));
     });
 
+    $('.singledatefromtoday').daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        autoUpdateInput: false,
+        // drops: "up",
+        autoApply: true,
+        locale: {
+            format: 'DD-MM-YYYY',
+            daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+            firstDay: 0
+        },
+        minDate: moment(), // Set minimum date to today
+    },
+        function (start) {
+            this.element.val(start.format('DD-MM-YYYY'));
+            this.element.parent().parent().removeClass('has-error');
+        },
+        function (chosen_date) {
+            this.element.val(chosen_date.format('DD-MM-YYYY'));
+        });
+
+    $('.singledatefromtoday').on('apply.daterangepicker', function (ev, picker) {
+        $(this).val(picker.startDate.format('DD-MM-YYYY'));
+    });
+
     $(document).on('click', '.destroy', function () {
         var thisBtn = $(this);
         var url = $(thisBtn).data('route');

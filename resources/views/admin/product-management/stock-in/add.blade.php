@@ -21,7 +21,7 @@
                                             </div>
                                             <div class="form-group col-md-4">
                                                 <label class="control-label">এন্ট্রি তারিখ <span class="text-red">*</span></label>
-                                                <input type="text" class="form-control form-control-sm entry_date @error('entry_date') is-invalid @enderror singledatepicker" id="entry_date" name="entry_date">
+                                                <input type="text" class="form-control form-control-sm entry_date @error('entry_date') is-invalid @enderror singledatefromtoday" id="entry_date" name="entry_date">
                                                 @error('entry_date')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
@@ -86,7 +86,7 @@
                                                                 <input type="text" class="form-control form-control-sm @error('mfg_date') is-invalid @enderror singledatepicker" id="mfg_date_{{ $product->id }}" name="mfg_date[{{ $product->id }}]" data-product-id="{{ $product->id }}">
                                                             </td>
                                                             <td>
-                                                                <input type="text" class="form-control form-control-sm @error('expire_date') is-invalid @enderror singledatepicker" id="expire_date_{{ $product->id }}" name="expire_date[{{ $product->id }}]" data-product-id="{{ $product->id }}">
+                                                                <input type="text" class="form-control form-control-sm @error('expire_date') is-invalid @enderror singledatefromtoday" id="expire_date_{{ $product->id }}" name="expire_date[{{ $product->id }}]" data-product-id="{{ $product->id }}">
                                                             </td>
                                                             <td>
                                                                 <textarea class="form-control form-control-sm @error('remarks') is-invalid @enderror" id="remarks_{{ $product->id }}" name="remarks[{{ $product->id }}]" data-product-id="{{ $product->id }}" rows="1"></textarea>

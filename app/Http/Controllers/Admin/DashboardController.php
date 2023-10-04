@@ -11,12 +11,14 @@ use Illuminate\Support\Facades\Auth;
 use App\Services\EmployeeService;
 use App\Services\SectionService;
 use App\Services\SectionRequisitionService;
+use App\Services\StockInService;
 
 class DashboardController extends Controller
 {
     private $employeeService;
     private $sectionService;
     private $sectionRequisitionService;
+    private $stockInService;
     /**
      * Create a new controller instance.
      *
@@ -25,12 +27,14 @@ class DashboardController extends Controller
     public function __construct(
         EmployeeService $employeeService,
         SectionService $sectionService,
-        SectionRequisitionService $sectionRequisitionService
+        SectionRequisitionService $sectionRequisitionService,
+        StockInService $stockInService
     ) {
         $this->middleware('auth:admin');
         $this->employeeService              = $employeeService;
         $this->sectionService               = $sectionService;
         $this->sectionRequisitionService    = $sectionRequisitionService;
+        $this->stockInService               = $stockInService;
     }
 
     /**
@@ -94,7 +98,7 @@ class DashboardController extends Controller
                             $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll(null, null, $sectionIds, null, 10);
                             $data['pendingRequistion']          = SectionRequisition::whereIn('section_id', $sectionIds)->where('status', 0)->count();
                             $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, $sectionIds, 10, 5);
-                            $data['mostRequestedProducts']      = $this->sectionRequisitionService->getMostRequestedProducts($sectionIds);
+                            $data['mostRequestedProducts']      = $this->sectionRequisitionService->getMostRequestedProducts($sectionIds, null, 10);
                             $data['totalProductsInRequisition'] = $this->sectionRequisitionService->getProductsInRequisitionBySection(null, $sectionIds);
                         } else {
                             $data['sectionRequisitions']        = [];
@@ -110,8 +114,9 @@ class DashboardController extends Controller
                         $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll(null, null, null, null, 10);
                         $data['pendingRequistion']          = SectionRequisition::where('status', 1)->count();
                         $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, null, 10, 5);
-                        $data['mostRequestedProducts']      = $this->sectionRequisitionService->getMostRequestedProducts();
+                        $data['mostRequestedProducts']      = $this->sectionRequisitionService->getMostRequestedProducts(null, null, 10);
                         $data['requisitionInfoByDepartment'] = $this->sectionRequisitionService->getRequisitionInfoByDepartment();
+                        $data['mostStockProducts']           = $this->stockInService->getMostStockProducts(null, 10);
 
                         break;
                     case 6: // Role Id 6 = Issuer/Distributor
@@ -127,9 +132,10 @@ class DashboardController extends Controller
             $data['sectionRequisitions']            = $this->sectionRequisitionService->getAll(null, null, null, null, 10);
             $data['pendingRequistion']              = SectionRequisition::count();
             $data['sectionRequisitionProducts']     = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, null, 10, 5);
-            $data['mostRequestedProducts']          = $this->sectionRequisitionService->getMostRequestedProducts();
+            $data['mostRequestedProducts']          = $this->sectionRequisitionService->getMostRequestedProducts(null, null, 10);
             $data['requisitionInfoByDepartment']    = $this->sectionRequisitionService->getRequisitionInfoByDepartment();
             $data['totalProductsInRequisition']     = $this->sectionRequisitionService->getProductsInRequisitionBySection();
+            $data['mostStockProducts']              = $this->stockInService->getMostStockProducts(null, 10);
         }
 
 
@@ -196,8 +202,21 @@ class DashboardController extends Controller
                         break;
                 }
             }
+        }else{
+            $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, null, null, 5);
         }
+        return view('admin.partials.received-products', $data);
+    }
+
+    public function requisitionProducts()
+    {
+        $data['title']  = 'সর্বাধিক চাহিদাকৃত পণ্য';
         return view('admin.partials.requisition-products', $data);
+    }
+    public function stockInProducts()
+    {
+        $data['title']  = 'সর্বাধিক মজুদকৃত পণ্য ';
+        return view('admin.partials.requisition-products' , $data);
     }
 
     public function getProductsInRequisitionBySection(Request $request)
@@ -222,5 +241,15 @@ class DashboardController extends Controller
     {
         $requisitionInfo = $this->sectionRequisitionService->getRequisitionInfoByDepartment($request);
         return response()->json($requisitionInfo);
+    }
+    public function getTotalRequisitionProducts(Request $request)
+    {
+        $data = $this->sectionRequisitionService->getMostRequestedProducts(null, $request, 10);
+        return response()->json($data);
+    }
+    public function getTotalStockProducts(Request $request)
+    {
+        $data = $this->stockInService->getMostStockProducts($request, 10);
+        return response()->json($data);
     }
 }
