@@ -15,11 +15,11 @@
                                     <tr>
                                         <th width="5%">নং.</th>
                                         <th>পন্য</th>
-                                        <th>চাহিদার পরিমান</th>
+                                        <th>মজূদ পরিমান</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($mostRequestedProducts as $list)
+                                    @foreach ($mostStockProducts as $list)
                                         <tr>
                                             <td>{{ en2bn($loop->iteration) }}</td>
                                             <td>{{ @$list['product'] ?? 'N/A' }}</td>

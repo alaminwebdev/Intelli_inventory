@@ -34,7 +34,6 @@ class CurrentStockController extends Controller
         $data['date_in_bengali'] = $formatter->format($date);
 
         $data['current_stock'] = $this->currentStockService->getCurrentStock();
-
         if ($request->isMethod('post')) {
             if ($request->type == 'pdf') {
                 return $this->currentStockPdfReport($data);

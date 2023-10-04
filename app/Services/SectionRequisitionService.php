@@ -222,8 +222,9 @@ class SectionRequisitionService implements IService
         return $productTypeData;
     }
 
-    public function getMostRequestedProducts($section_ids = null, $request = null, $take = null)
+    public function getMostRequestedProducts($section_ids = null, $request = null, $take = null, $days = null)
     {
+
         // Initialize an empty array to store the formatted data
         $formattedData = [];
 
@@ -240,6 +241,10 @@ class SectionRequisitionService implements IService
                     $today_date = date('Y-m-d');
                     $q->whereDate('updated_at', $today_date);
                 }
+            })
+            ->when($days, function ($q, $days) {
+                $days_ago = now()->subDays($days);
+                $q->whereDate('updated_at', '>=', $days_ago);
             })
             ->pluck('id');
 
