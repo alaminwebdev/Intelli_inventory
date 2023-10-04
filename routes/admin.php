@@ -4,7 +4,7 @@ use App\Http\Controllers\Admin\DefaultController;
 Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 Route::get('/received-products', 'DashboardController@receivedProducts')->name('dashboard.received-products');
 Route::post('/total-products-in-requisition-by-section', 'DashboardController@getProductsInRequisitionBySection')->name('dashboard.total-products-in-requisition-by-section');
-Route::post('/total-products-in-requisition-by-department', 'DashboardController@getProductsInRequisitionByDepartment')->name('dashboard.total-products-in-requisition-by-department');
+Route::post('/requisition-info-by-department', 'DashboardController@getRequisitionInfoByDepartment')->name('dashboard.requisition-info-by-department');
 
 Route::name('site-setting-management.')->prefix('site-setting-management')->namespace('SiteSettingManagement')->group(base_path('routes/admin/site_setting_management.php'));
 Route::name('role-management.')->prefix('role-management')->namespace('RoleManagement')->group(base_path('routes/admin/role_management.php'));

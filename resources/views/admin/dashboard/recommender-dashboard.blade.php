@@ -95,7 +95,7 @@
                         </div>
                         <div class="requisition-card p-3" style="margin-top: -55px;">
                             <div class="row">
-                                <div class="col-sm-6 col-6">
+                                <div class="col-sm-12 col-12">
                                     <div class="box requisition-make p-3 rounded shadow-sm" style="background: #FFF5F8">
                                         <div class="icon">
                                             <img src="{{ asset('common/images/icon1.png') }}" alt="requisition-make">
@@ -105,7 +105,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-6 col-6">
+                                {{-- <div class="col-sm-6 col-6">
                                     <div class="box product-receive p-3 rounded shadow-sm" style="background: #E8FFF3">
                                         <div class="icon">
                                             <img src="{{ asset('common/images/icon2.png') }}" alt="product-reecive">
@@ -114,7 +114,7 @@
                                             <a href="#">পন্য গ্রহন করুন</a>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>

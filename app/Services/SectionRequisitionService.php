@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\Department;
 use App\Models\Employee;
 use App\Models\ProductInformation;
 use App\Models\ProductType;
+use App\Models\Section;
 use App\Models\SectionRequisition;
 use App\Models\SectionRequisitionDetails;
 use App\Services\IService;
@@ -228,7 +230,7 @@ class SectionRequisitionService implements IService
         $totalSectionRequisition = SectionRequisition::when($section_ids, function ($q, $section_ids) {
             $q->whereIn('section_id', $section_ids);
         })->pluck('id');
-        
+
 
         if ($totalSectionRequisition) {
             $mostRequestedProducts = SectionRequisitionDetails::whereIn('section_requisition_id', $totalSectionRequisition)
@@ -258,7 +260,7 @@ class SectionRequisitionService implements IService
         // Return the formatted data
         return $formattedData;
     }
-    public function getProductsInRequisitionBySection($request = null, $section_ids)
+    public function getProductsInRequisitionBySection($request = null, $section_ids = null)
     {
         // Initialize an empty array to store the formatted data
         $formattedData = [];
@@ -266,7 +268,9 @@ class SectionRequisitionService implements IService
         // Initialize an array to store section totals
         $sectionTotals = [];
 
-        $totalSectionRequisition = SectionRequisition::whereIn('section_id', $section_ids)
+        $totalSectionRequisition = SectionRequisition::when($section_ids, function ($q, $section_ids) {
+            $q->whereIn('section_id', $section_ids);
+        })
             ->when($request, function ($q, $request) {
                 if (($request['date_from'] != null || $request['date_to'] != null)) {
                     $fromDate   = date('Y-m-d', strtotime($request['date_from']));
@@ -312,62 +316,120 @@ class SectionRequisitionService implements IService
     }
 
 
-    public function getProductsInRequisitionByDepartment($request = null, $section_ids)
+    // public function getRequisitionInfoByDepartment($request = null)
+    // {
+
+    //     // Initialize an empty array to store the formatted data
+    //     $formattedData = [];
+
+    //     $departments = Department::where('status', 1)->get();
+
+    //     foreach ($departments as $department) {
+    //         // Initialize department total requisitions
+    //         $departmentTotalRequisitions = 0;
+
+    //         // Increment section requisitions
+    //         if (!isset($formattedData[$department->name])) {
+    //             $formattedData[$department->name] = [
+    //                 'department' => $department->name,
+    //                 'totalRequisition' => 0,
+    //             ];
+    //         }
+
+    //         $section_ids = Section::where('department_id', $department->id)
+    //             ->where('status', 1)
+    //             ->pluck('id');
+
+    //         $totalSectionRequisitions = SectionRequisition::whereIn('section_id', $section_ids)
+    //             ->when($request, function ($q, $request) {
+    //                 if ($request['date_from'] !== null || $request['date_to'] !== null) {
+    //                     $fromDate = date('Y-m-d', strtotime($request['date_from']));
+    //                     $toDate = date('Y-m-d', strtotime($request['date_to']));
+    //                     $q->whereDate('updated_at', '>=', $fromDate)
+    //                         ->whereDate('updated_at', '<=', $toDate);
+    //                 } else {
+    //                     $today_date = date('Y-m-d');
+    //                     $q->whereDate('updated_at', $today_date);
+    //                 }
+    //             })
+    //             ->get();
+
+    //         if ($totalSectionRequisitions) {
+    //             foreach ($totalSectionRequisitions as $requisition) {
+    //                 $sectionName = $requisition->section->name;
+
+    //                 // Increment department total requisitions
+    //                 $departmentTotalRequisitions++;
+
+    //                 $formattedData[$department->name][$sectionName] = isset($formattedData[$department->name][$sectionName]) ? $formattedData[$department->name][$sectionName] + 1 : 1;
+    //             }
+
+    //             // Update department total requisitions
+    //             $formattedData[$department->name]['totalRequisition'] = $departmentTotalRequisitions;
+    //         }
+    //     }
+
+    //     // Convert the formatted data to a numerically indexed array
+    //     $data = array_values($formattedData);
+    //     return $data;
+    // }
+
+    public function getRequisitionInfoByDepartment($request = null)
     {
         // Initialize an empty array to store the formatted data
         $formattedData = [];
 
-        // Initialize an array to store section totals
-        $departmentTotals = [];
+        $departments = Department::where('status', 1)->get();
 
-        $totalSectionRequisition = SectionRequisition::whereIn('section_id', $section_ids)
-            ->when($request, function ($q, $request) {
-                if (($request['date_from'] != null || $request['date_to'] != null)) {
-                    $fromDate   = date('Y-m-d', strtotime($request['date_from']));
-                    $toDate     = date('Y-m-d', strtotime($request['date_to']));
-                    $q->whereDate('updated_at', '>=', $fromDate);
-                    $q->whereDate('updated_at', '<=', $toDate);
-                } else {
-                    $today_date = date('Y-m-d');
-                    $q->whereDate('updated_at', $today_date);
-                }
-            })
-            ->get();
+        foreach ($departments as $department) {
+            // Initialize department total requisitions
+            $departmentTotalRequisitions = 0;
 
-        if ($totalSectionRequisition) {
-            foreach ($totalSectionRequisition as $requisition) {
-                $total_products = SectionRequisitionDetails::where('section_requisition_id', $requisition->id)->count();
-                $departmentName = $requisition->section->department->name;
+            $section_ids = Section::where('department_id', $department->id)
+                ->where('status', 1)
+                ->pluck('id');
 
-                // Increment section totals
-                if (!isset($departmentTotals[$departmentName])) {
-                    $departmentTotals[$departmentName] = [
-                        'totalRequisitions' => 0,
-                        'totalProducts'     => 0,
+            $totalSectionRequisitions = SectionRequisition::whereIn('section_id', $section_ids)
+                ->when($request, function ($q, $request) {
+                    if ($request['date_from'] !== null || $request['date_to'] !== null) {
+                        $fromDate = date('Y-m-d', strtotime($request['date_from']));
+                        $toDate = date('Y-m-d', strtotime($request['date_to']));
+                        $q->whereDate('updated_at', '>=', $fromDate)
+                            ->whereDate('updated_at', '<=', $toDate);
+                    } else {
+                        $today_date = date('Y-m-d');
+                        $q->whereDate('updated_at', $today_date);
+                    }
+                })
+                ->get();
+
+            if ($totalSectionRequisitions->isNotEmpty()) {
+                // Increment section requisitions
+                if (!isset($formattedData[$department->name])) {
+                    $formattedData[$department->name] = [
+                        'department' => $department->name,
+                        'totalRequisition' => 0,
                     ];
                 }
 
-                $departmentTotals[$departmentName]['totalRequisitions']++;
-                $departmentTotals[$departmentName]['totalProducts'] += $total_products;
-            }
+                foreach ($totalSectionRequisitions as $requisition) {
+                    $sectionName = $requisition->section->name;
 
-            // Format the data with unique section names
-            foreach ($departmentTotals as $departmentName => $totals) {
-                $formattedData[] = [
-                    'department'        => $departmentName,
-                    'totalRequisitions' => $totals['totalRequisitions'],
-                    'totalProducts'     => $totals['totalProducts'],
-                ];
+                    // Increment department total requisitions
+                    $departmentTotalRequisitions++;
+
+                    $formattedData[$department->name][$sectionName] = isset($formattedData[$department->name][$sectionName]) ? $formattedData[$department->name][$sectionName] + 1 : 1;
+                }
+
+                // Update department total requisitions
+                $formattedData[$department->name]['totalRequisition'] = $departmentTotalRequisitions;
             }
         }
 
-        // Return the formatted data
-        return $formattedData;
+        // Convert the formatted data to a numerically indexed array
+        $data = array_values($formattedData);
+        return $data;
     }
-
-
-
-
 
 
 
