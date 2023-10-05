@@ -5,6 +5,16 @@
             width: 100%;
             height: 300px;
         }
+        #mostDistributedProductsChart::before{
+            position: absolute;
+            content: '';
+            bottom: 12px;
+            left: 20px;
+            width: 60px;
+            height: 30px;
+            background: #fff;
+            z-index: 1;
+        }
 
         .requisition-div {
             border-radius: 15px;
@@ -134,19 +144,19 @@
                                         {{-- <button type="button" class="close" aria-label="Close" id="closeDropdown">
                                                 <span aria-hidden="true">&times;</span>
                                             </button> --}}
-                                        <form action="" method="post" id="mostRequisitionProductsForm" autocomplete="off">
+                                        <form action="" method="post" id="mostDistributedProductsForm" autocomplete="off">
                                             @csrf
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <label for="most_req_date_from" class="text-navy">শুরুর তারিখ :</label>
-                                                        <input required="" type="text" value="" name="most_req_date_from" class="form-control form-control-sm text-gray singledatepicker" id="most_req_date_from" placeholder="শুরুর তারিখ">
+                                                        <label for="most_dist_date_from" class="text-navy">শুরুর তারিখ :</label>
+                                                        <input required="" type="text" value="" name="most_dist_date_from" class="form-control form-control-sm text-gray singledatepicker" id="most_dist_date_from" placeholder="শুরুর তারিখ">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <label for="most_req_date_to" class="text-navy">শেষ তারিখ :</label>
-                                                        <input required="" type="text" value="" name="most_req_date_to" class="form-control form-control-sm text-gray singledatepicker" id="most_req_date_to" placeholder="শেষ তারিখ">
+                                                        <label for="most_dist_date_to" class="text-navy">শেষ তারিখ :</label>
+                                                        <input required="" type="text" value="" name="most_dist_date_to" class="form-control form-control-sm text-gray singledatepicker" id="most_dist_date_to" placeholder="শেষ তারিখ">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
@@ -337,10 +347,10 @@
             ]);
 
         });
-        $(document).on('submit', '#mostRequisitionProductsForm', function(e) {
+        $(document).on('submit', '#mostDistributedProductsForm', function(e) {
             e.preventDefault();
-            let most_req_date_from = $('#most_req_date_from').val();
-            let most_req_date_to = $('#most_req_date_to').val();
+            let most_dist_date_from = $('#most_dist_date_from').val();
+            let most_dist_date_to   = $('#most_dist_date_to').val();
             // Set up CSRF token for all AJAX requests
             $.ajaxSetup({
                 headers: {
@@ -348,11 +358,11 @@
                 }
             });
             $.ajax({
-                url: "{{ route('admin.dashboard.total-requisition-products') }}",
+                url: "{{ route('admin.dashboard.get-distributed-products') }}",
                 type: "POST",
                 data: {
-                    date_from: most_req_date_from,
-                    date_to: most_req_date_to
+                    date_from: most_dist_date_from,
+                    date_to: most_dist_date_to
                 },
                 beforeSend: function() {
                     $('#loading-spinner').show();
@@ -362,7 +372,7 @@
                     console.log(newData);
 
                     // Hide the existing chart div
-                    $("#mostProductsChart").css({
+                    $("#mostDistributedProductsChart").css({
                         display: "none"
                     });
 
@@ -373,7 +383,7 @@
                     series2.data.setAll(newData);
 
                     // Show the chart div again
-                    $("#mostProductsChart").css({
+                    $("#mostDistributedProductsChart").css({
                         display: "block"
                     });
                     $('#loading-spinner').hide();

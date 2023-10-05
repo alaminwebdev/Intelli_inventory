@@ -134,8 +134,13 @@ class DashboardController extends Controller
                             return $section['id'];
                         }, $sections);
 
-                        $data['pendingRequistion']              = SectionRequisition::where('status', 3)->count();
-                        $data['mostDistributedProducts']        = $this->distributionService->getMostDistributedProducts($sectionIds, null, 10, 7);
+                        if ($sectionIds) {
+                            $data['pendingRequistion']           = SectionRequisition::whereIn('section_id', $sectionIds)->where('status', 3)->count();
+                            $data['mostDistributedProducts']     = $this->distributionService->getMostDistributedProducts($sectionIds, null, 10, 7);
+                        }else{
+                            $data['pendingRequistion']           = 0;
+                            $data['mostDistributedProducts']     = [];
+                        }
 
                         break;
                     default:
@@ -237,8 +242,49 @@ class DashboardController extends Controller
 
     public function requisitionProducts()
     {
-        $data['title']                  = 'সর্বাধিক চাহিদাকৃত পণ্য';
-        $data['mostRequestedProducts']  = $this->sectionRequisitionService->getMostRequestedProducts();
+        $data['title']  = 'সর্বাধিক চাহিদাকৃত পণ্য';
+        $user           = Auth::user();
+        if ($user->id !== 1 && $user->employee_id) {
+            $userRoleIds = UserRole::where('user_id', $user->id)->pluck('role_id');
+
+            // Check the user's role IDs and set the appropriate dashboard
+            foreach ($userRoleIds as $roleId) {
+                switch ($roleId) {
+
+                    case 3: // Role Id 3 = Section Requisition Maker
+                        $data['mostRequestedProducts'] = [];
+                        break;
+                    case 4: // Role Id 4 = Verifier/Recommender
+                        $employee   = $this->employeeService->getByID($user->employee_id);
+                        $sections   = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
+
+                        // Extract only the "id" values into a new array
+                        $sectionIds = array_map(function ($section) {
+                            return $section['id'];
+                        }, $sections);
+
+                        if ($sectionIds) {
+                            $data['mostRequestedProducts']  = $this->sectionRequisitionService->getMostRequestedProducts($sectionIds);
+                        }else{
+                            $data['mostRequestedProducts']  = [];
+                        }
+
+                        break;
+                    case 5: // Role Id 5 = Approver
+                        $data['mostRequestedProducts']  = $this->sectionRequisitionService->getMostRequestedProducts();
+                        break;
+                    case 6: // Role Id 6 = Issuer/Distributor
+                        $data['mostRequestedProducts'] = [];
+                        break;
+                    default:
+                        $data['mostRequestedProducts'] = [];
+                        break;
+                }
+            }
+        } else {
+            $data['mostRequestedProducts']  = $this->sectionRequisitionService->getMostRequestedProducts();
+        }
+
         return view('admin.partials.requisition-products', $data);
     }
     public function stockInProducts()
@@ -333,6 +379,52 @@ class DashboardController extends Controller
     public function getTotalStockProducts(Request $request)
     {
         $data = $this->stockInService->getMostStockProducts($request, 10);
+        return response()->json($data);
+    }
+
+    public function getDistributedProducts(Request $request)
+    {
+        $user = Auth::user();
+
+        if ($user->id !== 1 && $user->employee_id) {
+            $userRoleIds = UserRole::where('user_id', $user->id)->pluck('role_id');
+
+            // Check the user's role IDs and set the appropriate dashboard
+            foreach ($userRoleIds as $roleId) {
+                switch ($roleId) {
+
+                    case 3: // Role Id 3 = Section Requisition Maker
+                        $data = [];
+                        break;
+                    case 4: // Role Id 4 = Verifier/Recommender
+                        $data = [];
+                        break;
+                    case 5: // Role Id 5 = Approver
+                        $data = [];
+                        break;
+                    case 6: // Role Id 6 = Issuer/Distributor
+                        $employee   = $this->employeeService->getByID($user->employee_id);
+                        $sections   = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
+
+                        // Extract only the "id" values into a new array
+                        $sectionIds = array_map(function ($section) {
+                            return $section['id'];
+                        }, $sections);
+    
+                        if ($sectionIds) {
+                            $data = $this->distributionService->getMostDistributedProducts($sectionIds, $request);
+                        }else{
+                            $data = [];
+                        }
+                        break;
+                    default:
+                        $data = [];
+                        break;
+                }
+            }
+        } else {
+            $data = $this->distributionService->getMostDistributedProducts(null, $request);
+        }
         return response()->json($data);
     }
 }

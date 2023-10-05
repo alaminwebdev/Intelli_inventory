@@ -13,6 +13,8 @@ Route::post('/requisition-info-by-department', 'DashboardController@getRequisiti
 
 Route::post('/total-requisition-products', 'DashboardController@getTotalRequisitionProducts')->name('dashboard.total-requisition-products');
 Route::post('/total-stock-products', 'DashboardController@getTotalStockProducts')->name('dashboard.total-stock-products');
+Route::post('/get-distributed-products', 'DashboardController@getDistributedProducts')->name('dashboard.get-distributed-products');
+
 
 Route::name('site-setting-management.')->prefix('site-setting-management')->namespace('SiteSettingManagement')->group(base_path('routes/admin/site_setting_management.php'));
 Route::name('role-management.')->prefix('role-management')->namespace('RoleManagement')->group(base_path('routes/admin/role_management.php'));

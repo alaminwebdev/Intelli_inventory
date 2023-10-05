@@ -11,6 +11,7 @@
             height: 300px;
         }
 
+
         #totalProductsInRequisitionChart {
             width: 100%;
             height: 300px;
@@ -19,6 +20,20 @@
         #stockProductsChart {
             width: 100%;
             height: 300px;
+        }
+
+        #mostProductsChart::before,
+        #productsInRequisitionChart::before,
+        #totalProductsInRequisitionChart::before,
+        #stockProductsChart::before {
+            position: absolute;
+            content: '';
+            bottom: 12px;
+            left: 20px;
+            width: 60px;
+            height: 30px;
+            background: #fff;
+            z-index: 1;
         }
 
         .requisition-div {
