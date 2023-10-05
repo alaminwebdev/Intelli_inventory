@@ -1,11 +1,12 @@
 @extends('admin.layouts.app')
 @section('content')
     <style>
-        #mostDistributedProductsChart{
+        #mostDistributedProductsChart {
             width: 100%;
             height: 300px;
         }
-        #mostDistributedProductsChart::before{
+
+        #mostDistributedProductsChart::before {
             position: absolute;
             content: '';
             bottom: 12px;
@@ -18,7 +19,7 @@
 
         .requisition-div {
             border-radius: 15px;
-            height: 362px;
+            height: 300px;
             background: #fff;
             position: relative;
         }
@@ -31,7 +32,7 @@
 
         .requisition-div .bg {
             position: relative;
-            height: 230px;
+            height: 170px;
             border-radius: 12px;
             background: linear-gradient(102deg, #33B46E 0%, #44D486 100%);
             overflow: hidden;
@@ -176,8 +177,140 @@
                     </div>
                 </div>
             </div>
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <div class="requisition-list">
+                        <div class="card shadow-sm">
+                            <div class="card-header text-right border-0">
+                                <h4 class="card-title">বিতরণ করা চাহিদাপত্র <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
+                                <a href="{{ route('admin.distribute.list') }}" class="btn btn-sm btn-light" style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
+                            </div>
+                            <div class="card-body pt-0">
+                                <table class="table">
+                                    <thead style="background: #fff !important;">
+                                        <tr>
+                                            <th width="30%">চাহিদাপত্র নাম্বার</th>
+                                            <th width="20%">তৈরি সময়</th>
+                                            <th width="20%">শাখা</th>
+                                            <th width="20%">অবস্থা</th>
+                                            <th width="10%">অ্যাকশন</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="">
+                                        @foreach ($sectionRequisitions as $item)
+                                            @php
+                                                $formatter = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+                                                $formatter->setPattern('d-MMMM-y');
+                                                $date = $formatter->format($item->created_at);
+                                            @endphp
+                                            <tr>
+                                                <td>{{ en2bn($item->requisition_no) }}</td>
+                                                {{-- <td>{{ date('d-M-Y', strtotime($item->created_at)) }}</td> --}}
+                                                <td>{{ $date }}</td>
+                                                <td>{{ $item->section->name }}</td>
+                                                <td>{!! requisitionStatus($item->status) !!}</td>
+                                                <td><button class="btn btn-sm btn-light px-1 py-0 view-products" style="font-size: 11px !important;" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id="{{ $item->id }}"><i class="fas fa-plus"></i></button></td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
+
+    <!-- Modal for Product Details -->
+    <div class="modal" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">পন্যের বিবরনী</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <thead style="background: #fff !important;">
+                            <tr>
+                                <th>পন্য</th>
+                                <th>বর্তমান মজূদ</th>
+                                <th>চাহিদার পরিমান</th>
+                                <th>সুপারিশ পরিমান</th>
+                                <th>অনুমোদিত পরিমান</th>
+                                <th>যৌক্তিকতা</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productDetailsTable">
+                            <!-- Product details will be displayed here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">বন্ধ করুন</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('.view-products').on('click', function() {
+                var requistionID = $(this).data('requisition-id');
+
+                document.getElementById('loading-spinner').style.display = 'block';
+                $.ajax({
+                    url: "{{ route('admin.get.requistion.details.by.id') }}",
+                    type: "GET",
+                    data: {
+                        requisition_id: requistionID
+                    },
+                    success: function(products) {
+
+                        // Clear any existing content in the modal table
+                        $('#productDetailsTable').html('');
+
+                        // Loop through the products and add them to the table
+                        for (var i = 0; i < products.length; i++) {
+                            var product = products[i];
+
+                            var productName = product.product || "";
+                            var unitName = product.unit || "";
+                            var currentStock = product.current_stock || "";
+                            var demandQuantity = product.demand_quantity || "";
+                            var recommendedQuantity = product.recommended_quantity || "";
+                            var finalApproveQuantity = product.final_approve_quantity || "";
+                            var remarks = product.remarks || "";
+
+
+                            // Append the product details to the table
+                            $('#productDetailsTable').append(`
+                                        <tr>
+                                            <td>${productName} (${unitName})</td>
+                                            <td class="text-right">${currentStock}</td>
+                                            <td class="text-right">${demandQuantity}</td>
+                                            <td class="text-right">${recommendedQuantity}</td>
+                                            <td class="text-right">${finalApproveQuantity}</td>
+                                            <td>${remarks}</td>
+                                        </tr>
+                                    `);
+                        }
+                        document.getElementById('loading-spinner').style.display = 'none';
+                    },
+                    error: function(error) {
+                        document.getElementById('loading-spinner').style.display = 'none';
+                        console.error("Error:", error);
+
+                    }
+                });
+
+            });
+
+        });
+    </script>
 
 
     <!-- mostDistributedProductsChart code -->
@@ -350,7 +483,7 @@
         $(document).on('submit', '#mostDistributedProductsForm', function(e) {
             e.preventDefault();
             let most_dist_date_from = $('#most_dist_date_from').val();
-            let most_dist_date_to   = $('#most_dist_date_to').val();
+            let most_dist_date_to = $('#most_dist_date_to').val();
             // Set up CSRF token for all AJAX requests
             $.ajaxSetup({
                 headers: {

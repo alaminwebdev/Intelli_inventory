@@ -135,9 +135,11 @@ class DashboardController extends Controller
                         }, $sections);
 
                         if ($sectionIds) {
+                            $data['sectionRequisitions']         = $this->sectionRequisitionService->getAll(null, null, $sectionIds, [4,5], 10);
                             $data['pendingRequistion']           = SectionRequisition::whereIn('section_id', $sectionIds)->where('status', 3)->count();
                             $data['mostDistributedProducts']     = $this->distributionService->getMostDistributedProducts($sectionIds, null, 10, 7);
                         }else{
+                            $data['sectionRequisitions']         = [];
                             $data['pendingRequistion']           = 0;
                             $data['mostDistributedProducts']     = [];
                         }
