@@ -156,12 +156,13 @@ class SectionRequisitionService implements IService
                     $q->where('section_requisitions.status', $status);
                 })
                 ->when($take, function ($q, $take) {
-                    $q->orderBy('section_requisition_details.created_at', 'desc')->take($take);
+                    $q->take($take);
                 })
                 ->when($days, function ($q, $days) {
                     $days_ago = now()->subDays($days);
                     $q->whereDate('section_requisition_details.updated_at', '>=', $days_ago);
                 })
+                ->orderBy('section_requisition_details.updated_at', 'desc')
                 ->select(
                     'section_requisitions.requisition_no as requisition_no',
                     'section_requisition_details.current_stock as current_stock',
