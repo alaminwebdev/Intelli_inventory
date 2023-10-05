@@ -33,7 +33,7 @@ class CurrentStockService
                     DB::raw('sum(stock_in_details.available_qty) as available_qty'),
                 )
                 ->groupBy('stock_in_details.product_information_id','product_information.name', 'units.name')
-                ->orderBy('stock_in_details.updated_at', 'desc')
+                // ->orderBy('stock_in_details.updated_at', 'desc')
                 ->get();
             return $data;
         } catch (\Exception $e) {

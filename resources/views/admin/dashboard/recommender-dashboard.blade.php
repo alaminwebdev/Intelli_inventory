@@ -13,7 +13,7 @@
 
         .requisition-div {
             border-radius: 15px;
-            height: 355px;
+            height: 362px;
             background: #fff;
             position: relative;
         }
@@ -26,7 +26,7 @@
 
         .requisition-div .bg {
             position: relative;
-            height: 220px;
+            height: 230px;
             border-radius: 12px;
             background: linear-gradient(102deg, #33B46E 0%, #44D486 100%);
             overflow: hidden;
@@ -124,7 +124,41 @@
                         <div class="card shadow-sm" style="border-radius: 12px;">
                             <div class="card-header text-right border-0 pb-0 pt-3">
                                 <h4 class="card-title">সর্বাধিক চাহিদাকৃত পণ্য <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
-                                {{-- <a href="{{ route('admin.recommended.requisition.list') }}" class="btn btn-sm btn-light" style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a> --}}
+                                <div class="card-tools mr-0 d-flex align-items-center">
+                                    <a href="{{ route('admin.dashboard.requisition-products') }}" class="btn btn-sm btn-light mr-1" style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
+                                    <div class="dropdown show">
+                                        <a class="btn btn-sm btn-light" data-toggle="dropdown" href="#" aria-expanded="true" style="margin-right:2rem; padding: 1px 6px;">
+                                            <i class="far fa-calendar-alt"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right p-3 border-0" style="min-width: 200px !important;">
+                                            {{-- <button type="button" class="close" aria-label="Close" id="closeDropdown">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button> --}}
+                                            <form action="" method="post" id="mostRequisitionProductsForm" autocomplete="off">
+                                                @csrf
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label for="most_req_date_from" class="text-navy">শুরুর তারিখ :</label>
+                                                            <input required="" type="text" value="" name="most_req_date_from" class="form-control form-control-sm text-gray singledatepicker" id="most_req_date_from" placeholder="শুরুর তারিখ">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label for="most_req_date_to" class="text-navy">শেষ তারিখ :</label>
+                                                            <input required="" type="text" value="" name="most_req_date_to" class="form-control form-control-sm text-gray singledatepicker" id="most_req_date_to" placeholder="শেষ তারিখ">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group mb-0 d-flex">
+                                                            <input required="" type="submit" value="খুজুন" class="form-control form-control-sm btn btn-sm btn-primary" id="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="card-body pt-0">
                                 <div id="mostProductsChart"></div>
@@ -141,10 +175,10 @@
                             <h4 class="card-title">সর্বাধিক চাহিদাপত্র এবং পন্য</h4>
                             <div class="card-tools mr-0">
                                 <div class="dropdown show">
-                                    <a class="btn btn-sm btn-primary" data-toggle="dropdown" href="#" aria-expanded="true">
+                                    <a class="btn btn-sm btn-light" data-toggle="dropdown" href="#" aria-expanded="true" style="margin-right:2rem; padding: 1px 6px;">
                                         <i class="far fa-calendar-alt"></i>
                                     </a>
-                                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right p-3 border-0" style="min-width: 250px !important;">
+                                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right p-3 border-0" style="min-width: 200px !important;">
                                         {{-- <button type="button" class="close" aria-label="Close" id="closeDropdown">
                                             <span aria-hidden="true">&times;</span>
                                         </button> --}}
@@ -153,19 +187,19 @@
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <label for="date_from" class="navy-color">Date From:</label>
-                                                        <input required="" type="text" value="" name="date_from" class="form-control form-control-sm singledatepicker" id="date_from">
+                                                        <label for="date_from" class="text-navy">শুরুর তারিখ :</label>
+                                                        <input required="" type="text" value="" name="date_from" class="form-control form-control-sm text-gray singledatepicker" id="date_from" placeholder="শুরুর তারিখ">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <label for="date_to" class="navy-color">Date To:</label>
-                                                        <input required="" type="text" value="" name="date_to" class="form-control form-control-sm singledatepicker" id="date_to">
+                                                        <label for="date_to" class="text-navy">শেষ তারিখ :</label>
+                                                        <input required="" type="text" value="" name="date_to" class="form-control form-control-sm text-gray singledatepicker" id="date_to" placeholder="শেষ তারিখ">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group mb-0 d-flex">
-                                                        <input required="" type="submit" value="Search" class="form-control form-control-sm btn btn-sm btn-primary" id="">
+                                                        <input required="" type="submit" value="খুজুন" class="form-control form-control-sm btn btn-sm btn-primary" id="">
                                                     </div>
                                                 </div>
                                             </div>
@@ -350,6 +384,8 @@
 
     <!-- mostProductsChart code -->
     <script>
+        let chart;
+        let xAxis, yAxis, series;
         let mostRequestedProducts = <?php echo json_encode(@$mostRequestedProducts); ?>;
         am5.ready(function() {
 
@@ -366,7 +402,7 @@
 
             // Create chart
             // https://www.amcharts.com/docs/v5/charts/xy-chart/
-            var chart = root.container.children.push(am5xy.XYChart.new(root, {
+            chart = root.container.children.push(am5xy.XYChart.new(root, {
                 panX: false,
                 panY: false,
                 wheelX: "none",
@@ -391,7 +427,7 @@
             });
 
 
-            var yAxis = chart.yAxes.push(am5xy.CategoryAxis.new(root, {
+            yAxis = chart.yAxes.push(am5xy.CategoryAxis.new(root, {
                 maxDeviation: 0.3,
                 categoryField: "product",
                 renderer: yRenderer,
@@ -410,7 +446,7 @@
                 strokeOpacity: 0.1,
             })
 
-            var xAxis = chart.xAxes.push(am5xy.ValueAxis.new(root, {
+            xAxis = chart.xAxes.push(am5xy.ValueAxis.new(root, {
                 maxDeviation: 0,
                 min: 0,
                 extraMax: 0.1,
@@ -420,7 +456,7 @@
 
             // Add series
             // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
-            var series = chart.series.push(am5xy.ColumnSeries.new(root, {
+            series = chart.series.push(am5xy.ColumnSeries.new(root, {
                 name: "Series 1",
                 xAxis: xAxis,
                 yAxis: yAxis,
@@ -480,7 +516,90 @@
             series.appear(1000);
             chart.appear(1000, 100);
 
+            var exporting = am5plugins_exporting.Exporting.new(root, {
+                menu: am5plugins_exporting.ExportingMenu.new(root, {
+                    container: document.getElementById("mostProductsChart")
+                }),
+                dataSource: data
+            });
+
+            exporting.events.on("dataprocessed", function(ev) {
+                for (var i = 0; i < ev.data.length; i++) {
+                    ev.data[i].sum = ev.data[i].value + ev.data[i].value2;
+                }
+            });
+            exporting.get("menu").set("items", [{
+                    type: "format",
+                    format: "png",
+                    label: "Export as Image"
+                }, {
+                    type: "format",
+                    format: "json",
+                    label: "Export as JSON"
+                },
+                {
+                    type: "format",
+                    format: "csv",
+                    label: "Export as CSV"
+                }, {
+                    type: "format",
+                    format: "print",
+                    label: "Print"
+                }
+            ]);
+
         }); // end am5.ready()
+
+        $(document).on('submit', '#mostRequisitionProductsForm', function(e) {
+            e.preventDefault();
+            let most_req_date_from = $('#most_req_date_from').val();
+            let most_req_date_to = $('#most_req_date_to').val();
+            // Set up CSRF token for all AJAX requests
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{ route('admin.dashboard.total-requisition-products') }}",
+                type: "POST",
+                data: {
+                    date_from: most_req_date_from,
+                    date_to: most_req_date_to
+                },
+                beforeSend: function() {
+                    $('#loading-spinner').show();
+                },
+                success: function(response) {
+                    var newData = response.reverse();
+                    console.log(newData);
+
+                    // Hide the existing chart div
+                    $("#mostProductsChart").css({
+                        display: "none"
+                    });
+
+                    // Update the chart data and show the chart div
+                    var data = newData;
+
+                    yAxis.data.setAll(newData);
+                    series.data.setAll(newData);
+
+                    // Show the chart div again
+                    $("#mostProductsChart").css({
+                        display: "block"
+                    });
+                    $('#loading-spinner').hide();
+                },
+                error: function() {
+                    console.log('error');
+                },
+                complete: function() {
+                    $('#loading-spinner').hide();
+                }
+            });
+        });
+
     </script>
 
     <script>
@@ -669,6 +788,38 @@
             series2.appear(1000);
             spacerSeries.appear(1000);
             chart2.appear(1000, 100);
+
+            var exporting2 = am5plugins_exporting.Exporting.new(root, {
+                menu: am5plugins_exporting.ExportingMenu.new(root, {
+                    container: document.getElementById("totalProductsInRequisitionChart")
+                }),
+                dataSource: data
+            });
+
+            exporting2.events.on("dataprocessed", function(ev) {
+                for (var i = 0; i < ev.data.length; i++) {
+                    ev.data[i].sum = ev.data[i].value + ev.data[i].value2;
+                }
+            });
+            exporting2.get("menu").set("items", [{
+                    type: "format",
+                    format: "png",
+                    label: "Export as Image"
+                }, {
+                    type: "format",
+                    format: "json",
+                    label: "Export as JSON"
+                },
+                {
+                    type: "format",
+                    format: "csv",
+                    label: "Export as CSV"
+                }, {
+                    type: "format",
+                    format: "print",
+                    label: "Print"
+                }
+            ]);
 
         }); // end am5.ready()
 

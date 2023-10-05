@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\DepartmentRequisition;
 use App\Models\DepartmentRequisitionDetails;
+use App\Models\Distribute;
 use App\Models\SectionRequisition;
 use App\Models\SectionRequisitionDetails;
 use App\Services\IService;
@@ -65,11 +66,68 @@ class DistributionService implements IService
         }
     }
 
+    public function getMostDistributedProducts($section_ids = null, $request = null, $take = null, $days = null)
+    {
+
+        // Initialize an empty array to store the formatted data
+        $formattedData = [];
+
+        $totalSectionRequisition = SectionRequisition::when($section_ids, function ($q, $section_ids) {
+            $q->whereIn('section_id', $section_ids);
+        })
+            ->when($request, function ($q, $request) {
+                if (($request['date_from'] != null || $request['date_to'] != null)) {
+                    $fromDate   = date('Y-m-d', strtotime($request['date_from']));
+                    $toDate     = date('Y-m-d', strtotime($request['date_to']));
+                    $q->whereDate('updated_at', '>=', $fromDate);
+                    $q->whereDate('updated_at', '<=', $toDate);
+                } else {
+                    $today_date = date('Y-m-d');
+                    $q->whereDate('updated_at', $today_date);
+                }
+            })
+            ->when($days, function ($q, $days) {
+                $days_ago = now()->subDays($days);
+                $q->whereDate('updated_at', '>=', $days_ago);
+            })
+            ->pluck('id');
+
+
+        if ($totalSectionRequisition) {
+            $mostDistributedProducts = Distribute::whereIn('section_requisition_id', $totalSectionRequisition)
+                ->join('product_information', 'product_information.id', 'distributes.product_id')
+                ->leftjoin('units', 'units.id', 'product_information.unit_id')
+                ->select(
+                    'product_id',
+                    'product_information.name as product',
+                    'units.name as unit',
+                    DB::raw('SUM(distribute_quantity) as total_distribute_qty')
+                )
+                ->groupBy('distributes.product_id', 'product_information.name', 'units.name')
+                ->orderByDesc('total_distribute_qty')
+                ->when($take, function ($q, $take) {
+                    $q->take($take);
+                })
+                ->get();
+
+
+            // Iterate through the retrieved data and format it
+            foreach ($mostDistributedProducts as $product) {
+                $formattedData[] = [
+                    'product'   => $product->product . ' (' . $product->unit . ')',
+                    'quantity'  => (int) $product->total_distribute_qty,
+                ];
+            }
+        }
+
+        // Return the formatted data
+        return $formattedData;
+    }
+
     public function update(Request $request, $id)
     {
 
         try {
-
             return true;
         } catch (Exception $e) {
             return $e->getMessage();

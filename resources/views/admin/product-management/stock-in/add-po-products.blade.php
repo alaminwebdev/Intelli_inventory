@@ -21,7 +21,7 @@
                                             </div>
                                             <div class="form-group col-md-4">
                                                 <label class="control-label">এন্ট্রি তারিখ <span class="text-red">*</span></label>
-                                                <input type="text" class="form-control form-control-sm entry_date @error('entry_date') is-invalid @enderror singledatepicker" id="entry_date" name="entry_date">
+                                                <input type="text" class="form-control form-control-sm entry_date @error('entry_date') is-invalid @enderror singledatefromtoday" id="entry_date" name="entry_date">
                                                 @error('entry_date')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
