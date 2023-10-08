@@ -56,7 +56,7 @@
                                                                 <thead style="background: #fff4f4 !important;">
                                                                     <tr>
                                                                         <th>পন্য</th>
-                                                                        <th>পূর্ববর্তী বিতরনের পরিমাণ</th>
+                                                                        {{-- <th>পূর্ববর্তী বিতরনের পরিমাণ</th> --}}
                                                                         <th>বর্তমান মজূদ</th>
                                                                         <th>চাহিদার পরিমাণ</th>
                                                                         <th>সুপারিশ পরিমান</th>
@@ -71,9 +71,9 @@
 
                                                                         <tr data-product-id="{{ $product['product_id'] }}">
                                                                             <td class="product-name">{{ $product['product_name'] }}</td>
-                                                                            <td>
+                                                                            {{-- <td>
                                                                                 <input type="number" class="form-control form-control-sm" id="previous_stock_{{ $product['product_id'] }}" value="{{ $product['last_distribute_qty'] }}" readonly>
-                                                                            </td>
+                                                                            </td> --}}
                                                                             <td>
                                                                                 <input type="number" class="form-control form-control-sm" id="current_stock_{{ $product['product_id'] }}" value="{{ $product['current_stock'] }}" readonly>
                                                                             </td>
