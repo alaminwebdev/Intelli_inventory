@@ -68,20 +68,11 @@
                                                                 <tbody>
 
                                                                     @foreach ($type['products'] as $product)
-                                                                        @php
-                                                                            // $lastDistribute = \App\Models\RequisitionApproval::where('requisition_approval_details.department_id', $editData->department_id)
-                                                                            //                 ->select('requisition_approval_details.*', 'requisition_approvals.status as distribute_status')
-                                                                            //                 ->join('requisition_approval_details', 'requisition_approval_details.distribute_id', '=','requisition_approvals.id' )
-                                                                            //                 ->where('requisition_approval_details.product_id', $product->product_id)
-                                                                            //                 ->where('requisition_approvals.status', 2)
-                                                                            //                 ->orderBy('requisition_approval_details.id', 'desc')
-                                                                            //                 ->first();
-                                                                        @endphp
 
                                                                         <tr data-product-id="{{ $product['product_id'] }}">
                                                                             <td class="product-name">{{ $product['product_name'] }}</td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="previous_stock_{{ $product['product_id'] }}" value="{{ $lastDistribute->distribute_quantity ?? 0 }}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" id="previous_stock_{{ $product['product_id'] }}" value="{{ $product['last_distribute_qty'] }}" readonly>
                                                                             </td>
                                                                             <td>
                                                                                 <input type="number" class="form-control form-control-sm" id="current_stock_{{ $product['product_id'] }}" value="{{ $product['current_stock'] }}" readonly>

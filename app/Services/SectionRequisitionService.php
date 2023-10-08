@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Department;
+use App\Models\Distribute;
 use App\Models\Employee;
 use App\Models\ProductInformation;
 use App\Models\ProductType;
@@ -181,11 +182,21 @@ class SectionRequisitionService implements IService
         }
     }
 
-    public function getRequisitionProductsWithTypeById($requistion_id)
+    public function getRequisitionProductsWithTypeById($requistion_id, $editData = null)
     {
 
         $productTypeData    = [];
         $product_types      = ProductType::latest()->where('status', 1)->get();
+
+        if ($editData) {
+            $requisition_ids = SectionRequisition::where('section_id', $editData->section_id)
+                ->where('id', '!=', $editData->id)
+                ->pluck('id');
+        }else{
+            $requisition_ids = [];
+        }
+
+        $last_distribute_qty = 0;
 
         foreach ($product_types as $item) {
             $productType = [
@@ -206,6 +217,19 @@ class SectionRequisitionService implements IService
             if (count($requisitionProducts) > 0) {
 
                 foreach ($requisitionProducts as $product) {
+
+                    // Get the last distribute_quantity for this product_id
+                    if ($requisition_ids) {
+                        $last_distribute_item = Distribute::whereIn('section_requisition_id', $requisition_ids)
+                            ->where('product_id', $product->product_id)
+                            ->latest()
+                            ->first(['id', 'product_id', 'distribute_quantity']);
+
+                        if ($last_distribute_item) {
+                            $last_distribute_qty = $last_distribute_item->distribute_quantity;
+                        }
+                    }
+
                     $productType['products'][$product->product_id] = [
                         'product_id'                => $product->product_id,
                         'product_name'              => $product->product->name,
@@ -216,7 +240,8 @@ class SectionRequisitionService implements IService
                         'recommended_remarks'       => $product->recommended_remarks,
                         'final_approve_quantity'    => $product->final_approve_quantity,
                         'final_approve_remarks'     => $product->final_approve_remarks,
-                        'available_quantity'        => $product->StockDetail->sum('available_qty')
+                        'available_quantity'        => $product->StockDetail->sum('available_qty'),
+                        'last_distribute_qty'       => $last_distribute_qty
                     ];
                 }
 

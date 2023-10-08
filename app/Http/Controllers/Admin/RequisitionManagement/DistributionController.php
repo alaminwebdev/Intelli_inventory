@@ -85,7 +85,7 @@ class DistributionController extends Controller
 
         $data['title']                      = 'চাহিদাপত্র অনুমোদন করুন';
         $data['editData']                   = $this->sectionRequisitionService->getByID($id);
-        $data['requisition_product_types']  = $this->sectionRequisitionService->getRequisitionProductsWithTypeById($id);
+        $data['requisition_product_types']  = $this->sectionRequisitionService->getRequisitionProductsWithTypeById($id ,$data['editData']);
         return view('admin.requisition-management.distribution-approval.add', $data);
     }
 
@@ -137,7 +137,7 @@ class DistributionController extends Controller
     {
         $data['title']                      = 'পন্য বিতরণ করুন';
         $data['editData']                   = $this->sectionRequisitionService->getByID($id);
-        $data['requisition_product_types']  = $this->sectionRequisitionService->getRequisitionProductsWithTypeById($id);
+        $data['requisition_product_types']  = $this->sectionRequisitionService->getRequisitionProductsWithTypeById($id, $data['editData']);
         return view('admin.requisition-management.distribute.edit', $data);
     }
 

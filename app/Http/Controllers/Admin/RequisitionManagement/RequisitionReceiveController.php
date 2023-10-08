@@ -93,7 +93,7 @@ class RequisitionReceiveController extends Controller
 
         $data['title']                      = 'চাহিদাপত্র গ্রহন করুন';
         $data['editData']                   = $this->sectionRequisitionService->getByID($id);
-        $data['requisition_product_types']  = $this->sectionRequisitionService->getRequisitionProductsWithTypeById($id);
+        $data['requisition_product_types']  = $this->sectionRequisitionService->getRequisitionProductsWithTypeById($id, $data['editData']);
         return view('admin.requisition-management.section-requisition-receive.edit', $data);
     }
 

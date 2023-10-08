@@ -229,10 +229,10 @@ class DashboardController extends Controller
                         $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, null, null, 5);
                         break;
                     case 6: // Role Id 6 = Issuer/Distributor
-
+                        $data['sectionRequisitionProducts'] = [];
                         break;
                     default:
-
+                        $data['sectionRequisitionProducts'] = [];
                         break;
                 }
             }

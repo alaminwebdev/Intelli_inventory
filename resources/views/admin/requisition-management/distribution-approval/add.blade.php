@@ -66,22 +66,12 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    
-                                                                    @foreach ($type['products'] as $product)
-                                                                        @php
-                                                                            // $lastDistribute = \App\Models\RequisitionApproval::where('requisition_approval_details.department_id', $editData->department_id)
-                                                                            //                 ->select('requisition_approval_details.*', 'requisition_approvals.status as distribute_status')
-                                                                            //                 ->join('requisition_approval_details', 'requisition_approval_details.distribute_id', '=','requisition_approvals.id' )
-                                                                            //                 ->where('requisition_approval_details.product_id', $product->product_id)
-                                                                            //                 ->where('requisition_approvals.status', 2)
-                                                                            //                 ->orderBy('requisition_approval_details.id', 'desc')
-                                                                            //                 ->first();
-                                                                        @endphp
 
+                                                                    @foreach ($type['products'] as $product)
                                                                         <tr data-product-id="{{ $product['product_id'] }}">
                                                                             <td class="product-name">{{ $product['product_name'] }}</td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="previous_stock_{{ $product['product_id'] }}" value="{{ $lastDistribute->distribute_quantity ?? 0 }}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" id="previous_stock_{{ $product['product_id'] }}" value="{{ $product['last_distribute_qty'] }}" readonly>
                                                                             </td>
                                                                             <td>
                                                                                 <input type="number" class="form-control form-control-sm" id="current_stock_{{ $product['product_id'] }}" name="current_stock[{{ $product['product_id'] }}]" value="{{ $product['current_stock'] }}" readonly>
@@ -96,7 +86,7 @@
                                                                                 <input type="text" class="form-control form-control-sm" id="available_quantity_{{ $product['product_id'] }}" value="{{ $product['available_quantity'] }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="approve_quantity_{{ $product['product_id'] }}" name="approve_quantity[{{ $product['product_id'] }}]" value="{{ $product['final_approve_quantity'] ?? $product['recommended_quantity'] }}" {{ $editData->status == 3 ? 'readonly' : '' }} >
+                                                                                <input type="number" class="form-control form-control-sm" id="approve_quantity_{{ $product['product_id'] }}" name="approve_quantity[{{ $product['product_id'] }}]" value="{{ $product['final_approve_quantity'] ?? $product['recommended_quantity'] }}" {{ $editData->status == 3 ? 'readonly' : '' }}>
                                                                             </td>
                                                                             <td>
                                                                                 <input type="text" class="form-control form-control-sm" id="remarks_{{ $product['product_id'] }}" name="remarks[{{ $product['product_id'] }}]" value="{{ $product['final_approve_remarks'] }}" {{ $product['final_approve_remarks'] ? 'readonly' : '' }}>
