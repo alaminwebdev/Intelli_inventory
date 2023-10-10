@@ -98,26 +98,27 @@ class DefaultController extends Controller
     }
     public function getDistributeRequistionByStatus(Request $request)
     {
-        $user = Auth::user();
-        if ($user->id !== 1 && $user->employee_id) {
-            $employee  = $this->employeeService->getByID($user->employee_id);
-            $sections  = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
+        // $user = Auth::user();
+        // if ($user->id !== 1 && $user->employee_id) {
+        //     $employee  = $this->employeeService->getByID($user->employee_id);
+        //     $sections  = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
 
-            // Extract only the "id" values into a new array
-            $sectionIds = array_map(function ($section) {
-                return $section['id'];
-            }, $sections);
+        //     // Extract only the "id" values into a new array
+        //     $sectionIds = array_map(function ($section) {
+        //         return $section['id'];
+        //     }, $sections);
 
-            if ($sectionIds) {
-                $distributeRequisitions = $this->sectionRequisitionService->getAll(null, $request->requistition_status, $sectionIds);
-            }else{
-                $distributeRequisitions = [];
-            }
+        //     if ($sectionIds) {
+        //         $distributeRequisitions = $this->sectionRequisitionService->getAll(null, $request->requistition_status, $sectionIds);
+        //     }else{
+        //         $distributeRequisitions = [];
+        //     }
 
-        } else {
-            $distributeRequisitions = $this->sectionRequisitionService->getAll(null, $request->requistition_status);
-        }
-        $data = view('admin.requisition-management.distribute.list-by-status')->with('distributeRequisitions', $distributeRequisitions)->render();
+        // } else {
+        //     $distributeRequisitions = $this->sectionRequisitionService->getAll(null, $request->requistition_status);
+        // }
+        $distributeRequisitions = $this->sectionRequisitionService->getAll(null, $request->requistition_status);
+        $data                   = view('admin.requisition-management.distribute.list-by-status')->with('distributeRequisitions', $distributeRequisitions)->render();
         return response()->json($data);
     }
 

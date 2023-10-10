@@ -70,7 +70,7 @@ class RequisitionReceiveController extends Controller
                         $data['sectionRequisitions'] = [];
                         break;
                     case 6: // Role Id 8 = Issuer/Distributor
-                        $data['sectionRequisitions'] = [];
+                        $data['sectionRequisitions'] = $this->sectionRequisitionService->getAll(null, null, null, [4, 5]);
                         break;
                     default:
                         $data['sectionRequisitions'] = [];
