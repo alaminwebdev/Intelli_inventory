@@ -196,8 +196,6 @@ class SectionRequisitionService implements IService
             $requisition_ids = [];
         }
 
-        $last_distribute_qty = 0;
-
         foreach ($product_types as $item) {
             $productType = [
                 'id'        => $item->id,
@@ -210,9 +208,12 @@ class SectionRequisitionService implements IService
                 ->latest()
                 ->pluck('id');
 
+            $last_distribute_qty = 0;
+
             $requisitionProducts = SectionRequisitionDetails::where('section_requisition_id', $requistion_id)
                 ->whereIn('product_id', $productIds)
                 ->get();
+    
 
             if (count($requisitionProducts) > 0) {
 
@@ -225,10 +226,19 @@ class SectionRequisitionService implements IService
                             ->latest()
                             ->first(['id', 'product_id', 'distribute_quantity']);
 
+
                         if ($last_distribute_item) {
                             $last_distribute_qty = $last_distribute_item->distribute_quantity;
+                        }else{
+                            $last_distribute_qty = 0;
                         }
+                        
                     }
+
+                    // Get the total distribute_quantity for this product_id and section_requisition_id
+                    $totalDistributeQuantity = Distribute::where('section_requisition_id', $requistion_id)
+                        ->where('product_id', $product->product_id)
+                        ->sum('distribute_quantity');
 
                     $productType['products'][$product->product_id] = [
                         'product_id'                => $product->product_id,
@@ -241,7 +251,8 @@ class SectionRequisitionService implements IService
                         'final_approve_quantity'    => $product->final_approve_quantity,
                         'final_approve_remarks'     => $product->final_approve_remarks,
                         'available_quantity'        => $product->StockDetail->sum('available_qty'),
-                        'last_distribute_qty'       => $last_distribute_qty
+                        'last_distribute_qty'       => $last_distribute_qty,
+                        'totalDistributeQuantity'   => $totalDistributeQuantity ?? 0
                     ];
                 }
 

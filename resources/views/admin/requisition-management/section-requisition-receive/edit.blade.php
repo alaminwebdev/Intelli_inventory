@@ -61,7 +61,8 @@
                                                                         <th>চাহিদার পরিমাণ</th>
                                                                         <th>সুপারিশ পরিমান</th>
                                                                         {{-- <th>বিতরনযোগ্য মজূদ</th> --}}
-                                                                        <th>বিতরনের পরিমাণ</th>
+                                                                        <th>অনুমোদিত পরিমান</th>
+                                                                        <th>বিতরনের পরিমান</th>
                                                                         <th>যৌক্তিকতা</th>
                                                                     </tr>
                                                                 </thead>
@@ -89,7 +90,10 @@
                                                                             </td> --}}
 
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="distribute_quantity_{{ $product['product_id'] }}" name="distribute_quantity[{{ $product['product_id'] }}]" value="{{ $product['final_approve_quantity'] }}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" id="final_approve_quantity_{{ $product['product_id'] }}" name="final_approve_quantity[{{ $product['product_id'] }}]" value="{{ $product['final_approve_quantity'] }}" readonly>
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="number" class="form-control form-control-sm" id="distribute_quantity_{{ $product['product_id'] }}" name="distribute_quantity[{{ $product['product_id'] }}]" value="{{ $product['totalDistributeQuantity'] }}" readonly>
                                                                             </td>
                                                                             <td>
                                                                                 <input type="text" class="form-control form-control-sm" id="remarks_{{ $product['product_id'] }}" name="remarks[{{ $product['product_id'] }}]" value="{{ $product['final_approve_remarks'] }}" readonly>
