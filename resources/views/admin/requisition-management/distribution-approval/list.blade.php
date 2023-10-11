@@ -10,6 +10,18 @@
 
                         </div>
                         <div class="card-body">
+                            <div class="row text-left mb-3">
+                                <div class="col-md-12">
+                                    <a class="btn btn-info btn-sm distributeListBtn" data-requistition-status="1">
+                                        <i class="fa fa-check-circle"></i>
+                                        অনুমোদনের অপেক্ষায় চাহিদাপত্রের তালিকা
+                                    </a>
+                                    <a class="btn btn-primary btn-sm distributeListBtn" data-requistition-status="3,4,5">
+                                        <i class="fa "></i>
+                                        অনুমোদন করা চাহিদাপত্রের তালিকা
+                                    </a>
+                                </div>
+                            </div>
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -21,7 +33,7 @@
                                         <th>অ্যাকশন</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="requistionProductsTable">
 
                                     @foreach ($sectionRequisitions as $list)
                                         <tr>
@@ -31,15 +43,15 @@
                                             <td>{{ @$list->section->department->name ?? 'N/A' }}</td>
                                             <td class="text-center">{!! requisitionStatus($list->status) !!}</td>
                                             <td class="text-center">
+                                                <button class="btn btn-sm btn-info view-products" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id="{{ $list->id }}" data-modal-id="productDetailsModal">
+                                                    <i class="far fa-eye"></i>
+                                                </button>
+                                                <a class="btn btn-sm btn-primary" href="{{ route('admin.requisition.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i>পিডিএফ</a>
                                                 @if (sorpermission('admin.distribution.edit'))
                                                     <a class="btn btn-sm btn-success" href="{{ route('admin.distribution.edit', $list->id) }}">
                                                         <i class="fa fa-edit"></i>
                                                     </a>
                                                 @endif
-                                                <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id="{{ $list->id }}">
-                                                    <i class="far fa-eye"></i>
-                                                </button>
-                                                <a class="btn btn-sm btn-primary" href="{{ route('admin.requisition.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ</a>
                                                 {{-- @if (sorpermission('admin.requisition.delete'))
                                                 <a class="btn btn-sm btn-danger destroy" data-id="{{$list->id}}" data-route="{{route('admin.requisition.delete')}}">
                                                     <i class="fa fa-trash"></i>
@@ -56,6 +68,52 @@
             </div>
         </div>
     </section>
+
+    <script>
+        $(document).ready(function() {
+            $('.distributeListBtn').on('click', function() {
+                var $clickedButton = $(this); // Store a reference to the clicked button
+                var requistitionStatus = $clickedButton.data('requistition-status');
+
+                if (Array.isArray(requistitionStatus)) {
+                    // It's already an array, no need to do anything
+                } else if (typeof requistitionStatus === 'string' && requistitionStatus.includes(',')) {
+                    requistitionStatus = requistitionStatus.split(',').map(Number);
+                } else {
+                    requistitionStatus = [Number(requistitionStatus)];
+                }
+
+                console.log(requistitionStatus);
+                document.getElementById('loading-spinner').style.display = 'block';
+                $.ajax({
+                    url: "{{ route('admin.get.requistion.by.status') }}",
+                    type: "GET",
+                    data: {
+                        requistition_status: requistitionStatus
+                    },
+                    success: function(response) {
+
+                        // Clear existing table rows
+                        $("#requistionProductsTable").empty();
+                        $("#requistionProductsTable").html(response);
+                        document.getElementById('loading-spinner').style.display = 'none';
+
+                        // Remove the class from all buttons
+                        $('.distributeListBtn i').removeClass('fa-check-circle');
+
+                        // Add the class to the checkbox icon of the clicked button
+                        $clickedButton.find('i').addClass('fa-check-circle');
+                    },
+                    error: function(error) {
+                        document.getElementById('loading-spinner').style.display = 'none';
+                        console.error("Error:", error);
+
+                    }
+                });
+            });
+
+        });
+    </script>
 
     <!-- Modal for Product Details -->
     <div class="modal" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
@@ -93,8 +151,10 @@
 
     <script>
         $(document).ready(function() {
-            $('.view-products').on('click', function() {
+            $(document).on('click', '.view-products', function() {
                 var requistionID = $(this).data('requisition-id');
+                var modalID = $(this).data('modal-id');
+                console.log(requistionID);
 
                 document.getElementById('loading-spinner').style.display = 'block';
                 $.ajax({
@@ -105,7 +165,7 @@
                     },
                     success: function(products) {
                         // Clear any existing content in the modal table
-                        $('#productDetailsTable').html('');
+                        $('#' + modalID + ' #productDetailsTable').html('');
 
                         // Loop through the products and add them to the table
                         for (var i = 0; i < products.length; i++) {
@@ -119,30 +179,26 @@
                             var finalApproveQuantity = product.final_approve_quantity || "";
                             var remarks = product.remarks || "";
 
-
                             // Append the product details to the table
-                            $('#productDetailsTable').append(`
-                                <tr>
-                                    <td>${productName} (${unitName})</td>
-                                    <td class="text-right">${currentStock}</td>
-                                    <td class="text-right">${demandQuantity}</td>
-                                    <td class="text-right">${recommendedQuantity}</td>
-                                    <td class="text-right">${finalApproveQuantity}</td>
-                                    <td>${remarks}</td>
-                                </tr>
-                            `);
+                            $('#' + modalID + ' #productDetailsTable').append(`
+                        <tr>
+                            <td>${productName} (${unitName})</td>
+                            <td class="text-right">${currentStock}</td>
+                            <td class="text-right">${demandQuantity}</td>
+                            <td class="text-right">${recommendedQuantity}</td>
+                            <td class="text-right">${finalApproveQuantity}</td>
+                            <td>${remarks}</td>
+                        </tr>
+                    `);
                         }
                         document.getElementById('loading-spinner').style.display = 'none';
                     },
                     error: function(error) {
                         document.getElementById('loading-spinner').style.display = 'none';
                         console.error("Error:", error);
-
                     }
                 });
-
             });
-
         });
     </script>
 @endsection

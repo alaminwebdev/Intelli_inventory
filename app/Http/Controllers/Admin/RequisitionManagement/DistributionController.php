@@ -68,7 +68,7 @@ class DistributionController extends Controller
         // } else {
         //     $data['sectionRequisitions'] = $this->sectionRequisitionService->getAll(null, null, null, [1, 3]);
         // }
-        $data['sectionRequisitions'] = $this->sectionRequisitionService->getAll(null, null, null, [1, 3]);
+        $data['sectionRequisitions'] = $this->sectionRequisitionService->getAll(null, 1);
 
         return view('admin.requisition-management.distribution-approval.list', $data);
     }

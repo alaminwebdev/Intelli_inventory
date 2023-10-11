@@ -121,6 +121,38 @@ class DefaultController extends Controller
         $data                   = view('admin.requisition-management.distribute.list-by-status')->with('distributeRequisitions', $distributeRequisitions)->render();
         return response()->json($data);
     }
+    public function getRequistionByStatus(Request $request)
+    {
+        $requisitions = $this->sectionRequisitionService->getAll(null,null,null, $request->requistition_status);
+        $data         = view('admin.requisition-management.distribution-approval.list-by-status')->with('requisitions', $requisitions)->render();
+        return response()->json($data);
+    }
+
+
+    public function getRequistionByStatusForRecommender(Request $request)
+    {
+        $user = Auth::user();
+        if ($user->id !== 1 && $user->employee_id) {
+            $employee  = $this->employeeService->getByID($user->employee_id);
+            $sections  = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
+
+            // Extract only the "id" values into a new array
+            $sectionIds = array_map(function ($section) {
+                return $section['id'];
+            }, $sections);
+
+            if ($sectionIds) {
+                $requisitions = $this->sectionRequisitionService->getAll(null,null,$sectionIds, $request->requistition_status);
+            }else{
+                $requisitions = [];
+            }
+
+        } else {
+            $requisitions = $this->sectionRequisitionService->getAll(null,null,null, $request->requistition_status);
+        }
+        $data = view('admin.requisition-management.recommended-requisition.list-by-status')->with('requisitions', $requisitions)->render();
+        return response()->json($data);
+    }
 
     public function requisitionReport($id)
     {

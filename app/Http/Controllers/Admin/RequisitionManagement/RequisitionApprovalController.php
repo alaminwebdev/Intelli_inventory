@@ -43,11 +43,11 @@ class RequisitionApprovalController extends Controller
     }
     public function index()
     {
-        $data['title']                      = 'সুপারিশকৃত চাহিদাপত্রের তালিকা';
-        $user = Auth::user();
+        $data['title']  = 'সুপারিশকৃত চাহিদাপত্রের তালিকা';
+        $user           = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
-            $employee                           = $this->employeeService->getByID($user->employee_id);
-            $sections                           = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
+            $employee  = $this->employeeService->getByID($user->employee_id);
+            $sections  = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
 
             // Extract only the "id" values into a new array
             $sectionIds = array_map(function ($section) {
@@ -55,14 +55,13 @@ class RequisitionApprovalController extends Controller
             }, $sections);
 
             if ($sectionIds) {
-                $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll(null, null, $sectionIds, [0, 1, 2]);
+                $data['sectionRequisitions']   = $this->sectionRequisitionService->getAll(null, null, $sectionIds, [0]);
             }else{
-                $data['sectionRequisitions']        = [];
+                $data['sectionRequisitions']   = [];
             }
 
         } else {
-
-            $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll(null, null, null, [0, 1, 2]);
+            $data['sectionRequisitions']   = $this->sectionRequisitionService->getAll(null, null, null, [0]);
         }
         return view('admin.requisition-management.recommended-requisition.list', $data);
     }
