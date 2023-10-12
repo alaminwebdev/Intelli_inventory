@@ -6,7 +6,7 @@
         <td>{{ @$list->section->department->name ?? 'N/A' }}</td>
         <td class="text-center">{!! requisitionStatus($list->status) !!}</td>
         <td class="text-center">
-            <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id="{{ $list->id }}" data-modal-id="productDetailsModal">
+            <button class="btn btn-sm btn-info view-products" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id="{{ $list->id }}" data-modal-id="productDetailsModal">
                 <i class="far fa-eye"></i>
             </button>
             <a class="btn btn-sm btn-primary" href="{{ route('admin.requisition.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ</a>

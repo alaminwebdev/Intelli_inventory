@@ -4,9 +4,9 @@ use App\Http\Controllers\Admin\DefaultController;
 Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 
 Route::get('/received-products', 'DashboardController@receivedProducts')->name('dashboard.received-products');
-Route::get('/requisition-products', 'DashboardController@requisitionProducts')->name('dashboard.requisition-products');
+// Route::get('/requisition-products', 'DashboardController@requisitionProducts')->name('dashboard.requisition-products');
 Route::get('/stock-in-products', 'DashboardController@stockInProducts')->name('dashboard.stock-in-products');
-Route::get('/distributed-products', 'DashboardController@distributedProducts')->name('dashboard.distributed-products');
+// Route::get('/distributed-products', 'DashboardController@distributedProducts')->name('dashboard.distributed-products');
 
 Route::post('/total-products-in-requisition-by-section', 'DashboardController@getProductsInRequisitionBySection')->name('dashboard.total-products-in-requisition-by-section');
 Route::post('/requisition-info-by-department', 'DashboardController@getRequisitionInfoByDepartment')->name('dashboard.requisition-info-by-department');

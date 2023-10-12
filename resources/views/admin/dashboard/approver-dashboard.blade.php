@@ -143,7 +143,7 @@
                             <div class="card-header text-right border-0 pb-0 pt-3">
                                 <h4 class="card-title">সর্বাধিক চাহিদাকৃত পণ্য <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
                                 <div class="card-tools mr-0 d-flex align-items-center">
-                                    <a href="{{ route('admin.dashboard.requisition-products') }}" class="btn btn-sm btn-light mr-1" style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
+                                    <a href="{{ route('admin.product.statistics') }}" class="btn btn-sm btn-light mr-1" style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
                                     <div class="dropdown show">
                                         <a class="btn btn-sm btn-light" data-toggle="dropdown" href="#" aria-expanded="true" style="margin-right:2rem; padding: 1px 6px;">
                                             <i class="far fa-calendar-alt"></i>

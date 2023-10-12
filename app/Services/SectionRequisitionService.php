@@ -278,9 +278,6 @@ class SectionRequisitionService implements IService
                     $toDate     = date('Y-m-d', strtotime($request['date_to']));
                     $q->whereDate('updated_at', '>=', $fromDate);
                     $q->whereDate('updated_at', '<=', $toDate);
-                } else {
-                    $today_date = date('Y-m-d');
-                    $q->whereDate('updated_at', $today_date);
                 }
             })
             ->when($days, function ($q, $days) {

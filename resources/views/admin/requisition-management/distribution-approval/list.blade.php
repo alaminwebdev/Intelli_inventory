@@ -30,7 +30,7 @@
                                         <th>অনুরোধকৃত শাখা</th>
                                         <th>অনুরোধকৃত দপ্তর</th>
                                         <th>বর্তমান অবস্থা</th>
-                                        <th>অ্যাকশন</th>
+                                        <th width="20%">অ্যাকশন</th>
                                     </tr>
                                 </thead>
                                 <tbody id="requistionProductsTable">

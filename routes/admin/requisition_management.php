@@ -50,5 +50,6 @@ Route::prefix('/distribute')->group(function () {
     Route::get('/list', [DistributionController::class, 'distributeList'])->name('distribute.list');
     Route::get('/edit/{id}', [DistributionController::class, 'productDistributeEdit'])->name('distribute.edit');
     Route::post('/store', [DistributionController::class, 'productDistributeStore'])->name('distribute.store');
+    Route::get('/check-bp-no', [DistributionController::class, 'checkBpNo'])->name('check.bp-no');
 });
 

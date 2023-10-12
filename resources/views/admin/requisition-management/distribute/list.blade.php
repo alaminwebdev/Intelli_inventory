@@ -12,17 +12,13 @@
                         <div class="card-body">
                             <div class="row text-left mb-3">
                                 <div class="col-md-12">
-                                    <a class="btn btn-warning btn-sm distributeListBtn text-white" data-requistition-status="3">
-                                        <i class="fa "></i>
+                                    <a class="btn btn-info btn-sm distributeListBtn" data-requistition-status="3">
+                                        <i class="fa fa-check-circle"></i>
                                         বিতরণের অপেক্ষায় চাহিদাপত্রের তালিকা
                                     </a>
                                     <a class="btn btn-primary btn-sm distributeListBtn" data-requistition-status="4">
                                         <i class="fa "></i>
                                         বিতরণ করা চাহিদাপত্রের তালিকা
-                                    </a>
-                                    <a class="btn btn-info btn-sm distributeListBtn" data-requistition-status="5">
-                                        <i class="fa "></i>
-                                        গ্রহন করা চাহিদাপত্রের তালিকা
                                     </a>
                                 </div>
                             </div>
@@ -46,7 +42,7 @@
                                             <td>{{ @$list->section->department->name ?? 'N/A' }}</td>
                                             <td class="text-center">{!! requisitionStatus($list->status) !!}</td>
                                             <td class="text-center">
-                                                <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id="{{ $list->id }}" data-modal-id="productDetailsModal">
+                                                <button class="btn btn-sm btn-success btn-info view-products" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id="{{ $list->id }}" data-modal-id="productDetailsModal">
                                                     <i class="far fa-eye"></i>
                                                 </button>
                                                 <a class="btn btn-sm btn-primary" href="{{ route('admin.requisition.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ</a>
@@ -72,6 +68,7 @@
     <script>
         $(document).ready(function() {
             $('.distributeListBtn').on('click', function() {
+                var $clickedButton = $(this); 
                 var requistitionStatus = $(this).data('requistition-status');
                 document.getElementById('loading-spinner').style.display = 'block';
                 $.ajax({
@@ -85,16 +82,12 @@
                         // Clear existing table rows
                         $("#requistionProductsTable").empty();
                         $("#requistionProductsTable").html(response);
+                        
+                        // Remove the class from all buttons
+                        $('.distributeListBtn i').removeClass('fa-check-circle');
 
-                        // Toggle the visibility of the checkmark icon for all buttons
-                        $('.distributeListBtn').each(function() {
-                            var icon = $(this).find('i');
-                            if ($(this).data('requistition-status') === requistitionStatus) {
-                                icon.toggleClass('fa-check-circle'); // Toggle the checkmark icon
-                            } else {
-                                icon.removeClass('fa-check-circle'); // Remove the checkmark icon from other buttons
-                            }
-                        });
+                        // Add the class to the checkbox icon of the clicked button
+                        $clickedButton.find('i').addClass('fa-check-circle');
 
                         document.getElementById('loading-spinner').style.display = 'none';
                     },

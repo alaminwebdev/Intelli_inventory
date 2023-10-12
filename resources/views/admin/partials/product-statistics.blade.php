@@ -10,7 +10,7 @@
                             <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-info"><i class="fas fa-tachometer-alt mr-1"></i>ড্যাশবোর্ড</a>
                         </div>
                         <div class="card-body">
-                            <form method="post" action="{{ route('admin.requisition.products') }}" id="filterForm" autocomplete="off">
+                            <form method="post" action="{{ route('admin.product.statistics') }}" id="filterForm" autocomplete="off">
                                 @csrf
                                 <div class="form-row p-3 border rounded shadow-sm mb-3">
                                     <div class="form-group col-md-3">
@@ -49,7 +49,7 @@
                                     </div>
                                     <div class="form-group col-md-2">
                                         <label for="date_to" class="text-navy">শেষ তারিখ :</label>
-                                        <input type="text" value="{{ request()->date_to }}" name="date_to" class="form-control form-control-sm text-gray singledatefromtoday" id="date_to" placeholder="শেষ তারিখ">
+                                        <input type="text" value="{{ request()->date_to }}" name="date_to" class="form-control form-control-sm text-gray singledatepicker" id="date_to" placeholder="শেষ তারিখ">
                                     </div>
                                     <div class="form-group col-md-2">
                                         <label class="control-label d-block" style="visibility: hidden;">Search</label>
@@ -63,13 +63,15 @@
                                         <th width="5%">নং.</th>
                                         <th>পন্য</th>
                                         <th>চাহিদার পরিমান</th>
+                                        <th>বিতরনের পরিমান</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($mostRequestedProducts as $list)
+                                    @foreach ($mostDistributedProducts as $list)
                                         <tr>
                                             <td>{{ en2bn($loop->iteration) }}</td>
                                             <td>{{ @$list['product'] ?? 'N/A' }}</td>
+                                            <td class="text-right">{{ en2bn(@$list['quantity']) ?? 'N/A' }}</td>
                                             <td class="text-right">{{ en2bn(@$list['quantity']) ?? 'N/A' }}</td>
                                         </tr>
                                     @endforeach

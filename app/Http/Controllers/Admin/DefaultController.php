@@ -217,6 +217,7 @@ class DefaultController extends Controller
         $fileName = 'চাহিদাপত্র-' . $data['date_in_bengali'] . '.pdf';
         return $pdf->stream($fileName);
     }
+    
     public function stockReport($id)
     {
         $date                       = new DateTime('now', new DateTimeZone('Asia/Dhaka')); // Set your desired timezone

@@ -245,77 +245,31 @@ class DashboardController extends Controller
         return view('admin.partials.received-products', $data);
     }
 
-    public function requisitionProducts()
-    {
-        $data['title']  = 'সর্বাধিক চাহিদাকৃত পণ্য';
-        $user           = Auth::user();
-        if ($user->id !== 1 && $user->employee_id) {
-            $userRoleIds = UserRole::where('user_id', $user->id)->pluck('role_id');
 
-            // Check the user's role IDs and set the appropriate dashboard
-            foreach ($userRoleIds as $roleId) {
-                switch ($roleId) {
-
-                    case 3: // Role Id 3 = Section Requisition Maker
-                        $data['mostRequestedProducts'] = [];
-                        break;
-                    case 4: // Role Id 4 = Verifier/Recommender
-                        $employee   = $this->employeeService->getByID($user->employee_id);
-                        $sections   = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
-
-                        // Extract only the "id" values into a new array
-                        $sectionIds = array_map(function ($section) {
-                            return $section['id'];
-                        }, $sections);
-
-                        if ($sectionIds) {
-                            $data['mostRequestedProducts']  = $this->sectionRequisitionService->getMostRequestedProducts($sectionIds);
-                        }else{
-                            $data['mostRequestedProducts']  = [];
-                        }
-
-                        break;
-                    case 5: // Role Id 5 = Approver
-                        $data['mostRequestedProducts']  = $this->sectionRequisitionService->getMostRequestedProducts();
-                        break;
-                    case 6: // Role Id 6 = Issuer/Distributor
-                        $data['mostRequestedProducts'] = [];
-                        break;
-                    default:
-                        $data['mostRequestedProducts'] = [];
-                        break;
-                }
-            }
-        } else {
-            $data['mostRequestedProducts']  = $this->sectionRequisitionService->getMostRequestedProducts();
-        }
-
-        return view('admin.partials.requisition-products', $data);
-    }
     public function stockInProducts()
     {
         $data['title']                  = 'সর্বাধিক মজুদকৃত পণ্য ';
         $data['mostStockProducts']      = $this->stockInService->getMostStockProducts();
         return view('admin.partials.stock-products', $data);
     }
-    public function distributedProducts()
-    {
-        $data['title']  = 'সর্বাধিক বিতরণ করা পণ্য';
-        $user           = Auth::user();
-        if ($user->id !== 1 && $user->employee_id) {
-            $employee   = $this->employeeService->getByID($user->employee_id);
-            $sections   = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
+    // public function distributedProducts()
+    // {
+    //     $data['title']  = 'সর্বাধিক বিতরণ করা পণ্য';
+    //     $user           = Auth::user();
+    //     if ($user->id !== 1 && $user->employee_id) {
+    //         $employee   = $this->employeeService->getByID($user->employee_id);
+    //         $sections   = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
 
-            // Extract only the "id" values into a new array
-            $sectionIds = array_map(function ($section) {
-                return $section['id'];
-            }, $sections);
-            $data['mostDistributedProducts'] = $this->distributionService->getMostDistributedProducts($sectionIds);
-        } else {
-            $data['mostDistributedProducts'] = $this->distributionService->getMostDistributedProducts();
-        }
-        return view('admin.partials.distributed-products', $data);
-    }
+    //         // Extract only the "id" values into a new array
+    //         $sectionIds = array_map(function ($section) {
+    //             return $section['id'];
+    //         }, $sections);
+    //         $data['mostDistributedProducts'] = $this->distributionService->getMostDistributedProducts($sectionIds);
+    //     } else {
+    //         $data['mostDistributedProducts'] = $this->distributionService->getMostDistributedProducts();
+    //     }
+    //     return view('admin.partials.distributed-products', $data);
+    // }
 
     public function getProductsInRequisitionBySection(Request $request)
     {

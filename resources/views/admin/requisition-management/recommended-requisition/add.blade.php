@@ -63,7 +63,7 @@
                                                                 <thead style="background: #fff4f4 !important;">
                                                                     <tr>
                                                                         <th>পন্য</th>
-                                                                        <th>বর্তমান মজূদ</th>
+                                                                        <th>শাখায় বর্তমান মজূদ</th>
                                                                         <th>চাহিদার পরিমাণ</th>
                                                                         <th>শাখা - যৌক্তিকতা</th>
                                                                         <th>সুপারিশ পরিমাণ</th>

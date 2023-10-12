@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\RequisitionManagement;
 use App\Http\Controllers\Controller;
 use App\Models\DepartmentRequisition;
 use App\Models\Distribute;
+use App\Models\Employee;
 use App\Models\Section;
 use App\Models\SectionRequisition;
 use App\Models\SectionRequisitionDetails;
@@ -16,6 +17,7 @@ use App\Services\EmployeeService;
 use App\Services\ProductTypeService;
 use App\Services\SectionRequisitionService;
 use App\Services\SectionService;
+use App\Services\DesignationService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +31,7 @@ class DistributionController extends Controller
     private $departmentService;
     private $employeeService;
     private $sectionService;
+    private $designationService;
 
     public function __construct(
         DepartmentRequisitionService $departmentRequisitionService,
@@ -36,7 +39,8 @@ class DistributionController extends Controller
         SectionRequisitionService $sectionRequisitionService,
         DepartmentService $departmentService,
         EmployeeService $employeeService,
-        SectionService $sectionService
+        SectionService $sectionService,
+        DesignationService $designationService
     ) {
         $this->productTypeService           = $productTypeService;
         $this->departmentRequisitionService = $departmentRequisitionService;
@@ -44,6 +48,7 @@ class DistributionController extends Controller
         $this->departmentService            = $departmentService;
         $this->employeeService              = $employeeService;
         $this->sectionService               = $sectionService;
+        $this->designationService           = $designationService;
     }
     public function index()
     {
@@ -85,7 +90,7 @@ class DistributionController extends Controller
 
         $data['title']                      = 'চাহিদাপত্র অনুমোদন করুন';
         $data['editData']                   = $this->sectionRequisitionService->getByID($id);
-        $data['requisition_product_types']  = $this->sectionRequisitionService->getRequisitionProductsWithTypeById($id ,$data['editData']);
+        $data['requisition_product_types']  = $this->sectionRequisitionService->getRequisitionProductsWithTypeById($id, $data['editData']);
         return view('admin.requisition-management.distribution-approval.add', $data);
     }
 
@@ -128,7 +133,7 @@ class DistributionController extends Controller
         // } else {
         //     $data['distributeRequisitions'] = $this->sectionRequisitionService->getAll(null, null, null, [3,4]);
         // }
-        $data['distributeRequisitions'] = $this->sectionRequisitionService->getAll(null, null, null, [3,4]);
+        $data['distributeRequisitions'] = $this->sectionRequisitionService->getAll(null, 3);
         return view('admin.requisition-management.distribute.list', $data);
     }
 
@@ -136,14 +141,36 @@ class DistributionController extends Controller
 
     public function productDistributeEdit($id)
     {
-        $data['title']                      = 'পন্য বিতরণ করুন';
-        $data['editData']                   = $this->sectionRequisitionService->getByID($id);
+        $data['title']          = 'পন্য বিতরণ করুন';
+        $data['editData']       = $this->sectionRequisitionService->getByID($id);
+        $data['designations']   = $this->designationService->getAll(1);
         $data['requisition_product_types']  = $this->sectionRequisitionService->getRequisitionProductsWithTypeById($id, $data['editData']);
         return view('admin.requisition-management.distribute.edit', $data);
     }
 
+
+    public function checkBpNo(Request $request)
+    {
+        $bpNo       = $request->input('bp_no');
+        $employee   = Employee::where('bp_no', $bpNo)->first();
+
+        if ($employee) {
+            return response()->json($employee);
+        } else {
+            return response()->json(null);
+        }
+    }
+
+
     public function productDistributeStore(Request $request)
     {
+        $request->validate([
+            'bp_no'             => 'required',
+            'name'              => 'required',
+            // 'designation_id'    => 'required',
+            'email'             => 'required',
+        ]);
+
         DB::beginTransaction();
 
         try {
@@ -200,11 +227,30 @@ class DistributionController extends Controller
                 }
             }
 
-            SectionRequisition::where('id', $request->section_requisition_id)->update([
-                'distribute_by'  => Auth::id(),
-                'distribute_at'  => Carbon::now(),
-                'status'         => 4,
-            ]);
+            $sectionRequisition = SectionRequisition::findOrFail($request->section_requisition_id);
+
+            if ($request->filled('employee_id')) {
+                $employeeId = $request->employee_id;
+            } else {
+                $newEmployee                    = new Employee();
+                $newEmployee->bp_no             = $request->bp_no;
+                $newEmployee->name              = $request->name;
+                $newEmployee->email             = $request->email;
+                $newEmployee->designation_id    = $request->designation_id;
+                $newEmployee->section_id        = $sectionRequisition->section->id;
+                $newEmployee->department_id     = $sectionRequisition->section->department->id;
+                $newEmployee->save();
+
+                $employeeId = $newEmployee->id;
+            }
+
+            $sectionRequisition->distribute_by  = Auth::id();
+            $sectionRequisition->distribute_at  = Carbon::now();
+            $sectionRequisition->receive_by     = $employeeId;
+            $sectionRequisition->receive_at     = Carbon::now();
+            $sectionRequisition->status         = 4;
+            $sectionRequisition->save();
+
 
             SectionRequisitionDetails::where('section_requisition_id', $request->section_requisition_id)->update([
                 'status' => 4,
