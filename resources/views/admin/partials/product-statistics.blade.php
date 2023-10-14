@@ -67,12 +67,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($mostDistributedProducts as $list)
+                                    @foreach ($productStatistics as $list)
                                         <tr>
-                                            <td>{{ en2bn($loop->iteration) }}</td>
+                                            {{-- <td>{{ en2bn($loop->iteration) }}</td> --}}
+                                            <td>{{ @$list['id'] }}</td>
                                             <td>{{ @$list['product'] ?? 'N/A' }}</td>
-                                            <td class="text-right">{{ en2bn(@$list['quantity']) ?? 'N/A' }}</td>
-                                            <td class="text-right">{{ en2bn(@$list['quantity']) ?? 'N/A' }}</td>
+                                            <td class="text-right">{{ en2bn(@$list['demand_quantity']) ?? 'N/A' }}</td>
+                                            <td class="text-right">{{ en2bn(@$list['distribute_quantity']) ?? 'N/A' }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

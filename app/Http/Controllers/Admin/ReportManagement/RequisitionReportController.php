@@ -103,16 +103,17 @@ class RequisitionReportController extends Controller
                 }
 
                 if ($sectionIds) {
-                    $data['mostDistributedProducts'] = $this->distributionService->getMostDistributedProducts($sectionIds, $request);
+                    $data['productStatistics'] = $this->distributionService->getProductStatistics($sectionIds, $request);
                 } else {
-                    $data['mostDistributedProducts'] = [];
+                    $data['productStatistics'] = [];
                 }
             } else {
-                $data['mostDistributedProducts'] = $this->distributionService->getMostDistributedProducts(null, $request);
+                $data['productStatistics'] = $this->distributionService->getProductStatistics(null, $request);
             }
         } else {
-            $data['mostDistributedProducts'] = $this->distributionService->getMostDistributedProducts();
+            $data['productStatistics'] = $this->distributionService->getProductStatistics();
         }
+        //dd($data['productStatistics']);
 
         return view('admin.partials.product-statistics', $data);
     }
