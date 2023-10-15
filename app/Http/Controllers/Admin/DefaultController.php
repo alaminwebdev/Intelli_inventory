@@ -62,7 +62,7 @@ class DefaultController extends Controller
 
     public function getProductsByType(Request $request)
     {
-        $data = $this->productInformationService->getProductsByTypeId($request->product_type_id);
+        $data = $this->productInformationService->getProductsByTypeId([$request->product_type_id]);
         return response()->json($data);
     }
     public function getSectionsByDepartment(Request $request)

@@ -13,14 +13,34 @@
                             <form method="post" action="{{ route('admin.product.expiring.soon') }}" id="filterForm" autocomplete="off">
                                 @csrf
                                 <div class="form-row p-3 border rounded shadow-sm mb-3">
-                                    <div class="form-group col-md-3">
-                                        <label class="control-label">দিন বাছাই করুন</label>
-                                        <select name="days" id="days" class="form-control select2 ">
+                                    <div class="form-group col-md-2">
+                                        <label class="control-label">দিন বাছাই করুন <span class="text-red">*</span></label>
+                                        <select name="days" id="days" class="form-control select2 " required>
                                             <option value=""> বাছাই করুন </option>
                                             <option value="7" {{ request()->days == 7 ? 'selected' : '' }}> ৭ দিন </option>
                                             <option value="15" {{ request()->days == 15 ? 'selected' : '' }}> ১৫ দিন </option>
                                             <option value="30" {{ request()->days == 30 ? 'selected' : '' }}> ৩০ দিন </option>
                                             <option value="60" {{ request()->days == 60 || !request()->has('days') ? 'selected' : '' }}> ৬০ দিন </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="control-label">পন্যের ধরন</label>
+                                        <select name="product_type_id" id="product_type_id" class="form-control select2">
+                                            <option value="0">All</option>
+                                            @foreach ($product_types as $item)
+                                                <option value="{{ $item->id }}" {{ request()->product_type_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="control-label">পন্য</label>
+                                        <select name="product_information_id" id="product_information_id" class="form-control select2 ">
+                                            <option value="0">All</option>
+                                            @if (request()->product_information_id)
+                                                @foreach ($products as $item)
+                                                    <option value="{{ $item->id }}" {{ request()->product_information_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
+                                                @endforeach
+                                            @endif
                                         </select>
                                     </div>
                                     <div class="form-group col-md-2">
@@ -43,35 +63,24 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php
-                                        $rowNumber = 1; // Initialize row number for the group
-                                    @endphp
-                                    @foreach ($expiringSoonProducts as $poNo => $groupedProducts)
-                                        @foreach ($groupedProducts['products'] as $product)
-                                            <tr>
-                                                <td>{{ en2bn($rowNumber) }}</td>
-                                                @if ($loop->first)
-                                                    <td rowspan="{{ count($groupedProducts['products']) }}">{{ $poNo }}</td>
+                                    @foreach ($expiringSoonProducts as $product)
+                                        <tr>
+                                            <td>{{ en2bn($loop->iteration) }}</td>
+                                            <td>{{ $product->po_no }}</td>
+                                            <td>{{ $product->product }}({{ $product->unit }})</td>
+                                            <td>
+                                                @if ($product->expire_date)
+                                                    @php
+                                                        $expireDate = \Carbon\Carbon::parse($product->expire_date);
+                                                        $daysUntilExpiration = $expireDate->diffInDays(\Carbon\Carbon::now());
+                                                    @endphp
+                                                    {{ en2bn($daysUntilExpiration) . ' দিনের মধ্যে মেয়াদ শেষ হবে' }}
+                                                    {{-- Expire in {{ $daysUntilExpiration }} day{{ $daysUntilExpiration != 1 ? 's' : '' }} --}}
+                                                @else
+                                                    N/A
                                                 @endif
-                                                <td>{{ $product->product }}({{ $product->unit }})</td>
-                                                {{-- <td>{{ $product->expire_date }}</td> --}}
-                                                <td>
-                                                    @if ($product->expire_date)
-                                                        @php
-                                                            $expireDate = \Carbon\Carbon::parse($product->expire_date);
-                                                            $daysUntilExpiration = $expireDate->diffInDays(\Carbon\Carbon::now());
-                                                        @endphp
-                                                        {{ en2bn($daysUntilExpiration) . ' দিনের মধ্যে মেয়াদ শেষ হবে' }}
-                                                        {{-- Expire in {{ $daysUntilExpiration }} day{{ $daysUntilExpiration != 1 ? 's' : '' }} --}}
-                                                    @else
-                                                        N/A
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                            @php
-                                                $rowNumber++; // Increment row number for the group
-                                            @endphp
-                                        @endforeach
+                                            </td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                             </table>
@@ -92,5 +101,31 @@
                 }
             });
         })
+    </script>
+    <script>
+        $(function() {
+
+            $(document).on('change', '#product_type_id', function() {
+                let product_type_id = $(this).val();
+                console.log(product_type_id);
+                $.ajax({
+                    url: "{{ route('admin.get.products.by.type') }}",
+                    type: "GET",
+                    data: {
+                        product_type_id: product_type_id
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        // Handle the data here
+                        let productInformation = document.getElementById('product_information_id');
+                        productInformation.innerHTML = '<option value="0">All</option>';
+                        data.forEach(item => {
+                            productInformation.innerHTML +=
+                                `<option value="${item.id}">${item.name}</option>`;
+                        });
+                    }
+                });
+            });
+        });
     </script>
 @endsection

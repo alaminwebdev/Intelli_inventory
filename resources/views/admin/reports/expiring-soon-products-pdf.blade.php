@@ -39,34 +39,25 @@
             </tr>
         </thead>
         <tbody>
-            @php
-                $rowNumber = 1;
-            @endphp
+
             @if (@$expiringSoonProducts && count(@$expiringSoonProducts) > 0)
-                @foreach ($expiringSoonProducts as $poNo => $groupedProducts)
-                    @foreach ($groupedProducts['products'] as $product)
-                        <tr>
-                            <td>{{ en2bn($rowNumber) }}</td>
-                            @if ($loop->first)
-                                <td rowspan="{{ count($groupedProducts['products']) }}">{{ $poNo }}</td>
+                @foreach ($expiringSoonProducts as $product)
+                    <tr>
+                        <td>{{ en2bn($loop->iteration) }}</td>
+                        <td>{{ $product->po_no }}</td>
+                        <td>{{ $product->product }}({{ $product->unit }})</td>
+                        <td>
+                            @if ($product->expire_date)
+                                @php
+                                    $expireDate = \Carbon\Carbon::parse($product->expire_date);
+                                    $daysUntilExpiration = $expireDate->diffInDays(\Carbon\Carbon::now());
+                                @endphp
+                                {{ en2bn($daysUntilExpiration) . ' দিনের মধ্যে মেয়াদ শেষ হবে' }}
+                            @else
+                                N/A
                             @endif
-                            <td>{{ $product->product }}({{ $product->unit }})</td>
-                            <td>
-                                @if ($product->expire_date)
-                                    @php
-                                        $expireDate = \Carbon\Carbon::parse($product->expire_date);
-                                        $daysUntilExpiration = $expireDate->diffInDays(\Carbon\Carbon::now());
-                                    @endphp
-                                    {{ en2bn($daysUntilExpiration) . ' দিনের মধ্যে মেয়াদ শেষ হবে' }}
-                                @else
-                                    N/A
-                                @endif
-                            </td>
-                        </tr>
-                        @php
-                            $rowNumber++;
-                        @endphp
-                    @endforeach
+                        </td>
+                    </tr>
                 @endforeach
             @endif
         </tbody>

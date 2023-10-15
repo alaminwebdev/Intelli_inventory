@@ -7,7 +7,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.employee.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i> কর্মচারীদের তালিকা</a>
+                            <a href="{{ route('admin.employee.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i> অফিসার্স তালিকা</a>
                         </div>
                         <div class="card-body">
                             <form id="submitForm" action="{{ isset($editData) ? route('admin.employee.update', $editData->id) : route('admin.employee.store') }} " method="post" enctype="multipart/form-data" autocomplete="off">
@@ -65,7 +65,7 @@
                                                 @enderror
                                             </div>
                                             <div class="form-group col-sm-4">
-                                                <label class="control-label">কর্মচারীর নাম <span class="text-red">*</span></label>
+                                                <label class="control-label">নাম <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm name @error('name') is-invalid @enderror" id="name" name="name" value="{{ @$editData->name }}" placeholder="Name">
                                                 @error('name')
                                                     <span class="invalid-feedback" role="alert">

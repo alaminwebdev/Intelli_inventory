@@ -76,10 +76,10 @@ class ProductInformationService implements IService
         }
     }
 
-    public function getProductsByTypeId($id)
+    public function getProductsByTypeId($ids)
     {
         try {
-            $data = ProductInformation::where('product_type_id', $id)->where('status', 1)->latest()->get();
+            $data = ProductInformation::whereIn('product_type_id', $ids)->where('status', 1)->latest()->get();
             return $data;
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -223,7 +223,7 @@ class ProductInformationService implements IService
         return $formattedData;
     }
 
-    public function getExpiringSoonProducts($days)
+    public function getExpiringSoonProducts($productIds, $days)
     {
 
         $today = Carbon::now();
@@ -233,6 +233,7 @@ class ProductInformationService implements IService
             $query->whereNull('expire_date') // Include products with NULL expiration dates
                 ->orWhereBetween('expire_date', [$today, $daysLater]);
         })
+            ->whereIn('stock_in_details.product_information_id', $productIds)
             ->join('product_information', 'product_information.id', 'stock_in_details.product_information_id')
             ->leftjoin('units', 'units.id', 'product_information.unit_id')
             ->select(

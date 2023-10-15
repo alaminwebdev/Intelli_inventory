@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\ReportManagement;
 
 use App\Http\Controllers\Controller;
 use App\Models\Department;
+use App\Models\ProductInformation;
 use App\Models\Section;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
@@ -19,6 +20,7 @@ use App\Services\SectionRequisitionService;
 use App\Services\DepartmentService;
 use App\Services\DistributionService;
 use App\Services\ProductInformationService;
+use App\Services\ProductTypeService;
 use Illuminate\Support\Facades\Auth;
 
 class RequisitionReportController extends Controller
@@ -31,6 +33,7 @@ class RequisitionReportController extends Controller
     private $departmentService;
     private $distributionService;
     private $productInformationService;
+    private $productTypeService;
 
     public function __construct(
         CurrentStockService $currentStockService,
@@ -39,7 +42,8 @@ class RequisitionReportController extends Controller
         SectionRequisitionService $sectionRequisitionService,
         DepartmentService $departmentService,
         DistributionService $distributionService,
-        ProductInformationService $productInformationService
+        ProductInformationService $productInformationService,
+        ProductTypeService $productTypeService
 
     ) {
         $this->currentStockService          = $currentStockService;
@@ -49,6 +53,7 @@ class RequisitionReportController extends Controller
         $this->departmentService            = $departmentService;
         $this->distributionService          = $distributionService;
         $this->productInformationService    = $productInformationService;
+        $this->productTypeService           = $productTypeService;
     }
 
     public function getProductStatistics(Request $request)
@@ -127,63 +132,51 @@ class RequisitionReportController extends Controller
 
     public function getExpiringSoonProducts(Request $request){
         $data['title']          = 'শীঘ্রই মেয়াদ উত্তীর্ণ হবে পণ্য';
+        $data['product_types']  = $this->productTypeService->getAll(1);
+
 
         if ($request->isMethod('post')){
-            if ($request['days'] != null ){
-                $expiringSoonProducts   = $this->productInformationService->getExpiringSoonProducts($request['days']);
+
+            if ($request->product_type_id != 0){
+                if ($request->product_information_id !=0) {
+                    $data['products'] = ProductInformation::where('id',$request->product_information_id)->get();
+
+                    $productIds = [$request->product_information_id];
+                }else{
+                    $data['products'] = $this->productInformationService->getProductsByTypeId([$request->product_type_id]);
+                    
+                    $productIds = $data['products']->pluck('id');
+                }
             }else{
-                $expiringSoonProducts   = [];
+                $data['products'] = $this->productInformationService->getProductsByTypeId($data['product_types']->pluck('id'));
+
+                $productIds = $data['products']->pluck('id');
+            }
+
+
+            if ($request['days'] != null ){
+                $data['expiringSoonProducts']   = $this->productInformationService->getExpiringSoonProducts($productIds, $request['days']);
+            }else{
+                $data['expiringSoonProducts']   = [];
             }
             if ($request->type == 'pdf') {
                 $date                   = new DateTime('now', new DateTimeZone('Asia/Dhaka'));
                 $formatter              = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
                 $formatter->setPattern('d-MMMM-y'); // Customize the date format if needed
-                $date_in_bengali = $formatter->format($date);
+                $data['date_in_bengali'] = $formatter->format($date);
                 
-                return $this->expiringSoonProductsPdfDownload($date_in_bengali, $expiringSoonProducts);
+                return $this->expiringSoonProductsPdfDownload($data);
             }
         }else{
-            $expiringSoonProducts   = $this->productInformationService->getExpiringSoonProducts(60);
+            $data['products']               = $this->productInformationService->getProductsByTypeId($data['product_types']->pluck('id'));
+            $productIds                     = $data['products']->pluck('id');
+            $data['expiringSoonProducts']   = $this->productInformationService->getExpiringSoonProducts($productIds, 60);
         }
-
-        $formattedProducts = [];
-
-        foreach ($expiringSoonProducts  as $product) {
-            $po_no = $product['po_no'];
-    
-            if (!isset($formattedProducts[$po_no])) {
-                $formattedProducts[$po_no] = [
-                    'po_no' => $po_no,
-                    'products' => [],
-                ];
-            }
-    
-            $formattedProducts[$po_no]['products'][] = $product;
-        }
-
-        $data['expiringSoonProducts'] = $formattedProducts;
         return view('admin.reports.expiring-soon-products', $data);
     }
 
-    private function expiringSoonProductsPdfDownload($date_in_bengali, $expiringSoonProducts)
+    private function expiringSoonProductsPdfDownload($data)
     {
-        $data['date_in_bengali'] = $date_in_bengali;
-        $formattedProducts = [];
-
-        foreach ($expiringSoonProducts  as $product) {
-            $po_no = $product['po_no'];
-    
-            if (!isset($formattedProducts[$po_no])) {
-                $formattedProducts[$po_no] = [
-                    'po_no' => $po_no,
-                    'products' => [],
-                ];
-            }
-    
-            $formattedProducts[$po_no]['products'][] = $product;
-        }
-        $data['expiringSoonProducts'] = $formattedProducts;
-        
         // Generate a PDF
         $pdf = PDF::loadView('admin.reports.expiring-soon-products-pdf', $data);
         $pdf->SetProtection(['copy', 'print'], '', 'pass');
