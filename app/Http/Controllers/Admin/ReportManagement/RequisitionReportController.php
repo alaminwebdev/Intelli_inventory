@@ -131,7 +131,7 @@ class RequisitionReportController extends Controller
     }
 
     public function getExpiringSoonProducts(Request $request){
-        $data['title']          = 'শীঘ্রই মেয়াদ উত্তীর্ণ হবে পণ্য';
+        $data['title']          = 'শীঘ্রই মেয়াদ উত্তীর্ণ হওয়া পণ্য';
         $data['product_types']  = $this->productTypeService->getAll(1);
 
 
@@ -139,7 +139,7 @@ class RequisitionReportController extends Controller
 
             if ($request->product_type_id != 0){
                 if ($request->product_information_id !=0) {
-                    $data['products'] = ProductInformation::where('id',$request->product_information_id)->get();
+                    $data['products'] = $this->productInformationService->getProductsByTypeId([$request->product_type_id]);
 
                     $productIds = [$request->product_information_id];
                 }else{
@@ -180,7 +180,7 @@ class RequisitionReportController extends Controller
         // Generate a PDF
         $pdf = PDF::loadView('admin.reports.expiring-soon-products-pdf', $data);
         $pdf->SetProtection(['copy', 'print'], '', 'pass');
-        $fileName = 'মেয়াদ উত্তীর্ণ হবে পণ্য -' . $data['date_in_bengali'] . '.pdf';
+        $fileName = 'মেয়াদ উত্তীর্ণ হওয়া পণ্য -' . $data['date_in_bengali'] . '.pdf';
         return $pdf->stream($fileName);
     }
 }

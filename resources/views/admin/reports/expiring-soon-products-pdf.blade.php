@@ -1,7 +1,7 @@
 @extends('admin.layouts.pdf')
 
 @section('pdf-title')
-    মেয়াদ উত্তীর্ণ হবে পণ্য- {{ $date_in_bengali }}
+    মেয়াদ উত্তীর্ণ হওয়া পণ্য- {{ $date_in_bengali }}
 @endsection
 
 @section('pdf-header')
@@ -24,7 +24,7 @@
 @section('pdf-content')
     <div style="margin-top: 10px; font-size: 12px;">
         <div style="width:100%">
-            <p style="margin: 0; width:50%; float:left;">শীঘ্রই মেয়াদ উত্তীর্ণ হবে পণ্য</p>
+            <p style="margin: 0; width:50%; float:left;">শীঘ্রই মেয়াদ উত্তীর্ণ হওয়া পণ্য</p>
             <p style="margin: 0; width:50%; float:right; text-align:right">তারিখ : {{ $date_in_bengali }}</p>
         </div>
     </div>
