@@ -5,10 +5,13 @@ namespace App\Services;
 use App\Models\ProductInformation;
 use App\Models\ProductPoInfo;
 use App\Models\ProductType;
+use App\Models\SectionRequisition;
+use App\Models\SectionRequisitionDetails;
 use App\Models\StockInDetail;
 use App\Services\IService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 /**
  * Class ProductInformationService
@@ -162,5 +165,84 @@ class ProductInformationService implements IService
         $user = ProductInformation::find($id);
         $user->delete();
         return true;
+    }
+
+    public function getProductStatistics($section_ids = null, $request = null)
+    {
+
+        // Initialize an empty array to store the formatted data
+        $formattedData = [];
+
+        $totalSectionRequisition = SectionRequisition::when($section_ids, function ($q, $section_ids) {
+            $q->whereIn('section_id', $section_ids);
+        })
+            ->when($request, function ($q, $request) {
+                if (($request['date_from'] != null || $request['date_to'] != null)) {
+                    $fromDate   = date('Y-m-d', strtotime($request['date_from']));
+                    $toDate     = date('Y-m-d', strtotime($request['date_to']));
+                    $q->whereDate('updated_at', '>=', $fromDate);
+                    $q->whereDate('updated_at', '<=', $toDate);
+                }
+            })
+            ->pluck('id');
+
+
+        if ($totalSectionRequisition) {
+            $productStatistics = SectionRequisitionDetails::whereIn('section_requisition_details.section_requisition_id', $totalSectionRequisition)
+                ->join('product_information', 'product_information.id', 'section_requisition_details.product_id')
+                ->leftjoin('units', 'units.id', 'product_information.unit_id')
+                ->leftjoin('distributes', function ($join) {
+                    $join->on('distributes.product_id', '=', 'product_information.id')
+                        ->on('distributes.section_requisition_id', '=', 'section_requisition_details.section_requisition_id');
+                })
+                ->select(
+                    'section_requisition_details.product_id as product_id',
+                    'product_information.name as product',
+                    'units.name as unit',
+                    DB::raw('SUM(distributes.distribute_quantity) as total_distribute_qty'),
+                    DB::raw('SUM(demand_quantity) as total_demand_quantity')
+                )
+                ->groupBy('section_requisition_details.product_id', 'product_information.name', 'units.name')
+                ->orderByDesc('total_distribute_qty')
+                ->get();
+
+
+
+            // Iterate through the retrieved data and format it
+            foreach ($productStatistics as $product) {
+                $formattedData[] = [
+                    'id'                    => $product->product_id,
+                    'product'               => $product->product . ' (' . $product->unit . ')',
+                    'demand_quantity'       => (int) $product->total_demand_quantity,
+                    'distribute_quantity'   => (int) $product->total_distribute_qty,
+                ];
+            }
+        }
+
+        // Return the formatted data
+        return $formattedData;
+    }
+
+    public function getExpiringSoonProducts($days)
+    {
+
+        $today = Carbon::now();
+        $daysLater = $today->copy()->addDays($days);
+
+        $expiringProducts = StockInDetail::where(function ($query) use ($today, $daysLater) {
+            $query->whereNull('expire_date') // Include products with NULL expiration dates
+                ->orWhereBetween('expire_date', [$today, $daysLater]);
+        })
+            ->join('product_information', 'product_information.id', 'stock_in_details.product_information_id')
+            ->leftjoin('units', 'units.id', 'product_information.unit_id')
+            ->select(
+                'product_information_id',
+                'product_information.name as product',
+                'units.name as unit',
+                'stock_in_details.expire_date as expire_date',
+                'stock_in_details.po_no as po_no'
+            )
+            ->get();
+        return $expiringProducts;
     }
 }

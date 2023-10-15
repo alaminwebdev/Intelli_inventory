@@ -13,7 +13,7 @@
                             <form method="post" action="{{ route('admin.product.statistics') }}" id="filterForm" autocomplete="off">
                                 @csrf
                                 <div class="form-row p-3 border rounded shadow-sm mb-3">
-                                    <div class="form-group col-md-3">
+                                    <div class="form-group col-md-2">
                                         <label class="control-label">দপ্তর <span class="text-red">*</span></label>
                                         <select name="department_id" id="department_id" class="form-control @error('department_id') is-invalid @enderror select2 ">
                                             <option value="0">All</option>
@@ -27,14 +27,14 @@
                                             </span>
                                         @enderror
                                     </div>
-                                    <div class="form-group col-md-3">
+                                    <div class="form-group col-md-2">
                                         <label class="control-label">শাখা </label>
                                         <select name="section_id" id="section_id" class="form-control select2 @error('section_id') is-invalid @enderror">
                                             <option value="0">All</option>
                                             {{-- @if (request()->section_id) --}}
-                                                @foreach ($sections as $item)
-                                                    <option value="{{ $item->id }}" {{ request()->section_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
-                                                @endforeach
+                                            @foreach ($sections as $item)
+                                                <option value="{{ $item->id }}" {{ request()->section_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
+                                            @endforeach
                                             {{-- @endif --}}
                                         </select>
                                         @error('section_id')
@@ -45,7 +45,7 @@
                                     </div>
                                     <div class="form-group col-md-2">
                                         <label for="date_from" class="text-navy">শুরুর তারিখ :</label>
-                                        <input  type="text" value="{{ request()->date_from }}" name="date_from" class="form-control form-control-sm text-gray singledatepicker" id="date_from" placeholder="শুরুর তারিখ">
+                                        <input type="text" value="{{ request()->date_from }}" name="date_from" class="form-control form-control-sm text-gray singledatepicker" id="date_from" placeholder="শুরুর তারিখ">
                                     </div>
                                     <div class="form-group col-md-2">
                                         <label for="date_to" class="text-navy">শেষ তারিখ :</label>
@@ -53,7 +53,11 @@
                                     </div>
                                     <div class="form-group col-md-2">
                                         <label class="control-label d-block" style="visibility: hidden;">Search</label>
-                                        <button type="submit" name="type" value="search" class="btn btn-success btn-sm btn-block">Search</button>
+                                        <button type="submit" name="type" value="search" class="btn btn-success btn-sm btn-block">খুজুন</button>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label class="control-label d-block" style="visibility: hidden;">PDF</label>
+                                        <button type="submit" name="type" value="pdf" class="btn btn-info btn-sm btn-block"><i class="fas fa-file-pdf mr-1"></i>পিডিএফ</button>
                                     </div>
                                 </div>
                             </form>
@@ -69,8 +73,7 @@
                                 <tbody>
                                     @foreach ($productStatistics as $list)
                                         <tr>
-                                            {{-- <td>{{ en2bn($loop->iteration) }}</td> --}}
-                                            <td>{{ @$list['id'] }}</td>
+                                            <td>{{ en2bn($loop->iteration) }}</td>
                                             <td>{{ @$list['product'] ?? 'N/A' }}</td>
                                             <td class="text-right">{{ en2bn(@$list['demand_quantity']) ?? 'N/A' }}</td>
                                             <td class="text-right">{{ en2bn(@$list['distribute_quantity']) ?? 'N/A' }}</td>
@@ -109,5 +112,17 @@
                 });
             });
         });
+    </script>
+    <script>
+        $(function() {
+            $(document).on('click', '[name=type]', function(e) {
+                var type = $(this).attr('value');
+                if (type == 'pdf') {
+                    $('#filterForm').attr('target', '_blank');
+                } else {
+                    $('#filterForm').removeAttr('target');
+                }
+            });
+        })
     </script>
 @endsection

@@ -8,6 +8,7 @@ Route::match(['get', 'post'], '/current-stock-in-list', [CurrentStockController:
 Route::get('/requisition-report/{id}', [DefaultController::class, 'requisitionReport'])->name('requisition.report');
 Route::get('/stock-report/{id}', [DefaultController::class, 'stockReport'])->name('stock.report');
 Route::match(['get', 'post'], '/product-statistics', [RequisitionReportController::class, 'getProductStatistics'])->name('product.statistics');
+Route::match(['get', 'post'], '/expiring-soon-products', [RequisitionReportController::class, 'getExpiringSoonProducts'])->name('product.expiring.soon');
 
 
 
