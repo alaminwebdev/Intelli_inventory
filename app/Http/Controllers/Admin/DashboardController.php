@@ -68,7 +68,7 @@ class DashboardController extends Controller
                         if ($employee->section_id) {
                             $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll($employee->section_id, null, null, null, 10);
                             $data['pendingRequistion']          = SectionRequisition::where('section_id', $employee->section_id)->whereIn('status', [0, 1, 3, 4])->count();
-                            $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, [$employee->section_id], 10, 5, 7);
+                            $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, [$employee->section_id], 10, 4, 7);
                         } else {
                             $sections = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
 
@@ -80,7 +80,7 @@ class DashboardController extends Controller
                             if ($sectionIds) {
                                 $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll(null, null, $sectionIds, null, 10);
                                 $data['pendingRequistion']          = SectionRequisition::whereIn('section_id', $sectionIds)->whereIn('status', [0, 1, 3, 4])->count();
-                                $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, $sectionIds, 10, 5, 7);
+                                $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, $sectionIds, 10, 4, 7);
                             } else {
                                 $data['sectionRequisitions']        = [];
                                 $data['sectionRequisitionProducts'] = [];
@@ -102,7 +102,7 @@ class DashboardController extends Controller
                         if ($sectionIds) {
                             $data['sectionRequisitions']        = $this->sectionRequisitionService->getAll(null, null, $sectionIds, null, 10);
                             $data['pendingRequistion']          = SectionRequisition::whereIn('section_id', $sectionIds)->where('status', 0)->count();
-                            $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, $sectionIds, 10, 5, 7);
+                            $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, $sectionIds, 10, 4, 7);
                             $data['mostRequestedProducts']      = $this->sectionRequisitionService->getMostRequestedProducts($sectionIds, null, 10, 7);
                             $data['totalProductsInRequisition'] = $this->sectionRequisitionService->getProductsInRequisitionBySection(null, $sectionIds);
                         } else {
@@ -118,7 +118,7 @@ class DashboardController extends Controller
                         $dashboard                              = 'admin.dashboard.approver-dashboard';
                         $data['sectionRequisitions']            = $this->sectionRequisitionService->getAll(null, null, null, null, 10);
                         $data['pendingRequistion']              = SectionRequisition::where('status', 1)->count();
-                        $data['sectionRequisitionProducts']     = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, null, 10, 5, 7);
+                        $data['sectionRequisitionProducts']     = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, null, 10, 4, 7);
                         $data['mostRequestedProducts']          = $this->sectionRequisitionService->getMostRequestedProducts(null, null, 10, 7);
                         $data['requisitionInfoByDepartment']    = $this->sectionRequisitionService->getRequisitionInfoByDepartment();
                         $data['mostStockProducts']              = $this->stockInService->getMostStockProducts(null, 10, 7);
@@ -135,7 +135,7 @@ class DashboardController extends Controller
                         $dashboard = 'admin.dashboard.dashboard';
                         $data['sectionRequisitions']            = $this->sectionRequisitionService->getAll(null, null, null, null, 10);
                         $data['pendingRequistion']              = SectionRequisition::count();
-                        $data['sectionRequisitionProducts']     = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, null, 10, 5, 7);
+                        $data['sectionRequisitionProducts']     = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, null, 10, 4, 7);
                         $data['mostRequestedProducts']          = $this->sectionRequisitionService->getMostRequestedProducts(null, null, 10, 7);
                         $data['requisitionInfoByDepartment']    = $this->sectionRequisitionService->getRequisitionInfoByDepartment();
                         $data['totalProductsInRequisition']     = $this->sectionRequisitionService->getProductsInRequisitionBySection();
@@ -147,7 +147,7 @@ class DashboardController extends Controller
             $dashboard = 'admin.dashboard.dashboard';
             $data['sectionRequisitions']            = $this->sectionRequisitionService->getAll(null, null, null, null, 10);
             $data['pendingRequistion']              = SectionRequisition::count();
-            $data['sectionRequisitionProducts']     = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, null, 10, 5, 7);
+            $data['sectionRequisitionProducts']     = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, null, 10, 4, 7);
             $data['mostRequestedProducts']          = $this->sectionRequisitionService->getMostRequestedProducts(null, null, 10, 7);
             $data['requisitionInfoByDepartment']    = $this->sectionRequisitionService->getRequisitionInfoByDepartment();
             $data['totalProductsInRequisition']     = $this->sectionRequisitionService->getProductsInRequisitionBySection();
@@ -177,7 +177,7 @@ class DashboardController extends Controller
                         $employee = $this->employeeService->getByID($user->employee_id);
 
                         if ($employee->section_id) {
-                            $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, [$employee->section_id], null, 5);
+                            $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, [$employee->section_id], null, 4);
                         } else {
                             $sections = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
 
@@ -187,7 +187,7 @@ class DashboardController extends Controller
                             }, $sections);
 
                             if ($sectionIds) {
-                                $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, $sectionIds, null, 5);
+                                $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, $sectionIds, null, 4);
                             } else {
                                 $data['sectionRequisitionProducts'] = [];
                             }
@@ -205,14 +205,14 @@ class DashboardController extends Controller
                         }, $sections);
 
                         if ($sectionIds) {
-                            $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, $sectionIds, null, 5);
+                            $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, $sectionIds, null, 4);
                         } else {
                             $data['sectionRequisitionProducts'] = [];
                         }
 
                         break;
                     case 5: // Role Id 5 = Approver
-                        $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, null, null, 5);
+                        $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, null, null, 4);
                         break;
                     case 6: // Role Id 6 = Issuer/Distributor
                         $data['sectionRequisitionProducts'] = [];
@@ -223,7 +223,7 @@ class DashboardController extends Controller
                 }
             }
         } else {
-            $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, null, null, 5);
+            $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, null, null, 4);
         }
         return view('admin.partials.received-products', $data);
     }
@@ -345,19 +345,20 @@ class DashboardController extends Controller
                         $data = [];
                         break;
                     case 6: // Role Id 6 = Issuer/Distributor
-                        $employee   = $this->employeeService->getByID($user->employee_id);
-                        $sections   = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
+                        // $employee   = $this->employeeService->getByID($user->employee_id);
+                        // $sections   = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
 
-                        // Extract only the "id" values into a new array
-                        $sectionIds = array_map(function ($section) {
-                            return $section['id'];
-                        }, $sections);
+                        // // Extract only the "id" values into a new array
+                        // $sectionIds = array_map(function ($section) {
+                        //     return $section['id'];
+                        // }, $sections);
     
-                        if ($sectionIds) {
-                            $data = $this->distributionService->getMostDistributedProducts($sectionIds, $request);
-                        }else{
-                            $data = [];
-                        }
+                        // if ($sectionIds) {
+                        //     $data = $this->distributionService->getMostDistributedProducts($sectionIds, $request);
+                        // }else{
+                        //     $data = [];
+                        // }
+                        $data = $this->distributionService->getMostDistributedProducts(null, $request);
                         break;
                     default:
                         $data = [];
