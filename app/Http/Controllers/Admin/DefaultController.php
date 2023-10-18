@@ -7,6 +7,7 @@ use App\Models\DepartmentRequisitionDetails;
 use App\Models\Distribute;
 use App\Models\ProductInformation;
 use App\Models\SectionRequisitionDetails;
+use App\Models\UserRole;
 use Illuminate\Http\Request;
 
 use App\Services\ProductInformationService;
@@ -133,18 +134,29 @@ class DefaultController extends Controller
     {
         $user = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
-            $employee  = $this->employeeService->getByID($user->employee_id);
-            $sections  = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
+            $userRoleIds    = UserRole::where('user_id', $user->id)->pluck('role_id')->toArray();
+            $is_super_admin = in_array(2, $userRoleIds); // Role Id 2 = Super Admin
+            $is_maker       = in_array(3, $userRoleIds); // Role Id 3 = Section Requisition Maker
+            $is_recommender = in_array(4, $userRoleIds); // Role Id 4 = Verifier/Recommender
+            $is_approver    = in_array(5, $userRoleIds); // Role Id 5 = Approver
+            $is_distributor = in_array(6, $userRoleIds); // Role Id 6 = Issuer/Distributor
 
-            // Extract only the "id" values into a new array
-            $sectionIds = array_map(function ($section) {
-                return $section['id'];
-            }, $sections);
-
-            if ($sectionIds) {
-                $requisitions = $this->sectionRequisitionService->getAll(null,null,$sectionIds, $request->requistition_status);
+            if ($is_super_admin) {
+                $requisitions = $this->sectionRequisitionService->getAll(null,null,null, $request->requistition_status);
             }else{
-                $requisitions = [];
+                $employee  = $this->employeeService->getByID($user->employee_id);
+                $sections  = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
+    
+                // Extract only the "id" values into a new array
+                $sectionIds = array_map(function ($section) {
+                    return $section['id'];
+                }, $sections);
+    
+                if ($sectionIds) {
+                    $requisitions = $this->sectionRequisitionService->getAll(null,null,$sectionIds, $request->requistition_status);
+                }else{
+                    $requisitions = [];
+                }
             }
 
         } else {
