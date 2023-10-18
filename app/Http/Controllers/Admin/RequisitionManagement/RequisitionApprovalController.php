@@ -7,6 +7,7 @@ use App\Models\DepartmentRequisitionDetails;
 use App\Models\ProductInformation;
 use App\Models\Section;
 use App\Models\SectionRequisitionDetails;
+use App\Models\UserRole;
 use Illuminate\Http\Request;
 use App\Services\ProductTypeService;
 use App\Services\DepartmentRequisitionService;
@@ -46,6 +47,13 @@ class RequisitionApprovalController extends Controller
         $data['title']  = 'সুপারিশকৃত চাহিদাপত্রের তালিকা';
         $user           = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
+            $userRoleIds    = UserRole::where('user_id', $user->id)->pluck('role_id')->toArray();
+            $is_super_admin = in_array(2, $userRoleIds); // Role Id 2 = Super Admin
+            $is_maker       = in_array(3, $userRoleIds); // Role Id 3 = Section Requisition Maker
+            $is_recommender = in_array(4, $userRoleIds); // Role Id 4 = Verifier/Recommender
+            $is_approver    = in_array(5, $userRoleIds); // Role Id 5 = Approver
+            $is_distributor = in_array(6, $userRoleIds); // Role Id 6 = Issuer/Distributor
+            
             $employee  = $this->employeeService->getByID($user->employee_id);
             $sections  = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
 

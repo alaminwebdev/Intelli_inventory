@@ -42,7 +42,7 @@ class SectionRequisitionController extends Controller
         $user = Auth::user();
 
         if ($user->id !== 1 && $user->employee_id) {
-            $userRoleIds = UserRole::where('user_id', $user->id)->pluck('role_id')->toArray();
+            $userRoleIds    = UserRole::where('user_id', $user->id)->pluck('role_id')->toArray();
             $is_super_admin = in_array(2, $userRoleIds); // Role Id 2 = Super Admin
             $is_maker       = in_array(3, $userRoleIds); // Role Id 3 = Section Requisition Maker
             $is_recommender = in_array(4, $userRoleIds); // Role Id 4 = Verifier/Recommender
@@ -105,8 +105,15 @@ class SectionRequisitionController extends Controller
 
             $user = Auth::user();
             if ($user->id !== 1 && $user->employee_id) {
-                $data['employee']           = $this->employeeService->getByID($user->employee_id);
-                $data['sections']           = $this->sectionService->getSectionsByDepartment($data['employee']->department_id);
+                $userRoleIds = UserRole::where('user_id', $user->id)->pluck('role_id')->toArray();
+                $is_super_admin = in_array(2, $userRoleIds); // Role Id 2 = Super Admin
+                if ($is_super_admin) {
+                    $data['employee']           = [];
+                    $data['sections']           = $this->sectionService->getAll();
+                }else{
+                    $data['employee']           = $this->employeeService->getByID($user->employee_id);
+                    $data['sections']           = $this->sectionService->getSectionsByDepartment($data['employee']->department_id);
+                }
             } else {
                 $data['employee']           = [];
                 $data['sections']           = $this->sectionService->getAll();
