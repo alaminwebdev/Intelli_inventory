@@ -218,7 +218,7 @@ class DashboardController extends Controller
                         $data['sectionRequisitionProducts'] = [];
                         break;
                     default:
-                        $data['sectionRequisitionProducts'] = [];
+                        $data['sectionRequisitionProducts'] = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, null, null, 4);
                         break;
                 }
             }

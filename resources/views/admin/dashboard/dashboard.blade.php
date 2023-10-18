@@ -340,7 +340,7 @@
                         <div class="card shadow-sm">
                             <div class="card-header text-right border-0">
                                 <h4 class="card-title">চাহিদাপত্র <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
-                                <a href="{{ route('admin.recommended.requisition.list') }}" class="btn btn-sm btn-light" style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
+                                <a href="{{ route('admin.section.requisition.list') }}" class="btn btn-sm btn-light" style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
                             </div>
                             <div class="card-body pt-0">
                                 <table class="table">
