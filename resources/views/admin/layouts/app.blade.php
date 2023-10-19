@@ -163,6 +163,18 @@
         .am5exporting-list.am5exporting-align-right {
             margin-right: 45px !important;
         }
+
+        .modal {
+            background-color: rgba(255, 255, 255, 0.28);
+            -webkit-backdrop-filter: blur(0.5px);
+            backdrop-filter: blur(0.5px);
+        }
+
+        .modal-content {
+            border: none;
+            border-radius: .8rem;
+            box-shadow: 0 0.5rem 20rem rgb(0 0 0 / 17%);
+        }
         
     </style>
 
