@@ -16,7 +16,7 @@
         }
 
         .card-container.card {
-            max-width: 350px;
+            max-width: 400px;
             padding: 40px 40px;
         }
 
@@ -85,8 +85,11 @@
                         </span>
                         @enderror
                     </div>
-                    <div class="form-group col-sm-12">                        
-                        <button type="submit" class="btn btn-primary btn-block">
+                    <div class="form-group col-sm-4" style="padding-right: 0;">                        
+                        <a href="{{ route('admin.login') }}" class="btn btn-warning btn-block" style="cursor:pointer;">Back</a>
+                    </div>
+                    <div class="form-group col-sm-8">                        
+                        <button type="submit" class="btn btn-primary btn-block" style="cursor:pointer;">
                             {{ __('Send Password Reset Link') }}
                         </button>
                     </div>

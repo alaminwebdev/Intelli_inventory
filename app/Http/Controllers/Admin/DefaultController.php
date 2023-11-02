@@ -47,7 +47,7 @@ class DefaultController extends Controller
         SectionRequisitionService $sectionRequisitionService,
         EmployeeService $employeeService,
         DepartmentRequisitionService $departmentRequisitionService,
-        StockInService $stockInService,
+        StockInService $stockInService
 
     ) {
         $this->productInformationService    = $productInformationService;
