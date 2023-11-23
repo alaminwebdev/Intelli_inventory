@@ -44,7 +44,7 @@ class LoginController extends Controller
 
     public function showLoginForm()
     {
-        $data = ['url' => route(getGuard().'.login'), 'title'=>(getGuard() == 'admin')?'Admin':'Member'];
+        $data = ['url' => route(getGuard() . '.login'), 'title' => (getGuard() == 'admin') ? 'Admin' : 'Member'];
         return view('auth.login', $data);
     }
 
@@ -55,19 +55,27 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
 
-        if(strlen($request->user) == '11'){
+        if (strlen($request->user) == '11') {
             $user = 'mobile_no';
             $request->merge(['mobile_no' => $request->user]);
-        }else{
+        } else {
             $user = 'email';
             $request->merge(['email' => $request->user]);
         }
 
-        if (Auth::attempt($request->only([$user,'password']), $request->get('remember'))){
-            return redirect()->route(getGuard().'.dashboard');
+        if (Auth::attempt($request->only([$user, 'password']), $request->get('remember'))) {
+            // return redirect()->route(getGuard() . '.dashboard');
+            
+            // Check if the user is active (status is 1)
+            if (Auth::user()->status == 1) {
+                return redirect()->route(getGuard() . '.dashboard');
+            } else {
+                Auth::logout(); // Log out the user if not active
+                return redirect()->back()->with('login_error', 'Your account is not active. Please contact support.');
+            }
         }
 
-        return redirect()->back()->with('login_error','Your user information or password is incorrect');
+        return redirect()->back()->with('login_error', 'Your user information or password is incorrect');
     }
 
     public function logout(Request $request)
@@ -77,7 +85,6 @@ class LoginController extends Controller
         $request->session()->regenerateToken();
         return $request->wantsJson()
             ? new JsonResponse([], 204)
-            : redirect()->route(getGuard().'.login');
+            : redirect()->route(getGuard() . '.login');
     }
-
 }

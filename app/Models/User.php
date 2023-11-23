@@ -46,6 +46,9 @@ class User extends Authenticatable
     public function designation() {
         return $this->belongsTo(Designation::class, 'designation_id', 'id' );
     }
+    public function employee() {
+        return $this->belongsTo(Employee::class, 'employee_id', 'id' );
+    }
 
 
     public function user_roles() {

@@ -14,4 +14,7 @@ class Employee extends Model
     public function section() {
         return $this->hasOne(Section::class, 'id', 'section_id' );
     }
+    public function employee_designation() {
+        return $this->hasOne(EmployeeDesignation::class, 'id', 'designation_id' );
+    }
 }
