@@ -362,12 +362,16 @@ class SectionRequisitionService implements IService
             // Format the data with unique section names
             // dd($sectionTotals);
             foreach ($sectionTotals as $sectionName => $totals) {
-                // dd($sectionName);
+
                 $sections = explode(" ", $sectionName);
+                $firstWord = $sections[0] ?? ''; // Get the first word
+
+                // If there are more words, append "..." to the first word
+                $sectionShort = count($sections) > 1 ? $firstWord . '...' : $firstWord;
 
                 $formattedData[] = [
-                    'section'     => $sectionName,
-                    'section_short'     => $sections[0] ?? '',
+                    'section'           => $sectionName,
+                    'section_short'     => $sectionShort,
                     'totalRequisitions' => $totals['totalRequisitions'],
                     'totalProducts'     => $totals['totalProducts'],
                 ];

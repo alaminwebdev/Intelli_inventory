@@ -54,11 +54,14 @@
     /* Small devices (landscape phones, 576px and up) */
     @media (min-width: 576px) and (max-width: 767.98px) {
         .requisition-div {
-            height: 270px;
+            height: 300px;
         }
 
         .requisition-card {
-            margin-top: -80px !important;
+            margin-top: -110px !important;
+        }
+        .most-requisition-products{
+            margin-top: 34px;
         }
 
         .dashboard-banner {
