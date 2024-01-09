@@ -143,10 +143,19 @@
 
             .present-stock {
                 height: 115px !important;
+                margin-top:8px;
             }
 
             .heighest-demand {
                 margin-top: 10px !important;
+            }
+            .requisition-div{
+
+                height:400px !important;
+            }
+
+            .joint-stock{
+                margin-bottom:8px;
             }
 
         }
@@ -160,7 +169,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-4">
-                    <div class="requisition-div shadow-sm">
+                    <div class="requisition-div shadow-sm" >
                         <div class="bg">
                             <div class="content px-3 py-4 text-white">
                                 <h4 class="m-0"
@@ -175,9 +184,9 @@
                         <div class="requisition-card p-3"
                              style="margin-top: -55px;">
                             <div class="row my-card">
-                                <div class="col-sm-6 col-12 ">
+                                <div class="col-sm-6 col-12 joint-stock">
                                     <div class="add-stock box requisition-make p-3 rounded shadow-sm"
-                                         style="background: #FFF5F8">
+                                         style="background: #FFF5F8;">
                                         <div class="icon">
                                             <img src="{{ asset('common/images/icon1.png') }}"
                                                  alt="stock-in">
@@ -187,9 +196,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-6 col-12">
+                                <div class="col-sm-6 col-12" >
                                     <div class=" present-stock box product-receive p-3 rounded shadow-sm"
-                                         style="background: #E8FFF3">
+                                         style="background: #E8FFF3;">
                                         <div class="icon">
                                             <img src="{{ asset('common/images/icon2.png') }}"
                                                  alt="product-reecive">

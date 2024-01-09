@@ -53,6 +53,7 @@ class DashboardController extends Controller
         $dashboard      = '';
 
         $user = Auth::user();
+        // dd($user);
 
         if ($user->id !== 1 && $user->employee_id) {
             $userRoleIds = UserRole::where('user_id', $user->id)->pluck('role_id');
