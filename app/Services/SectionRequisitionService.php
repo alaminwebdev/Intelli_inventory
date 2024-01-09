@@ -213,7 +213,7 @@ class SectionRequisitionService implements IService
             $requisitionProducts = SectionRequisitionDetails::where('section_requisition_id', $requistion_id)
                 ->whereIn('product_id', $productIds)
                 ->get();
-    
+
 
             if (count($requisitionProducts) > 0) {
 
@@ -232,7 +232,7 @@ class SectionRequisitionService implements IService
                         }else{
                             $last_distribute_qty = 0;
                         }
-                        
+
                     }
 
                     // Get the total distribute_quantity for this product_id and section_requisition_id
@@ -360,15 +360,21 @@ class SectionRequisitionService implements IService
             }
 
             // Format the data with unique section names
+            // dd($sectionTotals);
             foreach ($sectionTotals as $sectionName => $totals) {
+                // dd($sectionName);
+                $sections = explode(" ", $sectionName);
+
                 $formattedData[] = [
-                    'section'           => $sectionName,
+                    'section'     => $sectionName,
+                    'section_short'     => $sections[0] ?? '',
                     'totalRequisitions' => $totals['totalRequisitions'],
                     'totalProducts'     => $totals['totalProducts'],
                 ];
             }
         }
 
+        // dd($formattedData);
         // Return the formatted data
         return $formattedData;
     }
@@ -405,12 +411,30 @@ class SectionRequisitionService implements IService
             if ($totalSectionRequisitions->isNotEmpty()) {
                 // Increment section requisitions
                 if (!isset($formattedData[$department->name])) {
+
                     $formattedData[$department->name] = [
                         'department' => $department->name,
                         'totalRequisition' => 0,
                     ];
+
+
                 }
 
+            // if ($totalSectionRequisitions->isNotEmpty()) {
+            //     // Increment section requisitions
+            //     if (!isset($formattedData[$department->name])) {
+            //         $department_name = explode(" ", $department->name);
+            //         $formattedData[$department->name] = [
+            //             'department' => $department_name[0],
+            //             'totalRequisition' => 0,
+            //         ];
+            //         // dd($formattedData[$department->name]);
+            //     }
+
+
+
+
+                // dd($totalSectionRequisitions);
                 foreach ($totalSectionRequisitions as $requisition) {
                     $sectionName = $requisition->section->name;
 
@@ -425,8 +449,12 @@ class SectionRequisitionService implements IService
             }
         }
 
+
         // Convert the formatted data to a numerically indexed array
         $data = array_values($formattedData);
+        // dd($data);
+
+
         return $data;
     }
 

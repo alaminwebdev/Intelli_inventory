@@ -56,6 +56,7 @@ class DashboardController extends Controller
 
         if ($user->id !== 1 && $user->employee_id) {
             $userRoleIds = UserRole::where('user_id', $user->id)->pluck('role_id');
+            // dd($userRoleIds);
 
             // Check the user's role IDs and set the appropriate dashboard
             foreach ($userRoleIds as $roleId) {
@@ -144,6 +145,7 @@ class DashboardController extends Controller
                 }
             }
         } else {
+
             $dashboard = 'admin.dashboard.dashboard';
             $data['sectionRequisitions']            = $this->sectionRequisitionService->getAll(null, null, null, null, 10);
             $data['pendingRequistion']              = SectionRequisition::count();
@@ -151,12 +153,14 @@ class DashboardController extends Controller
             $data['mostRequestedProducts']          = $this->sectionRequisitionService->getMostRequestedProducts(null, null, 10, 7);
             $data['requisitionInfoByDepartment']    = $this->sectionRequisitionService->getRequisitionInfoByDepartment();
             $data['totalProductsInRequisition']     = $this->sectionRequisitionService->getProductsInRequisitionBySection();
+            // dd($data['totalProductsInRequisition']);
             $data['mostStockProducts']              = $this->stockInService->getMostStockProducts(null, 10, 7);
         }
 
         if (!$dashboard) {
             return view('admin.dashboard.no-role-dashboard');
         }
+
 
 
         return view($dashboard, $data);
@@ -352,7 +356,7 @@ class DashboardController extends Controller
                         // $sectionIds = array_map(function ($section) {
                         //     return $section['id'];
                         // }, $sections);
-    
+
                         // if ($sectionIds) {
                         //     $data = $this->distributionService->getMostDistributedProducts($sectionIds, $request);
                         // }else{
