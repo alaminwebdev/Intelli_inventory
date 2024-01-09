@@ -179,7 +179,7 @@ class UserController extends Controller
                 UserRole::where('user_id', $store->id)->whereNotIn('role_id', $request->role_ids)->delete();
                 if ($request->role_ids) {
                     foreach ($request->role_ids as $role_id) {
-                        $user_role_exist = UserRole::where('role_id', $role_id)->first();
+                        $user_role_exist = UserRole::where('user_id', $store->id)->where('role_id', $role_id)->first();
                         if ($user_role_exist) {
                             $user_role_store = $user_role_exist;
                         } else {

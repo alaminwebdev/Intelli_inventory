@@ -66,7 +66,7 @@ class EmployeeService implements IService
     {
         try {
             $employee                   = Employee::find($id);
-            $employee->bp_no            = $request->designation_id;
+            $employee->bp_no            = $request->bp_no;
             $employee->designation_id   = $request->designation_id;
             $employee->department_id    = $request->department_id;
             $employee->section_id       = $request->section_id;
