@@ -252,8 +252,8 @@
             </div>
         </div>
 
-        <div class="row mt-3">
-            <div class="col-md-6">
+        <div class="row mt-0 mt-sm-3">
+            <div class="col-lg-6">
                 <div class="requisition-list">
                     <div class="card shadow-sm">
                         <div class="card-header text-right border-0">
@@ -299,7 +299,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-lg-6">
                 <div class="prodduct-list">
                     <div class="card shadow-sm">
                         <div class="card-header text-right border-0">
@@ -712,9 +712,11 @@
 
             xAxis2 = chart2.xAxes.push(am5xy.CategoryAxis.new(root, {
                 maxDeviation: 0.3,
-                categoryField: "section",
+                categoryField: "section_short",
                 renderer: xRenderer,
-                tooltip: am5.Tooltip.new(root, {})
+                tooltip: am5.Tooltip.new(root, {
+                    labelText: "{section}"
+                })
             }));
 
             var yRenderer = am5xy.AxisRendererY.new(root, {
@@ -742,7 +744,7 @@
                 yAxis: yAxis2,
                 valueYField: "totalRequisitions", // Use the same value field as the main series
                 sequencedInterpolation: true,
-                categoryXField: "section",
+                categoryXField: "section_short",
                 tooltip: am5.Tooltip.new(root, {
                     labelText: "Total Requisitions: {valueY}"
                 }),
@@ -766,7 +768,7 @@
                 yAxis: yAxis2,
                 valueYField: "totalProducts",
                 sequencedInterpolation: true,
-                categoryXField: "section",
+                categoryXField: "section_short",
                 tooltip: am5.Tooltip.new(root, {
                     labelText: "Number of Products: {valueY}"
                 }),
@@ -797,7 +799,7 @@
                 yAxis: yAxis2,
                 valueYField: "totalProducts",
                 sequencedInterpolation: true,
-                categoryXField: "section",
+                categoryXField: "section_short",
                 clustered: true, // Enable clustering
                 clusterGutter: am5.percent(0),
                 hiddenInLegend: true, // Hide this series in the legend

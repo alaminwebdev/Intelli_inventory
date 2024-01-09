@@ -107,14 +107,41 @@ class DistributionService implements IService
                 })
                 ->get();
 
-
+            // Modify the product names to keep only the unique first word and append an index when needed
+            $uniqueProducts = [];
+            
             // Iterate through the retrieved data and format it
             foreach ($mostDistributedProducts as $product) {
-                $formattedData[] = [
-                    'product'   => $product->product . ' (' . $product->unit . ')',
-                    'quantity'  => (int) $product->total_distribute_qty,
-                ];
+
+                $firstWord = strtok($product->product, ' ');
+
+                // $formattedData[] = [
+                //     'product'   => $product->product . ' (' . $product->unit . ')',
+                //     'quantity'  => (int) $product->total_distribute_qty,
+                // ];
+                if (!isset($uniqueProducts[$firstWord])) {
+                    $uniqueProducts[$firstWord] = [
+                        'product_short'     => $firstWord,
+                        'product'           => $product->product . ' (' . $product->unit . ')',
+                        'quantity'          => (int) $product->total_distribute_qty,
+                    ];
+                } else {
+
+                    // If the first word already exists, append an index to the first word
+                    $index = 1;
+                    while (isset($uniqueProducts[$firstWord . '_' . $index])) {
+                        $index++;
+                    }
+    
+                    $uniqueProducts[$firstWord . '_' . $index] = [
+                        'product_short'     => $firstWord . '_' . $index,
+                        'product'           => $product->product . ' (' . $product->unit . ')',
+                        'quantity'          => (int) $product->total_distribute_qty,
+                    ];
+                }
             }
+            // Convert the uniqueProducts array back to an array of values
+            $formattedData = array_values($uniqueProducts);
         }
 
         // Return the formatted data
