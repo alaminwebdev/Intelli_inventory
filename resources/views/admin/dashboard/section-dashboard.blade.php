@@ -60,12 +60,6 @@
         font-size: 12px;
     }
 
-    .table {
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
     .table thead th {
         color: #595959;
         text-align: left;
@@ -75,6 +69,12 @@
         color: #A1A5B7;
         font-size: 12px;
         font-weight: 600;
+    }
+
+    .table {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     /* Extra small devices (portrait phones, less than 576px) */
@@ -141,6 +141,7 @@
         .dashboard-banner-text {
             font-size: 24px;
         }
+
         .dashboard-banner .image img {
             width: 40%;
         }
