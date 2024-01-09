@@ -1,0 +1,516 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Department;
+use App\Models\Distribute;
+use App\Models\Employee;
+use App\Models\ProductInformation;
+use App\Models\ProductType;
+use App\Models\Section;
+use App\Models\SectionRequisition;
+use App\Models\SectionRequisitionDetails;
+use App\Services\IService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
+/**
+ * Class SectionRequisitionService
+ * @package App\Services
+ */
+class SectionRequisitionService implements IService
+{
+
+    public function getAll($section_id = null, $status = null, $section_ids = null, $statuses = null, $take = null)
+    {
+        try {
+            $query = SectionRequisition::with(
+                'section:id,name,department_id',
+                'section.department:id,name',
+            )
+                ->latest();
+            if ($section_id) {
+                $query->where('section_id', $section_id);
+            }
+            if ($status) {
+                $query->where('status', $status);
+            }
+            if ($section_ids) {
+                $query->whereIn('section_id', $section_ids);
+            }
+            if ($statuses) {
+                $query->whereIn('status', $statuses);
+            }
+            if ($take) {
+                $query->take($take);
+            }
+            $data = $query->get();
+            return $data;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+    public function getAllBySections($section_ids, $status)
+    {
+        try {
+            $data = SectionRequisition::whereIn('section_id', $section_ids)->where('status', $status)->whereNull('department_requisition_id')->latest()->get();
+            return $data;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+    public function getRequisitionProductsByIDs($section_ids)
+    {
+        try {
+
+            $data =  DB::table('section_requisition_details')
+                ->whereIn('section_requisition_details.section_requisition_id', $section_ids)
+                ->select(
+                    'section_requisition_details.product_id',
+                    DB::raw('SUM(section_requisition_details.current_stock) as total_current_stock'),
+                    DB::raw('SUM(section_requisition_details.demand_quantity) as total_demand_quantity'),
+                )
+                ->groupBy('section_requisition_details.product_id')
+                ->get();
+            return $data;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function getUniqueRequisitionNo()
+    {
+        do {
+            $requisition_no = rand(10000, 99999);
+        } while (SectionRequisition::where('requisition_no', $requisition_no)->exists());
+
+        return $requisition_no;
+    }
+
+    public function create(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+
+            $data = $request->input('data');
+            $sectionRequisition = new SectionRequisition();
+
+            $sectionRequisition->requisition_no = $data['requisitionNumber'];
+            $sectionRequisition->section_id     = $data['sectionId'];
+            $sectionRequisition->user_id        = Auth::id();
+            $sectionRequisition->status         = 0;
+
+            if ($sectionRequisition->save()) {
+                $productData = $data['productData'];
+                foreach ($productData as $productId => $productDetails) {
+                    // Retrieve data for the current product
+                    $currentStock   = $productDetails['current_stock'] ?? null;
+                    $demandQuantity = $productDetails['demand_quantity'] ?? null;
+                    $remarks        = $productDetails['remarks'] ?? null;
+
+
+                    if ($demandQuantity !== null && $demandQuantity > 0) {
+                        // Store Data into SectionRequisitionDetails
+                        $sectionRequisitionDetails                          = new SectionRequisitionDetails();
+                        $sectionRequisitionDetails->section_requisition_id  = $sectionRequisition->id;
+                        $sectionRequisitionDetails->requisition_no          = $data['requisitionNumber'];
+                        $sectionRequisitionDetails->product_id              = $productId;
+                        $sectionRequisitionDetails->current_stock           = $currentStock;
+                        $sectionRequisitionDetails->demand_quantity         = $demandQuantity;
+                        $sectionRequisitionDetails->remarks                 = $remarks;
+                        $sectionRequisitionDetails->status                  = 0;
+                        $sectionRequisitionDetails->save();
+                    }
+                }
+            }
+            DB::commit();
+            return response()->json(['success' => 'Requisition Information Inserted']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function getByID($id)
+    {
+        $data = SectionRequisition::find($id);
+        return $data;
+    }
+
+    public function getProductRequisitionInfoByID($requistion_id = null, $section_ids = null, $take = null, $status = null, $days = null)
+    {
+        try {
+
+            $data = SectionRequisitionDetails::join('product_information', 'product_information.id', 'section_requisition_details.product_id')
+                // ->where('section_requisition_id', $requistion_id)
+                ->leftjoin('units', 'units.id', 'product_information.unit_id')
+                ->join('section_requisitions', 'section_requisitions.id', 'section_requisition_details.section_requisition_id')
+                ->join('sections', 'sections.id', 'section_requisitions.section_id')
+                ->when($requistion_id, function ($q, $requistion_id) {
+                    $q->where('section_requisition_id', $requistion_id);
+                })
+                ->when($section_ids, function ($q, $section_ids) {
+                    $q->whereIn('section_requisitions.section_id', $section_ids);
+                })
+                ->when($status, function ($q, $status) {
+                    $q->where('section_requisitions.status', $status);
+                })
+                ->when($take, function ($q, $take) {
+                    $q->take($take);
+                })
+                ->when($days, function ($q, $days) {
+                    $days_ago = now()->subDays($days);
+                    $q->whereDate('section_requisition_details.updated_at', '>=', $days_ago);
+                })
+                ->orderBy('section_requisition_details.updated_at', 'desc')
+                ->select(
+                    'section_requisitions.requisition_no as requisition_no',
+                    'section_requisition_details.current_stock as current_stock',
+                    'section_requisition_details.demand_quantity as demand_quantity',
+                    'section_requisition_details.recommended_quantity as recommended_quantity',
+                    'section_requisition_details.final_approve_quantity as final_approve_quantity',
+                    'section_requisition_details.remarks as remarks',
+                    'product_information.name as product',
+                    'units.name as unit',
+                    'sections.name as section'
+                )
+                ->get();
+            return $data;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function getRequisitionProductsWithTypeById($requistion_id, $editData = null)
+    {
+
+        $productTypeData    = [];
+        $product_types      = ProductType::latest()->where('status', 1)->get();
+
+        if ($editData) {
+            $requisition_ids = SectionRequisition::where('section_id', $editData->section_id)
+                ->where('id', '!=', $editData->id)
+                ->pluck('id');
+        }else{
+            $requisition_ids = [];
+        }
+
+        foreach ($product_types as $item) {
+            $productType = [
+                'id'        => $item->id,
+                'name'      => $item->name,
+                'products'  => [],
+            ];
+
+            // Query products for this product type and push them into the products array
+            $productIds = ProductInformation::where('product_type_id', $item->id)
+                ->latest()
+                ->pluck('id');
+
+            $last_distribute_qty = 0;
+
+            $requisitionProducts = SectionRequisitionDetails::where('section_requisition_id', $requistion_id)
+                ->whereIn('product_id', $productIds)
+                ->get();
+
+
+            if (count($requisitionProducts) > 0) {
+
+                foreach ($requisitionProducts as $product) {
+
+                    // Get the last distribute_quantity for this product_id
+                    if ($requisition_ids) {
+                        $last_distribute_item = Distribute::whereIn('section_requisition_id', $requisition_ids)
+                            ->where('product_id', $product->product_id)
+                            ->latest()
+                            ->first(['id', 'product_id', 'distribute_quantity']);
+
+
+                        if ($last_distribute_item) {
+                            $last_distribute_qty = $last_distribute_item->distribute_quantity;
+                        }else{
+                            $last_distribute_qty = 0;
+                        }
+
+                    }
+
+                    // Get the total distribute_quantity for this product_id and section_requisition_id
+                    $totalDistributeQuantity = Distribute::where('section_requisition_id', $requistion_id)
+                        ->where('product_id', $product->product_id)
+                        ->sum('distribute_quantity');
+
+                    $productType['products'][$product->product_id] = [
+                        'product_id'                => $product->product_id,
+                        'product_name'              => $product->product->name,
+                        'current_stock'             => $product->current_stock,
+                        'demand_quantity'           => $product->demand_quantity,
+                        'remarks'                   => $product->remarks,
+                        'recommended_quantity'      => $product->recommended_quantity,
+                        'recommended_remarks'       => $product->recommended_remarks,
+                        'final_approve_quantity'    => $product->final_approve_quantity,
+                        'final_approve_remarks'     => $product->final_approve_remarks,
+                        'available_quantity'        => $product->StockDetail->sum('available_qty'),
+                        'last_distribute_qty'       => $last_distribute_qty,
+                        'totalDistributeQuantity'   => $totalDistributeQuantity ?? 0
+                    ];
+                }
+
+                // Push this product type data into the main array AFTER adding products
+                $productTypeData[] = $productType;
+            }
+        }
+        return $productTypeData;
+    }
+
+    public function getMostRequestedProducts($section_ids = null, $request = null, $take = null, $days = null)
+    {
+
+        // Initialize an empty array to store the formatted data
+        $formattedData = [];
+
+        $totalSectionRequisition = SectionRequisition::when($section_ids, function ($q, $section_ids) {
+            $q->whereIn('section_id', $section_ids);
+        })
+            ->when($request, function ($q, $request) {
+                if (($request['date_from'] != null || $request['date_to'] != null)) {
+                    $fromDate   = date('Y-m-d', strtotime($request['date_from']));
+                    $toDate     = date('Y-m-d', strtotime($request['date_to']));
+                    $q->whereDate('updated_at', '>=', $fromDate);
+                    $q->whereDate('updated_at', '<=', $toDate);
+                }
+            })
+            ->when($days, function ($q, $days) {
+                $days_ago = now()->subDays($days);
+                $q->whereDate('updated_at', '>=', $days_ago);
+            })
+            ->pluck('id');
+
+
+        if ($totalSectionRequisition) {
+            $mostRequestedProducts = SectionRequisitionDetails::whereIn('section_requisition_id', $totalSectionRequisition)
+                ->join('product_information', 'product_information.id', 'section_requisition_details.product_id')
+                ->leftjoin('units', 'units.id', 'product_information.unit_id')
+                ->select(
+                    'product_id',
+                    'product_information.name as product',
+                    'units.name as unit',
+                    DB::raw('SUM(demand_quantity) as total_demand_qty')
+                )
+                ->groupBy('section_requisition_details.product_id', 'product_information.name', 'units.name')
+                ->orderByDesc('total_demand_qty')
+                ->when($take, function ($q, $take) {
+                    $q->take($take);
+                })
+                // ->take(10)
+                ->get();
+
+            // Modify the product names to keep only the unique first word and append an index when needed
+            $uniqueProducts = [];
+
+            // Iterate through the retrieved data and format it
+            foreach ($mostRequestedProducts as $product) {
+                // $formattedData[] = [
+                //     'product'   => $product->product . ' (' . $product->unit . ')',
+                //     'quantity'  => (int) $product->total_demand_qty,
+                // ];
+                $firstWord = strtok($product->product, ' ');
+
+
+                if (!isset($uniqueProducts[$firstWord])) {
+                    $uniqueProducts[$firstWord] = [
+                        'product_short'     => $firstWord,
+                        'product'           => $product->product . ' (' . $product->unit . ')',
+                        'quantity'          => (int) $product->total_demand_qty,
+                    ];
+                } else {
+
+                    // If the first word already exists, append an index to the first word
+                    $index = 1;
+                    while (isset($uniqueProducts[$firstWord . '_' . $index])) {
+                        $index++;
+                    }
+    
+                    $uniqueProducts[$firstWord . '_' . $index] = [
+                        'product_short'     => $firstWord . '_' . $index,
+                        'product'           => $product->product . ' (' . $product->unit . ')',
+                        'quantity'          => (int) $product->total_demand_qty,
+                    ];
+                }
+            }
+            // Convert the uniqueProducts array back to an array of values
+            $formattedData = array_values($uniqueProducts);
+        }
+
+        // Return the formatted data
+        return $formattedData;
+    }
+    public function getProductsInRequisitionBySection($request = null, $section_ids = null)
+    {
+        // Initialize an empty array to store the formatted data
+        $formattedData = [];
+
+        // Initialize an array to store section totals
+        $sectionTotals = [];
+
+        $totalSectionRequisition = SectionRequisition::when($section_ids, function ($q, $section_ids) {
+            $q->whereIn('section_id', $section_ids);
+        })
+            ->when($request, function ($q, $request) {
+                if (($request['date_from'] != null || $request['date_to'] != null)) {
+                    $fromDate   = date('Y-m-d', strtotime($request['date_from']));
+                    $toDate     = date('Y-m-d', strtotime($request['date_to']));
+                    $q->whereDate('updated_at', '>=', $fromDate);
+                    $q->whereDate('updated_at', '<=', $toDate);
+                } else {
+                    $today_date = date('Y-m-d');
+                    $q->whereDate('updated_at', $today_date);
+                }
+            })
+            ->get();
+
+        if ($totalSectionRequisition) {
+            foreach ($totalSectionRequisition as $requisition) {
+                $total_products = SectionRequisitionDetails::where('section_requisition_id', $requisition->id)->count();
+                $sectionName = $requisition->section->name;
+
+                // Increment section totals
+                if (!isset($sectionTotals[$sectionName])) {
+                    $sectionTotals[$sectionName] = [
+                        'totalRequisitions' => 0,
+                        'totalProducts'     => 0,
+                    ];
+                }
+
+                $sectionTotals[$sectionName]['totalRequisitions']++;
+                $sectionTotals[$sectionName]['totalProducts'] += $total_products;
+            }
+
+            // Format the data with unique section names
+            // dd($sectionTotals);
+            foreach ($sectionTotals as $sectionName => $totals) {
+
+                $sections = explode(" ", $sectionName);
+                $firstWord = $sections[0] ?? ''; // Get the first word
+
+                // If there are more words, append "..." to the first word
+                $sectionShort = count($sections) > 1 ? $firstWord . '...' : $firstWord;
+
+                $formattedData[] = [
+                    'section'           => $sectionName,
+                    'section_short'     => $sectionShort,
+                    'totalRequisitions' => $totals['totalRequisitions'],
+                    'totalProducts'     => $totals['totalProducts'],
+                ];
+            }
+        }
+
+        // dd($formattedData);
+        // Return the formatted data
+        return $formattedData;
+    }
+
+    public function getRequisitionInfoByDepartment($request = null)
+    {
+        // Initialize an empty array to store the formatted data
+        $formattedData = [];
+
+        $departments = Department::where('status', 1)->get();
+
+        foreach ($departments as $department) {
+            // Initialize department total requisitions
+            $departmentTotalRequisitions = 0;
+
+            $section_ids = Section::where('department_id', $department->id)
+                ->where('status', 1)
+                ->pluck('id');
+
+            $totalSectionRequisitions = SectionRequisition::whereIn('section_id', $section_ids)
+                ->when($request, function ($q, $request) {
+                    if ($request['date_from'] !== null || $request['date_to'] !== null) {
+                        $fromDate = date('Y-m-d', strtotime($request['date_from']));
+                        $toDate = date('Y-m-d', strtotime($request['date_to']));
+                        $q->whereDate('updated_at', '>=', $fromDate)
+                            ->whereDate('updated_at', '<=', $toDate);
+                    } else {
+                        $today_date = date('Y-m-d');
+                        $q->whereDate('updated_at', $today_date);
+                    }
+                })
+                ->get();
+
+            if ($totalSectionRequisitions->isNotEmpty()) {
+                // Increment section requisitions
+                if (!isset($formattedData[$department->name])) {
+
+                    $formattedData[$department->name] = [
+                        // 'department' => strtok($department->name, ' '),
+                        'department' => $department->name,
+                        'totalRequisition' => 0,
+                    ];
+
+
+                }
+
+            // if ($totalSectionRequisitions->isNotEmpty()) {
+            //     // Increment section requisitions
+            //     if (!isset($formattedData[$department->name])) {
+            //         $department_name = explode(" ", $department->name);
+            //         $formattedData[$department->name] = [
+            //             'department' => $department_name[0],
+            //             'totalRequisition' => 0,
+            //         ];
+            //         // dd($formattedData[$department->name]);
+            //     }
+
+
+
+
+                // dd($totalSectionRequisitions);
+                foreach ($totalSectionRequisitions as $requisition) {
+                    $sectionName = $requisition->section->name;
+
+                    // Increment department total requisitions
+                    $departmentTotalRequisitions++;
+
+                    $formattedData[$department->name][$sectionName] = isset($formattedData[$department->name][$sectionName]) ? $formattedData[$department->name][$sectionName] + 1 : 1;
+                }
+
+                // Update department total requisitions
+                $formattedData[$department->name]['totalRequisition'] = $departmentTotalRequisitions;
+            }
+        }
+
+
+        // Convert the formatted data to a numerically indexed array
+        $data = array_values($formattedData);
+        //dd($data);
+
+
+        return $data;
+    }
+
+
+
+    public function update(Request $request, $id)
+    {
+        // try {
+        //     $data                 = Section::find($id);
+        //     $data->name           = $request->name;
+        //     $data->department_id  = $request->department_id;
+        //     $data->sort           = $request->sort;
+        //     $data->status         = $request->status;
+        //     $data->save();
+        //     return true;
+        // } catch (Exception $e) {
+        //     return $e->getMessage();
+        // }
+    }
+
+    public function delete($id)
+    {
+        // $user = Section::find($id);
+        // $user->delete();
+        // return true;
+    }
+}
