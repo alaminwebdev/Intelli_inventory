@@ -7,11 +7,25 @@
             font-size: 1vw
         }
 
+        @media (max-width:576px){
+
         #productsInRequisitionChart {
+
+            width: 100%;
+            height: 600px;
+            font-siz: 1vw
+        }
+    }
+    @media (min-width:576px) {
+        #productsInRequisitionChart {
+
             width: 100%;
             height: 300px;
             font-size: 1vw
         }
+    }
+
+
 
 
         #totalProductsInRequisitionChart {
@@ -132,13 +146,13 @@
             }
 
             .heighest-demand {
-                margin-top: 5px !important;
+                margin-top: 10px !important;
             }
 
         }
         @media (min-width:576px) and (max-width: 767px) {
             .heighest-demand {
-                margin-top: 5px !important;
+                margin-top: 10px !important;
             }
         }
     </style>
@@ -910,12 +924,15 @@
 
             // Create chart
             var chart = root.container.children.push(am5xy.XYChart.new(root, {
-                panX: false,
-                panY: false,
-                wheelX: false,
-                wheelY: false,
-                layout: root.verticalLayout
+                panX: true,
+                panY: true,
+                wheelX: 'panx',
+                wheelY: 'zoomX',
+                pinchZoomX:true,
+                layout: root.verticalLayout,
+
             }));
+
 
             // Add legend
             var legend = chart.children.push(am5.Legend.new(root, {
@@ -950,6 +967,26 @@
                 cellStartLocation: 0.1,
                 cellEndLocation: 0.9
             });
+            if (window.innerWidth >=576 ) {
+                xRenderer.labels.template.setAll({
+                    rotation: 0,
+                    centerY: am5.p50,
+                    centerX: am5.p100,
+                    paddingRight: 5,
+                    fontSize: 10,
+
+                });
+
+            } else {
+                xRenderer.labels.template.setAll({
+                    rotation: -90,
+                    centerY: am5.p50,
+                    centerX: am5.p100,
+                    paddingRight: 5,
+                    fontSize: 10,
+
+                });
+            }
 
             var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
                 categoryField: "department",
