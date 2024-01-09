@@ -305,14 +305,41 @@ class SectionRequisitionService implements IService
                 // ->take(10)
                 ->get();
 
+            // Modify the product names to keep only the unique first word and append an index when needed
+            $uniqueProducts = [];
 
             // Iterate through the retrieved data and format it
             foreach ($mostRequestedProducts as $product) {
-                $formattedData[] = [
-                    'product'   => $product->product . ' (' . $product->unit . ')',
-                    'quantity'  => (int) $product->total_demand_qty,
-                ];
+                // $formattedData[] = [
+                //     'product'   => $product->product . ' (' . $product->unit . ')',
+                //     'quantity'  => (int) $product->total_demand_qty,
+                // ];
+                $firstWord = strtok($product->product, ' ');
+
+
+                if (!isset($uniqueProducts[$firstWord])) {
+                    $uniqueProducts[$firstWord] = [
+                        'product_short'     => $firstWord,
+                        'product'           => $product->product . ' (' . $product->unit . ')',
+                        'quantity'          => (int) $product->total_demand_qty,
+                    ];
+                } else {
+
+                    // If the first word already exists, append an index to the first word
+                    $index = 1;
+                    while (isset($uniqueProducts[$firstWord . '_' . $index])) {
+                        $index++;
+                    }
+    
+                    $uniqueProducts[$firstWord . '_' . $index] = [
+                        'product_short'     => $firstWord . '_' . $index,
+                        'product'           => $product->product . ' (' . $product->unit . ')',
+                        'quantity'          => (int) $product->total_demand_qty,
+                    ];
+                }
             }
+            // Convert the uniqueProducts array back to an array of values
+            $formattedData = array_values($uniqueProducts);
         }
 
         // Return the formatted data
@@ -417,6 +444,7 @@ class SectionRequisitionService implements IService
                 if (!isset($formattedData[$department->name])) {
 
                     $formattedData[$department->name] = [
+                        // 'department' => strtok($department->name, ' '),
                         'department' => $department->name,
                         'totalRequisition' => 0,
                     ];
@@ -456,7 +484,7 @@ class SectionRequisitionService implements IService
 
         // Convert the formatted data to a numerically indexed array
         $data = array_values($formattedData);
-        // dd($data);
+        //dd($data);
 
 
         return $data;

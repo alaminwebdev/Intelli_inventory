@@ -155,7 +155,7 @@ class DashboardController extends Controller
             $data['requisitionInfoByDepartment']    = $this->sectionRequisitionService->getRequisitionInfoByDepartment();
             $data['totalProductsInRequisition']     = $this->sectionRequisitionService->getProductsInRequisitionBySection();
             // dd($data['totalProductsInRequisition']);
-            $data['mostStockProducts']              = $this->stockInService->getMostStockProducts(null, 10, 7);
+            $data['mostStockProducts']              = $this->stockInService->getMostStockProducts(null, 10, 70);
         }
 
         if (!$dashboard) {

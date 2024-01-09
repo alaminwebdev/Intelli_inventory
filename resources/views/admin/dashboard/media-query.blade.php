@@ -49,6 +49,12 @@
         .table tr td {
             font-size: 10px;
         }
+
+        #productsInRequisitionChart {
+            width: 100%;
+            height: 600px;
+            font-size: 8px;
+        }
     }
 
     /* Small devices (landscape phones, 576px and up) */
@@ -78,6 +84,11 @@
 
         .dashboard-banner .image img {
             width: 40%;
+        }
+
+        #productsInRequisitionChart {
+            height: 600px;
+            font-size: 8px;
         }
 
 

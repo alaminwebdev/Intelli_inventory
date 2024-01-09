@@ -1,270 +1,194 @@
 @extends('admin.layouts.app')
 @section('content')
-    <style>
-        #mostProductsChart {
-            width: 100%;
-            height: 300px;
-        }
+<style>
+    #mostProductsChart {
+        width: 100%;
+        height: 300px;
+    }
 
-        #productsInRequisitionChart {
-            width: 100%;
-            height: 300px;
-        }
+    #productsInRequisitionChart {
+        width: 100%;
+        height: 300px;
+        font-size: 10px;
+    }
 
-        #stockProductsChart {
-            width: 100%;
-            height: 300px;
-        }
+    #stockProductsChart {
+        width: 100%;
+        height: 300px;
+    }
 
-        #mostProductsChart::before,
-        #productsInRequisitionChart::before,
-        #stockProductsChart::before {
-            position: absolute;
-            content: '';
-            bottom: 12px;
-            left: 20px;
-            width: 60px;
-            height: 30px;
-            background: #fff;
-            z-index: 1;
-        }
+    #mostProductsChart::before,
+    #productsInRequisitionChart::before,
+    #stockProductsChart::before {
+        position: absolute;
+        content: '';
+        bottom: 12px;
+        left: 20px;
+        width: 60px;
+        height: 30px;
+        background: #fff;
+        z-index: 1;
+    }
 
-        .requisition-div {
-            border-radius: 15px;
-            height: 362px;
-            background: #fff;
-            position: relative;
-        }
+    .requisition-div {
+        border-radius: 15px;
+        height: 362px;
+        background: #fff;
+        position: relative;
+    }
 
-        .dashboard-banner {
-            border-radius: 15px;
-            height: 300px;
-            background: #3E97FF;
-        }
+    .dashboard-banner {
+        border-radius: 15px;
+        height: 300px;
+        background: #3E97FF;
+    }
 
-        .requisition-div .bg {
-            position: relative;
-            height: 230px;
-            border-radius: 12px;
-            background: linear-gradient(102deg, #33B46E 0%, #44D486 100%);
-            overflow: hidden;
-        }
+    .requisition-div .bg {
+        position: relative;
+        height: 230px;
+        border-radius: 12px;
+        background: linear-gradient(102deg, #33B46E 0%, #44D486 100%);
+        overflow: hidden;
+    }
 
-        .bg::before {
-            position: absolute;
-            content: '';
-            width: 110%;
-            height: 60%;
-            left: 50%;
-            bottom: 0;
-            background: url('{{ asset('common/images/dashboard1.png') }}');
-            background-repeat: no-repeat;
-            background-size: cover;
-            transform: translateX(-50%);
-            overflow: hidden;
-        }
+    .bg::before {
+        position: absolute;
+        content: '';
+        width: 110%;
+        height: 60%;
+        left: 50%;
+        bottom: 0;
+        background: url('{{ asset(' common/images/dashboard1.png') }}');
+        background-repeat: no-repeat;
+        background-size: cover;
+        transform: translateX(-50%);
+        overflow: hidden;
+    }
 
-        .requisition-card {
-            position: relative;
-            z-index: 99;
-        }
+    .requisition-card {
+        position: relative;
+        z-index: 99;
+    }
 
-        .requisition-card .text a {
-            font-weight: 600;
-            color: #2a527b;
-        }
+    .requisition-card .text a {
+        font-weight: 600;
+        color: #2a527b;
+    }
 
-        .requisition-card .box {
-            background: #fff;
-            height: 140px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+    .requisition-card .box {
+        background: #fff;
+        height: 140px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
 
-        .card-header .card-title span {
-            color: #979797;
-            font-size: 12px;
-        }
+    .card-header .card-title span {
+        color: #979797;
+        font-size: 12px;
+    }
 
-        .table thead th {
-            color: #595959;
-            text-align: left;
-        }
+    .table thead th {
+        color: #595959;
+        text-align: left;
+    }
 
-        .table tr td {
-            color: #A1A5B7;
-            font-size: 12px;
-            font-weight: 600;
-        }
-    </style>
-    <section class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="requisition-div shadow-sm">
-                        <div class="bg">
-                            <div class="content px-3 py-4 text-white">
-                                <h4 class="m-0" style="font-weight: 600;">আমার টাস্ক</h4>
-                                <p class="m-0" style="font-weight: 600;">আপনার {{ en2bn($pendingRequistion ?? 0) }} টি চাহিদাপত্র অনুমোদনের অপেক্ষায় রয়েছে।</p>
-                                <span class="mt-1 rounded" style="display:block; background: #fff; width:30px; height:2px;"></span>
-                            </div>
-                        </div>
-                        <div class="requisition-card p-3" style="margin-top: -55px;">
-                            <div class="row">
-                                <div class="col-sm-12 col-12">
-                                    <div class="box requisition-make p-3 rounded shadow-sm" style="background: #FFF5F8">
-                                        <div class="icon">
-                                            <img src="{{ asset('common/images/icon1.png') }}" alt="requisition-make">
-                                        </div>
-                                        <div class="text pt-1">
-                                            <a href="{{ route('admin.distribution.list') }}">অনুমোদনের অপেক্ষায় চাহিদাপত্র</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                {{-- <div class="col-sm-6 col-6">
-                                    <div class="box product-receive p-3 rounded shadow-sm" style="background: #E8FFF3">
-                                        <div class="icon">
-                                            <img src="{{ asset('common/images/icon2.png') }}" alt="product-reecive">
-                                        </div>
-                                        <div class="text pt-1">
-                                            <a href="#">পন্য গ্রহন করুন</a>
-                                        </div>
-                                    </div>
-                                </div> --}}
-                            </div>
+    .table tr td {
+        color: #A1A5B7;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+</style>
+@include('admin.dashboard.media-query')
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="requisition-div shadow-sm">
+                    <div class="bg">
+                        <div class="content px-3 py-4 text-white">
+                            <h4 class="m-0" style="font-weight: 600;">আমার টাস্ক</h4>
+                            <p class="m-0" style="font-weight: 600;">আপনার {{ en2bn($pendingRequistion ?? 0) }} টি
+                                চাহিদাপত্র অনুমোদনের অপেক্ষায় রয়েছে।</p>
+                            <span class="mt-1 rounded"
+                                style="display:block; background: #fff; width:30px; height:2px;"></span>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="most-requisition-products">
-                        <div class="card shadow-sm" style="border-radius: 12px;">
-                            <div class="card-header text-right border-0 pb-0 pt-3">
-                                <h4 class="card-title">সর্বাধিক চাহিদাকৃত পণ্য <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
-                                <div class="card-tools mr-0 d-flex align-items-center">
-                                    <a href="{{ route('admin.product.statistics') }}" class="btn btn-sm btn-light mr-1" style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
-                                    <div class="dropdown show">
-                                        <a class="btn btn-sm btn-light" data-toggle="dropdown" href="#" aria-expanded="true" style="margin-right:2rem; padding: 1px 6px;">
-                                            <i class="far fa-calendar-alt"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right p-3 border-0" style="min-width: 200px !important;">
-                                            {{-- <button type="button" class="close" aria-label="Close" id="closeDropdown">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button> --}}
-                                            <form action="" method="post" id="mostRequisitionProductsForm" autocomplete="off">
-                                                @csrf
-                                                <div class="row">
-                                                    <div class="col-sm-12">
-                                                        <div class="form-group">
-                                                            <label for="most_req_date_from" class="text-navy">শুরুর তারিখ :</label>
-                                                            <input required="" type="text" value="" name="most_req_date_from" class="form-control form-control-sm text-gray singledatepicker" id="most_req_date_from" placeholder="শুরুর তারিখ">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-12">
-                                                        <div class="form-group">
-                                                            <label for="most_req_date_to" class="text-navy">শেষ তারিখ :</label>
-                                                            <input required="" type="text" value="" name="most_req_date_to" class="form-control form-control-sm text-gray singledatepicker" id="most_req_date_to" placeholder="শেষ তারিখ">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-12">
-                                                        <div class="form-group mb-0 d-flex">
-                                                            <input required="" type="submit" value="খুজুন" class="form-control form-control-sm btn btn-sm btn-primary" id="">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
+                    <div class="requisition-card p-3" style="margin-top: -55px;">
+                        <div class="row">
+                            <div class="col-sm-12 col-12">
+                                <div class="box requisition-make p-3 rounded shadow-sm" style="background: #FFF5F8">
+                                    <div class="icon">
+                                        <img src="{{ asset('common/images/icon1.png') }}" alt="requisition-make">
+                                    </div>
+                                    <div class="text pt-1">
+                                        <a href="{{ route('admin.distribution.list') }}">অনুমোদনের অপেক্ষায়
+                                            চাহিদাপত্র</a>
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-body pt-0">
-                                <div id="mostProductsChart"></div>
-                            </div>
+                            {{-- <div class="col-sm-6 col-6">
+                                <div class="box product-receive p-3 rounded shadow-sm" style="background: #E8FFF3">
+                                    <div class="icon">
+                                        <img src="{{ asset('common/images/icon2.png') }}" alt="product-reecive">
+                                    </div>
+                                    <div class="text pt-1">
+                                        <a href="#">পন্য গ্রহন করুন</a>
+                                    </div>
+                                </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row mt-3">
-                <div class="col-md-12">
+            <div class="col-md-8">
+                <div class="most-requisition-products">
                     <div class="card shadow-sm" style="border-radius: 12px;">
-                        <div class="card-header text-right border-0 pb-0 pt-3">
-                            <h4 class="card-title">চাহিদাপত্রের পরিসংখ্যান</h4>
-                            <div class="card-tools mr-0">
-                                <div class="dropdown show">
-                                    <a class="btn btn-sm btn-light" data-toggle="dropdown" href="#" aria-expanded="true" style="margin-right:2rem; padding: 1px 6px;">
-                                        <i class="far fa-calendar-alt"></i>
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-right p-3 border-0" style="min-width: 200px !important;">
-                                        {{-- <button type="button" class="close" aria-label="Close" id="closeDropdown">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button> --}}
-                                        <form action="" method="post" id="requisitionProductsForm" autocomplete="off">
-                                            @csrf
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <div class="form-group">
-                                                        <label for="date_from" class="text-navy">শুরুর তারিখ :</label>
-                                                        <input required="" type="text" value="" name="date_from" class="form-control form-control-sm text-gray singledatepicker" id="date_from" placeholder="শুরুর তারিখ">
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12">
-                                                    <div class="form-group">
-                                                        <label for="date_to" class="text-navy">শেষ তারিখ :</label>
-                                                        <input required="" type="text" value="" name="date_to" class="form-control form-control-sm text-gray singledatepicker" id="date_to" placeholder="শেষ তারিখ">
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12">
-                                                    <div class="form-group mb-0 d-flex">
-                                                        <input required="" type="submit" value="খুজুন" class="form-control form-control-sm btn btn-sm btn-primary" id="">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body pt-0">
-                            <div id="productsInRequisitionChart"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mt-3">
-                <div class="col-md-12">
-                    <div class="card shadow-sm" style="border-radius: 12px;">
-                        <div class="card-header text-right border-0 pb-0 pt-3">
-                            <h4 class="card-title">সর্বাধিক মজুদকৃত পণ্য <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
+                        <div class="card-header border-0 pb-0 pt-3">
+                            <h4 class="card-title">সর্বাধিক চাহিদাকৃত পণ্য <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
                             <div class="card-tools mr-0 d-flex align-items-center">
-                                <a href="{{ route('admin.dashboard.stock-in-products') }}" class="btn btn-sm btn-light mr-1" style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
+                                <a href="{{ route('admin.product.statistics') }}" class="btn btn-sm btn-light mr-1"
+                                    style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
                                 <div class="dropdown show">
-                                    <a class="btn btn-sm btn-light" data-toggle="dropdown" href="#" aria-expanded="true" style="margin-right:2rem; padding: 1px 6px;">
+                                    <a class="btn btn-sm btn-light" data-toggle="dropdown" href="#" aria-expanded="true"
+                                        style="margin-right:2rem; padding: 1px 6px;">
                                         <i class="far fa-calendar-alt"></i>
                                     </a>
-                                    <div class="dropdown-menu dropdown-menu-right p-3 border-0" style="min-width: 200px !important;">
+                                    <div class="dropdown-menu dropdown-menu-right p-3 border-0"
+                                        style="min-width: 200px !important;">
                                         {{-- <button type="button" class="close" aria-label="Close" id="closeDropdown">
                                             <span aria-hidden="true">&times;</span>
                                         </button> --}}
-                                        <form action="" method="post" id="stockProductsForm" autocomplete="off">
+                                        <form action="" method="post" id="mostRequisitionProductsForm"
+                                            autocomplete="off">
                                             @csrf
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <label for="stock_date_from" class="text-navy">শুরুর তারিখ :</label>
-                                                        <input required="" type="text" value="" name="stock_date_from" class="form-control form-control-sm text-gray singledatepicker" id="stock_date_from" placeholder="শুরুর তারিখ">
+                                                        <label for="most_req_date_from" class="text-navy">শুরুর তারিখ
+                                                            :</label>
+                                                        <input required="" type="text" value=""
+                                                            name="most_req_date_from"
+                                                            class="form-control form-control-sm text-gray singledatepicker"
+                                                            id="most_req_date_from" placeholder="শুরুর তারিখ">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <label for="stock_date_to" class="text-navy">শেষ তারিখ :</label>
-                                                        <input required="" type="text" value="" name="stock_date_to" class="form-control form-control-sm text-gray singledatepicker" id="stock_date_to" placeholder="শেষ তারিখ">
+                                                        <label for="most_req_date_to" class="text-navy">শেষ তারিখ
+                                                            :</label>
+                                                        <input required="" type="text" value="" name="most_req_date_to"
+                                                            class="form-control form-control-sm text-gray singledatepicker"
+                                                            id="most_req_date_to" placeholder="শেষ তারিখ">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group mb-0 d-flex">
-                                                        <input required="" type="submit" value="খুজুন" class="form-control form-control-sm btn btn-sm btn-primary" id="">
+                                                        <input required="" type="submit" value="খুজুন"
+                                                            class="form-control form-control-sm btn btn-sm btn-primary"
+                                                            id="">
                                                     </div>
                                                 </div>
                                             </div>
@@ -274,124 +198,245 @@
                             </div>
                         </div>
                         <div class="card-body pt-0">
-                            <div id="stockProductsChart"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <div class="requisition-list">
-                        <div class="card shadow-sm">
-                            <div class="card-header text-right border-0">
-                                <h4 class="card-title">চাহিদাপত্র <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
-                                <a href="{{ route('admin.recommended.requisition.list') }}" class="btn btn-sm btn-light" style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
-                            </div>
-                            <div class="card-body pt-0">
-                                <table class="table">
-                                    <thead style="background: #fff !important;">
-                                        <tr>
-                                            <th width="30%">চাহিদাপত্র নাম্বার</th>
-                                            <th width="20%">তৈরি সময়</th>
-                                            <th width="20%">শাখা</th>
-                                            <th width="20%">অবস্থা</th>
-                                            <th width="10%">অ্যাকশন</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="">
-                                        @foreach ($sectionRequisitions as $item)
-                                            @php
-                                                $formatter = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
-                                                $formatter->setPattern('d-MMMM-y');
-                                                $date = $formatter->format($item->created_at);
-                                            @endphp
-                                            <tr>
-                                                <td>{{ en2bn($item->requisition_no) }}</td>
-                                                {{-- <td>{{ date('d-M-Y', strtotime($item->created_at)) }}</td> --}}
-                                                <td>{{ $date }}</td>
-                                                <td>{{ $item->section->name }}</td>
-                                                <td>{!! requisitionStatus($item->status) !!}</td>
-                                                <td><button class="btn btn-sm btn-light px-1 py-0 view-products" style="font-size: 11px !important;" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id="{{ $item->id }}"><i class="fas fa-plus"></i></button></td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="prodduct-list">
-                        <div class="card shadow-sm">
-                            <div class="card-header text-right border-0">
-                                <h4 class="card-title">সর্বশেষ প্রাপ্ত পণ্য <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
-                                <a href="{{ route('admin.dashboard.received-products') }}" class="btn btn-sm btn-light" style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
-                            </div>
-                            <div class="card-body pt-0">
-                                <table class="table">
-                                    <thead style="background: #fff !important;">
-                                        <tr>
-                                            <th width="20%">চাহিদাপত্র নাম্বার</th>
-                                            <th width="20%">শাখা</th>
-                                            <th width="40%">পন্যের নাম</th>
-                                            <th width="20%" class="text-right">পরিমান</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="">
-                                        @foreach ($sectionRequisitionProducts as $item)
-                                            <tr>
-                                                <td>{{ en2bn($item->requisition_no) }}</td>
-                                                <td>{{ $item->section }}</td>
-                                                <td>{{ $item->product }} ({{ $item->unit }})</td>
-                                                <td class="text-right">{{ en2bn($item->final_approve_quantity) }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                            <div id="mostProductsChart"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-    <!-- Modal for Product Details -->
-    <div class="modal" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">পন্যের বিবরনী</h6>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+        <div class="row mt-0 mt-md-3">
+            <div class="col-md-12">
+                <div class="card shadow-sm" style="border-radius: 12px;">
+                    <div class="card-header border-0 pb-0 pt-3">
+                        <h4 class="card-title">চাহিদাপত্রের পরিসংখ্যান</h4>
+                        <div class="card-tools mr-0">
+                            <div class="dropdown show">
+                                <a class="btn btn-sm btn-light" data-toggle="dropdown" href="#" aria-expanded="true"
+                                    style="margin-right:2rem; padding: 1px 6px;">
+                                    <i class="far fa-calendar-alt"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right p-3 border-0"
+                                    style="min-width: 200px !important;">
+                                    {{-- <button type="button" class="close" aria-label="Close" id="closeDropdown">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button> --}}
+                                    <form action="" method="post" id="requisitionProductsForm" autocomplete="off">
+                                        @csrf
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="form-group">
+                                                    <label for="date_from" class="text-navy">শুরুর তারিখ :</label>
+                                                    <input required="" type="text" value="" name="date_from"
+                                                        class="form-control form-control-sm text-gray singledatepicker"
+                                                        id="date_from" placeholder="শুরুর তারিখ">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <div class="form-group">
+                                                    <label for="date_to" class="text-navy">শেষ তারিখ :</label>
+                                                    <input required="" type="text" value="" name="date_to"
+                                                        class="form-control form-control-sm text-gray singledatepicker"
+                                                        id="date_to" placeholder="শেষ তারিখ">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <div class="form-group mb-0 d-flex">
+                                                    <input required="" type="submit" value="খুজুন"
+                                                        class="form-control form-control-sm btn btn-sm btn-primary"
+                                                        id="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body pt-0">
+                        <div id="productsInRequisitionChart"></div>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <table class="table table-bordered">
-                        <thead style="background: #fff !important;">
-                            <tr>
-                                <th>পন্য</th>
-                                <th>বর্তমান মজূদ</th>
-                                <th>চাহিদার পরিমান</th>
-                                <th>সুপারিশ পরিমান</th>
-                                <th>অনুমোদিত পরিমান</th>
-                                <th>যৌক্তিকতা</th>
-                            </tr>
-                        </thead>
-                        <tbody id="productDetailsTable">
-                            <!-- Product details will be displayed here -->
-                        </tbody>
-                    </table>
+            </div>
+        </div>
+
+        <div class="row mt-0 mt-md-3">
+            <div class="col-md-12">
+                <div class="card shadow-sm" style="border-radius: 12px;">
+                    <div class="card-header text-right border-0 pb-0 pt-3">
+                        <h4 class="card-title">সর্বাধিক মজুদকৃত পণ্য <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
+                        <div class="card-tools mr-0 d-flex align-items-center">
+                            <a href="{{ route('admin.dashboard.stock-in-products') }}" class="btn btn-sm btn-light mr-1"
+                                style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
+                            <div class="dropdown show">
+                                <a class="btn btn-sm btn-light" data-toggle="dropdown" href="#" aria-expanded="true"
+                                    style="margin-right:2rem; padding: 1px 6px;">
+                                    <i class="far fa-calendar-alt"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right p-3 border-0"
+                                    style="min-width: 200px !important;">
+                                    {{-- <button type="button" class="close" aria-label="Close" id="closeDropdown">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button> --}}
+                                    <form action="" method="post" id="stockProductsForm" autocomplete="off">
+                                        @csrf
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="form-group">
+                                                    <label for="stock_date_from" class="text-navy">শুরুর তারিখ :</label>
+                                                    <input required="" type="text" value="" name="stock_date_from"
+                                                        class="form-control form-control-sm text-gray singledatepicker"
+                                                        id="stock_date_from" placeholder="শুরুর তারিখ">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <div class="form-group">
+                                                    <label for="stock_date_to" class="text-navy">শেষ তারিখ :</label>
+                                                    <input required="" type="text" value="" name="stock_date_to"
+                                                        class="form-control form-control-sm text-gray singledatepicker"
+                                                        id="stock_date_to" placeholder="শেষ তারিখ">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <div class="form-group mb-0 d-flex">
+                                                    <input required="" type="submit" value="খুজুন"
+                                                        class="form-control form-control-sm btn btn-sm btn-primary"
+                                                        id="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body pt-0">
+                        <div id="stockProductsChart"></div>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">বন্ধ করুন</button>
+            </div>
+        </div>
+
+        <div class="row mt-0 mt-md-3">
+            <div class="col-lg-6">
+                <div class="requisition-list">
+                    <div class="card shadow-sm">
+                        <div class="card-header border-0">
+                            <h4 class="card-title">চাহিদাপত্র <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
+                            <a href="{{ route('admin.recommended.requisition.list') }}" class="btn btn-sm btn-light"
+                                style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
+                        </div>
+                        <div class="card-body pt-0">
+                            <table class="table">
+                                <thead style="background: #fff !important;">
+                                    <tr>
+                                        <th width="30%">চাহিদাপত্র নাম্বার</th>
+                                        <th width="20%">তৈরি সময়</th>
+                                        <th width="20%">শাখা</th>
+                                        <th width="20%">অবস্থা</th>
+                                        <th width="10%">অ্যাকশন</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="">
+                                    @foreach ($sectionRequisitions as $item)
+                                    @php
+                                    $formatter = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG,
+                                    IntlDateFormatter::NONE);
+                                    $formatter->setPattern('d-MMMM-y');
+                                    $date = $formatter->format($item->created_at);
+                                    @endphp
+                                    <tr>
+                                        <td>{{ en2bn($item->requisition_no) }}</td>
+                                        {{-- <td>{{ date('d-M-Y', strtotime($item->created_at)) }}</td> --}}
+                                        <td>{{ $date }}</td>
+                                        <td>{{ $item->section->name }}</td>
+                                        <td>{!! requisitionStatus($item->status) !!}</td>
+                                        <td><button class="btn btn-sm btn-light px-1 py-0 view-products"
+                                                style="font-size: 11px !important;" data-toggle="modal"
+                                                data-target="#productDetailsModal"
+                                                data-requisition-id="{{ $item->id }}"><i
+                                                    class="fas fa-plus"></i></button></td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="prodduct-list">
+                    <div class="card shadow-sm">
+                        <div class="card-header border-0">
+                            <h4 class="card-title">সর্বশেষ প্রাপ্ত পণ্য <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
+                            <a href="{{ route('admin.dashboard.received-products') }}" class="btn btn-sm btn-light"
+                                style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
+                        </div>
+                        <div class="card-body pt-0">
+                            <table class="table">
+                                <thead style="background: #fff !important;">
+                                    <tr>
+                                        <th width="20%">চাহিদাপত্র নাম্বার</th>
+                                        <th width="20%">শাখা</th>
+                                        <th width="40%">পন্যের নাম</th>
+                                        <th width="20%" class="text-right">পরিমান</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="">
+                                    @foreach ($sectionRequisitionProducts as $item)
+                                    <tr>
+                                        <td>{{ en2bn($item->requisition_no) }}</td>
+                                        <td>{{ $item->section }}</td>
+                                        <td>{{ $item->product }} ({{ $item->unit }})</td>
+                                        <td class="text-right">{{ en2bn($item->final_approve_quantity) }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</section>
+<!-- Modal for Product Details -->
+<div class="modal" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="productDetailsModalLabel"
+                    style="font-weight: 600;color: #2a527b;text-transform: uppercase;">পন্যের বিবরনী</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <thead style="background: #fff !important;">
+                        <tr>
+                            <th>পন্য</th>
+                            <th>বর্তমান মজূদ</th>
+                            <th>চাহিদার পরিমান</th>
+                            <th>সুপারিশ পরিমান</th>
+                            <th>অনুমোদিত পরিমান</th>
+                            <th>যৌক্তিকতা</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productDetailsTable">
+                        <!-- Product details will be displayed here -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">বন্ধ করুন</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <script>
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
             $('.view-products').on('click', function() {
                 var requistionID = $(this).data('requisition-id');
 
@@ -444,14 +489,24 @@
             });
 
         });
-    </script>
+</script>
 
 
-    <!-- mostProductsChart code -->
-    <script>
-        let chart2;
+<!-- mostProductsChart code -->
+<script>
+    let chart2;
         let xAxis2, yAxis2, series2;
         let mostRequestedProducts = <?php echo json_encode(@$mostRequestedProducts); ?>;
+
+        if (window.innerWidth > 576) {
+            var textSize = 10;
+            var yCategoryName = "product";
+            var tooltipText = "{valueX}";
+        } else {
+            var textSize = 7;
+            var yCategoryName = "product_short";
+            var tooltipText = "{valueX} ({product})";
+        }
         am5.ready(function() {
 
             // Create root element
@@ -485,7 +540,7 @@
             });
             yRenderer.labels.template.setAll({
                 strokeDasharray: [2, 2],
-                fontSize: 10,
+                fontSize: textSize,
             });
             yRenderer.grid.template.setAll({
                 strokeOpacity: 0.1,
@@ -494,7 +549,7 @@
 
             yAxis2 = chart2.yAxes.push(am5xy.CategoryAxis.new(root, {
                 maxDeviation: 0.3,
-                categoryField: "product",
+                categoryField: yCategoryName,
                 renderer: yRenderer,
                 // tooltip: am5.Tooltip.new(root, {
                 //     themeTags: ["axis"]
@@ -504,7 +559,7 @@
             var xRenderer = am5xy.AxisRendererX.new(root, {});
             xRenderer.labels.template.setAll({
                 strokeDasharray: [2, 2],
-                fontSize: 10,
+                fontSize: textSize,
             });
 
             xRenderer.grid.template.setAll({
@@ -526,10 +581,10 @@
                 xAxis: xAxis2,
                 yAxis: yAxis2,
                 valueXField: "quantity",
-                categoryYField: "product",
+                categoryYField: yCategoryName,
                 tooltip: am5.Tooltip.new(root, {
                     pointerOrientation: "left",
-                    labelText: "{valueX}"
+                    labelText: tooltipText
                 })
             }));
 
@@ -663,10 +718,10 @@
                 }
             });
         });
-    </script>
+</script>
 
-    <script>
-        let requisitionInfoByDepartment = <?php echo json_encode(@$requisitionInfoByDepartment); ?>;
+<script>
+    let requisitionInfoByDepartment = <?php echo json_encode(@$requisitionInfoByDepartment); ?>;
         let series;
         am5.ready(function() {
             // Create root element
@@ -677,10 +732,11 @@
 
             // Create chart
             var chart = root.container.children.push(am5xy.XYChart.new(root, {
-                panX: false,
-                panY: false,
+                panX: true,
+                panY: true,
                 wheelX: "panX",
                 wheelY: "zoomX",
+                pinchZoomX:true,
                 layout: root.verticalLayout
             }));
 
@@ -718,16 +774,39 @@
                 cellEndLocation: 0.9
             });
 
+            if (window.innerWidth > 576 ) {
+                xRenderer.labels.template.setAll({
+                    strokeDasharray: [2, 2],
+                    rotation: 0,
+                    centerY: am5.p50,
+                    centerX: am5.p100,
+                    paddingRight: 5,
+                    fontSize: 10,
+
+                });
+
+            } else {
+                xRenderer.labels.template.setAll({
+                    strokeDasharray: [2, 2],
+                    rotation: -90,
+                    centerY: am5.p0,
+                    centerX: am5.p50,
+                    paddingRight: 0,
+                    fontSize: 8,
+
+                });
+            }
+
             var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
                 categoryField: "department",
                 renderer: xRenderer,
                 tooltip: am5.Tooltip.new(root, {})
             }));
 
-            xRenderer.labels.template.setAll({
-                strokeDasharray: [2, 2],
-                fontSize: 12,
-            });
+            // xRenderer.labels.template.setAll({
+            //     strokeDasharray: [2, 2],
+            //     fontSize: 12,
+            // });
 
             xRenderer.grid.template.setAll({
                 location: 1,
@@ -952,12 +1031,23 @@
                 }
             ]);
         });
-    </script>
+</script>
 
-    <script>
-        let chart4;
+<script>
+    let chart4;
         let xAxis4, yAxis4, series4;
         let mostStockProducts = <?php echo json_encode(@$mostStockProducts); ?>;
+
+        if (window.innerWidth > 576) {
+            var textSize4 = 10;
+            var yCategoryName4 = "product";
+            var tooltipText4 = "{valueX}";
+        } else {
+            var textSize4 = 7;
+            var yCategoryName4 = "product_short";
+            var tooltipText4 = "{valueX} ({product})";
+        }
+
         am5.ready(function() {
 
             // Create root element
@@ -991,7 +1081,7 @@
             });
             yRenderer.labels.template.setAll({
                 strokeDasharray: [2, 2],
-                fontSize: 10,
+                fontSize: textSize4,
             });
             yRenderer.grid.template.setAll({
                 strokeOpacity: 0.1,
@@ -1000,7 +1090,7 @@
 
             yAxis4 = chart4.yAxes.push(am5xy.CategoryAxis.new(root, {
                 maxDeviation: 0.3,
-                categoryField: "product",
+                categoryField: yCategoryName4,
                 renderer: yRenderer,
                 // tooltip: am5.Tooltip.new(root, {
                 //     themeTags: ["axis"]
@@ -1010,7 +1100,7 @@
             var xRenderer = am5xy.AxisRendererX.new(root, {});
             xRenderer.labels.template.setAll({
                 strokeDasharray: [2, 2],
-                fontSize: 10,
+                fontSize: textSize4,
             });
 
             xRenderer.grid.template.setAll({
@@ -1032,10 +1122,10 @@
                 xAxis: xAxis4,
                 yAxis: yAxis4,
                 valueXField: "quantity",
-                categoryYField: "product",
+                categoryYField: yCategoryName4,
                 tooltip: am5.Tooltip.new(root, {
                     pointerOrientation: "left",
-                    labelText: "{valueX}"
+                    labelText: tooltipText4
                 })
             }));
 
@@ -1178,5 +1268,5 @@
                 }
             });
         });
-    </script>
+</script>
 @endsection
