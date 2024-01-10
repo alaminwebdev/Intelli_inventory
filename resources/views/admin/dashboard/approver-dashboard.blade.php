@@ -210,7 +210,7 @@
                     <div class="card-header border-0 pb-0 pt-3">
                         <h4 class="card-title">চাহিদাপত্রের পরিসংখ্যান</h4>
                         <div class="card-tools mr-0">
-                            <div class="dropdown show">
+                            <div class="dropdown show requisition-statistics-form">
                                 <a class="btn btn-sm btn-light" data-toggle="dropdown" href="#" aria-expanded="true"
                                     style="margin-right:2rem; padding: 1px 6px;">
                                     <i class="far fa-calendar-alt"></i>
@@ -721,7 +721,18 @@
 </script>
 
 <script>
-    let requisitionInfoByDepartment = <?php echo json_encode(@$requisitionInfoByDepartment); ?>;
+    let allRequisitionInfoByDepartment = <?php echo json_encode(@$requisitionInfoByDepartment); ?>;
+    var requisitionInfoByDepartment;
+
+    if (window.innerWidth <= 425) {
+        requisitionInfoByDepartment = allRequisitionInfoByDepartment.slice(0, 1);
+    } else if (window.innerWidth <= 576) {
+        requisitionInfoByDepartment = allRequisitionInfoByDepartment.slice(0, 2);
+    } else if (window.innerWidth <= 991) {
+        requisitionInfoByDepartment = allRequisitionInfoByDepartment.slice(0, 2);
+    } else {
+        requisitionInfoByDepartment = allRequisitionInfoByDepartment;
+    }
         let series;
         am5.ready(function() {
             // Create root element
@@ -774,12 +785,12 @@
                 cellEndLocation: 0.9
             });
 
-            if (window.innerWidth > 576 ) {
+            if (window.innerWidth > 767 ) {
                 xRenderer.labels.template.setAll({
                     strokeDasharray: [2, 2],
                     rotation: 0,
                     centerY: am5.p50,
-                    centerX: am5.p100,
+                    centerX: am5.p50,
                     paddingRight: 5,
                     fontSize: 10,
 
@@ -790,9 +801,9 @@
                     strokeDasharray: [2, 2],
                     rotation: -90,
                     centerY: am5.p0,
-                    centerX: am5.p50,
+                    centerX: am5.p100,
                     paddingRight: 0,
-                    fontSize: 8,
+                    fontSize: 7,
 
                 });
             }

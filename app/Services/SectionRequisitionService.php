@@ -484,9 +484,14 @@ class SectionRequisitionService implements IService
 
         // Convert the formatted data to a numerically indexed array
         $data = array_values($formattedData);
-        //dd($data);
 
+        // Sort the array based on 'totalRequisition' in descending order
+        usort($data, function ($a, $b) {
+            return $b['totalRequisition'] - $a['totalRequisition'];
+        });
 
+        // Return the top 5 elements
+        $data = array_slice($data, 0, 4);
         return $data;
     }
 
