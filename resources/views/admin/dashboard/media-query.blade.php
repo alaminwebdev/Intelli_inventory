@@ -55,6 +55,9 @@
             height: 600px;
             font-size: 8px;
         }
+        .requisition-statistics-form{
+            display: none;
+        }
     }
 
     /* Small devices (landscape phones, 576px and up) */
@@ -90,6 +93,9 @@
             height: 600px;
             font-size: 8px;
         }
+        .requisition-statistics-form{
+            display: none;
+        }
 
 
     }
@@ -98,6 +104,9 @@
     @media (min-width: 768px) and (max-width: 991.98px) {
         .dashboard-banner .image img {
             width: 40%;
+        }
+        .requisition-statistics-form{
+            display: none;
         }
     }
 
