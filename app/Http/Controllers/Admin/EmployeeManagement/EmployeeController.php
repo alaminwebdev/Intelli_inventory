@@ -39,6 +39,7 @@ class EmployeeController extends Controller
         $data['title']          = 'অফিসার যুক্ত করুন';
         $data['designations']   = $this->designationService->getAll(1);
         $data['departments']    = $this->departmentService->getAll(1);
+        $data['sections']       = [];
         return view('admin.employee-management.employee.add', $data);
     }
     public function store(Request $request)
