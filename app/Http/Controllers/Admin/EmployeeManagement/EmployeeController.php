@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Services\DesignationService;
 use App\Services\DepartmentService;
+use App\Services\SectionService;
 use App\Services\EmployeeService;
 
 class EmployeeController extends Controller
@@ -14,15 +15,18 @@ class EmployeeController extends Controller
     private $designationService;
     private $departmentService;
     private $employeeService;
+    private $sectionService;
 
     public function __construct(
         DesignationService $designationService,
         DepartmentService $departmentService,
-        EmployeeService $employeeService
+        EmployeeService $employeeService,
+        SectionService $sectionService
     ) {
         $this->designationService   = $designationService;
         $this->departmentService    = $departmentService;
         $this->employeeService      = $employeeService;
+        $this->sectionService       = $sectionService;
     }
     public function index()
     {
@@ -53,10 +57,11 @@ class EmployeeController extends Controller
     }
     public function edit($id)
     {
-        $data['title']          = 'কর্মচারীর তথ্য হালনাগাদ করুন';
+        $data['title']          = 'অফিসার্স তথ্য হালনাগাদ করুন';
         $data['editData']       = $this->employeeService->getByID($id);
         $data['designations']   = $this->designationService->getAll(1);
         $data['departments']    = $this->departmentService->getAll(1);
+        $data['sections']       = $this->sectionService->getSectionsByDepartment($data['editData']['department_id']);
         return view('admin.employee-management.employee.add', $data);
     }
 

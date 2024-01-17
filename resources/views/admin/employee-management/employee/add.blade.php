@@ -57,6 +57,9 @@
                                                 <label class="control-label">শাখা </label>
                                                 <select name="section_id" id="section_id" class="form-control select2 @error('section_id') is-invalid @enderror">
                                                     <option value="">Please Select</option>
+                                                    @foreach ($sections as $section)
+                                                        <option value="{{ $section->id }}" {{ @$editData->section_id == $section->id ? 'selected' : '' }}>{{ $section->name }}</option>
+                                                    @endforeach
                                                 </select>
                                                 @error('section_id')
                                                     <span class="invalid-feedback" role="alert">
