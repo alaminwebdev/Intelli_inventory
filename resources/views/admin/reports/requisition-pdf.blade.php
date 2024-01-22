@@ -121,7 +121,7 @@
                 <div style="width: 30%; float: left; text-align: center;">
                     <p style="margin:0; {{ @$requestedRequisitionInfo->requisition_owner->name ? '' : 'visibility: hidden;'  }}">{{ @$requestedRequisitionInfo->requisition_owner->name ?? 'Not available' }}</p>
                     {{-- <p style="margin:0; visibility: hidden;">signnature</p> --}}
-                    <p style="margin:0 80px; padding: 5px; border-top: 1px dotted black;">চাহিদাকারী</p>
+                    <p style="margin:0 50px; padding: 5px; border-top: 1px dotted black;">চাহিদাকারী</p>
                 </div>
                 <div style="width: 40%; float: left; text-align: center;">
                     <p style="margin:0; {{ @$requestedRequisitionInfo->distribute_user->name ? '' : 'visibility: hidden;'  }}">{{ @$requestedRequisitionInfo->distribute_user->name ?? 'Not available' }}</p>
@@ -131,7 +131,7 @@
                 <div style="width: 30%; float: left; text-align: center;">
                     <p style="margin:0; {{ @$requestedRequisitionInfo->name ? '' : 'visibility: hidden;'  }}">{{ @$requestedRequisitionInfo->name ?? 'Not available' }}</p>
                     {{-- <p style="margin:0; visibility: hidden;">signnature</p> --}}
-                    <p style="margin:0 80px; padding: 5px; border-top: 1px dotted black;">গ্রহনকারী</p>
+                    <p style="margin:0 50px; padding: 5px; border-top: 1px dotted black;">গ্রহনকারী</p>
                 </div>
             @endif
         </div>
