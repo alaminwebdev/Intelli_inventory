@@ -72,19 +72,19 @@
                                                                 </thead>
                                                                 <tbody>
                                                                     @foreach ($type['products'] as $product)
-                                                                        <tr data-product-id="{{ $product['product_id'] }}">
+                                                                        <tr data-product-id="{{ $product['product_id'] }}" class="recommended_table">
                                                                             <td class="product-name">{{ $product['product_name'] }}</td>
                                                                             <td>
                                                                                 <input type="number" class="form-control form-control-sm" id="section_current_stock_{{ $product['product_id'] }}" name="section_current_stock[{{ $product['product_id'] }}]" value="{{ $product['current_stock'] }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="section_demand_quantity_{{ $product['product_id'] }}" name="section_demand_quantity[{{ $product['product_id'] }}]" value="{{ $product['demand_quantity'] }}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm section_demand_quantity" id="section_demand_quantity_{{ $product['product_id'] }}" name="section_demand_quantity[{{ $product['product_id'] }}]" value="{{ $product['demand_quantity'] }}" readonly>
                                                                             </td>
                                                                             <td>
                                                                                 <input type="text" class="form-control form-control-sm" id="remarks_{{ $product['product_id'] }}" name="remarks[{{ $product['product_id'] }}]" value="{{ $product['remarks'] }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="recommended_quantity_{{ $product['product_id'] }}" name="recommended_quantity[{{ $product['product_id'] }}]" value="{{ $product['recommended_quantity'] ?? $product['demand_quantity'] }}">
+                                                                                <input type="number" class="form-control form-control-sm recommended_quantity" id="recommended_quantity_{{ $product['product_id'] }}" name="recommended_quantity[{{ $product['product_id'] }}]" value="{{ $product['recommended_quantity'] ?? $product['demand_quantity'] }}">
                                                                             </td>
                                                                             <td>
                                                                                 <input type="text" class="form-control form-control-sm" id="recommended_remarks_{{ $product['product_id'] }}" name="recommended_remarks[{{ $product['product_id'] }}]" value="{{ $product['recommended_remarks'] }}">
@@ -122,6 +122,22 @@
         </div>
     </section>
 
+    <script>
+        $(function() {
+            $(document).on('keyup', '.recommended_quantity', function() {
+                var recommendedQuantity = parseInt($(this).val());
+
+                var sectionDemandQuantity = parseInt($(this).parents('.recommended_table').find(
+                    '.section_demand_quantity').val());
+
+                if (recommendedQuantity > sectionDemandQuantity) {
+                    $(this).val(sectionDemandQuantity);
+                    //displaySwalMessage('Issued quantity cannot exceed the available quantity or request approve quantity', 'warning');
+                    alert('Recommended quantity cannot exceed the demand quantity.');
+                }
+            });
+        })
+    </script>
 
     <script>
         // Function to validate the form before submission

@@ -164,11 +164,14 @@ class DistributionController extends Controller
 
     public function productDistributeStore(Request $request)
     {
+
         $request->validate([
-            'bp_no'             => 'required',
+            // 'bp_no'             => 'required',
             'name'              => 'required',
+            'designation'       => 'required',
+            'phone'             => 'required',
             // 'designation_id'    => 'required',
-            'email'             => 'required',
+            // 'email'             => 'required',
         ]);
 
         DB::beginTransaction();
@@ -229,25 +232,32 @@ class DistributionController extends Controller
 
             $sectionRequisition = SectionRequisition::findOrFail($request->section_requisition_id);
 
-            if ($request->filled('employee_id')) {
-                $employeeId = $request->employee_id;
-            } else {
-                $newEmployee                    = new Employee();
-                $newEmployee->bp_no             = $request->bp_no;
-                $newEmployee->name              = $request->name;
-                $newEmployee->email             = $request->email;
-                $newEmployee->designation_id    = $request->designation_id;
-                $newEmployee->section_id        = $sectionRequisition->section->id;
-                $newEmployee->department_id     = $sectionRequisition->section->department->id;
-                $newEmployee->save();
+            // if ($request->filled('employee_id')) {
+            //     $employeeId = $request->employee_id;
+            // } else {
+            //     $newEmployee                    = new Employee();
+            //     $newEmployee->bp_no             = $request->bp_no;
+            //     $newEmployee->name              = $request->name;
+            //     $newEmployee->email             = $request->email;
+            //     $newEmployee->designation_id    = $request->designation_id;
+            //     $newEmployee->section_id        = $sectionRequisition->section->id;
+            //     $newEmployee->department_id     = $sectionRequisition->section->department->id;
+            //     $newEmployee->save();
 
-                $employeeId = $newEmployee->id;
-            }
+            //     $employeeId = $newEmployee->id;
+            // }
 
             $sectionRequisition->distribute_by  = Auth::id();
             $sectionRequisition->distribute_at  = Carbon::now();
-            $sectionRequisition->receive_by     = $employeeId;
+
+            // $sectionRequisition->receive_by     = $employeeId;
+
             $sectionRequisition->receive_at     = Carbon::now();
+            $sectionRequisition->name           = $request->name;
+            $sectionRequisition->designation    = $request->designation;
+            $sectionRequisition->phone          = $request->phone;
+            $sectionRequisition->email          = $request->email;
+
             $sectionRequisition->status         = 4;
             $sectionRequisition->save();
 
