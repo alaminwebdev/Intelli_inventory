@@ -24,20 +24,24 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="row px-3 pt-3 border rounded shadow-sm mb-3">
-                                            <div class="col-md-4 mb-3">
+                                            <div class="col-md-12">
+                                                <p class="border-bottom" style="font-size: 14px; font-weight:600; color:#2a527b;">চাহিদাকারীর তথ্য</p>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
                                                 <input type="hidden" value="{{ $editData->id }}" name="section_requisition_id">
                                                 <label class="control-label">চাহিদাপত্র নাম্বার :</label>
                                                 <input type="text" class="form-control form-control-sm" id="remarks" name="requisition_no" value="{{ $editData->requisition_no }}" readonly>
                                             </div>
-                                            <div class="col-md-4 mb-3">
+                                            <div class="col-md-3 mb-3">
                                                 <label class="control-label">দপ্তর : <span class="text-red">*</span></label>
-                                                <input type="text" class="form-control form-control-sm" id="department_id" name="department_id" value="{{ $editData->section->department->name }}" readonly>
+                                                <input type="text" class="form-control form-control-sm" id="department_id" name="department_id" value="{{ @$editData->section->department->name }}" readonly>
                                             </div>
-                                            <div class="col-md-4 mb-3">
+                                            <div class="col-md-3 mb-3">
                                                 <label class="control-label">শাখা : <span class="text-red">*</span></label>
-                                                <input type="text" class="form-control form-control-sm" id="section_id" name="section_id" value="{{ $editData->section->name }}" readonly>
+                                                <input type="text" class="form-control form-control-sm" id="section_id" name="section_id" value="{{ @$editData->section->name }}" readonly>
                                             </div>
-                                            <div class="col-md-2 mb-3">
+
+                                            {{-- <div class="col-md-2 mb-3">
                                                 <label class="control-label">বি. পি. নং. : <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm  @error('bp_no') is-invalid @enderror" id="bp_no" name="bp_no">
                                                 @error('bp_no')
@@ -45,17 +49,14 @@
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
-                                            </div>
-                                            <div class="col-sm-2 mb-3">
+                                            </div> --}}
+
+                                            <div class="col-sm-3 mb-3">
                                                 <label class="control-label">কর্মচারীর নাম <span class="text-red">*</span></label>
-                                                <input type="text" class="form-control form-control-sm name @error('name') is-invalid @enderror" id="name" name="name" placeholder="Name">
-                                                @error('name')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
+                                                <input type="text" class="form-control form-control-sm" value="{{ @$editData->requisition_owner->name}}"  readonly>
                                             </div>
-                                            <div class="col-md-4 mb-3">
+
+                                            {{-- <div class="col-md-4 mb-3">
                                                 <label class="control-label">পদবী <span class="text-red">*</span></label>
                                                 <select name="designation_id" id="designation_id" class="form-control form-control-sm @error('designation_id') is-invalid @enderror ">
                                                     <option value="">Please Select</option>
@@ -68,17 +69,53 @@
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
+                                            </div> --}}
+
+                                            <div class="col-md-3 mb-3">
+                                                <label class="control-label">ইমেইল</label>
+                                                <input type="text" class="form-control form-control-sm" value="{{ @$editData->requisition_owner->email}}"  readonly>
                                             </div>
-                                            <div class="col-md-4 mb-3">
-                                                <label class="control-label">ইমেইল <span class="text-red">*</span></label>
-                                                <input type="text" class="form-control form-control-sm email @error('email') is-invalid @enderror" id="email" name="email" placeholder="Email">
-                                                @error('email')
+                                            <div class="col-md-3 mb-3">
+                                                <label class="control-label">ফোন</label>
+                                                <input type="text" class="form-control form-control-sm" value="{{ @$editData->requisition_owner->mobile_no}}"  readonly>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <p class="border-bottom" style="font-size: 14px; font-weight:600; color:#2a527b;">গ্রহনকারীর তথ্য</p>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="control-label">নাম <span class="text-red">*</span></label>
+                                                <input type="text" class="form-control form-control-sm name @error('name') is-invalid @enderror" id="name" name="name" placeholder="Name">
+                                                @error('name')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
                                             </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="control-label">পদবী <span class="text-red">*</span></label>
+                                                <input type="text" class="form-control form-control-sm designation @error('designation') is-invalid @enderror" id="designation" name="designation" placeholder="Designation">
+                                                @error('designation')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="control-label">ফোন <span class="text-red">*</span></label>
+                                                <input type="text" class="form-control form-control-sm phone @error('phone') is-invalid @enderror" id="phone" name="phone" placeholder="Phone">
+                                                @error('phone')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="control-label">ইমেইল</label>
+                                                <input type="text" class="form-control form-control-sm email @error('email') is-invalid @enderror" id="email" name="email" placeholder="Email">
+                                            </div>
                                         </div>
+
                                     </div>
                                     <div class="col-md-12">
                                         <div class="accordion">
@@ -161,65 +198,68 @@
     </section>
     <script>
         $(document).ready(function() {
-            $('#bp_no').on('blur', function() {
-                var bpNo = $(this).val();
-                console.log(bpNo);
-                if (bpNo !== '') {
-                    document.getElementById('loading-spinner').style.display = 'block';
-                    $.ajax({
-                        type: 'GET',
-                        url: "{{ route('admin.check.bp-no') }}",
-                        data: {
-                            bp_no: bpNo
-                        },
-                        success: function(response) {
-                            console.log(response)
-                            if (Object.keys(response).length > 0) {
-                                $('#name').val(response.name).prop('readonly', true);
-                                $('#email').val(response.email).prop('readonly', true);
 
-                                // Select the option with the matching value in designation_id
-                                $('#designation_id').val(response.designation_id).prop('disabled', true);
-                                document.getElementById('employee_id').value = response.id;
-                                
-                                document.getElementById('loading-spinner').style.display = 'none';
-                            } else {
-                                console.log('no bp no');
-                                // If bp_no doesn't exist, reset fields and enable them
-                                $('#name').val('').prop('readonly', false);
-                                $('#email').val('').prop('readonly', false);
+            // $('#bp_no').on('blur', function() {
+            //     var bpNo = $(this).val();
+            //     console.log(bpNo);
+            //     if (bpNo !== '') {
+            //         document.getElementById('loading-spinner').style.display = 'block';
+            //         $.ajax({
+            //             type: 'GET',
+            //             url: "{{ route('admin.check.bp-no') }}",
+            //             data: {
+            //                 bp_no: bpNo
+            //             },
+            //             success: function(response) {
+            //                 console.log(response)
+            //                 if (Object.keys(response).length > 0) {
+            //                     $('#name').val(response.name).prop('readonly', true);
+            //                     $('#email').val(response.email).prop('readonly', true);
 
-                                // Reset the value of designation_id and enable the field
-                                $('#designation_id').val('').prop('disabled', false);
-                                document.getElementById('employee_id').value = '';
+            //                     // Select the option with the matching value in designation_id
+            //                     $('#designation_id').val(response.designation_id).prop('disabled', true);
+            //                     document.getElementById('employee_id').value = response.id;
 
-                                document.getElementById('loading-spinner').style.display = 'none';
-                            }
-                        },
-                        error: function(error) {
-                            document.getElementById('loading-spinner').style.display = 'none';
-                            console.error("Error:", error);
+            //                     document.getElementById('loading-spinner').style.display = 'none';
+            //                 } else {
+            //                     console.log('no bp no');
+            //                     // If bp_no doesn't exist, reset fields and enable them
+            //                     $('#name').val('').prop('readonly', false);
+            //                     $('#email').val('').prop('readonly', false);
 
-                        }
-                    });
-                } else {
-                    // If bp_no is empty, reset fields and enable them
-                    $('#name').val('').prop('disabled', false);
-                    $('#email').val('').prop('disabled', false);
+            //                     // Reset the value of designation_id and enable the field
+            //                     $('#designation_id').val('').prop('disabled', false);
+            //                     document.getElementById('employee_id').value = '';
 
-                    // Reset the value of designation_id and enable the field
-                    $('#designation_id').val('').prop('disabled', false);
-                }
-            });
+            //                     document.getElementById('loading-spinner').style.display = 'none';
+            //                 }
+            //             },
+            //             error: function(error) {
+            //                 document.getElementById('loading-spinner').style.display = 'none';
+            //                 console.error("Error:", error);
+
+            //             }
+            //         });
+            //     } else {
+            //         // If bp_no is empty, reset fields and enable them
+            //         $('#name').val('').prop('disabled', false);
+            //         $('#email').val('').prop('disabled', false);
+
+            //         // Reset the value of designation_id and enable the field
+            //         $('#designation_id').val('').prop('disabled', false);
+            //     }
+            // });
 
             //Form submission validation
             $('#submitForm').on('submit', function(event) {
-                var bpNo = $('#bp_no').val();
+                // var bpNo = $('#bp_no').val();
+                // var designationId = $('#designation_id').val();
+                // var email = $('#email').val();
                 var name = $('#name').val();
-                var designationId = $('#designation_id').val();
-                var email = $('#email').val();
+                var designation = $('#designation').val();
+                var phone = $('#phone').val();
 
-                if (!bpNo || !name || !designationId || !email) {
+                if (!name || !designation || !phone) {
                     Swal.fire({
                         toast: true,
                         customClass: {
