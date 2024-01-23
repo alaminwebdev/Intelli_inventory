@@ -7,6 +7,16 @@
         tr {
             color: #2a527b !important;
         }
+
+        .swal2-icon {
+            width: 4em;
+            height: 4em;
+            margin: 0.5em auto .5em;
+        }
+
+        .swal2-styled.swal2-confirm {
+            background: linear-gradient(90deg, #5b86e5b5 0%, #36D1DC 100%) !important
+        }
     </style>
     <section class="content">
         <div class="container-fluid">
@@ -68,7 +78,7 @@
                                                                 <tbody>
 
                                                                     @foreach ($type['products'] as $product)
-                                                                        <tr data-product-id="{{ $product['product_id'] }}">
+                                                                        <tr data-product-id="{{ $product['product_id'] }}" class="approved_table">
                                                                             <td class="product-name">{{ $product['product_name'] }}</td>
                                                                             <td>
                                                                                 <input type="number" class="form-control form-control-sm" id="previous_stock_{{ $product['product_id'] }}" value="{{ $product['last_distribute_qty'] }}" readonly>
@@ -80,13 +90,13 @@
                                                                                 <input type="number" class="form-control form-control-sm" id="demand_quantity_{{ $product['product_id'] }}" name="demand_quantity[{{ $product['product_id'] }}]" value="{{ $product['demand_quantity'] }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="recommended_quantity_{{ $product['product_id'] }}" name="recommended_quantity[{{ $product['product_id'] }}]" value="{{ $product['recommended_quantity'] }}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm recommended_quantity" id="recommended_quantity_{{ $product['product_id'] }}" name="recommended_quantity[{{ $product['product_id'] }}]" value="{{ $product['recommended_quantity'] }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="text" class="form-control form-control-sm" id="available_quantity_{{ $product['product_id'] }}" value="{{ $product['available_quantity'] }}" readonly>
+                                                                                <input type="text" class="form-control form-control-sm available_quantity" id="available_quantity_{{ $product['product_id'] }}" value="{{ $product['available_quantity'] }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="approve_quantity_{{ $product['product_id'] }}" name="approve_quantity[{{ $product['product_id'] }}]" value="{{ $product['final_approve_quantity'] ?? $product['recommended_quantity'] }}" {{ $editData->status == 3 ? 'readonly' : '' }}>
+                                                                                <input type="number" class="form-control form-control-sm approve_quantity" id="approve_quantity_{{ $product['product_id'] }}" name="approve_quantity[{{ $product['product_id'] }}]" value="{{ $product['final_approve_quantity'] ?? $product['recommended_quantity'] }}" {{ $editData->status == 3 ? 'readonly' : '' }}>
                                                                             </td>
                                                                             <td>
                                                                                 <input type="text" class="form-control form-control-sm" id="remarks_{{ $product['product_id'] }}" name="remarks[{{ $product['product_id'] }}]" value="{{ $product['final_approve_remarks'] }}" {{ $product['final_approve_remarks'] ? 'readonly' : '' }}>
@@ -122,4 +132,34 @@
             </div>
         </div>
     </section>
+
+    <script>
+        $(function() {
+            $(document).on('keyup', '.approve_quantity', function() {
+                var approvedQuantity = parseInt($(this).val());
+
+                var availableQuantity = parseInt($(this).parents('.approved_table').find(
+                    '.available_quantity').val());
+
+                if (approvedQuantity > availableQuantity) {
+                    $(this).val(availableQuantity);
+
+                    //alert('Approved quantity cannot exceed the Recommended quantity.');
+                    Swal.fire({
+                        icon: "warning",
+                        // customClass: {
+                        //     popup: 'colored-toast'
+                        // },
+                        // iconColor: 'white',
+                        title: "অনুমোদিত পরিমাণ বিতরনের পরিমাণের বেশি হতে পারবে না।",
+                        toast: false,
+                        // position: 'top-end',
+                        showConfirmButton: true,
+                        // timer: 3000,
+                        timerProgressBar: false
+                    });
+                }
+            });
+        })
+    </script>
 @endsection

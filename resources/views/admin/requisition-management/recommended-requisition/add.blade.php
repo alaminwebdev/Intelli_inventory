@@ -123,23 +123,6 @@
     </section>
 
     <script>
-        $(function() {
-            $(document).on('keyup', '.recommended_quantity', function() {
-                var recommendedQuantity = parseInt($(this).val());
-
-                var sectionDemandQuantity = parseInt($(this).parents('.recommended_table').find(
-                    '.section_demand_quantity').val());
-
-                if (recommendedQuantity > sectionDemandQuantity) {
-                    $(this).val(sectionDemandQuantity);
-                    //displaySwalMessage('Issued quantity cannot exceed the available quantity or request approve quantity', 'warning');
-                    alert('Recommended quantity cannot exceed the demand quantity.');
-                }
-            });
-        })
-    </script>
-
-    <script>
         // Function to validate the form before submission
         // function validateForm(event) {
         //     event.preventDefault(); // Prevent the default form submission
