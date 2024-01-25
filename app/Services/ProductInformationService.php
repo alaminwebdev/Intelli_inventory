@@ -30,7 +30,8 @@ class ProductInformationService implements IService
                     'units.name as unit',
                     'product_types.name as product_type',
                 )
-                ->latest()
+                //->latest()
+                ->orderBy('id', 'asc')
                 ->get();
             return $data;
         } catch (\Exception $e) {
