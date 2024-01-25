@@ -41,7 +41,7 @@ class ProductInformationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code'              => 'required',
+            // 'code'              => 'required',
             'name'              => 'required',
             'product_type_id'   => 'required',
             'unit_id'           => 'required',
@@ -61,7 +61,7 @@ class ProductInformationController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'code'              => 'required',
+            // 'code'              => 'required',
             'name'              => 'required',
             'product_type_id'   => 'required',
             'unit_id'           => 'required',

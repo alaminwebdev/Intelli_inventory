@@ -16,7 +16,7 @@
                                     <div class="col-md-12">
                                         <div class="form-row">
                                             <div class="form-group col-sm-6">
-                                                <label class="control-label">পন্যের কোড নাম্বার <span class="text-red">*</span></label>
+                                                <label class="control-label">পন্যের কোড নাম্বার</label>
                                                 <input type="text" class="form-control form-control-sm code @error('code') is-invalid @enderror" id="code" name="code" value="{{ @$editData->code }}" placeholder="Product Code">
                                                 @error('code')
                                                     <span class="invalid-feedback" role="alert">

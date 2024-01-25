@@ -114,7 +114,8 @@
             <div class="text-center">
                 <img src="{{ fileExist(['url' => @$site_setting->logo, 'type' => 'logo']) }}" class="profile-img-card img-circle">
             </div>
-            <p id="profile-name" class="profile-name-card">{{ @$title ?? '' }} Login</p>
+            {{-- <p id="profile-name" class="profile-name-card">{{ @$title ?? '' }} Login</p> --}}
+            <p id="profile-name" class="profile-name-card">SB Inventory Management System</p>
             <br>
             <form class="form-signin" id="form-signin" action="{{ $url }}" method="post">
                 {{ csrf_field() }}
