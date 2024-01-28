@@ -28,8 +28,7 @@ class SectionRequisitionService implements IService
             $query = SectionRequisition::with(
                 'section:id,name,department_id',
                 'section.department:id,name',
-            )
-                ->latest();
+            );
             if ($section_id) {
                 $query->where('section_id', $section_id);
             }
@@ -491,7 +490,7 @@ class SectionRequisitionService implements IService
         });
 
         // Return the top 5 elements
-        $data = array_slice($data, 0, 4);
+        $data = array_slice($data, 0, 3);
         return $data;
     }
 
