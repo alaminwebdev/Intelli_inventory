@@ -10,7 +10,7 @@
                             <a href="{{ route('admin.product.information.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> পন্য যুক্ত করুন</a>
                         </div>
                         <div class="card-body">
-                            <table id="sb-data-table" class="table table-bordered">
+                            <table  class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th width="5%">নং.</th>
@@ -21,32 +21,37 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($products as $list)
-                                        <tr data-id="{{ $list->id }}">
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>
-                                                @if ($list->code)
-                                                    {{ @$list->code }} - {{ @$list->name }}({{ @$list->unit }})
-                                                @else
-                                                    {{ @$list->name }}({{ @$list->unit }})
-                                                @endif
-                                            </td>
-                                            <td>{{ @$list->product_type }}</td>
-
-                                            <td>{!! activeStatus($list->status) !!}</td>
-                                            <td class="text-center">
-                                                @if (sorpermission('admin.product.information.edit'))
-                                                    <a class="btn btn-sm btn-success" href="{{ route('admin.product.information.edit', $list->id) }}">
-                                                        <i class="fa fa-edit"></i>
-                                                    </a>
-                                                @endif
-                                                @if (sorpermission('admin.product.information.delete'))
-                                                    <a class="btn btn-sm btn-danger destroy" data-id="{{ $list->id }}" data-route="{{ route('admin.product.information.delete') }}">
-                                                        <i class="fa fa-trash"></i>
-                                                    </a>
-                                                @endif
-                                            </td>
+                                    @foreach ($products->groupBy('product_type_id') as $productType => $productList)
+                                        <tr style="background: #f8f9fa;">
+                                            <td colspan="5" class="font-weight-bold">{{ @$productList[0]->product_type }}</td>
                                         </tr>
+                                        @foreach ($productList as $list)
+                                            <tr data-id="{{ $list->id }}">
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>
+                                                    @if ($list->code)
+                                                        {{ @$list->code }} - {{ @$list->name }}({{ @$list->unit }})
+                                                    @else
+                                                        {{ @$list->name }}({{ @$list->unit }})
+                                                    @endif
+                                                </td>
+                                                <td>{{ @$list->product_type }}</td>
+
+                                                <td>{!! activeStatus($list->status) !!}</td>
+                                                <td class="text-center">
+                                                    @if (sorpermission('admin.product.information.edit'))
+                                                        <a class="btn btn-sm btn-success" href="{{ route('admin.product.information.edit', $list->id) }}">
+                                                            <i class="fa fa-edit"></i>
+                                                        </a>
+                                                    @endif
+                                                    @if (sorpermission('admin.product.information.delete'))
+                                                        <a class="btn btn-sm btn-danger destroy" data-id="{{ $list->id }}" data-route="{{ route('admin.product.information.delete') }}">
+                                                            <i class="fa fa-trash"></i>
+                                                        </a>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     @endforeach
                                 </tbody>
                             </table>
@@ -57,4 +62,5 @@
         </div>
     </section>
     <script></script>
+    
 @endsection
