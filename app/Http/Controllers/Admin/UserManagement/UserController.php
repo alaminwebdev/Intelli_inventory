@@ -30,7 +30,7 @@ class UserController extends Controller
         // }
 
         if ($request->name) {
-            $where[] = ['name', '=', $request->name];
+            $where[] = ['name', 'LIKE', '%'. $request->name .'%'];
         }
         if ($request->email) {
             $where[] = ['email', '=', $request->email];

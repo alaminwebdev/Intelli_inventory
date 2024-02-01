@@ -13,10 +13,8 @@
                         </div>
                         <div class="card-body">
                             <form action="{{ route('admin.user-management.user-info.list') }}" method="get">
-                                <div class="form-group row border border-success p-3 rounded">
-                                    <div class="col-sm-10">
-                                        <div class="row">
-                                            {{-- <div class="col-sm-3">
+                                <div class="row px-3 py-4 border rounded shadow-sm mb-3">
+                                    {{-- <div class="col-sm-3">
                                                 <label class="control-label">Designation</label>
                                                 <select id="designation_id" name="designation_id" class="form-control form-control-sm designation_id select2">
                                                     <option value="">Select Designation</option>
@@ -27,48 +25,43 @@
                                                     @endif
                                                 </select>
                                             </div> --}}
-                                            <div class="col-sm-3">
-                                                <label class="control-label">Role</label>
-                                                <select name="role_ids[]" id="role_ids" class="form-control form-control-sm role_ids select2" multiple>
-                                                    @if (@$roles)
-                                                        @foreach ($roles as $role)
-                                                            <option value="{{ $role->id }}" {{ request()->role_ids ? (in_array($role->id, request()->role_ids) ? 'selected' : '') : '' }}>{{ $role->name }}</option>
-                                                        @endforeach
-                                                    @endif
-                                                </select>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <label class="control-label">Name</label>
-                                                <input type="text" id="name" class="form-control form-control-sm name" name="name" value="{{ request()->name }}" placeholder="Name">
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <label class="control-label">Email</label>
-                                                <input type="text" id="email" class="form-control form-control-sm email" name="email" value="{{ request()->email }}" placeholder="Email">
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <label class="control-label">Mobile No</label>
-                                                <input type="text" id="mobile_no" class="form-control form-control-sm mobile_no" name="mobile_no" value="{{ request()->mobile_no }}" placeholder="Mobile No">
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <label class="control-label">Status</label>
-                                                <select name="status" id="status" class="form-control form-control-sm status select2">
-                                                    <option value="">Select Status</option>
-                                                    <option value="1" {{ request()->status == '1' ? 'selected' : '' }}>Active</option>
-                                                    <option value="0" {{ request()->status == '0' ? 'selected' : '' }}>Inactive</option>
-                                                </select>
-                                            </div>
-                                        </div>
+                                    <div class="col-sm-3">
+                                        <label class="control-label">Role</label>
+                                        <select name="role_ids[]" id="role_ids" class="form-control form-control-sm role_ids select2" multiple>
+                                            @if (@$roles)
+                                                @foreach ($roles as $role)
+                                                    <option value="{{ $role->id }}" {{ request()->role_ids ? (in_array($role->id, request()->role_ids) ? 'selected' : '') : '' }}>{{ $role->name }}</option>
+                                                @endforeach
+                                            @endif
+                                        </select>
                                     </div>
-                                    <div class="col-sm-2 d-flex my-auto justify-content-center">
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <button type="submit" class="btn btn-info btn-sm" style="margin-top:28px"><i class="ion-search"></i> Search</button>
-                                            </div>
-                                        </div>
+                                    <div class="col-sm-2">
+                                        <label class="control-label">Name</label>
+                                        <input type="text" id="name" class="form-control form-control-sm name" name="name" value="{{ request()->name }}" placeholder="Name">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="control-label">Email</label>
+                                        <input type="text" id="email" class="form-control form-control-sm email" name="email" value="{{ request()->email }}" placeholder="Email">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="control-label">Mobile No</label>
+                                        <input type="text" id="mobile_no" class="form-control form-control-sm mobile_no" name="mobile_no" value="{{ request()->mobile_no }}" placeholder="Mobile No">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="control-label">Status</label>
+                                        <select name="status" id="status" class="form-control form-control-sm status select2">
+                                            <option value="">Select Status</option>
+                                            <option value="1" {{ request()->status == '1' ? 'selected' : '' }}>Active</option>
+                                            <option value="0" {{ request()->status == '0' ? 'selected' : '' }}>Inactive</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <label class="control-label" style="visibility: hidden;">Search</label>
+                                        <button type="submit" class="btn btn-info btn-sm"><i class="fa fa-search"></i> Search</button>
                                     </div>
                                 </div>
                             </form>
-                            <table id="dataTable" class="table table-sm table-bordered table-striped">
+                            <table id="sb-data-table" class="table table-sm table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th width="5%">SL.</th>
@@ -90,12 +83,12 @@
                                             <td>{{ @$list->email ?? 'N/A' }}</td>
                                             <td>{{ @$list->mobile_no ?? 'N/A' }}</td>
                                             <td>
-												@if (@$list->designation_id != null)
-													{{ @$list->designation->name ?? 'N/A' }}
-												@elseif(@$list->employee_id != null )
-													{{ @$list->employee->employee_designation->name ?? 'N/A' }}
-												@endif
-											</td>
+                                                @if (@$list->designation_id != null)
+                                                    {{ @$list->designation->name ?? 'N/A' }}
+                                                @elseif(@$list->employee_id != null)
+                                                    {{ @$list->employee->employee_designation->name ?? 'N/A' }}
+                                                @endif
+                                            </td>
                                             {{-- <td>{{ @$list->working_place ?? 'N/A' }}</td> --}}
                                             <td>
                                                 {!! '<span class="badge badge-success mr-1">' .

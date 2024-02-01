@@ -43,7 +43,7 @@
                                                                     <td style="width: 50%;">
                                                                         <div class="custom-control custom-checkbox">
                                                                             <input class="custom-control-input" type="checkbox" id="selected_products_{{ $product['id'] }}" name="selected_products[]" value="{{ $product['id'] }}" style="cursor: pointer">
-                                                                            <label for="selected_products_{{ $product['id'] }}" class="custom-control-label" style="cursor: pointer">{{ $product['name'] }} ({{ $product['unit'] }})</label>
+                                                                            <label for="selected_products_{{ $product['id'] }}" class="custom-control-label" style="cursor: pointer">{{ $product['code'] ? $product['code'] .' - ' : '' }}{{ $product['name'] }} ({{ $product['unit'] }})</label>
                                                                         </div>
                                                                     </td>
                                                                     @if ($key % 2 === 1 || $loop->last) </tr> @endif

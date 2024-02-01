@@ -7,7 +7,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.employee.designation.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>কর্মচারীদের পদবী তালিকা</a>
+                            <a href="{{ route('admin.employee.designation.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>অফিসার্স পদবী তালিকা</a>
                         </div>
                         <div class="card-body">
                             <form id="submitForm" action="{{ isset($editData) ? route('admin.employee.designation.update', $editData->id) : route('admin.employee.designation.store') }} " method="post" enctype="multipart/form-data" autocomplete="off">
