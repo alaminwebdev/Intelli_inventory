@@ -16,7 +16,7 @@ class DesignationController extends Controller
         $this->designationService  = $designationService;
     }
     public function index(){
-        $data['title'] = 'কর্মচারীদের পদবী তালিকা';
+        $data['title'] = 'অফিসার্স পদবী তালিকা';
         $data['designations'] = $this->designationService->getAll();
         return view('admin.employee-management.designation.list', $data);
     }

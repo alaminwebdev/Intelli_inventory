@@ -42,7 +42,7 @@ class ProductInformationService implements IService
     public function getSpecificProducts($ids = null)
     {
         try {
-            $data = ProductInformation::whereIn('id', $ids)->where('status', 1)->latest()->get();
+            $data = ProductInformation::whereIn('id', $ids)->where('status', 1)->orderBy('id', 'asc')->get();
             return $data;
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -80,7 +80,7 @@ class ProductInformationService implements IService
     public function getProductsByTypeId($ids)
     {
         try {
-            $data = ProductInformation::whereIn('product_type_id', $ids)->where('status', 1)->latest()->get();
+            $data = ProductInformation::whereIn('product_type_id', $ids)->where('status', 1)->orderBy('id', 'asc')->get();
             return $data;
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -91,7 +91,7 @@ class ProductInformationService implements IService
     {
         try {
             $productTypeData    = [];
-            $product_types      = ProductType::where('status', 1)->latest()->get();
+            $product_types      = ProductType::where('status', 1)->orderBy('id', 'asc')->get();
 
             foreach ($product_types as $item) {
                 $productType = [
@@ -103,7 +103,7 @@ class ProductInformationService implements IService
                 // Query products for this product type and push them into the products array
                 $products = ProductInformation::where('product_type_id', $item->id)
                     ->where('status', 1)
-                    ->latest()
+                    ->orderBy('id', 'asc')
                     ->get();
 
                 if (count($products) > 0) {
@@ -113,6 +113,7 @@ class ProductInformationService implements IService
                             'id'                => $product->id,
                             'name'              => $product->name,
                             'unit'              => $product->unit->name,
+                            'code'              => $product->code,
                         ];
                     }
                     // Push this product type data into the main array AFTER adding products

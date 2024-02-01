@@ -21,7 +21,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($products->groupBy('product_type_id') as $productType => $productList)
+                                    @foreach ($products->groupBy('product_type_id')->sortKeys() as $productType => $productList)
                                         <tr style="background: #f8f9fa;">
                                             <td colspan="5" class="font-weight-bold">{{ @$productList[0]->product_type }}</td>
                                         </tr>
