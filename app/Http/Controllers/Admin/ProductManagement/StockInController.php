@@ -113,17 +113,29 @@ class StockInController extends Controller
     }
     public function edit($id)
     {
-        // $data['title']          = 'Edit Stock';
-        // $data['editData']       = $this->stockInService->getByID($id);
-        // $data['product_types']  = $this->productTypeService->getProductTypeByStatus();
-        // $data['suppliers']      = $this->supplierService->getSupplierByStatus();
-        // return view('admin.product-management.product-receive.add', $data);
+        $data['title']          = 'স্টক হালনাগাদ করুন';
+        $data['editData']       = $this->stockInService->getByID($id);
+        $data['suppliers']      = $this->supplierService->getSupplierByStatus();
+        return view('admin.product-management.stock-in.edit',$data);
     }
 
     public function update(Request $request, $id)
     {
-        // $this->productInformationService->update($request, $id);
-        // return redirect()->route('admin.product.information.list')->with('success', 'Data successfully updated!');
+        $validator = Validator::make($request->all(), [
+            'grn_no'        => 'required',
+            'entry_date'    => 'required',
+            'challan_no'    => 'required',
+            'supplier_id'   => 'required',
+            'po_no'         => 'required',
+            'po_qty'        => 'required',
+        ]);
+
+    
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+        $data = $this->stockInService->update($request, $id);
+        return response()->json($data);
     }
 
     public function delete(Request $request)
