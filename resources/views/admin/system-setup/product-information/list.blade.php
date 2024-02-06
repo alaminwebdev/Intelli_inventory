@@ -10,7 +10,7 @@
                             <a href="{{ route('admin.product.information.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> পন্য যুক্ত করুন</a>
                         </div>
                         <div class="card-body">
-                            <table  class="table table-bordered">
+                            <table class="table table-bordered" id="sb-data-table">
                                 <thead>
                                     <tr>
                                         <th width="5%">নং.</th>
@@ -23,11 +23,15 @@
                                 <tbody>
                                     @foreach ($products->groupBy('product_type_id')->sortKeys() as $productType => $productList)
                                         <tr style="background: #f8f9fa;">
-                                            <td colspan="5" class="font-weight-bold">{{ @$productList[0]->product_type }}</td>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td class="font-weight-bold">{{ @$productList[0]->product_type }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
                                         </tr>
                                         @foreach ($productList as $list)
-                                            <tr data-id="{{ $list->id }}">
-                                                <td>{{ $loop->iteration }}</td>
+                                            <tr>
+                                                <td>{{ $loop->parent->iteration . '.' . $loop->iteration }}</td>
                                                 <td>
                                                     @if ($list->code)
                                                         {{ @$list->code }} - {{ @$list->name }}({{ @$list->unit }})
@@ -61,6 +65,4 @@
             </div>
         </div>
     </section>
-    <script></script>
-    
 @endsection

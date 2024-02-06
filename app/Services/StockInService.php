@@ -14,9 +14,11 @@ use Illuminate\Support\Facades\DB;
  * Class StockInService
  * @package App\Services
  */
-class StockInService implements IService {
+class StockInService implements IService
+{
 
-    public function getAll() {
+    public function getAll()
+    {
         try {
             $data = StockIn::leftjoin('suppliers', 'suppliers.id', 'stock_ins.supplier_id')
                 ->select(
@@ -31,7 +33,8 @@ class StockInService implements IService {
         }
     }
 
-    public function getUniqueGRNNo() {
+    public function getUniqueGRNNo()
+    {
         do {
             $grnNo = rand(10000, 99999);
         } while (StockIn::where('grn_no', $grnNo)->exists());
@@ -39,7 +42,8 @@ class StockInService implements IService {
         return $grnNo;
     }
 
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
 
         DB::beginTransaction();
         try {
@@ -109,7 +113,8 @@ class StockInService implements IService {
             return response()->json(['error' => $e->getMessage()]);
         }
     }
-    public function updatePoProducts(Request $request) {
+    public function updatePoProducts(Request $request)
+    {
 
         DB::beginTransaction();
         try {
@@ -166,11 +171,13 @@ class StockInService implements IService {
         }
     }
 
-    public function getByID($id) {
-        $data = StockIn::find($id);
+    public function getByID($id)
+    {
+        $data = StockIn::with('stockDetail')->find($id);
         return $data;
     }
-    public function getStockDetails($id) {
+    public function getStockDetails($id)
+    {
         $data = StockInDetail::join('product_information', 'product_information.id', 'stock_in_details.product_information_id')
             ->where('stock_in_id', $id)
             ->select(
@@ -184,7 +191,8 @@ class StockInService implements IService {
         return $data;
     }
 
-    public function getMostStockProducts($request = null, $take = null, $days = null) {
+    public function getMostStockProducts($request = null, $take = null, $days = null)
+    {
 
         // Initialize an empty array to store the formatted data
         $formattedData = [];
@@ -261,27 +269,85 @@ class StockInService implements IService {
         // Return the formatted data
         return $formattedData;
     }
-    public function update(Request $request, $id) {
-        // try {
-        //     $data                   = ProductInformation::find($id);
-        //     $data->code             = $request->code;
-        //     $data->name             = $request->name;
-        //     $data->product_type_id  = $request->product_type_id;
-        //     $data->unit_id          = $request->unit_id;
-        //     $data->status           = $request->status ?? 0;
-        //     $data->save();
-        //     return true;
-        // } catch (Exception $e) {
-        //     return $e->getMessage();
-        // }
+    public function update(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            // Access all data from the request
+            $data = $request->all();
+            // Update a new StockIn record
+            $stockInData          = StockIn::find($id);
+            dd($data);
+            $stockInData->user_id = Auth::id();
+            $stockInData->grn_no  = $data['grn_no'];
+
+            $entryDate               = date('Y-m-d', strtotime($data['entry_date']));
+            $stockInData->entry_date = $entryDate;
+
+            $stockInData->challan_no  = $data['challan_no'];
+            $stockInData->po_no       = $data['po_no'];
+            $stockInData->supplier_id = $data['supplier_id'];
+            $stockInData->status      = 1; // You may need to adjust how 'status' is passed
+            $stockInData->created_by  = Auth::id();
+
+            if ($stockInData->save()) {
+                // Access the nested arrays within the 'data' key
+                $po_qty      = $data['po_qty'];
+                $receive_qty = $data['receive_qty'];
+                $reject_qty  = $data['reject_qty'];
+                $mfg_date    = $data['mfg_date'];
+                $expire_date = $data['expire_date'];
+                $remarks     = $data['remarks'];
+
+                $stock_in_details     = $data['stock_in_detail_id'];
+
+                foreach ($po_qty as $productId => $poQty) {
+                    $stockInDetailData                         = StockInDetail::find($stock_in_details[$productId]);
+                    $stockInDetailData->stock_in_id            = $stockInData->id;
+                    $stockInDetailData->product_information_id = $productId;
+                    $stockInDetailData->po_no                  = $data['po_no'];
+
+                    $poDate                              = date('Y-m-d', strtotime($data['po_date']));
+                    $mfgDate                             = date('Y-m-d', strtotime($mfg_date[$productId]));
+                    $expireDate                          = date('Y-m-d', strtotime($expire_date[$productId]));
+                    $stockInDetailData->po_date          = $poDate;
+                    $stockInDetailData->mfg_date         = $mfgDate;
+                    $stockInDetailData->expire_date      = $expireDate;
+                    $stockInDetailData->po_qty           = $poQty; // Assuming it corresponds to 'po_qty'
+                    $stockInDetailData->receive_qty      = $receive_qty[$productId];
+                    $stockInDetailData->reject_qty       = $reject_qty[$productId];
+                    $stockInDetailData->available_qty    = $receive_qty[$productId];
+                    $stockInDetailData->dispatch_qty     = 0;
+                    // $stockInDetailData->prev_receive_qty = isset($data['prev_receive_qty'][$productId]) ? $data['prev_receive_qty'][$productId] : null;
+                    $stockInDetailData->remarks          = $remarks[$productId];
+                    $stockInDetailData->save();
+
+                    if ($stockInDetailData->save()) {
+
+                        $productPoInfo                         = ProductPoInfo::where('stock_in_detail_id', $stockInDetailData->id)->where('product_information_id', $productId)->first();
+                        $productPoInfo->po_no                  = $data['po_no'];
+                        $productPoInfo->po_date                = $poDate;
+                        $productPoInfo->reject_qty             = $reject_qty[$productId];
+                        $productPoInfo->save();
+                    }
+                }
+            }
+            DB::commit();
+            return response()->json(['success' => 'Stock Information Updated']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()]);
+        }
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         // $user = ProductInformation::find($id);
         // $user->delete();
         // return true;
     }
-    public function active($id) {
+    public function active($id)
+    {
         $data         = StockIn::find($id);
         $data->status = 1;
         $data->save();
