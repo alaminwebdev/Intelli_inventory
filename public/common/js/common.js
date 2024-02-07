@@ -8,6 +8,13 @@ $(document).ready(function () {
         "pageLength": 25
     });
 
+    $('#product-data-table').DataTable({
+        "pageLength": 25,
+        "columnDefs": [
+            { "orderable": false, "targets": "_all" } // Disable ordering on the first column
+        ]
+    });
+
     $('.singledatepicker').daterangepicker({
         singleDatePicker: true,
         showDropdowns: true,
