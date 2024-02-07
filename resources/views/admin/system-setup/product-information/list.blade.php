@@ -10,7 +10,7 @@
                             <a href="{{ route('admin.product.information.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> পন্য যুক্ত করুন</a>
                         </div>
                         <div class="card-body">
-                            <table class="table table-bordered" id="sb-data-table">
+                            <table class="table table-bordered" id="product-data-table">
                                 <thead>
                                     <tr>
                                         <th width="5%">নং.</th>
@@ -31,7 +31,7 @@
                                         </tr>
                                         @foreach ($productList as $list)
                                             <tr>
-                                                <td>{{ $loop->parent->iteration . '.' . $loop->iteration }}</td>
+                                                <td>{{ $loop->parent->iteration . '.' . sprintf('%02d', $loop->iteration) }}</td>
                                                 <td>
                                                     @if ($list->code)
                                                         {{ @$list->code }} - {{ @$list->name }}({{ @$list->unit }})
