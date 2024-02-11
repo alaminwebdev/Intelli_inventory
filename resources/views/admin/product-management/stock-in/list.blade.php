@@ -43,12 +43,12 @@
                                                     <a class="btn btn-sm btn-success " href="{{ route('admin.stock.in.active', $list->id) }}">
                                                         <i class="fa fa-check"></i> Approve
                                                     </a>
+                                                    @if (sorpermission('admin.stock.in.edit'))
+                                                        <a class="btn btn-sm btn-success" href="{{route('admin.stock.in.edit',$list->id)}}">
+                                                            <i class="fa fa-edit"></i>
+                                                        </a>
+                                                    @endif
                                                 @endif
-                                                @if (sorpermission('admin.stock.in.edit'))
-                                                    <a class="btn btn-sm btn-success" href="{{route('admin.stock.in.edit',$list->id)}}">
-                                                        <i class="fa fa-edit"></i>
-                                                    </a>
-												@endif
                                             </td>
                                             {{-- <td class="text-center">
 

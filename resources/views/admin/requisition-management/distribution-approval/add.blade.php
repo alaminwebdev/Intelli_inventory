@@ -162,4 +162,72 @@
             });
         })
     </script>
+
+    <script>
+        function validateForm() {
+
+            const approveQtyInputs = document.querySelectorAll('.approve_quantity');
+
+            // Flag to track whether validation passes
+            var isValid = true;
+
+            // Remove .is-invalid class from all inputs
+            approveQtyInputs.forEach(function(approveQtyInput) {
+                approveQtyInput.classList.remove('is-invalid');
+            });
+
+            // Handle the case when receive_qty inputs are empty
+            approveQtyInputs.forEach(function(approveQtyInput) {
+
+                const parentRow = approveQtyInput.closest('tr');
+                const availableQtyInput = parentRow.querySelector('.available_quantity');
+
+                const availableQty = parseFloat(availableQtyInput.value) || 0;
+                const approveQty = parseFloat(approveQtyInput.value) || 0;
+
+                // Validate that receive_qty is not greater than invoice_qty
+                if (approveQty > availableQty) {
+                    showAlert('error', 'প্রয়োজনীয় সব ফিল্ড পূরণ করুন।');
+                    approveQtyInput.classList.add('is-invalid');
+                    //approveQtyInput.setCustomValidity("অনুমোদিত পরিমাণ বিতরনের পরিমাণের বেশি হতে পারবে না।");
+                    isValid = false;
+                } else {
+                    //approveQtyInput.setCustomValidity("");
+                    approveQtyInput.classList.remove('is-invalid');
+                }
+            });
+
+            return isValid;
+        }
+
+        function showAlert(type, message) {
+            Swal.fire({
+                toast: true,
+                customClass: {
+                    popup: 'colored-toast'
+                },
+                iconColor: 'white',
+                icon: type,
+                title: message,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const submitForm = document.getElementById('submitForm');
+
+            submitForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                if (validateForm()) {
+                    // If form validation passes, submit the form
+                    submitForm.submit();
+                }
+            });
+        });
+    </script>
 @endsection

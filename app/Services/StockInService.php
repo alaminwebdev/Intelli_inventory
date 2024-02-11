@@ -61,7 +61,7 @@ class StockInService implements IService
             $stockInData->challan_no  = $data['challan_no'];
             $stockInData->po_no       = $data['po_no'];
             $stockInData->supplier_id = $data['supplier_id'];
-            $stockInData->status      = 1; // You may need to adjust how 'status' is passed
+            $stockInData->status      = 0; // You may need to adjust how 'status' is passed
             $stockInData->created_by  = Auth::id();
 
             if ($stockInData->save()) {
@@ -277,7 +277,6 @@ class StockInService implements IService
             $data = $request->all();
             // Update a new StockIn record
             $stockInData          = StockIn::find($id);
-            dd($data);
             $stockInData->user_id = Auth::id();
             $stockInData->grn_no  = $data['grn_no'];
 
@@ -287,7 +286,7 @@ class StockInService implements IService
             $stockInData->challan_no  = $data['challan_no'];
             $stockInData->po_no       = $data['po_no'];
             $stockInData->supplier_id = $data['supplier_id'];
-            $stockInData->status      = 1; // You may need to adjust how 'status' is passed
+            // $stockInData->status      = 1;
             $stockInData->created_by  = Auth::id();
 
             if ($stockInData->save()) {
