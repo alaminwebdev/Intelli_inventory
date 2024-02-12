@@ -101,7 +101,7 @@
         </table>
 
         <div style="width: 100%; margin-top: 80px; font-size: 12px;">
-            @if ($requestedRequisitionInfo->status == 0 || $requestedRequisitionInfo->status == 1 || $requestedRequisitionInfo->status == 3)
+            {{-- @if ($requestedRequisitionInfo->status == 0 || $requestedRequisitionInfo->status == 1 || $requestedRequisitionInfo->status == 3) --}}
                 <div style="width: 30%; float: left; text-align: center;">
                     <p style="margin:0; {{ @$requestedRequisitionInfo->requisition_owner->name ? '' : 'visibility: hidden;'  }}">{{ @$requestedRequisitionInfo->requisition_owner->name ?? 'Not available' }}</p>
                     <p style="margin:0; {{ @$requestedRequisitionInfo->requisition_owner->employee->employee_designation->name ? '' : 'visibility: hidden;'  }}">{{ @$requestedRequisitionInfo->requisition_owner->employee->employee_designation->name ?? 'Not available' }}</p>
@@ -120,26 +120,38 @@
                     {{-- <p style="margin:0; visibility: hidden;">signnature</p> --}}
                     <p style="margin:0 50px; padding: 5px; border-top: 1px dotted black;">মঞ্জুরকারী</p>
                 </div>
-            @elseif ($requestedRequisitionInfo->status == 4 || $requestedRequisitionInfo->status == 5)
-                <div style="width: 30%; float: left; text-align: center;">
+                
+            {{-- @elseif ($requestedRequisitionInfo->status == 4 || $requestedRequisitionInfo->status == 5) --}}
+                {{-- <div style="width: 30%; float: left; text-align: center;">
                     <p style="margin:0; {{ @$requestedRequisitionInfo->requisition_owner->name ? '' : 'visibility: hidden;'  }}">{{ @$requestedRequisitionInfo->requisition_owner->name ?? 'Not available' }}</p>
                     <p style="margin:0; {{ @$requestedRequisitionInfo->requisition_owner->employee->employee_designation->name ? '' : 'visibility: hidden;'  }}">{{ @$requestedRequisitionInfo->requisition_owner->employee->employee_designation->name ?? 'Not available' }}</p>
-                    {{-- <p style="margin:0; visibility: hidden;">signnature</p> --}}
                     <p style="margin:0 50px; padding: 5px; border-top: 1px dotted black;">চাহিদাকারী</p>
                 </div>
                 <div style="width: 40%; float: left; text-align: center;">
                     <p style="margin:0; {{ @$requestedRequisitionInfo->distribute_user->name ? '' : 'visibility: hidden;'  }}">{{ @$requestedRequisitionInfo->distribute_user->name ?? 'Not available' }}</p>
                     <p style="margin:0; {{ @$requestedRequisitionInfo->distribute_user->employee->employee_designation->name ? '' : 'visibility: hidden;'  }}">{{ @$requestedRequisitionInfo->distribute_user->employee->employee_designation->name ?? 'Not available' }}</p>
-                    {{-- <p style="margin:0; visibility: hidden;">signnature</p> --}}
                     <p style="margin:0 80px; padding: 5px; border-top: 1px dotted black;">বিতরনকারী</p>
                 </div>
                 <div style="width: 30%; float: left; text-align: center;">
                     <p style="margin:0; {{ @$requestedRequisitionInfo->name ? '' : 'visibility: hidden;'  }}">{{ @$requestedRequisitionInfo->name ?? 'Not available' }}</p>
                     <p style="margin:0; {{ @$requestedRequisitionInfo->designation ? '' : 'visibility: hidden;'  }}">{{ @$requestedRequisitionInfo->designation ?? 'Not available' }}</p>
-                    {{-- <p style="margin:0; visibility: hidden;">signnature</p> --}}
                     <p style="margin:0 50px; padding: 5px; border-top: 1px dotted black;">গ্রহনকারী</p>
-                </div>
-            @endif
+                </div> --}}
+            {{-- @endif --}}
+        </div>
+        <div style="width: 100%; margin-top: 80px; font-size: 12px;">
+            <div style="width: 50%; float: left; text-align: center;">
+                <p style="margin:0; {{ @$requestedRequisitionInfo->distribute_user->name ? '' : 'visibility: hidden;'  }}">{{ @$requestedRequisitionInfo->distribute_user->name ?? 'Not available' }}</p>
+                <p style="margin:0; {{ @$requestedRequisitionInfo->distribute_user->employee->employee_designation->name ? '' : 'visibility: hidden;'  }}">{{ @$requestedRequisitionInfo->distribute_user->employee->employee_designation->name ?? 'Not available' }}</p>
+                {{-- <p style="margin:0; visibility: hidden;">signnature</p> --}}
+                <p style="margin:0 80px; padding: 5px; border-top: 1px dotted black;">বিতরনকারী</p>
+            </div>
+            <div style="width: 50%; float: left; text-align: center;">
+                <p style="margin:0; {{ @$requestedRequisitionInfo->name ? '' : 'visibility: hidden;'  }}">{{ @$requestedRequisitionInfo->name ?? 'Not available' }}</p>
+                <p style="margin:0; {{ @$requestedRequisitionInfo->designation ? '' : 'visibility: hidden;'  }}">{{ @$requestedRequisitionInfo->designation ?? 'Not available' }}</p>
+                {{-- <p style="margin:0; visibility: hidden;">signnature</p> --}}
+                <p style="margin:0 50px; padding: 5px; border-top: 1px dotted black;">গ্রহনকারী</p>
+            </div>
         </div>
 
     @endif
