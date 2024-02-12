@@ -16,7 +16,8 @@ class CurrentStockService
     public function getCurrentStock()
     {
         try {
-            $data = DB::table('stock_in_details')
+            $data = DB::table('stock_ins')
+                ->join('stock_in_details', 'stock_in_details.stock_in_id', 'stock_ins.id')
                 ->join('product_information', 'product_information.id', 'stock_in_details.product_information_id')
                 ->leftJoin('units', 'units.id', 'product_information.unit_id')
                 // ->where(function ($q) {
@@ -26,6 +27,7 @@ class CurrentStockService
                 ->where(function ($q) {
                     $q->where('stock_in_details.available_qty', '>', 0);
                 })
+                ->where('stock_ins.status', 1)
                 ->select(
                     'stock_in_details.product_information_id as product_id',
                     'product_information.name as product_name',

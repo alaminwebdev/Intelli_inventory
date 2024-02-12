@@ -185,47 +185,56 @@ class DistributionController extends Controller
                 $quantityToDistribute = $quantity;
 
                 foreach ($stocks as $stock) {
-                    // Check if there's enough quantity to distribute from this stock
-                    if ($quantityToDistribute <= $stock->available_qty) {
-                        // Sufficient quantity available in this stock
-                        StockInDetail::where('id', $stock->id)->update([
-                            'available_qty' => $stock->available_qty - $quantityToDistribute,
-                            'dispatch_qty'  => $stock->dispatch_qty + $quantityToDistribute,
-                        ]);
 
-                        // Insert data into the distribute table
-                        $data                               = new Distribute();
-                        $data->section_requisition_id       = $request->section_requisition_id;
-                        $data->product_id                   = $key;
-                        $data->stock_in_detail_id           = $stock->id;
-                        $data->distribute_quantity          = $quantityToDistribute;
-                        $data->distribute_by                = auth()->user()->id;
-                        $data->distribute_at                = Carbon::now();
-                        $data->save();
+                    // Check the status of the associated StockIn
+                    $stockInStatus = $stock->stockIn->status;
+                    // Check if the StockIn status is 1
+                    if ($stockInStatus == 1) {
+                        
+                        // Check if there's enough quantity to distribute from this stock
+                        if ($quantityToDistribute <= $stock->available_qty) {
+                            // Sufficient quantity available in this stock
+                            StockInDetail::where('id', $stock->id)->update([
+                                'available_qty' => $stock->available_qty - $quantityToDistribute,
+                                'dispatch_qty'  => $stock->dispatch_qty + $quantityToDistribute,
+                            ]);
+    
+                            // Insert data into the distribute table
+                            $data                               = new Distribute();
+                            $data->section_requisition_id       = $request->section_requisition_id;
+                            $data->product_id                   = $key;
+                            $data->stock_in_detail_id           = $stock->id;
+                            $data->distribute_quantity          = $quantityToDistribute;
+                            $data->distribute_by                = auth()->user()->id;
+                            $data->distribute_at                = Carbon::now();
+                            $data->save();
+    
+                            // Reduce the quantity left to distribute
+                            $quantityToDistribute = 0;
+    
+                            break;
+                        } else {
 
-                        // Reduce the quantity left to distribute
-                        $quantityToDistribute = 0;
+                            // Distribute all available quantity in this stock
+                            $vva = $stock->available_qty;
 
-                        break;
-                    } else {
-                        // Distribute all available quantity in this stock
-                        // $quantityToDistribute -= $stock->available_qty;
-                        $vva = $stock->available_qty;
-                        // Set available_qty to 0 without going negative
-                        StockInDetail::where('id', $stock->id)->update([
-                            'available_qty' => 0,
-                            'dispatch_qty'  => $stock->dispatch_qty + $vva,
-                        ]);
-                        $data                            = new Distribute();
-                        $data->section_requisition_id    = $request->section_requisition_id;
-                        $data->product_id                = $key;
-                        $data->stock_in_detail_id        = $stock->id;
-                        $data->distribute_quantity       = $vva;
-                        $data->distribute_by             = auth()->user()->id;
-                        $data->distribute_at             = Carbon::now();
-                        $data->save();
-
-                        $quantityToDistribute -= $vva;
+                            // Set available_qty to 0 without going negative
+                            StockInDetail::where('id', $stock->id)->update([
+                                'available_qty' => 0,
+                                'dispatch_qty'  => $stock->dispatch_qty + $vva,
+                            ]);
+                            
+                            $data                            = new Distribute();
+                            $data->section_requisition_id    = $request->section_requisition_id;
+                            $data->product_id                = $key;
+                            $data->stock_in_detail_id        = $stock->id;
+                            $data->distribute_quantity       = $vva;
+                            $data->distribute_by             = auth()->user()->id;
+                            $data->distribute_at             = Carbon::now();
+                            $data->save();
+    
+                            $quantityToDistribute -= $vva;
+                        }
                     }
                 }
             }
