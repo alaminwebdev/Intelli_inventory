@@ -34,17 +34,17 @@
                                             <td>{{ @$list->designations ?? 'N/A' }}</td>
 
                                             <td>{!! activeStatus($list->status) !!}</td>
-                                            <td>
+                                            <td class="text-center">
                                                 @if (sorpermission('admin.employee.edit'))
                                                     <a class="btn btn-sm btn-success" href="{{ route('admin.employee.edit', $list->id) }}">
                                                         <i class="fa fa-edit"></i>
                                                     </a>
                                                 @endif
-                                                @if (sorpermission('admin.employee.delete'))
+                                                {{-- @if (sorpermission('admin.employee.delete'))
                                                     <a class="btn btn-sm btn-danger destroy" data-id="{{ $list->id }}" data-route="{{ route('admin.employee.delete') }}">
                                                         <i class="fa fa-trash"></i>
                                                     </a>
-                                                @endif
+                                                @endif --}}
                                             </td>
                                         </tr>
                                     @endforeach

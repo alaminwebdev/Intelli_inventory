@@ -191,7 +191,7 @@ class SectionRequisitionService implements IService
             $requisition_ids = SectionRequisition::where('section_id', $editData->section_id)
                 ->where('id', '!=', $editData->id)
                 ->pluck('id');
-        }else{
+        } else {
             $requisition_ids = [];
         }
 
@@ -228,16 +228,28 @@ class SectionRequisitionService implements IService
 
                         if ($last_distribute_item) {
                             $last_distribute_qty = $last_distribute_item->distribute_quantity;
-                        }else{
+                        } else {
                             $last_distribute_qty = 0;
                         }
-
                     }
 
                     // Get the total distribute_quantity for this product_id and section_requisition_id
                     $totalDistributeQuantity = Distribute::where('section_requisition_id', $requistion_id)
                         ->where('product_id', $product->product_id)
                         ->sum('distribute_quantity');
+
+
+                    $availableQty = 0;
+
+                    // Iterate over each StockInDetail in the collection
+                    foreach ($product->StockDetail as $stockDetail) {
+                        $stockInStatus = $stockDetail->stockIn->status;
+
+                        // Check the status of the associated StockIn and calculate available_qty only when the status is 1
+                        if ($stockInStatus == 1) {
+                            $availableQty += $stockDetail->available_qty;
+                        }
+                    }
 
                     $productType['products'][$product->product_id] = [
                         'product_id'                => $product->product_id,
@@ -249,7 +261,7 @@ class SectionRequisitionService implements IService
                         'recommended_remarks'       => $product->recommended_remarks,
                         'final_approve_quantity'    => $product->final_approve_quantity,
                         'final_approve_remarks'     => $product->final_approve_remarks,
-                        'available_quantity'        => $product->StockDetail->sum('available_qty'),
+                        'available_quantity'        => $availableQty,
                         'last_distribute_qty'       => $last_distribute_qty,
                         'totalDistributeQuantity'   => $totalDistributeQuantity ?? 0
                     ];
@@ -329,7 +341,7 @@ class SectionRequisitionService implements IService
                     while (isset($uniqueProducts[$firstWord . '_' . $index])) {
                         $index++;
                     }
-    
+
                     $uniqueProducts[$firstWord . '_' . $index] = [
                         'product_short'     => $firstWord . '_' . $index,
                         'product'           => $product->product . ' (' . $product->unit . ')',
@@ -447,20 +459,18 @@ class SectionRequisitionService implements IService
                         'department' => $department->name,
                         'totalRequisition' => 0,
                     ];
-
-
                 }
 
-            // if ($totalSectionRequisitions->isNotEmpty()) {
-            //     // Increment section requisitions
-            //     if (!isset($formattedData[$department->name])) {
-            //         $department_name = explode(" ", $department->name);
-            //         $formattedData[$department->name] = [
-            //             'department' => $department_name[0],
-            //             'totalRequisition' => 0,
-            //         ];
-            //         // dd($formattedData[$department->name]);
-            //     }
+                // if ($totalSectionRequisitions->isNotEmpty()) {
+                //     // Increment section requisitions
+                //     if (!isset($formattedData[$department->name])) {
+                //         $department_name = explode(" ", $department->name);
+                //         $formattedData[$department->name] = [
+                //             'department' => $department_name[0],
+                //             'totalRequisition' => 0,
+                //         ];
+                //         // dd($formattedData[$department->name]);
+                //     }
 
 
 

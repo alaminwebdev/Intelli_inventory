@@ -12,4 +12,7 @@ class StockInDetail extends Model
     public function product() {
         return $this->hasOne(ProductInformation::class, 'id', 'product_information_id' );
     }
+    public function stockIn() {
+        return $this->belongsTo(StockIn::class, 'stock_in_id', 'id');
+    }
 }
