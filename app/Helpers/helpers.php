@@ -123,6 +123,8 @@ if (!function_exists('requisitionStatus')) {
             $output = '<span class="badge badge-success">' . __('বিতরণ করা হয়েছে') . '</span>';
         }elseif($value == 5) {
             $output = '<span class="badge badge-success">' . __('গ্রহন করা হয়েছে') . '</span>';
+        }elseif($value == 6) {
+            $output = '<span class="badge badge-success">' . __('যাচাই করা হয়েছে') . '</span>';
         } else {
             $output = '<span class="badge badge-warning">' . __('সুপারিশের জন্য প্রেরন করা হয়েছে') . '</span>';
         }

@@ -1,11 +1,14 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\Admin\DefaultController;
 use App\Http\Controllers\Admin\RequisitionManagement\DepartmentRequisitionController;
 use App\Http\Controllers\Admin\RequisitionManagement\DistributionController;
 use App\Http\Controllers\Admin\RequisitionManagement\RequisitionApprovalController;
 use App\Http\Controllers\Admin\RequisitionManagement\SectionRequisitionController;
 use App\Http\Controllers\Admin\RequisitionManagement\RequisitionReceiveController;
+use App\Http\Controllers\Admin\RequisitionManagement\RequisitionVerifyController;
 
 Route::prefix('/section-requisition')->group(function () {
     Route::get('/list', [SectionRequisitionController::class, 'index'])->name('section.requisition.list');
@@ -15,6 +18,7 @@ Route::prefix('/section-requisition')->group(function () {
     Route::get('/edit/{id}', [SectionRequisitionController::class, 'edit'])->name('section.requisition.edit');
     Route::post('/update/{id}', [SectionRequisitionController::class, 'update'])->name('section.requisition.update');
     Route::post('/delete', [SectionRequisitionController::class, 'delete'])->name('section.requisition.delete');
+    Route::get('get-requisition-list', [SectionRequisitionController::class, 'getRequisitionList'])->name('get.requisition.list.datatable');
 });
 
 Route::prefix('/section-requisition-receive')->group(function () {
@@ -30,6 +34,14 @@ Route::prefix('/department-requisition')->group(function () {
     Route::get('/edit/{id}', [DepartmentRequisitionController::class, 'edit'])->name('department.requisition.edit');
     Route::post('/update/{id}', [DepartmentRequisitionController::class, 'update'])->name('department.requisition.update');
     Route::post('/delete', [DepartmentRequisitionController::class, 'delete'])->name('department.requisition.delete');
+});
+ 
+// After Requisition verify it will go to next stage - Requisition Recommendation
+Route::prefix('/verify-requisition')->group(function () {
+    Route::get('/list', [RequisitionVerifyController::class, 'index'])->name('recommended.requisition.list');
+    Route::get('/edit/{id}', [RequisitionVerifyController::class, 'edit'])->name('recommended.requisition.edit');
+    Route::post('/update/{id}', [RequisitionVerifyController::class, 'update'])->name('recommended.requisition.update');
+    Route::get('get-verified-requisition-list', [RequisitionVerifyController::class, 'getVerifiedRequisitionList'])->name('get.verified.requisition.list.datatable');
 });
 
 
