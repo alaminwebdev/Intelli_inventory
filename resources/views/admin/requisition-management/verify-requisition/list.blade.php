@@ -7,22 +7,15 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            {{-- <a href="{{ route('admin.section.requisition.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> চাহিদাপত্র যুক্ত করুন</a> --}}
-                            <a href="{{ route('admin.section.requisition.product.selection') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> চাহিদাপত্র যুক্ত করুন</a>
                         </div>
                         <div class="card-body">
-
                             <form method="get" action="" id="filterForm">
                                 <div class="form-row border-bottom mb-3">
-                                    <div class="form-group col-sm-4">
+                                    <div class="form-group col-sm-3">
                                         <label class="control-label" style="color:#2a527b;">চাহিদাপত্রের ধরন</label>
                                         <select class="form-select form-select-sm select2" name="requisition_status" id="requisition_status">
-                                            <option value="0">সুপারিশের অপেক্ষায় চাহিদাপত্রের তালিকা</option>
-                                            <option value="1">সুপারিশ করা চাহিদাপত্রের তালিকা</option>
-                                            <option value="2">প্রত্যাখ্যান করা চাহিদাপত্রের তালিকা</option>
-                                            <option value="3">অনুমোদন করা চাহিদাপত্রের তালিকা</option>
-                                            <option value="4">বিতরণ করা চাহিদাপত্রের তালিকা</option>
                                             <option value="6">যাচাইকৃত চাহিদাপত্রের তালিকা</option>
+                                            <option value="1">যাচাইয়ের অপেক্ষায় চাহিদাপত্রের তালিকা</option>
                                         </select>
                                     </div>
                                     <div class="form-group col-sm-1">
@@ -31,7 +24,6 @@
                                     </div>
                                 </div>
                             </form>
-
                             <table id="data-table" class="table table-sm table-bordered">
                                 <thead>
                                     <tr>
@@ -41,34 +33,17 @@
                                         <th>অনুরোধকৃত দপ্তর</th>
                                         <th>বর্তমান অবস্থা</th>
                                         <th>তারিখ</th>
-                                        <th>অ্যাকশন</th>
+                                        <th width="20%">অ্যাকশন</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    {{-- @foreach ($sectionRequisitions as $list)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ @$list->requisition_no ?? 'N/A' }}</td>
-                                            <td>{{ @$list->section->name ?? 'N/A' }}</td>
-                                            <td>{{ @$list->section->department->name ?? 'N/A' }}</td>
-                                            <td class="text-center">{!! requisitionStatus($list->status) !!}</td>
-                                            <td class="text-center">
-                                                <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id="{{ $list->id }}">
-                                                    <i class="far fa-eye"></i>
-                                                </button>
-                                                <a class="btn btn-sm btn-primary" href="{{ route('admin.requisition.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ</a>
-                                            </td>
-                                        </tr>
-                                    @endforeach --}}
-                                </tbody>
                             </table>
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
 
     <script>
         $(document).ready(function() {
@@ -77,7 +52,7 @@
                 serverSide: true,
                 responsive: true,
                 ajax: {
-                    url: '{{ route('admin.get.requisition.list.datatable') }}',
+                    url: '{{ route('admin.get.verified.requisition.list.datatable') }}',
                     data: function(d) {
                         d._token = "{{ csrf_token() }}";
                         d.requisition_status = $('select[name=requisition_status]').val();
@@ -124,6 +99,7 @@
 
         });
     </script>
+
 
     <!-- Modal for Product Details -->
     <div class="modal" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">

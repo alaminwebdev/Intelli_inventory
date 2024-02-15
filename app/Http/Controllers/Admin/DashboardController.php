@@ -128,7 +128,7 @@ class DashboardController extends Controller
                         break;
                     case 6: // Role Id 6 = Issuer/Distributor
                         $dashboard  = 'admin.dashboard.distributor-dashboard';
-                        $data['sectionRequisitions']         = $this->sectionRequisitionService->getAll(null, null, null, [4,5], 10);
+                        $data['sectionRequisitions']         = $this->sectionRequisitionService->getAll(null, null, null, [4, 5], 10);
                         $data['pendingRequistion']           = SectionRequisition::where('status', 3)->count();
                         $data['mostDistributedProducts']     = $this->distributionService->getMostDistributedProducts(null, null, 10, 7);
 
@@ -154,7 +154,7 @@ class DashboardController extends Controller
             $data['mostRequestedProducts']          = $this->sectionRequisitionService->getMostRequestedProducts(null, null, 10, 7);
             $data['requisitionInfoByDepartment']    = $this->sectionRequisitionService->getRequisitionInfoByDepartment();
             $data['totalProductsInRequisition']     = $this->sectionRequisitionService->getProductsInRequisitionBySection();
-            // dd($data['totalProductsInRequisition']);
+            //dd($data['totalProductsInRequisition']);
             $data['mostStockProducts']              = $this->stockInService->getMostStockProducts(null, 10, 70);
         }
 

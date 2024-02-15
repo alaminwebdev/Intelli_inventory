@@ -364,9 +364,12 @@ class SectionRequisitionService implements IService
         // Initialize an array to store section totals
         $sectionTotals = [];
 
-        $totalSectionRequisition = SectionRequisition::when($section_ids, function ($q, $section_ids) {
+        // Retrieve distinct section_ids based on your conditions
+        $distinctSectionIds = SectionRequisition::when($section_ids, function ($q) use ($section_ids) {
             $q->whereIn('section_id', $section_ids);
-        })
+        })->distinct('section_id')->limit(5)->pluck('section_id');
+
+        $totalSectionRequisition = SectionRequisition::whereIn('section_id', $distinctSectionIds)
             ->when($request, function ($q, $request) {
                 if (($request['date_from'] != null || $request['date_to'] != null)) {
                     $fromDate   = date('Y-m-d', strtotime($request['date_from']));
@@ -398,25 +401,33 @@ class SectionRequisitionService implements IService
             }
 
             // Format the data with unique section names
-            // dd($sectionTotals);
+            $uniqueSectionName = [];
             foreach ($sectionTotals as $sectionName => $totals) {
 
-                $sections = explode(" ", $sectionName);
-                $firstWord = $sections[0] ?? ''; // Get the first word
+                $firstWord = strtok($sectionName, ' ');
 
-                // If there are more words, append "..." to the first word
-                $sectionShort = count($sections) > 1 ? $firstWord . '...' : $firstWord;
-
-                $formattedData[] = [
-                    'section'           => $sectionName,
-                    'section_short'     => $sectionShort,
-                    'totalRequisitions' => $totals['totalRequisitions'],
-                    'totalProducts'     => $totals['totalProducts'],
-                ];
+                if (!isset($uniqueSectionName[$firstWord])) {
+                    $uniqueSectionName[$firstWord] = 1;
+                    $formattedData[] = [
+                        'section'           => $sectionName,
+                        'section_short'     => $firstWord,
+                        'totalRequisitions' => $totals['totalRequisitions'],
+                        'totalProducts'     => $totals['totalProducts'],
+                    ];
+                } else {
+                    // If the first word already exists, append an index to the first word
+                    $index = $uniqueSectionName[$firstWord]++;
+                    $formattedData[] = [
+                        'section'           => $sectionName,
+                        'section_short'     => $firstWord . '_' . $index,
+                        'totalRequisitions' => $totals['totalRequisitions'],
+                        'totalProducts'     => $totals['totalProducts'],
+                    ];
+                }
             }
         }
 
-        // dd($formattedData);
+        //dd($formattedData);
         // Return the formatted data
         return $formattedData;
     }
@@ -434,6 +445,8 @@ class SectionRequisitionService implements IService
 
             $section_ids = Section::where('department_id', $department->id)
                 ->where('status', 1)
+                ->latest()
+                ->take(5)
                 ->pluck('id');
 
             $totalSectionRequisitions = SectionRequisition::whereIn('section_id', $section_ids)
@@ -460,19 +473,6 @@ class SectionRequisitionService implements IService
                         'totalRequisition' => 0,
                     ];
                 }
-
-                // if ($totalSectionRequisitions->isNotEmpty()) {
-                //     // Increment section requisitions
-                //     if (!isset($formattedData[$department->name])) {
-                //         $department_name = explode(" ", $department->name);
-                //         $formattedData[$department->name] = [
-                //             'department' => $department_name[0],
-                //             'totalRequisition' => 0,
-                //         ];
-                //         // dd($formattedData[$department->name]);
-                //     }
-
-
 
 
                 // dd($totalSectionRequisitions);
