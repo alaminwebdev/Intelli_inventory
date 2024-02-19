@@ -14,8 +14,8 @@
                                     <div class="form-group col-sm-3">
                                         <label class="control-label" style="color:#2a527b;">চাহিদাপত্রের ধরন</label>
                                         <select class="form-select form-select-sm select2" name="requisition_status" id="requisition_status">
-                                            <option value="6">যাচাইকৃত চাহিদাপত্রের তালিকা</option>
                                             <option value="1">যাচাইয়ের অপেক্ষায় চাহিদাপত্রের তালিকা</option>
+                                            <option value="3,4,6">যাচাইকৃত চাহিদাপত্রের তালিকা</option>
                                         </select>
                                     </div>
                                     <div class="form-group col-sm-1">
@@ -32,10 +32,13 @@
                                         <th>অনুরোধকৃত শাখা</th>
                                         <th>অনুরোধকৃত দপ্তর</th>
                                         <th>বর্তমান অবস্থা</th>
-                                        <th>তারিখ</th>
-                                        <th width="20%">অ্যাকশন</th>
+                                        <th>চাহিদাপত্রের তারিখ</th>
+                                        <th>অ্যাকশন</th>
                                     </tr>
                                 </thead>
+                                <tbody id="requistionProductsTable">
+
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -58,9 +61,13 @@
                         d.requisition_status = $('select[name=requisition_status]').val();
                     }
                 },
-                columns: [{
+                lengthMenu: [25, 50, 100, 150], // Set the default entries and available options
+                pageLength: 25, // Set the default page length
+                columns: [
+                    {
                         data: 'DT_RowIndex',
-                        name: 'id'
+                        name: 'id',
+                        orderable: false
                     },
                     {
                         data: 'requisition_no',
@@ -100,18 +107,18 @@
         });
     </script>
 
-
     <!-- Modal for Product Details -->
     <div class="modal" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">পন্যের বিবরনী</h6>
+                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">পন্যের বিবরনী - চাহিদাপত্র নাম্বার (<span class="requisitionInfo"></span>)</h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
+                   
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -127,6 +134,10 @@
                             <!-- Product details will be displayed here -->
                         </tbody>
                     </table>
+                    <div class="d-flex justify-content-end">
+                        <a href="#" target="_blank" class="edit-link btn btn-sm btn-warning mr-1"><i class="fas fa-edit"></i> পরিবর্তন করে যাচাই করুন</a>
+                        <a class="btn btn-sm btn-success requisition-verify" data-id="" data-route=""> <i class="fas fa-check-double"></i> পরিবর্তন ছাড়াই যাচাই করুন</a>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">বন্ধ করুন</button>
@@ -140,9 +151,20 @@
             $(document).on('click', '.view-products', function() {
                 var requistionID = $(this).data('requisition-id');
                 var modalID = $(this).data('modal-id');
-                console.log(requistionID);
 
                 document.getElementById('loading-spinner').style.display = 'block';
+
+                
+                // Update Edit link and requisition verify with dynamically generated routes
+                var editRoute = "{{ route('admin.verified.requisition.edit', ['id' => ':requisitionID']) }}".replace(':requisitionID', requistionID);
+                var editLink = $('#' + modalID + ' .edit-link');
+                editLink.attr('href', editRoute);
+
+                var requisitionVerifyLink = $('#' + modalID + ' .requisition-verify');
+                requisitionVerifyLink.attr('data-id', requistionID);
+                requisitionVerifyLink.attr('data-route', "{{ route('admin.verified.requisition.confirm') }}");
+
+
                 $.ajax({
                     url: "{{ route('admin.get.requistion.details.by.id') }}",
                     type: "GET",
@@ -152,6 +174,9 @@
                     success: function(products) {
                         // Clear any existing content in the modal table
                         $('#' + modalID + ' #productDetailsTable').html('');
+
+                        var productStatus;
+                        var requisitionNo;
 
                         // Loop through the products and add them to the table
                         for (var i = 0; i < products.length; i++) {
@@ -167,16 +192,31 @@
 
                             // Append the product details to the table
                             $('#' + modalID + ' #productDetailsTable').append(`
-                    <tr>
-                        <td>${productName} (${unitName})</td>
-                        <td class="text-right">${currentStock}</td>
-                        <td class="text-right">${demandQuantity}</td>
-                        <td class="text-right">${recommendedQuantity}</td>
-                        <td class="text-right">${finalApproveQuantity}</td>
-                        <td>${remarks}</td>
-                    </tr>
-                `);
+                                <tr>
+                                    <td>${productName} (${unitName})</td>
+                                    <td class="text-right">${currentStock}</td>
+                                    <td class="text-right">${demandQuantity}</td>
+                                    <td class="text-right">${recommendedQuantity}</td>
+                                    <td class="text-right">${finalApproveQuantity}</td>
+                                    <td>${remarks}</td>
+                                </tr>
+                            `);
+
+                            productStatus = product.status;
+                            requisitionNo = product.requisition_no;
                         }
+
+                        if (productStatus == 1) {
+                            editLink.show();
+                            requisitionVerifyLink.show();
+                        } else {
+                            editLink.hide();
+                            requisitionVerifyLink.hide();
+                        }
+
+                        // Update the content
+                        $('#' + modalID + ' .requisitionInfo').text(requisitionNo || "");
+
                         document.getElementById('loading-spinner').style.display = 'none';
                     },
                     error: function(error) {
@@ -184,6 +224,57 @@
                         console.error("Error:", error);
                     }
                 });
+            });
+        });
+    </script>
+
+    <script>
+        $(document).on('click', '.requisition-verify', function() {
+            var thisBtn = $(this);
+            var url = $(thisBtn).data('route');
+            var id = $(thisBtn).data('id');
+
+            Swal.fire({
+                icon: 'info',
+                iconHtml: '<i class="fas fa-check p-3"></i>',
+                title: 'পরিবর্তন ছাড়াই যাচাই করুন',
+                showCancelButton: true,
+                confirmButtonText: `<i class="fa fa-thumbs-up"></i> হ্যাঁ !`,
+                cancelButtonText: `<i class="fa fa-thumbs-down"></i> না, বাতিল করুন!`,
+                showLoaderOnConfirm: true,
+                preConfirm: () => {
+                    return $.ajax({
+                            'url': url,
+                            'type': 'POST',
+                            'data': {
+                                _token: $('[name=csrf-token]').attr('content'),
+                                id: id
+                            },
+                        }).then(response => {
+                            console.log(response);
+                            if (response.status != 'success') {
+                                throw new Error(response.message)
+                            }
+                            return response;
+                        })
+                        .catch(error => {
+                            Swal.showValidationMessage(error.message ? error.message : error.responseJSON.message)
+                        })
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                console.log(result);
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        icon: "success",
+                        title: 'সফলভাবে যাচাই করা হয়েছে',
+                    }).then(() => {
+                        // Reload the page
+                        location.reload();
+                    });
+                    // $(thisBtn).parents('tr').hide('');
+
+                }
             });
         });
     </script>

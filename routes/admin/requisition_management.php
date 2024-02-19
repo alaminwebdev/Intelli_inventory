@@ -38,9 +38,10 @@ Route::prefix('/department-requisition')->group(function () {
  
 // After Requisition verify it will go to next stage - Requisition Recommendation
 Route::prefix('/verify-requisition')->group(function () {
-    Route::get('/list', [RequisitionVerifyController::class, 'index'])->name('recommended.requisition.list');
-    Route::get('/edit/{id}', [RequisitionVerifyController::class, 'edit'])->name('recommended.requisition.edit');
-    Route::post('/update/{id}', [RequisitionVerifyController::class, 'update'])->name('recommended.requisition.update');
+    Route::get('/list', [RequisitionVerifyController::class, 'index'])->name('verified.requisition.list');
+    Route::get('/edit/{id}', [RequisitionVerifyController::class, 'edit'])->name('verified.requisition.edit');
+    Route::post('/update/{id}', [RequisitionVerifyController::class, 'update'])->name('verified.requisition.update');
+    Route::post('/confirm/', [RequisitionVerifyController::class, 'confirm'])->name('verified.requisition.confirm');
     Route::get('get-verified-requisition-list', [RequisitionVerifyController::class, 'getVerifiedRequisitionList'])->name('get.verified.requisition.list.datatable');
 });
 
@@ -50,12 +51,14 @@ Route::prefix('/recommended-requisition')->group(function () {
     Route::get('/list', [RequisitionApprovalController::class, 'index'])->name('recommended.requisition.list');
     Route::get('/edit/{id}', [RequisitionApprovalController::class, 'edit'])->name('recommended.requisition.edit');
     Route::post('/update/{id}', [RequisitionApprovalController::class, 'update'])->name('recommended.requisition.update');
+    Route::get('get-recommended-requisition-list', [RequisitionApprovalController::class, 'getRecommendedRequisitionList'])->name('get.recommended.requisition.list.datatable');
 });
 
 Route::prefix('/distribution-approval')->group(function () {
     Route::get('/list', [DistributionController::class, 'index'])->name('distribution.list');
     Route::get('/edit/{id}', [DistributionController::class, 'edit'])->name('distribution.edit');
     Route::post('/store', [DistributionController::class, 'store'])->name('distribution.update');
+    Route::get('get-approved-requisition-list', [DistributionController::class, 'getApprovedRequisitionList'])->name('get.approved.requisition.list.datatable');
 });
 
 Route::prefix('/distribute')->group(function () {
@@ -63,5 +66,6 @@ Route::prefix('/distribute')->group(function () {
     Route::get('/edit/{id}', [DistributionController::class, 'productDistributeEdit'])->name('distribute.edit');
     Route::post('/store', [DistributionController::class, 'productDistributeStore'])->name('distribute.store');
     Route::get('/check-bp-no', [DistributionController::class, 'checkBpNo'])->name('check.bp-no');
+    Route::get('get-distributed-requisition-list', [DistributionController::class, 'getDistributedRequisitionList'])->name('get.distributed.requisition.list.datatable');
 });
 

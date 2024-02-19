@@ -22,6 +22,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class DistributionController extends Controller
 {
@@ -73,7 +74,7 @@ class DistributionController extends Controller
         // } else {
         //     $data['sectionRequisitions'] = $this->sectionRequisitionService->getAll(null, null, null, [1, 3]);
         // }
-        $data['sectionRequisitions'] = $this->sectionRequisitionService->getAll(null, 1);
+        //$data['sectionRequisitions'] = $this->sectionRequisitionService->getAll(null, 6);
 
         return view('admin.requisition-management.distribution-approval.list', $data);
     }
@@ -108,6 +109,41 @@ class DistributionController extends Controller
         // } else {
         //     return response()->json(['status' => 'error', 'message' => 'Sorry something wrong']);
         // }
+    }
+
+    public function getApprovedRequisitionList(Request $request)
+    {
+
+        $requisition_statuses = explode(',', $request->requisition_status);
+        $user = Auth::user();
+        $sectionRequisitions   = $this->sectionRequisitionService->getAll(null, null, null, $requisition_statuses);
+
+        return DataTables::of($sectionRequisitions)
+            ->editColumn('section', function ($sectionRequisitions) {
+                return @$sectionRequisitions->section->name;
+            })
+            ->editColumn('department', function ($sectionRequisitions) {
+                return @$sectionRequisitions->section->department->name;
+            })
+            ->editColumn('status', function ($sectionRequisitions) {
+                return requisitionStatus(@$sectionRequisitions->status);
+            })
+            ->editColumn('created_at', function ($sectionRequisitions) {
+                return date('d-M-Y', strtotime($sectionRequisitions->created_at));
+            })
+            ->addColumn('action_column', function ($sectionRequisitions) use ($user) {
+                $links = '';
+                $links .= '<button class="btn btn-sm btn-info view-products mr-1" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id="' . $sectionRequisitions->id . '" data-modal-id="productDetailsModal"><i class="fas fa-eye"></i></button>';
+
+                if ($sectionRequisitions->status == 6) {
+                    $links .= '<a class="btn btn-sm btn-success mr-1" href="' . route('admin.distribution.edit', $sectionRequisitions->id) . '"  ><i class="fa fa-edit"></i></a>';
+                }
+                $links .= '<a class="btn btn-sm btn-primary mr-1" href="' . route('admin.requisition.report', $sectionRequisitions->id) . '" target="_blank"  data-toggle="tooltip" data-placement="bottom" title="PDF"><i class="fas fa-file-pdf"></i></a>';
+                return $links;
+            })
+            ->addIndexColumn()
+            ->escapeColumns([])
+            ->make(true);
     }
 
     public function distributeList()
@@ -190,7 +226,7 @@ class DistributionController extends Controller
                     $stockInStatus = $stock->stockIn->status;
                     // Check if the StockIn status is 1
                     if ($stockInStatus == 1) {
-                        
+
                         // Check if there's enough quantity to distribute from this stock
                         if ($quantityToDistribute <= $stock->available_qty) {
                             // Sufficient quantity available in this stock
@@ -198,7 +234,7 @@ class DistributionController extends Controller
                                 'available_qty' => $stock->available_qty - $quantityToDistribute,
                                 'dispatch_qty'  => $stock->dispatch_qty + $quantityToDistribute,
                             ]);
-    
+
                             // Insert data into the distribute table
                             $data                               = new Distribute();
                             $data->section_requisition_id       = $request->section_requisition_id;
@@ -208,10 +244,10 @@ class DistributionController extends Controller
                             $data->distribute_by                = auth()->user()->id;
                             $data->distribute_at                = Carbon::now();
                             $data->save();
-    
+
                             // Reduce the quantity left to distribute
                             $quantityToDistribute = 0;
-    
+
                             break;
                         } else {
 
@@ -223,7 +259,7 @@ class DistributionController extends Controller
                                 'available_qty' => 0,
                                 'dispatch_qty'  => $stock->dispatch_qty + $vva,
                             ]);
-                            
+
                             $data                            = new Distribute();
                             $data->section_requisition_id    = $request->section_requisition_id;
                             $data->product_id                = $key;
@@ -232,7 +268,7 @@ class DistributionController extends Controller
                             $data->distribute_by             = auth()->user()->id;
                             $data->distribute_at             = Carbon::now();
                             $data->save();
-    
+
                             $quantityToDistribute -= $vva;
                         }
                     }
@@ -281,5 +317,41 @@ class DistributionController extends Controller
             DB::rollBack();
             return $e->getMessage();
         }
+    }
+
+
+    public function getDistributedRequisitionList(Request $request)
+    {
+
+        $requisition_statuses = explode(',', $request->requisition_status);
+        $user = Auth::user();
+        $sectionRequisitions   = $this->sectionRequisitionService->getAll(null, null, null, $requisition_statuses);
+
+        return DataTables::of($sectionRequisitions)
+            ->editColumn('section', function ($sectionRequisitions) {
+                return @$sectionRequisitions->section->name;
+            })
+            ->editColumn('department', function ($sectionRequisitions) {
+                return @$sectionRequisitions->section->department->name;
+            })
+            ->editColumn('status', function ($sectionRequisitions) {
+                return requisitionStatus(@$sectionRequisitions->status);
+            })
+            ->editColumn('created_at', function ($sectionRequisitions) {
+                return date('d-M-Y', strtotime($sectionRequisitions->created_at));
+            })
+            ->addColumn('action_column', function ($sectionRequisitions) use ($user) {
+                $links = '';
+                $links .= '<button class="btn btn-sm btn-info view-products mr-1" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id="' . $sectionRequisitions->id . '" data-modal-id="productDetailsModal"><i class="fas fa-eye"></i></button>';
+
+                if ($sectionRequisitions->status == 3) {
+                    $links .= '<a class="btn btn-sm btn-success mr-1" href="' . route('admin.distribute.edit', $sectionRequisitions->id) . '"  ><i class="fa fa-edit"></i></a>';
+                }
+                $links .= '<a class="btn btn-sm btn-primary mr-1" href="' . route('admin.requisition.report', $sectionRequisitions->id) . '" target="_blank"  data-toggle="tooltip" data-placement="bottom" title="PDF"><i class="fas fa-file-pdf"></i></a>';
+                return $links;
+            })
+            ->addIndexColumn()
+            ->escapeColumns([])
+            ->make(true);
     }
 }

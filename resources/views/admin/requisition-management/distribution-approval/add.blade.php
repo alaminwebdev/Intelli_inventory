@@ -25,7 +25,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.distribution.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>পন্য বিতরনের তালিকা</a>
+                            <a href="{{ route('admin.distribution.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>অনুমোদিত চাহিদাপত্রের তালিকা</a>
                         </div>
                         <div class="card-body">
                             <form id="submitForm" action="{{ isset($editData) ? route('admin.distribution.update', $editData->id) : route('admin.distribution.store') }} " method="post" enctype="multipart/form-data" autocomplete="off">

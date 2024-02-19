@@ -175,6 +175,16 @@
             border-radius: .8rem;
             box-shadow: 0 0.5rem 20rem rgb(0 0 0 / 17%);
         }
+        .swal2-container .swal2-backdrop-show,
+        .swal2-container.swal2-noanimation {
+            background: #001f3f8f;
+        }
+        .swal2-icon{
+            margin-top: 10px;
+        }
+        .swal2-container .swal2-html-container {
+            margin: 0
+        }
         
     </style>
 

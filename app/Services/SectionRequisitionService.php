@@ -44,7 +44,7 @@ class SectionRequisitionService implements IService
             if ($take) {
                 $query->take($take);
             }
-            $data = $query->get();
+            $data = $query->latest()->get();
             return $data;
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -172,7 +172,8 @@ class SectionRequisitionService implements IService
                     'section_requisition_details.remarks as remarks',
                     'product_information.name as product',
                     'units.name as unit',
-                    'sections.name as section'
+                    'sections.name as section',
+                    'section_requisitions.status as status'
                 )
                 ->get();
             return $data;
@@ -259,6 +260,8 @@ class SectionRequisitionService implements IService
                         'remarks'                   => $product->remarks,
                         'recommended_quantity'      => $product->recommended_quantity,
                         'recommended_remarks'       => $product->recommended_remarks,
+                        'verify_quantity'           => $product->verify_quantity,
+                        'verify_remarks'            => $product->verify_remarks,
                         'final_approve_quantity'    => $product->final_approve_quantity,
                         'final_approve_remarks'     => $product->final_approve_remarks,
                         'available_quantity'        => $availableQty,
