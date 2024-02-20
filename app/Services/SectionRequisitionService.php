@@ -14,6 +14,7 @@ use App\Services\IService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Services\ProductAvailabilityService;
 
 /**
  * Class SectionRequisitionService
@@ -21,6 +22,12 @@ use Illuminate\Support\Facades\DB;
  */
 class SectionRequisitionService implements IService
 {
+    protected $productAvailabilityService;
+
+    public function __construct(ProductAvailabilityService $productAvailabilityService)
+    {
+        $this->productAvailabilityService = $productAvailabilityService;
+    }
 
     public function getAll($section_id = null, $status = null, $section_ids = null, $statuses = null, $take = null)
     {
@@ -95,7 +102,7 @@ class SectionRequisitionService implements IService
             $data = $request->input('data');
             $sectionRequisition = new SectionRequisition();
 
-            $sectionRequisition->requisition_no = $data['requisitionNumber'];
+            $sectionRequisition->requisition_no = $this->getUniqueRequisitionNo(); //$data['requisitionNumber'];
             $sectionRequisition->section_id     = $data['sectionId'];
             $sectionRequisition->user_id        = Auth::id();
             $sectionRequisition->status         = 0;
@@ -113,7 +120,7 @@ class SectionRequisitionService implements IService
                         // Store Data into SectionRequisitionDetails
                         $sectionRequisitionDetails                          = new SectionRequisitionDetails();
                         $sectionRequisitionDetails->section_requisition_id  = $sectionRequisition->id;
-                        $sectionRequisitionDetails->requisition_no          = $data['requisitionNumber'];
+                        $sectionRequisitionDetails->requisition_no          = $sectionRequisition->requisition_no; //$data['requisitionNumber'];
                         $sectionRequisitionDetails->product_id              = $productId;
                         $sectionRequisitionDetails->current_stock           = $currentStock;
                         $sectionRequisitionDetails->demand_quantity         = $demandQuantity;
@@ -168,12 +175,13 @@ class SectionRequisitionService implements IService
                     'section_requisition_details.current_stock as current_stock',
                     'section_requisition_details.demand_quantity as demand_quantity',
                     'section_requisition_details.recommended_quantity as recommended_quantity',
+                    'section_requisition_details.verify_quantity as verify_quantity',
                     'section_requisition_details.final_approve_quantity as final_approve_quantity',
-                    'section_requisition_details.remarks as remarks',
                     'product_information.name as product',
                     'units.name as unit',
                     'sections.name as section',
-                    'section_requisitions.status as status'
+                    'section_requisitions.status as status',
+                    DB::raw('COALESCE(section_requisition_details.final_approve_remarks, section_requisition_details.verify_remarks, section_requisition_details.recommended_remarks, section_requisition_details.remarks) as remarks'),
                 )
                 ->get();
             return $data;
@@ -240,17 +248,19 @@ class SectionRequisitionService implements IService
                         ->sum('distribute_quantity');
 
 
-                    $availableQty = 0;
+                        
+                    $availableStock = $this->productAvailabilityService->getAvailableStock($product->product_id, $requistion_id);
+                        
+                    // $availableQty = 0;
+                    // // Iterate over each StockInDetail in the collection
+                    // foreach ($product->StockDetail as $stockDetail) {
+                    //     $stockInStatus = $stockDetail->stockIn->status;
 
-                    // Iterate over each StockInDetail in the collection
-                    foreach ($product->StockDetail as $stockDetail) {
-                        $stockInStatus = $stockDetail->stockIn->status;
-
-                        // Check the status of the associated StockIn and calculate available_qty only when the status is 1
-                        if ($stockInStatus == 1) {
-                            $availableQty += $stockDetail->available_qty;
-                        }
-                    }
+                    //     // Check the status of the associated StockIn and calculate available_qty only when the status is 1
+                    //     if ($stockInStatus == 1) {
+                    //         $availableQty += $stockDetail->available_qty;
+                    //     }
+                    // }
 
                     $productType['products'][$product->product_id] = [
                         'product_id'                => $product->product_id,
@@ -264,7 +274,7 @@ class SectionRequisitionService implements IService
                         'verify_remarks'            => $product->verify_remarks,
                         'final_approve_quantity'    => $product->final_approve_quantity,
                         'final_approve_remarks'     => $product->final_approve_remarks,
-                        'available_quantity'        => $availableQty,
+                        'available_quantity'        => $availableStock['available_qty'] ?? 0,
                         'last_distribute_qty'       => $last_distribute_qty,
                         'totalDistributeQuantity'   => $totalDistributeQuantity ?? 0
                     ];

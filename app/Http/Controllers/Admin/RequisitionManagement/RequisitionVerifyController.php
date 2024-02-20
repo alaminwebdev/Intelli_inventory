@@ -146,9 +146,10 @@ class RequisitionVerifyController extends Controller
                 $links = '';
                 $links .= '<button class="btn btn-sm btn-info view-products mr-1" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id="' . $sectionRequisitions->id . '" data-modal-id="productDetailsModal"><i class="fas fa-eye"></i></button>';
 
-                // if ($sectionRequisitions->status == 1) {
-                //     $links .=  '<a class="btn btn-sm btn-success requisition-verify mr-1" data-id="' . $sectionRequisitions->id . '" data-route="' . route('admin.verified.requisition.confirm') . '" data-toggle="tooltip" data-placement="bottom" title="Requisition Verify"> <i class="fas fa-check-double"></i></a>';
-                // }
+                if ($sectionRequisitions->status == 1) {
+                    $links .= '<a class="btn btn-sm btn-success mr-1" href="' . route('admin.verified.requisition.edit', $sectionRequisitions->id) . '"  ><i class="fa fa-edit"></i></a>';
+                    // $links .=  '<a class="btn btn-sm btn-success requisition-verify mr-1" data-id="' . $sectionRequisitions->id . '" data-route="' . route('admin.verified.requisition.confirm') . '" data-toggle="tooltip" data-placement="bottom" title="Requisition Verify"> <i class="fas fa-check-double"></i></a>';
+                }
                 $links .= '<a class="btn btn-sm btn-primary mr-1" href="' . route('admin.requisition.report', $sectionRequisitions->id) . '" target="_blank"  data-toggle="tooltip" data-placement="bottom" title="PDF"><i class="fas fa-file-pdf"></i></a>';
                 return $links;
             })

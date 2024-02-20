@@ -45,8 +45,8 @@
                                         <th>অনুরোধকৃত শাখা</th>
                                         <th>অনুরোধকৃত দপ্তর</th>
                                         <th>বর্তমান অবস্থা</th>
-                                        <th>তারিখ</th>
-                                        <th>অ্যাকশন</th>
+                                        <th>চাহিদাপত্রের তারিখ</th>
+                                        <th width="15%">অ্যাকশন</th>
                                     </tr>
                                 </thead>
                                 <tbody id="requistionProductsTable">
@@ -92,9 +92,12 @@
                         d.requisition_status = $('select[name=requisition_status]').val();
                     }
                 },
+                lengthMenu: [25, 50, 100, 150], // Set the default entries and available options
+                pageLength: 25, // Set the default page length
                 columns: [{
                         data: 'DT_RowIndex',
-                        name: 'id'
+                        name: 'id',
+                        orderable: false
                     },
                     {
                         data: 'requisition_no',

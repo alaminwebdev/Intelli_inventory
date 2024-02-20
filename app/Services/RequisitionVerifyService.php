@@ -10,7 +10,7 @@ use App\Models\ProductType;
 use App\Models\SectionRequisition;
 use App\Models\SectionRequisitionDetails;
 use Illuminate\Support\Facades\DB;
-
+use App\Services\ProductAvailabilityService;
 
 use App\Services\IService;
 use Carbon\Carbon;
@@ -23,6 +23,13 @@ use Illuminate\Support\Facades\Auth;
  */
 class RequisitionVerifyService implements IService
 {
+
+    protected $productAvailabilityService;
+
+    public function __construct(ProductAvailabilityService $productAvailabilityService)
+    {
+        $this->productAvailabilityService = $productAvailabilityService;
+    }
 
     public function getAll()
     {
@@ -77,7 +84,32 @@ class RequisitionVerifyService implements IService
                 // Update SectionRequisitionDetails status and verify_quantity for each row
                 $details = SectionRequisitionDetails::where('section_requisition_id', $request->id)->get();
 
+
                 foreach ($details as $detail) {
+                    // Get available stock for the product
+                    $availableStock = $this->productAvailabilityService->getAvailableStock($detail->product_id, $request->id);
+
+                     // Check if the array is not empty
+                     if (!empty($availableStock)) {
+
+                        // Compare available_qty with recommended_quantity
+                        if ($availableStock['available_qty'] < $detail->recommended_quantity) {
+                            DB::rollBack();
+                            return response()->json([
+                                'status' => 'error',
+                                'message' => 'এই পণ্যের জন্য পর্যাপ্ত স্টক নেই: ' . $availableStock['name'],
+                            ]);
+                        }
+
+                    } else {
+                        DB::rollBack();
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'এই পণ্যের জন্য পর্যাপ্ত স্টক নেই: ' . @$detail->product->name,
+                        ]);
+                    }
+
+                    // Update SectionRequisitionDetails
                     SectionRequisitionDetails::where('id', $detail->id)->update([
                         'status' => 6,
                         'verify_quantity' => $detail->recommended_quantity,

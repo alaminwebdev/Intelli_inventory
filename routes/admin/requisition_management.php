@@ -59,6 +59,7 @@ Route::prefix('/distribution-approval')->group(function () {
     Route::get('/edit/{id}', [DistributionController::class, 'edit'])->name('distribution.edit');
     Route::post('/store', [DistributionController::class, 'store'])->name('distribution.update');
     Route::get('get-approved-requisition-list', [DistributionController::class, 'getApprovedRequisitionList'])->name('get.approved.requisition.list.datatable');
+    Route::post('/confirm/', [DistributionController::class, 'confirmApproval'])->name('approved.requisition.confirm');
 });
 
 Route::prefix('/distribute')->group(function () {

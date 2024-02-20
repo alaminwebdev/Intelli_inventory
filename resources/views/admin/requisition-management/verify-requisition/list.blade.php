@@ -33,7 +33,7 @@
                                         <th>অনুরোধকৃত দপ্তর</th>
                                         <th>বর্তমান অবস্থা</th>
                                         <th>চাহিদাপত্রের তারিখ</th>
-                                        <th>অ্যাকশন</th>
+                                        <th width="15%">অ্যাকশন</th>
                                     </tr>
                                 </thead>
                                 <tbody id="requistionProductsTable">
@@ -119,13 +119,14 @@
                 </div>
                 <div class="modal-body">
                    
-                    <table class="table table-bordered">
+                    <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>পন্য</th>
                                 <th>বর্তমান মজূদ</th>
                                 <th>চাহিদার পরিমান</th>
                                 <th>সুপারিশ পরিমান</th>
+                                <th>যাচাই পরিমান</th>
                                 <th>অনুমোদিত পরিমান</th>
                                 <th>যৌক্তিকতা</th>
                             </tr>
@@ -134,10 +135,10 @@
                             <!-- Product details will be displayed here -->
                         </tbody>
                     </table>
-                    <div class="d-flex justify-content-end">
+                    {{-- <div class="d-flex justify-content-end">
                         <a href="#" target="_blank" class="edit-link btn btn-sm btn-warning mr-1"><i class="fas fa-edit"></i> পরিবর্তন করে যাচাই করুন</a>
                         <a class="btn btn-sm btn-success requisition-verify" data-id="" data-route=""> <i class="fas fa-check-double"></i> পরিবর্তন ছাড়াই যাচাই করুন</a>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">বন্ধ করুন</button>
@@ -156,13 +157,13 @@
 
                 
                 // Update Edit link and requisition verify with dynamically generated routes
-                var editRoute = "{{ route('admin.verified.requisition.edit', ['id' => ':requisitionID']) }}".replace(':requisitionID', requistionID);
-                var editLink = $('#' + modalID + ' .edit-link');
-                editLink.attr('href', editRoute);
+                // var editRoute = "{{ route('admin.verified.requisition.edit', ['id' => ':requisitionID']) }}".replace(':requisitionID', requistionID);
+                // var editLink = $('#' + modalID + ' .edit-link');
+                // editLink.attr('href', editRoute);
 
-                var requisitionVerifyLink = $('#' + modalID + ' .requisition-verify');
-                requisitionVerifyLink.attr('data-id', requistionID);
-                requisitionVerifyLink.attr('data-route', "{{ route('admin.verified.requisition.confirm') }}");
+                // var requisitionVerifyLink = $('#' + modalID + ' .requisition-verify');
+                // requisitionVerifyLink.attr('data-id', requistionID);
+                // requisitionVerifyLink.attr('data-route', "{{ route('admin.verified.requisition.confirm') }}");
 
 
                 $.ajax({
@@ -172,6 +173,7 @@
                         requisition_id: requistionID
                     },
                     success: function(products) {
+                        console.log(products);
                         // Clear any existing content in the modal table
                         $('#' + modalID + ' #productDetailsTable').html('');
 
@@ -187,6 +189,7 @@
                             var currentStock = product.current_stock || "";
                             var demandQuantity = product.demand_quantity || "";
                             var recommendedQuantity = product.recommended_quantity || "";
+                            var verifyQuantity = product.verify_quantity || "";
                             var finalApproveQuantity = product.final_approve_quantity || "";
                             var remarks = product.remarks || "";
 
@@ -197,6 +200,7 @@
                                     <td class="text-right">${currentStock}</td>
                                     <td class="text-right">${demandQuantity}</td>
                                     <td class="text-right">${recommendedQuantity}</td>
+                                    <td class="text-right">${verifyQuantity}</td>
                                     <td class="text-right">${finalApproveQuantity}</td>
                                     <td>${remarks}</td>
                                 </tr>
@@ -206,13 +210,13 @@
                             requisitionNo = product.requisition_no;
                         }
 
-                        if (productStatus == 1) {
-                            editLink.show();
-                            requisitionVerifyLink.show();
-                        } else {
-                            editLink.hide();
-                            requisitionVerifyLink.hide();
-                        }
+                        // if (productStatus == 1) {
+                        //     editLink.show();
+                        //     requisitionVerifyLink.show();
+                        // } else {
+                        //     editLink.hide();
+                        //     requisitionVerifyLink.hide();
+                        // }
 
                         // Update the content
                         $('#' + modalID + ' .requisitionInfo').text(requisitionNo || "");

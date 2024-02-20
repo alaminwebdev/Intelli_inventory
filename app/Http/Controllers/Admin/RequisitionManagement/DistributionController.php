@@ -33,6 +33,7 @@ class DistributionController extends Controller
     private $employeeService;
     private $sectionService;
     private $designationService;
+    private $distributionService;
 
     public function __construct(
         DepartmentRequisitionService $departmentRequisitionService,
@@ -41,7 +42,8 @@ class DistributionController extends Controller
         DepartmentService $departmentService,
         EmployeeService $employeeService,
         SectionService $sectionService,
-        DesignationService $designationService
+        DesignationService $designationService,
+        DistributionService $distributionService
     ) {
         $this->productTypeService           = $productTypeService;
         $this->departmentRequisitionService = $departmentRequisitionService;
@@ -50,6 +52,7 @@ class DistributionController extends Controller
         $this->employeeService              = $employeeService;
         $this->sectionService               = $sectionService;
         $this->designationService           = $designationService;
+        $this->distributionService          = $distributionService;
     }
     public function index()
     {
@@ -136,7 +139,8 @@ class DistributionController extends Controller
                 $links .= '<button class="btn btn-sm btn-info view-products mr-1" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id="' . $sectionRequisitions->id . '" data-modal-id="productDetailsModal"><i class="fas fa-eye"></i></button>';
 
                 if ($sectionRequisitions->status == 6) {
-                    $links .= '<a class="btn btn-sm btn-success mr-1" href="' . route('admin.distribution.edit', $sectionRequisitions->id) . '"  ><i class="fa fa-edit"></i></a>';
+                    // $links .= '<a class="btn btn-sm btn-success mr-1" href="' . route('admin.distribution.edit', $sectionRequisitions->id) . '"  ><i class="fa fa-edit"></i></a>';
+                    // $links .= '<a class="btn btn-sm btn-success requisition-verify mr-1" data-id="' . $sectionRequisitions->id . '"  data-route="' . route('admin.approved.requisition.confirm') . '"  ><i class="fas fa-check-double"></i></a>';
                 }
                 $links .= '<a class="btn btn-sm btn-primary mr-1" href="' . route('admin.requisition.report', $sectionRequisitions->id) . '" target="_blank"  data-toggle="tooltip" data-placement="bottom" title="PDF"><i class="fas fa-file-pdf"></i></a>';
                 return $links;
@@ -169,7 +173,7 @@ class DistributionController extends Controller
         // } else {
         //     $data['distributeRequisitions'] = $this->sectionRequisitionService->getAll(null, null, null, [3,4]);
         // }
-        $data['distributeRequisitions'] = $this->sectionRequisitionService->getAll(null, 3);
+        //$data['distributeRequisitions'] = $this->sectionRequisitionService->getAll(null, 3);
         return view('admin.requisition-management.distribute.list', $data);
     }
 
@@ -181,6 +185,9 @@ class DistributionController extends Controller
         $data['editData']       = $this->sectionRequisitionService->getByID($id);
         $data['designations']   = $this->designationService->getAll(1);
         $data['requisition_product_types']  = $this->sectionRequisitionService->getRequisitionProductsWithTypeById($id, $data['editData']);
+        if ($data['editData']->status == 4) {
+            return redirect()->route('admin.distribute.list')->with('success', 'ইতিমধ্যে বিতরণ করা হয়েছে');
+        }
         return view('admin.requisition-management.distribute.edit', $data);
     }
 
@@ -312,7 +319,8 @@ class DistributionController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->route('admin.distribute.list');
+            // return redirect()->route('admin.distribute.list');
+            return redirect()->route('admin.requisition.report', $request->section_requisition_id);
         } catch (\Exception $e) {
             DB::rollBack();
             return $e->getMessage();
@@ -353,5 +361,10 @@ class DistributionController extends Controller
             ->addIndexColumn()
             ->escapeColumns([])
             ->make(true);
+    }
+
+    public function confirmApproval(Request $request)
+    {
+        return $this->distributionService->confirm($request);
     }
 }
