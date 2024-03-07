@@ -10,6 +10,13 @@
             background-color: #f8f9fa;
         }
 
+        table,
+        thead,
+        th,
+        tr {
+            color: #2a527b !important;
+        }
+
         table tr {
             font-size: 14px !important;
         }
@@ -31,12 +38,13 @@
                         <div class="card-body">
                             <form method="post" action="{{ route('admin.product.distribution.report') }}" id="filterForm" autocomplete="off">
                                 @csrf
-                                <div class="gradient-border px-3 pt-4 pb-3 mb-3">
+                                <div class="gradient-border px-3 pt-4 pb-3 mb-4">
                                     <div class="form-row">
+
                                         <div class="form-group col-md-4">
                                             <label class="control-label">দপ্তর : <span class="text-red">*</span></label>
                                             <select name="department_id" id="department_id" class="form-control @error('department_id') is-invalid @enderror select2 ">
-                                                <option value="0">All</option>
+                                                <option value="">-- দপ্তর নির্বাচন করুন --</option>
                                                 @foreach ($departments as $item)
                                                     <option value="{{ $item->id }}" {{ request()->department_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
                                                 @endforeach
@@ -47,6 +55,7 @@
                                                 </span>
                                             @enderror
                                         </div>
+
                                         <div class="form-group col-md-4">
                                             <label class="control-label">শাখা :</label>
                                             <select name="section_id" id="section_id" class="form-control select2 @error('section_id') is-invalid @enderror">
@@ -69,42 +78,75 @@
                                             <select name="product_information_id" id="product_information_id" class="form-control select2 ">
                                                 <option value="0">All</option>
                                                 @foreach ($products as $item)
-                                                    <option value="{{ $item->id }}" {{ request()->product_information_id == $item->id ? 'selected' : '' }}>{{ $item->name }} ({{$item->unit}})</option>
+                                                    <option value="{{ $item->id }}" {{ request()->product_information_id == $item->id ? 'selected' : '' }}>{{ $item->name }} ({{ $item->unit }})</option>
                                                 @endforeach
                                             </select>
                                         </div>
+
                                         <div class="form-group col-md-2">
                                             <label for="date_from" class="text-navy">শুরুর তারিখ :</label>
                                             <input type="text" value="{{ request()->date_from }}" name="date_from" class="form-control form-control-sm text-gray singledatepicker" id="date_from" placeholder="শুরুর তারিখ">
                                         </div>
+
                                         <div class="form-group col-md-2">
                                             <label for="date_to" class="text-navy">শেষ তারিখ :</label>
                                             <input type="text" value="{{ request()->date_to }}" name="date_to" class="form-control form-control-sm text-gray singledatepicker" id="date_to" placeholder="শেষ তারিখ">
                                         </div>
-                                        <div class="form-group col-md-2">
+
+                                        <div class="form-group col-md-8">
                                             <label class="control-label d-block" style="visibility: hidden;">Search</label>
-                                            <button type="submit" name="type" value="search" class="btn btn-success btn-sm btn-block">খুজুন</button>
+                                            <button type="submit" name="type" value="search" class="btn btn-success btn-sm mr-1" style="box-shadow:rgba(40, 167, 69, 0.30) 0px 8px 18px 4px"><i class="fas fa-search mr-1"></i> খুজুন</button>
+                                            @if (isset($distributed_products) && count($distributed_products) > 0)
+                                                    <button type="submit" class="btn btn-sm btn-primary" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ হিসাবে ডাউনলোড করুন</button>
+                                            @endif
                                         </div>
                                     </div>
-                                    {{-- @if (isset($goods_infos) && count($goods_infos) > 0) --}}
-                                    <div class="border-top d-flex justify-content-end">
-                                        <button type="submit" class="btn btn-sm btn-primary mt-3 mr-2" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ হিসাবে ডাউনলোড করুন</button>
-                                        {{-- <button type="submit" class="btn btn-sm btn-warning mt-3" name="type" value="xls" style="box-shadow:rgba(255, 164, 6, 0.4) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i>Download as Excel</button> --}}
-                                    </div>
-                                    {{-- @endif --}}
+                                    {{-- @if (isset($distributed_products) && count($distributed_products) > 0)
+                                        <div class="border-top d-flex justify-content-end">
+                                            <button type="submit" class="btn btn-sm btn-primary mt-3" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ হিসাবে ডাউনলোড করুন</button>
+                                        </div>
+                                    @endif --}}
                                 </div>
                             </form>
-                            <table id="" class="table table-bordered">
-                                <thead>
+                            <table class="table table-sm table-bordered" style="width: 100%;" id="">
+                                <thead style="background: #fff4f4 !important;">
                                     <tr>
-                                        <th width="5%">নং.</th>
-                                        <th width="10%">ক্রয় অর্ডার নং.</th>
-                                        <th width="60%">পন্য</th>
-                                        <th>মেয়াদ শেষ হবার তারিখ</th>
+                                        <th class="text-center">নং.</th>
+                                        <th class="text-center">পন্য</th>
+                                        <th class="text-center">ইউনিট</th>
+                                        {{-- <th class="text-center">দপ্তর</th> --}}
+                                        <th class="text-center">শাখা</th>
+                                        <th class="text-center">ক্রয় অর্ডার নং.</th>
+                                        <th class="text-center">তারিখ</th>
+                                        <th class="text-center">বিতরনের পরিমান</th>
+                                        <th class="text-center">মোট বিতরন</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-
+                                    @isset($distributed_products)
+                                        @foreach ($distributed_products as $product_id => $product_info)
+                                            @php
+                                                $total_distribute_qty = array_sum(array_column($product_info, 'distribute_quantity'));
+                                            @endphp
+                                            @foreach ($product_info as $products)
+                                                <tr>
+                                                    @if ($loop->first)
+                                                        <td rowspan="{{ count($product_info) }}">{{ $loop->parent->iteration }}</td>
+                                                        <td rowspan="{{ count($product_info) }}">{{ $products['product'] }}</td>
+                                                        <td rowspan="{{ count($product_info) }}">{{ $products['unit_name'] }}</td>
+                                                    @endif
+                                                    {{-- <td>{{ $products['department'] }}</td> --}}
+                                                    <td>{{ $products['section'] }}</td>
+                                                    <td>{{ $products['po_no'] }}</td>
+                                                    <td>{{ date('d-M-Y', strtotime($products['date'])) }}</td>
+                                                    <td class="text-right">{{ number_format($products['distribute_quantity'], 2, '.', ',') }}</td>
+                                                    @if ($loop->first)
+                                                        <td rowspan="{{ count($product_info) }}" class="align-middle text-center" style="font-weight: 600;">{{ number_format($total_distribute_qty, 2, '.', ',') }}</td>
+                                                    @endif
+                                                </tr>
+                                            @endforeach
+                                        @endforeach
+                                    @endisset
                                 </tbody>
                             </table>
                         </div>
