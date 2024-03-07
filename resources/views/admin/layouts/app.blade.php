@@ -185,6 +185,14 @@
         .swal2-container .swal2-html-container {
             margin: 0
         }
+
+        .gradient-border {
+            background: linear-gradient(#fff, #fff) padding-box,
+              linear-gradient(45deg, #b721ff , #00bce2 ) border-box;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            box-shadow: 0px 8px 18px 4px rgba(0, 195, 255, 0.1);
+        }
         
     </style>
 

@@ -139,6 +139,7 @@
                                                                         <th>চাহিদার পরিমাণ</th>
                                                                         <th>সুপারিশ পরিমান</th>
                                                                         <th>যাচাই পরিমান</th>
+                                                                        <th>অনুমোদন পরিমান</th>
                                                                         <th>বিতরনযোগ্য মজূদ</th>
                                                                         <th>বিতরনের পরিমাণ</th>
                                                                         <th>যৌক্তিকতা</th>
@@ -164,6 +165,10 @@
                                                                             
                                                                             <td>
                                                                                 <input type="number" class="form-control form-control-sm" id="verify_quantity_{{ $product['product_id'] }}" name="verify_quantity[{{ $product['product_id'] }}]" value="{{ $product['verify_quantity'] }}" readonly>
+                                                                            </td>
+
+                                                                            <td>
+                                                                                <input type="number" class="form-control form-control-sm" id="approve_quantity_{{ $product['product_id'] }}" name="approve_quantity[{{ $product['product_id'] }}]" value="{{ $product['final_approve_quantity'] }}" readonly>
                                                                             </td>
 
                                                                             <td>
