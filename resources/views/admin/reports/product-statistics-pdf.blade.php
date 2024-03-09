@@ -24,7 +24,7 @@
 @section('pdf-content')
     <div style="margin-top: 10px; font-size: 12px;">
         <div style="width:100%">
-            <p style="margin: 0; width:50%; float:left;">দপ্তর : {{ $department ? $department->name : 'সবগুলি'  }}  - শাখা : {{ $section ? $section->name : 'সবগুলি'  }} </p>
+            <p style="margin: 0; width:50%; float:left;">দপ্তর : {{ $department ? $department->name : 'সবগুলি'  }}  - শাখা : {{ @$section ? $section->name : 'সবগুলি'  }} </p>
             <p style="margin: 0; width:50%; float:right; text-align:right">তারিখ : {{ $date_from }} - {{ $date_to }}</p>
         </div>
     </div>

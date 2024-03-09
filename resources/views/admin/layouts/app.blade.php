@@ -175,6 +175,24 @@
             border-radius: .8rem;
             box-shadow: 0 0.5rem 20rem rgb(0 0 0 / 17%);
         }
+        .swal2-container .swal2-backdrop-show,
+        .swal2-container.swal2-noanimation {
+            background: #001f3f8f;
+        }
+        .swal2-icon{
+            margin-top: 10px;
+        }
+        .swal2-container .swal2-html-container {
+            margin: 0
+        }
+
+        .gradient-border {
+            background: linear-gradient(#fff, #fff) padding-box,
+              linear-gradient(45deg, #b721ff , #00bce2 ) border-box;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            box-shadow: 0px 8px 18px 4px rgba(0, 195, 255, 0.1);
+        }
         
     </style>
 

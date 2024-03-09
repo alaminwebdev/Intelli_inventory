@@ -12,7 +12,7 @@
                         <div class="card-body">
                             <form method="post" action="{{ route('admin.product.statistics') }}" id="filterForm" autocomplete="off">
                                 @csrf
-                                <div class="form-row p-3 border rounded shadow-sm mb-3">
+                                <div class="form-row p-3 mb-3 gradient-border">
                                     <div class="form-group col-md-2">
                                         <label class="control-label">দপ্তর <span class="text-red">*</span></label>
                                         <select name="department_id" id="department_id" class="form-control @error('department_id') is-invalid @enderror select2 ">

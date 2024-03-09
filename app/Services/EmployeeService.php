@@ -76,6 +76,25 @@ class EmployeeService implements IService
             $employee->sort             = $request->sort;
             $employee->status           = $request->status;
             $employee->save();
+
+            $user = User::where('employee_id', $request->id)->first();
+            if ($user) {
+                // Check if the email and mobile number already exist in the user database
+                $existingUser = User::where('id', '!=', $user->id)
+                    ->where(function ($query) use ($request) {
+                        $query->where('email', $request->email)
+                            ->orWhere('mobile_no', $request->mobile_no);
+                    })
+                    ->first();
+
+                if (!$existingUser) {
+                    $user->name           = $request->name;
+                    $user->email          = $request->email;
+                    $user->mobile_no      = $request->mobile_no;
+                    $user->status         = $request->status;
+                    $user->save();
+                }
+            }
             return true;
         } catch (Exception $e) {
             return $e->getMessage();

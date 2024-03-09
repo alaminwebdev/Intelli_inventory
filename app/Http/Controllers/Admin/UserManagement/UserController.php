@@ -30,7 +30,7 @@ class UserController extends Controller
         // }
 
         if ($request->name) {
-            $where[] = ['name', 'LIKE', '%'. $request->name .'%'];
+            $where[] = ['name', 'LIKE', '%' . $request->name . '%'];
         }
         if ($request->email) {
             $where[] = ['email', '=', $request->email];
@@ -295,6 +295,16 @@ class UserController extends Controller
                         $user_role_store->save();
                     }
                 }
+            }
+
+            // Check if the user has an associated employee
+            if ($store->employee_id) {
+                $employee = Employee::findOrFail($store->employee_id);
+                $employee->name         = $request->name;
+                $employee->email        = $request->email;
+                $employee->mobile_no    = $request->mobile_no;
+                $employee->status       = $request->status;
+                $employee->save();
             }
 
             DB::commit();

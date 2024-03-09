@@ -12,7 +12,7 @@
                         <div class="card-body">
                             <form method="post" action="{{ route('admin.product.expiring.soon') }}" id="filterForm" autocomplete="off">
                                 @csrf
-                                <div class="form-row p-3 border rounded shadow-sm mb-3">
+                                <div class="form-row p-3 mb-3 gradient-border">
                                     <div class="form-group col-md-2">
                                         <label class="control-label">দিন বাছাই করুন <span class="text-red">*</span></label>
                                         <select name="days" id="days" class="form-control select2 " required>
