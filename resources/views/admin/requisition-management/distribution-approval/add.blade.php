@@ -25,7 +25,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.distribution.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>পন্য বিতরনের তালিকা</a>
+                            <a href="{{ route('admin.distribution.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>অনুমোদিত চাহিদাপত্রের তালিকা</a>
                         </div>
                         <div class="card-body">
                             <form id="submitForm" action="{{ isset($editData) ? route('admin.distribution.update', $editData->id) : route('admin.distribution.store') }} " method="post" enctype="multipart/form-data" autocomplete="off">
@@ -70,6 +70,7 @@
                                                                         <th>শাখায় বর্তমান মজূদ</th>
                                                                         <th>চাহিদার পরিমান</th>
                                                                         <th>সুপারিশ পরিমান</th>
+                                                                        <th>যাচাই পরিমান</th>
                                                                         <th>বিতরনযোগ্য মজূদ</th>
                                                                         <th>অনুমোদন পরিমান</th>
                                                                         <th>যৌক্তিকতা</th>
@@ -93,10 +94,13 @@
                                                                                 <input type="number" class="form-control form-control-sm recommended_quantity" id="recommended_quantity_{{ $product['product_id'] }}" name="recommended_quantity[{{ $product['product_id'] }}]" value="{{ $product['recommended_quantity'] }}" readonly>
                                                                             </td>
                                                                             <td>
+                                                                                <input type="number" class="form-control form-control-sm verify_quantity" id="verify_quantity_{{ $product['product_id'] }}" name="verify_quantity[{{ $product['product_id'] }}]" value="{{ $product['verify_quantity'] }}" readonly>
+                                                                            </td>
+                                                                            <td>
                                                                                 <input type="text" class="form-control form-control-sm available_quantity" id="available_quantity_{{ $product['product_id'] }}" value="{{ $product['available_quantity'] }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm approve_quantity" id="approve_quantity_{{ $product['product_id'] }}" name="approve_quantity[{{ $product['product_id'] }}]" value="{{ $product['final_approve_quantity'] ?? $product['recommended_quantity'] }}" {{ $editData->status == 3 ? 'readonly' : '' }}>
+                                                                                <input type="number" class="form-control form-control-sm approve_quantity" id="approve_quantity_{{ $product['product_id'] }}" name="approve_quantity[{{ $product['product_id'] }}]" value="{{ $product['final_approve_quantity'] ?? $product['verify_quantity'] }}" {{ $editData->status == 3 ? 'readonly' : '' }}>
                                                                             </td>
                                                                             <td>
                                                                                 <input type="text" class="form-control form-control-sm" id="remarks_{{ $product['product_id'] }}" name="remarks[{{ $product['product_id'] }}]" value="{{ $product['final_approve_remarks'] }}" {{ $product['final_approve_remarks'] ? 'readonly' : '' }}>

@@ -112,7 +112,7 @@ class SectionRequisitionController extends Controller
                 if ($is_super_admin) {
                     $data['employee']           = [];
                     $data['sections']           = $this->sectionService->getAll();
-                }else{
+                } else {
                     $data['employee']           = $this->employeeService->getByID($user->employee_id);
                     $data['sections']           = $this->sectionService->getSectionsByDepartment($data['employee']->department_id);
                 }
@@ -163,10 +163,10 @@ class SectionRequisitionController extends Controller
 
         if ($user->id !== 1 && $user->employee_id) {
             $userRoleIds    = UserRole::where('user_id', $user->id)->pluck('role_id')->toArray();
-            $is_super_admin = in_array(RoleEnum::SUPER_ADMIN, $userRoleIds); 
-            $is_maker       = in_array(RoleEnum::R_MAKER, $userRoleIds); 
-            $is_recommender = in_array(RoleEnum::R_RECOMMENDER, $userRoleIds); 
-            $is_approver    = in_array(RoleEnum::R_APPROVER, $userRoleIds); 
+            $is_super_admin = in_array(RoleEnum::SUPER_ADMIN, $userRoleIds);
+            $is_maker       = in_array(RoleEnum::R_MAKER, $userRoleIds);
+            $is_recommender = in_array(RoleEnum::R_RECOMMENDER, $userRoleIds);
+            $is_approver    = in_array(RoleEnum::R_APPROVER, $userRoleIds);
             $is_distributor = in_array(RoleEnum::R_DISTRIBUTOR, $userRoleIds);
             $is_verifier    = in_array(RoleEnum::R_VERIFIER, $userRoleIds);
 
@@ -204,7 +204,6 @@ class SectionRequisitionController extends Controller
             if ($is_verifier) {
                 $sectionRequisitions    = $this->sectionRequisitionService->getAll(null, null, null, [$request->requisition_status]);
             }
-
         } else {
             $sectionRequisitions    = $this->sectionRequisitionService->getAll(null, null, null, [$request->requisition_status]);
         }
@@ -224,8 +223,8 @@ class SectionRequisitionController extends Controller
             })
             ->addColumn('action_column', function ($sectionRequisitions) use ($user) {
                 $links = '';
-                $links .= '<button class="btn btn-sm btn-info view-products mr-1" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id=" '.$sectionRequisitions->id.' " data-modal-id="productDetailsModal"><i class="far fa-eye"></i></button>';
-                $links .= '<a class="btn btn-sm btn-primary mr-1" href=" '.route('admin.requisition.report', $sectionRequisitions->id).' " target="_blank"><i class="fas fa-file-pdf mr-1"></i>পিডিএফ</a>';
+                $links .= '<button class="btn btn-sm btn-info view-products mr-1" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id=" ' . $sectionRequisitions->id . ' " data-modal-id="productDetailsModal"><i class="far fa-eye"></i></button>';
+                $links .= '<a class="btn btn-sm btn-primary mr-1" href=" ' . route('admin.requisition.report', $sectionRequisitions->id) . ' " target="_blank"><i class="fas fa-file-pdf"></i></a>';
                 return $links;
             })
             ->addIndexColumn()

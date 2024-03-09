@@ -20,9 +20,9 @@
                                             <option value="0">সুপারিশের অপেক্ষায় চাহিদাপত্রের তালিকা</option>
                                             <option value="1">সুপারিশ করা চাহিদাপত্রের তালিকা</option>
                                             <option value="2">প্রত্যাখ্যান করা চাহিদাপত্রের তালিকা</option>
+                                            <option value="6">যাচাইকৃত চাহিদাপত্রের তালিকা</option>
                                             <option value="3">অনুমোদন করা চাহিদাপত্রের তালিকা</option>
                                             <option value="4">বিতরণ করা চাহিদাপত্রের তালিকা</option>
-                                            <option value="6">যাচাইকৃত চাহিদাপত্রের তালিকা</option>
                                         </select>
                                     </div>
                                     <div class="form-group col-sm-1">
@@ -40,8 +40,8 @@
                                         <th>অনুরোধকৃত শাখা</th>
                                         <th>অনুরোধকৃত দপ্তর</th>
                                         <th>বর্তমান অবস্থা</th>
-                                        <th>তারিখ</th>
-                                        <th>অ্যাকশন</th>
+                                        <th>চাহিদাপত্রের তারিখ</th>
+                                        <th width="10%">অ্যাকশন</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -83,9 +83,12 @@
                         d.requisition_status = $('select[name=requisition_status]').val();
                     }
                 },
+                lengthMenu: [25, 50, 100, 150], // Set the default entries and available options
+                pageLength: 25, // Set the default page length
                 columns: [{
                         data: 'DT_RowIndex',
-                        name: 'id'
+                        name: 'id',
+                        orderable: false
                     },
                     {
                         data: 'requisition_no',
@@ -130,7 +133,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">পন্যের বিবরনী</h6>
+                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">পন্যের বিবরনী - চাহিদাপত্র নাম্বার (<span class="requisitionInfo"></span>)</h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -177,6 +180,8 @@
                         // Clear any existing content in the modal table
                         $('#' + modalID + ' #productDetailsTable').html('');
 
+                        var requisitionNo;
+
                         // Loop through the products and add them to the table
                         for (var i = 0; i < products.length; i++) {
                             var product = products[i];
@@ -191,16 +196,23 @@
 
                             // Append the product details to the table
                             $('#' + modalID + ' #productDetailsTable').append(`
-                    <tr>
-                        <td>${productName} (${unitName})</td>
-                        <td class="text-right">${currentStock}</td>
-                        <td class="text-right">${demandQuantity}</td>
-                        <td class="text-right">${recommendedQuantity}</td>
-                        <td class="text-right">${finalApproveQuantity}</td>
-                        <td>${remarks}</td>
-                    </tr>
-                `);
+                                <tr>
+                                    <td>${productName} (${unitName})</td>
+                                    <td class="text-right">${currentStock}</td>
+                                    <td class="text-right">${demandQuantity}</td>
+                                    <td class="text-right">${recommendedQuantity}</td>
+                                    <td class="text-right">${finalApproveQuantity}</td>
+                                    <td>${remarks}</td>
+                                </tr>
+                            `);
+
+                            requisitionNo = product.requisition_no;
                         }
+
+                        // Update the content
+                        $('#' + modalID + ' .requisitionInfo').text(requisitionNo || "");
+
+
                         document.getElementById('loading-spinner').style.display = 'none';
                     },
                     error: function(error) {

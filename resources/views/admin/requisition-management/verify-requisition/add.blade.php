@@ -7,6 +7,16 @@
         tr {
             color: #2a527b !important;
         }
+
+        .swal2-icon {
+            width: 4em;
+            height: 4em;
+            margin: 0.5em auto .5em;
+        }
+
+        .swal2-styled.swal2-confirm {
+            background: linear-gradient(90deg, #5b86e5b5 0%, #36D1DC 100%) !important
+        }
     </style>
     <section class="content">
         <div class="container-fluid">
@@ -15,34 +25,27 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.recommended.requisition.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>সুপারিশকৃত চাহিদাপত্রের তালিকা</a>
+                            <a href="{{ route('admin.verified.requisition.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>যাচাইকৃত চাহিদাপত্রের তালিকা</a>
                         </div>
                         <div class="card-body">
-                            <form id="submitForm" action="{{ route('admin.recommended.requisition.update', $editData->id) }} " method="post" enctype="multipart/form-data" autocomplete="off" onsubmit="return validateForm(event)">
+                            <form id="submitForm" action="{{ isset($editData) ? route('admin.verified.requisition.update', $editData->id) : '' }} " method="post" enctype="multipart/form-data" autocomplete="off">
                                 @csrf
 
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="row px-3 py-4 border rounded shadow-sm mb-3">
-                                            <div class="col-md-3">
-                                                <label class="control-label">চাহিদাপত্রের নাম্বার :</label>
-                                                <input type="text" class="form-control form-control-sm" id="requisition_no" name="requisition_no" value="{{ $editData->requisition_no }}" readonly>
+                                            <div class="col-md-2">
+                                                <input type="hidden" value="{{ $editData->id }}" name="section_requisition_id">
+                                                <label class="control-label">চাহিদাপত্র নাম্বার :</label>
+                                                <input type="text" class="form-control form-control-sm" id="remarks" name="requisition_no" value="{{ $editData->requisition_no }}" readonly>
                                             </div>
-                                            <div class="col-md-3">
-                                                <label class="control-label">দপ্তর :</label>
-                                                <input type="text" class="form-control form-control-sm" value="{{ $editData->section->department->name }}" readonly>
+                                            <div class="col-md-5">
+                                                <label class="control-label">দপ্তর : <span class="text-red">*</span></label>
+                                                <input type="text" class="form-control form-control-sm" id="department_id" name="department_id" value="{{ $editData->section->department->name }}" readonly>
                                             </div>
-                                            <div class="col-md-3">
-                                                <label class="control-label">শাখা :</label>
-                                                <input type="text" class="form-control form-control-sm" value="{{ $editData->section->name }}" readonly>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <label class="control-label">চাহিদাপত্রের অবস্থা <span class="text-red">*</span></label>
-                                                <select name="status" id="status" class="form-control select2 @error('status') is-invalid @enderror">
-                                                    <option value="" disabled>Please Select</option>
-                                                    <option value="1" {{ @$editData->status == 1 ? 'selected' : '' }}>সুপারিশ</option>
-                                                    <option value="2" {{ @$editData->status == 2 ? 'selected' : '' }}>প্রত্যাখ্যান</option>
-                                                </select>
+                                            <div class="col-md-5">
+                                                <label class="control-label">শাখা : <span class="text-red">*</span></label>
+                                                <input type="text" class="form-control form-control-sm" id="section_id" name="section_id" value="{{ $editData->section->name }}" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -63,34 +66,42 @@
                                                                 <thead style="background: #fff4f4 !important;">
                                                                     <tr>
                                                                         <th>পন্য</th>
+                                                                        <th>পূর্ববর্তী বিতরনের পরিমান</th>
                                                                         <th>শাখায় বর্তমান মজূদ</th>
-                                                                        <th>চাহিদার পরিমাণ</th>
-                                                                        <th>শাখা - যৌক্তিকতা</th>
-                                                                        <th>সুপারিশ পরিমাণ</th>
+                                                                        <th>চাহিদার পরিমান</th>
+                                                                        <th>সুপারিশ পরিমান</th>
+                                                                        <th>বিতরনযোগ্য মজূদ</th>
+                                                                        <th>যাচাই পরিমান</th>
                                                                         <th>যৌক্তিকতা</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
+
                                                                     @foreach ($type['products'] as $product)
-                                                                        <tr data-product-id="{{ $product['product_id'] }}" class="recommended_table">
+                                                                        <tr data-product-id="{{ $product['product_id'] }}" class="approved_table">
                                                                             <td class="product-name">{{ $product['product_name'] }}</td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm" id="section_current_stock_{{ $product['product_id'] }}" name="section_current_stock[{{ $product['product_id'] }}]" value="{{ $product['current_stock'] }}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" id="previous_stock_{{ $product['product_id'] }}" value="{{ $product['last_distribute_qty'] }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm section_demand_quantity" id="section_demand_quantity_{{ $product['product_id'] }}" name="section_demand_quantity[{{ $product['product_id'] }}]" value="{{ $product['demand_quantity'] }}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" id="current_stock_{{ $product['product_id'] }}" name="current_stock[{{ $product['product_id'] }}]" value="{{ $product['current_stock'] }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="text" class="form-control form-control-sm" id="remarks_{{ $product['product_id'] }}" name="remarks[{{ $product['product_id'] }}]" value="{{ $product['remarks'] }}" readonly>
+                                                                                <input type="number" class="form-control form-control-sm" id="demand_quantity_{{ $product['product_id'] }}" name="demand_quantity[{{ $product['product_id'] }}]" value="{{ $product['demand_quantity'] }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="number" class="form-control form-control-sm recommended_quantity" id="recommended_quantity_{{ $product['product_id'] }}" name="recommended_quantity[{{ $product['product_id'] }}]" value="{{ $product['recommended_quantity'] ?? $product['demand_quantity'] }}">
+                                                                                <input type="number" class="form-control form-control-sm recommended_quantity" id="recommended_quantity_{{ $product['product_id'] }}" name="recommended_quantity[{{ $product['product_id'] }}]" value="{{ $product['recommended_quantity'] }}" readonly>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="text" class="form-control form-control-sm" id="recommended_remarks_{{ $product['product_id'] }}" name="recommended_remarks[{{ $product['product_id'] }}]" value="{{ $product['recommended_remarks'] }}">
+                                                                                <input type="text" class="form-control form-control-sm available_quantity" id="available_quantity_{{ $product['product_id'] }}" value="{{ $product['available_quantity'] }}" readonly>
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="number" class="form-control form-control-sm verify_quantity" id="verify_quantity_{{ $product['product_id'] }}" name="verify_quantity[{{ $product['product_id'] }}]" value="{{ $product['verify_quantity'] ?? $product['recommended_quantity'] }}" {{ $editData->status == 6 ? 'readonly' : '' }}>
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="text" class="form-control form-control-sm" id="remarks_{{ $product['product_id'] }}" name="remarks[{{ $product['product_id'] }}]" value="{{ $product['final_approve_remarks'] }}" {{ $product['final_approve_remarks'] ? 'readonly' : '' }}>
                                                                             </td>
                                                                         </tr>
-                                                                        <input type="hidden" name="product_type[{{ $product['product_id'] }}]" value="{{ $type['id'] }}">
                                                                     @endforeach
                                                                 </tbody>
                                                             </table>
@@ -104,13 +115,13 @@
                                     <div class="col-md-12">
                                         <div class="text-right">
                                             @if (@$editData->id)
-                                                <button type="submit" class="btn btn-success btn-sm" {{ @$editData->status == 0 ? '' : 'disabled' }}>সুপারিশ করুন</button>
+                                                <button type="submit" class="btn btn-success btn-sm" {{ $editData->status == 6 ? 'disabled' : '' }}>যাচাই করুন</button>
                                             @else
                                                 <button type="submit" class="btn btn-success btn-sm">সংরক্ষণ</button>
                                                 <button type="reset" class="btn btn-danger btn-sm">মুছুন</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.recommended.requisition.list') }}">পিছনে যান</a>
+                                                <a href="{{ route('admin.verified.requisition.list') }}">পিছনে যান</a>
                                             </button>
                                         </div>
                                     </div>
@@ -123,72 +134,92 @@
     </section>
 
     <script>
-        // Function to validate the form before submission
-        // function validateForm(event) {
-        //     event.preventDefault(); // Prevent the default form submission
+        $(function() {
+            $(document).on('keyup', '.verify_quantity', function() {
+                var verifyQuantity = parseInt($(this).val());
 
-        //     // Get all elements with the name attribute "demand_quantity[]"
-        //     var departmentDemandQuantityInputs = document.querySelectorAll('[name^="department_demand_quantity["]');
-        //     var hasUserInput = false; // Flag to track if at least one product has user input
+                var availableQuantity = parseInt($(this).parents('.approved_table').find(
+                    '.available_quantity').val());
 
-        //     for (var i = 0; i < departmentDemandQuantityInputs.length; i++) {
-        //         var departmentDemandQuantityInput = departmentDemandQuantityInputs[i];
+                if (verifyQuantity > availableQuantity) {
+                    $(this).val(availableQuantity);
 
+                    Swal.fire({
+                        icon: "warning",
+                        title: "যাচাই পরিমাণ বিতরনের পরিমাণের বেশি হতে পারবে না।",
+                        toast: false,
+                        // position: 'top-end',
+                        showConfirmButton: true,
+                        // timer: 3000,
+                        timerProgressBar: false
+                    });
+                }
+            });
+        })
+    </script>
 
-        //         // Retrieve the parent <tr> element
-        //         var parentTr = departmentDemandQuantityInput.closest('tr');
+    <script>
+        function validateForm() {
 
-        //         // Retrieve the data-product-id attribute from the parent <tr>
-        //         var productId = parentTr.dataset.productId;
+            const verifyQtyInputs = document.querySelectorAll('.verify_quantity');
 
-        //         // Retrieve the product name associated with this product
-        //         var productName = parentTr.querySelector('td:first-child').innerText;
+            // Flag to track whether validation passes
+            var isValid = true;
 
-        //         var departmentCurrentStockInput = document.querySelector('[name="department_current_stock[' + productId + ']"]');
+            // Remove .is-invalid class from all inputs
+            verifyQtyInputs.forEach(function(verifyQtyInput) {
+                verifyQtyInput.classList.remove('is-invalid');
+            });
 
-        //         var sectionDemandQuantityInput = document.querySelector('[name="section_demand_quantity[' + productId + ']"]');
+            // Handle the case when receive_qty inputs are empty
+            verifyQtyInputs.forEach(function(verifyQtyInput) {
 
+                const parentRow = verifyQtyInput.closest('tr');
+                const availableQtyInput = parentRow.querySelector('.available_quantity');
 
-        //         // Check if Department demand_quantity field is non-empty
-        //         if (departmentDemandQuantityInput.value.trim() !== '') {
-        //             var sectionDemandQuantityValue = parseFloat(sectionDemandQuantityInput.value);
-        //             var departmentDemandQuantityValue = parseFloat(departmentDemandQuantityInput.value);
-        //             var departmentCurrentStockValue = parseFloat(departmentCurrentStockInput.value);
+                const availableQty = parseFloat(availableQtyInput.value) || 0;
+                const verifyQty = parseFloat(verifyQtyInput.value) || 0;
 
+                if (verifyQty > availableQty) {
+                    showAlert('error', 'প্রয়োজনীয় সব ফিল্ড পূরণ করুন।');
+                    verifyQtyInput.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    verifyQtyInput.classList.remove('is-invalid');
+                }
+            });
 
-        //             // Check if demand_quantity is not empty and is a positive number
-        //             if (isNaN(departmentDemandQuantityValue) || departmentDemandQuantityValue <= 0) {
-        //                 alert("Department Demand Quantity for product '" + productName + "' must be a positive number.");
-        //                 departmentDemandQuantityInput.focus();
-        //                 departmentDemandQuantityInput.classList.add('is-invalid'); // Add is-invalid class
-        //                 return false;
-        //             }
+            return isValid;
+        }
 
-        //             // Check if current_stock is not empty and is a positive number
-        //             if (isNaN(departmentCurrentStockValue) || departmentCurrentStockValue <= 0) {
-        //                 alert("Department Current Stock for product '" + productName + "' must be required and have a positive number.");
-        //                 departmentCurrentStockInput.focus();
-        //                 departmentCurrentStockInput.classList.add('is-invalid'); // Add is-invalid class
-        //                 return false;
-        //             }
+        function showAlert(type, message) {
+            Swal.fire({
+                toast: true,
+                customClass: {
+                    popup: 'colored-toast'
+                },
+                iconColor: 'white',
+                icon: type,
+                title: message,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const submitForm = document.getElementById('submitForm');
 
-        //             // If both fields are valid, remove the is-invalid class
-        //             departmentDemandQuantityInput.classList.remove('is-invalid');
-        //             departmentCurrentStockInput.classList.remove('is-invalid');
+            submitForm.addEventListener('submit', function(e) {
+                e.preventDefault();
 
-        //             // Set the flag to true since at least one product has user input
-        //             hasUserInput = true;
-        //         }
-        //     }
-
-        //     // Check if at least one product has user input
-        //     if (!hasUserInput) {
-        //         alert("At least one product must have user input for the requisition.");
-        //         return false;
-        //     }
-
-        //     // If all validation checks pass and at least one product has user input, you can submit the form
-        //     event.target.submit(); // Manually trigger the form submission
-        // }
+                if (validateForm()) {
+                    // If form validation passes, submit the form
+                    submitForm.submit();
+                }
+            });
+        });
     </script>
 @endsection

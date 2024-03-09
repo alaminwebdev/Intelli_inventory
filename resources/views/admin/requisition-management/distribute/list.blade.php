@@ -10,19 +10,22 @@
 
                         </div>
                         <div class="card-body">
-                            <div class="row text-left mb-3">
-                                <div class="col-md-12">
-                                    <a class="btn btn-info btn-sm distributeListBtn" data-requistition-status="3">
-                                        <i class="fa fa-check-circle"></i>
-                                        বিতরণের অপেক্ষায় চাহিদাপত্রের তালিকা
-                                    </a>
-                                    <a class="btn btn-primary btn-sm distributeListBtn" data-requistition-status="4">
-                                        <i class="fa "></i>
-                                        বিতরণ করা চাহিদাপত্রের তালিকা
-                                    </a>
+                            <form method="get" action="" id="filterForm">
+                                <div class="form-row border-bottom mb-3">
+                                    <div class="form-group col-sm-3">
+                                        <label class="control-label" style="color:#2a527b;">চাহিদাপত্রের ধরন</label>
+                                        <select class="form-select form-select-sm select2" name="requisition_status" id="requisition_status">
+                                            <option value="3">বিতরণের অপেক্ষায় চাহিদাপত্রের তালিকা</option>
+                                            <option value="4">বিতরণ করা চাহিদাপত্রের তালিকা</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-sm-1">
+                                        <label class="control-label" style="visibility: hidden;">Search</label>
+                                        <button type="submit" class="btn btn-success btn-sm btn-block" style="font-weight:600">খুঁজুন</button>
+                                    </div>
                                 </div>
-                            </div>
-                            <table id="sb-data-table" class="table table-bordered">
+                            </form>
+                            <table id="data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th width="5%">নং.</th>
@@ -30,11 +33,12 @@
                                         <th>অনুরোধকৃত শাখা</th>
                                         <th>অনুরোধকৃত দপ্তর</th>
                                         <th>বর্তমান অবস্থা</th>
-                                        <th width="20%">অ্যাকশন</th>
+                                        <th>চাহিদাপত্রের তারিখ</th>
+                                        <th width="15%">অ্যাকশন</th>
                                     </tr>
                                 </thead>
                                 <tbody id="requistionProductsTable">
-                                    @foreach ($distributeRequisitions as $list)
+                                    {{-- @foreach ($distributeRequisitions as $list)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ @$list->requisition_no ?? 'N/A' }}</td>
@@ -55,7 +59,7 @@
                                                 @endif
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>
@@ -67,47 +71,69 @@
 
     <script>
         $(document).ready(function() {
-            $('.distributeListBtn').on('click', function() {
-                var $clickedButton = $(this); 
-                var requistitionStatus = $(this).data('requistition-status');
-                document.getElementById('loading-spinner').style.display = 'block';
-                $.ajax({
-                    url: "{{ route('admin.get.distribute.requistion.by.status') }}",
-                    type: "GET",
-                    data: {
-                        requistition_status: requistitionStatus
-                    },
-                    success: function(response) {
-
-                        // Clear existing table rows
-                        $("#requistionProductsTable").empty();
-                        $("#requistionProductsTable").html(response);
-                        
-                        // Remove the class from all buttons
-                        $('.distributeListBtn i').removeClass('fa-check-circle');
-
-                        // Add the class to the checkbox icon of the clicked button
-                        $clickedButton.find('i').addClass('fa-check-circle');
-
-                        document.getElementById('loading-spinner').style.display = 'none';
-                    },
-                    error: function(error) {
-                        document.getElementById('loading-spinner').style.display = 'none';
-                        console.error("Error:", error);
-
+            var dTable = $('#data-table').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                ajax: {
+                    url: '{{ route('admin.get.distributed.requisition.list.datatable') }}',
+                    data: function(d) {
+                        d._token = "{{ csrf_token() }}";
+                        d.requisition_status = $('select[name=requisition_status]').val();
                     }
-                });
+                },
+                lengthMenu: [25, 50, 100, 150], // Set the default entries and available options
+                pageLength: 25, // Set the default page length
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'id',
+                        orderable: false
+                    },
+                    {
+                        data: 'requisition_no',
+                        name: 'requisition_no'
+                    },
+                    {
+                        data: 'section',
+                        name: 'section'
+                    },
+                    {
+                        data: 'department',
+                        name: 'department'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at'
+                    },
+                    {
+                        data: 'action_column',
+                        name: 'action_column'
+                    }
+                ],
+                createdRow: function(row, data, dataIndex) {
+                    // Add a class to the 'action_column' cell in each row
+                    $('td:eq(6)', row).addClass('text-center');
+                }
+            });
+            $('#filterForm').on('submit', function(e) {
+                dTable.draw();
+                e.preventDefault();
             });
 
         });
     </script>
+
 
     <!-- Modal for Product Details -->
     <div class="modal" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">পন্যের বিবরনী</h6>
+                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">পন্যের বিবরনী - চাহিদাপত্র নাম্বার (<span class="requisitionInfo"></span>)</h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -120,6 +146,7 @@
                                 <th>বর্তমান মজূদ</th>
                                 <th>চাহিদার পরিমান</th>
                                 <th>সুপারিশ পরিমান</th>
+                                <th>যাচাই পরিমান</th>
                                 <th>অনুমোদিত পরিমান</th>
                                 <th>যৌক্তিকতা</th>
                             </tr>
@@ -154,6 +181,8 @@
                         // Clear any existing content in the modal table
                         $('#' + modalID + ' #productDetailsTable').html('');
 
+                        var requisitionNo;
+
                         // Loop through the products and add them to the table
                         for (var i = 0; i < products.length; i++) {
                             var product = products[i];
@@ -163,21 +192,29 @@
                             var currentStock = product.current_stock || "";
                             var demandQuantity = product.demand_quantity || "";
                             var recommendedQuantity = product.recommended_quantity || "";
+                            var verifyQuantity = product.verify_quantity || "";
                             var finalApproveQuantity = product.final_approve_quantity || "";
                             var remarks = product.remarks || "";
 
                             // Append the product details to the table
                             $('#' + modalID + ' #productDetailsTable').append(`
-                        <tr>
-                            <td>${productName} (${unitName})</td>
-                            <td class="text-right">${currentStock}</td>
-                            <td class="text-right">${demandQuantity}</td>
-                            <td class="text-right">${recommendedQuantity}</td>
-                            <td class="text-right">${finalApproveQuantity}</td>
-                            <td>${remarks}</td>
-                        </tr>
-                    `);
+                                <tr>
+                                    <td>${productName} (${unitName})</td>
+                                    <td class="text-right">${currentStock}</td>
+                                    <td class="text-right">${demandQuantity}</td>
+                                    <td class="text-right">${recommendedQuantity}</td>
+                                    <td class="text-right">${verifyQuantity}</td>
+                                    <td class="text-right">${finalApproveQuantity}</td>
+                                    <td>${remarks}</td>
+                                </tr>
+                            `);
+
+                            requisitionNo = product.requisition_no;
                         }
+
+                        // Update the content
+                        $('#' + modalID + ' .requisitionInfo').text(requisitionNo || "");
+
                         document.getElementById('loading-spinner').style.display = 'none';
                     },
                     error: function(error) {

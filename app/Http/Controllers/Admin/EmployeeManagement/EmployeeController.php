@@ -9,6 +9,7 @@ use App\Services\DesignationService;
 use App\Services\DepartmentService;
 use App\Services\SectionService;
 use App\Services\EmployeeService;
+use Exception;
 
 class EmployeeController extends Controller
 {
@@ -76,8 +77,17 @@ class EmployeeController extends Controller
             'department_id'     => 'required',
             // 'section_id'        => 'required',
         ]);
-        $this->employeeService->update($request, $id);
-        return redirect()->route('admin.employee.list')->with('success', 'Data successfully updated!');
+
+        try {
+            $result = $this->employeeService->update($request, $id);
+            if ($result === true) {
+                return redirect()->route('admin.employee.list')->with('success', 'Data successfully updated!');
+            } else {
+                return redirect()->back()->with('error', $result);
+            }
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function delete(Request $request)

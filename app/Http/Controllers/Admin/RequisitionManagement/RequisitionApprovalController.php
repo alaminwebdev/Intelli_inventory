@@ -17,6 +17,7 @@ use App\Services\EmployeeService;
 use App\Services\SectionService;
 use Illuminate\Support\Facades\Auth;
 use App\RoleEnum;
+use Yajra\DataTables\Facades\DataTables;
 
 
 class RequisitionApprovalController extends Controller
@@ -112,5 +113,69 @@ class RequisitionApprovalController extends Controller
         // } else {
         //     return response()->json(['status' => 'error', 'message' => 'Sorry something wrong']);
         // }
+    }
+
+    public function getRecommendedRequisitionList(Request $request)
+    {
+
+        $requisition_statuses = explode(',', $request->requisition_status);
+
+        $user = Auth::user();
+
+        if ($user->id !== 1 && $user->employee_id) {
+            $userRoleIds    = UserRole::where('user_id', $user->id)->pluck('role_id')->toArray();
+            $is_super_admin = in_array(RoleEnum::SUPER_ADMIN, $userRoleIds);
+            $is_maker       = in_array(RoleEnum::R_MAKER, $userRoleIds);
+            $is_recommender = in_array(RoleEnum::R_RECOMMENDER, $userRoleIds);
+            $is_approver    = in_array(RoleEnum::R_APPROVER, $userRoleIds);
+            $is_distributor = in_array(RoleEnum::R_DISTRIBUTOR, $userRoleIds);
+
+            if ($is_super_admin) {
+                $sectionRequisitions   = $this->sectionRequisitionService->getAll(null, null, null, $requisition_statuses);
+            } else {
+                $employee  = $this->employeeService->getByID($user->employee_id);
+                $sections  = $this->sectionService->getSectionsByDepartment($employee->department_id)->toArray();
+
+                // Extract only the "id" values into a new array
+                $sectionIds = array_map(function ($section) {
+                    return $section['id'];
+                }, $sections);
+
+                if ($sectionIds) {
+                    $sectionRequisitions   = $this->sectionRequisitionService->getAll(null, null, $sectionIds, $requisition_statuses);
+                } else {
+                    $sectionRequisitions   = [];
+                }
+            }
+        } else {
+            $sectionRequisitions   = $this->sectionRequisitionService->getAll(null, null, null, $requisition_statuses);
+        }
+
+        return DataTables::of($sectionRequisitions)
+            ->editColumn('section', function ($sectionRequisitions) {
+                return @$sectionRequisitions->section->name;
+            })
+            ->editColumn('department', function ($sectionRequisitions) {
+                return @$sectionRequisitions->section->department->name;
+            })
+            ->editColumn('status', function ($sectionRequisitions) {
+                return requisitionStatus(@$sectionRequisitions->status);
+            })
+            ->editColumn('created_at', function ($sectionRequisitions) {
+                return date('d-M-Y', strtotime($sectionRequisitions->created_at));
+            })
+            ->addColumn('action_column', function ($sectionRequisitions) use ($user) {
+                $links = '';
+                $links .= '<button class="btn btn-sm btn-info view-products mr-1" data-toggle="modal" data-target="#productDetailsModal" data-requisition-id="' . $sectionRequisitions->id . '" data-modal-id="productDetailsModal"><i class="fas fa-eye"></i></button>';
+
+                if ($sectionRequisitions->status == 0) {
+                    $links .= '<a class="btn btn-sm btn-success mr-1" href="' . route('admin.recommended.requisition.edit', $sectionRequisitions->id) . '"  ><i class="fa fa-edit"></i></a>';
+                }
+                $links .= '<a class="btn btn-sm btn-primary mr-1" href="' . route('admin.requisition.report', $sectionRequisitions->id) . '" target="_blank"  data-toggle="tooltip" data-placement="bottom" title="PDF"><i class="fas fa-file-pdf"></i></a>';
+                return $links;
+            })
+            ->addIndexColumn()
+            ->escapeColumns([])
+            ->make(true);
     }
 }

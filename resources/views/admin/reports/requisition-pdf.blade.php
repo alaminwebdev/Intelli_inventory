@@ -17,7 +17,9 @@
         $status = 'বিতরণ করা হয়েছে';
     }elseif ($requestedRequisitionInfo->status == 5) {
         $status = 'গ্রহন করা হয়েছে';
-    } else {
+    }elseif ($requestedRequisitionInfo->status == 6) {
+        $status = 'যাচাই করা হয়েছে';
+    }else {
         $status = '';
     }
 @endphp

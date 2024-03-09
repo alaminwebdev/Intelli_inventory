@@ -20,7 +20,7 @@ use Carbon\Carbon;
 class ProductInformationService implements IService
 {
 
-    public function getAll()
+    public function getAll($statuses = null)
     {
         try {
             $data = ProductInformation::join('product_types', 'product_types.id', 'product_information.product_type_id')
@@ -30,6 +30,9 @@ class ProductInformationService implements IService
                     'units.name as unit',
                     'product_types.name as product_type',
                 )
+                ->when($statuses, function ($query, $statuses) {
+                    $query->whereIn('product_information.status', $statuses);
+                })
                 //->latest()
                 ->orderBy('id', 'asc')
                 ->get();

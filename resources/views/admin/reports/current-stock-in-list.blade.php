@@ -19,14 +19,16 @@
                                         <th width="5%">নং:</th>
                                         <th>পন্যের তথ্য</th>
                                         <th>বর্তমান মজুদ</th>
+                                        <th>ইউনিট</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($current_stock as $list)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ @$list->product_name }}({{ @$list->unit_name }})</td>
+                                            <td>{{ @$list->product_name }}</td>
                                             <td class="text-right">{{ @$list->available_qty ?? 'N/A' }}</td>
+                                            <td class="text-right">{{  @$list->unit_name }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

@@ -10,7 +10,7 @@
                             {{-- <a href="{{ route('admin.department.requisition.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Department Requisition</a> --}}
                         </div>
                         <div class="card-body">
-                            <div class="row text-left mb-3">
+                            {{-- <div class="row text-left mb-3">
                                 <div class="col-md-12">
                                     <a class="btn btn-info btn-sm reqListBtn" data-requistition-status="0">
                                         <i class="fa fa-check-circle"></i>
@@ -21,8 +21,23 @@
                                         সুপারিশ করা চাহিদাপত্রের তালিকা
                                     </a>
                                 </div>
-                            </div>
-                            <table id="sb-data-table" class="table table-bordered">
+                            </div> --}}
+                            <form method="get" action="" id="filterForm">
+                                <div class="form-row border-bottom mb-3">
+                                    <div class="form-group col-sm-3">
+                                        <label class="control-label" style="color:#2a527b;">চাহিদাপত্রের ধরন</label>
+                                        <select class="form-select form-select-sm select2" name="requisition_status" id="requisition_status">
+                                            <option value="0">সুপারিশের অপেক্ষায় চাহিদাপত্রের তালিকা</option>
+                                            <option value="1,3,4,6">সুপারিশ করা চাহিদাপত্রের তালিকা</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-sm-1">
+                                        <label class="control-label" style="visibility: hidden;">Search</label>
+                                        <button type="submit" class="btn btn-success btn-sm btn-block" style="font-weight:600">খুঁজুন</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <table id="data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th width="5%">নং.</th>
@@ -30,11 +45,12 @@
                                         <th>অনুরোধকৃত শাখা</th>
                                         <th>অনুরোধকৃত দপ্তর</th>
                                         <th>বর্তমান অবস্থা</th>
-                                        <th width="20%">অ্যাকশন</th>
+                                        <th>চাহিদাপত্রের তারিখ</th>
+                                        <th width="15%">অ্যাকশন</th>
                                     </tr>
                                 </thead>
                                 <tbody id="requistionProductsTable">
-                                    @foreach ($sectionRequisitions as $list)
+                                    {{-- @foreach ($sectionRequisitions as $list)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ @$list->requisition_no ?? 'N/A' }}</td>
@@ -51,14 +67,9 @@
                                                         <i class="fa fa-edit"></i>
                                                     </a>
                                                 @endif
-                                                {{-- @if (sorpermission('admin.requisition.delete'))
-                                                <a class="btn btn-sm btn-danger destroy" data-id="{{$list->id}}" data-route="{{route('admin.requisition.delete')}}">
-                                                    <i class="fa fa-trash"></i>
-                                                </a>
-                                                @endif --}}
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>
@@ -69,6 +80,64 @@
     </section>
 
     <script>
+        $(document).ready(function() {
+            var dTable = $('#data-table').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                ajax: {
+                    url: '{{ route('admin.get.recommended.requisition.list.datatable') }}',
+                    data: function(d) {
+                        d._token = "{{ csrf_token() }}";
+                        d.requisition_status = $('select[name=requisition_status]').val();
+                    }
+                },
+                lengthMenu: [25, 50, 100, 150], // Set the default entries and available options
+                pageLength: 25, // Set the default page length
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'id',
+                        orderable: false
+                    },
+                    {
+                        data: 'requisition_no',
+                        name: 'requisition_no'
+                    },
+                    {
+                        data: 'section',
+                        name: 'section'
+                    },
+                    {
+                        data: 'department',
+                        name: 'department'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at'
+                    },
+                    {
+                        data: 'action_column',
+                        name: 'action_column'
+                    }
+                ],
+                createdRow: function(row, data, dataIndex) {
+                    // Add a class to the 'action_column' cell in each row
+                    $('td:eq(6)', row).addClass('text-center');
+                }
+            });
+            $('#filterForm').on('submit', function(e) {
+                dTable.draw();
+                e.preventDefault();
+            });
+
+        });
+    </script>
+
+    {{-- <script>
         $(document).ready(function() {
             $('.reqListBtn').on('click', function() {
                 var $clickedButton = $(this); // Store a reference to the clicked button
@@ -112,7 +181,7 @@
             });
 
         });
-    </script>
+    </script> --}}
 
     <!-- Modal for Product Details -->
     <div class="modal" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">

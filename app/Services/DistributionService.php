@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Services\ProductAvailabilityService;
 
 /**
  * Class DistributionService
@@ -19,6 +20,13 @@ use Illuminate\Support\Facades\DB;
  */
 class DistributionService implements IService
 {
+
+    protected $productAvailabilityService;
+
+    public function __construct(ProductAvailabilityService $productAvailabilityService)
+    {
+        $this->productAvailabilityService = $productAvailabilityService;
+    }
 
     public function getAll($status = null)
     {
@@ -162,5 +170,60 @@ class DistributionService implements IService
     {
 
         // return true;
+    }
+
+    public function confirm(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+
+            $sectionRequisition                     = SectionRequisition::find($request->id);
+            $sectionRequisition->status             = 3;
+            $sectionRequisition->final_approve_by = Auth::id();
+            $sectionRequisition->final_approve_at = Carbon::now();
+
+            if ($sectionRequisition->save()) {
+                // Update SectionRequisitionDetails status and verify_quantity for each row
+                $details = SectionRequisitionDetails::where('section_requisition_id', $request->id)->get();
+
+
+                foreach ($details as $detail) {
+                    // Get available stock for the product
+                    $availableStock = $this->productAvailabilityService->getAvailableStock($detail->product_id, $request->id);
+
+                     // Check if the array is not empty
+                     if (!empty($availableStock)) {
+
+                        // Compare available_qty with verify_quantity
+                        if ($availableStock['available_qty'] < $detail->verify_quantity) {
+                            DB::rollBack();
+                            return response()->json([
+                                'status' => 'error',
+                                'message' => 'পণ্যের পর্যাপ্ত স্টক নেই: ' . @$detail->product->name,
+                            ]);
+                        }
+
+                    } else {
+                        DB::rollBack();
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'পণ্যের পর্যাপ্ত স্টক নেই: ' . @$detail->product->name,
+                        ]);
+                    }
+
+                    // Update SectionRequisitionDetails
+                    SectionRequisitionDetails::where('id', $detail->id)->update([
+                        'status'                    => 3,
+                        'final_approve_quantity'    => $detail->verify_quantity ?? $detail->recommended_quantity,
+                        'final_approve_remarks'     => $detail->verify_remarks ?? $detail->recommended_remarks,
+                    ]);
+                }
+            }
+            DB::commit();
+            return response()->json(['status' => 'success', 'message' => 'Successfully Updated']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        }
     }
 }
