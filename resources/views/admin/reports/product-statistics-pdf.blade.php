@@ -33,7 +33,8 @@
         <thead>
             <tr>
                 <th class="text-left" width="10%">নং:</th>
-                <th class="text-center" width="60%">পন্য</th>
+                <th class="text-center" width="50%">পন্য</th>
+                <th class="text-center" width="10%">ইউনিট</th>
                 <th class="text-center" width="15%">চাহিদার পরিমান</th>
                 <th class="text-center" width="15%">বিতরনের পরিমান</th>
             </tr>
@@ -43,7 +44,8 @@
                 @foreach ($productStatistics as $list)
                     <tr>
                         <td>{{ en2bn($loop->iteration) }}</td>
-                        <td>{{ @$list['product'] ?? 'N/A' }})</td>
+                        <td>{{ @$list['product'] ?? 'N/A' }}</td>
+                        <td>{{ @$list['unit'] ?? 'N/A' }}</td>
                         <td class="text-right">{{ en2bn(@$list['demand_quantity']) ?? 'N/A' }}</td>
                         <td class="text-right">{{ en2bn(@$list['distribute_quantity']) ?? 'N/A' }}</td>
                     </tr>

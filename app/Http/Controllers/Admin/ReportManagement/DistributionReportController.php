@@ -3,61 +3,34 @@
 namespace App\Http\Controllers\Admin\ReportManagement;
 
 use App\Http\Controllers\Controller;
-use App\Models\Department;
-use App\Models\Distribute;
-use App\Models\ProductInformation;
+
 use App\Models\Section;
 use App\Models\SectionRequisition;
-use App\Models\UserRole;
 use Illuminate\Http\Request;
 use DateTime;
 use DateTimeZone;
 use PDF;
 use IntlDateFormatter;
 
-use App\Services\CurrentStockService;
-use App\Services\EmployeeService;
 use App\Services\SectionService;
-use App\Services\SectionRequisitionService;
 use App\Services\DepartmentService;
-use App\Services\DistributionService;
 use App\Services\ProductInformationService;
-use App\Services\ProductTypeService;
-use Hamcrest\Core\AllOf;
-use Illuminate\Support\Facades\Auth;
-
 
 class DistributionReportController extends Controller
 {
 
-    private $currentStockService;
-    private $employeeService;
     private $sectionService;
-    private $sectionRequisitionService;
     private $departmentService;
-    private $distributionService;
     private $productInformationService;
-    private $productTypeService;
 
     public function __construct(
-        CurrentStockService $currentStockService,
-        EmployeeService $employeeService,
         SectionService $sectionService,
-        SectionRequisitionService $sectionRequisitionService,
         DepartmentService $departmentService,
-        DistributionService $distributionService,
-        ProductInformationService $productInformationService,
-        ProductTypeService $productTypeService
-
+        ProductInformationService $productInformationService
     ) {
-        $this->currentStockService          = $currentStockService;
-        $this->employeeService              = $employeeService;
         $this->sectionService               = $sectionService;
-        $this->sectionRequisitionService    = $sectionRequisitionService;
         $this->departmentService            = $departmentService;
-        $this->distributionService          = $distributionService;
         $this->productInformationService    = $productInformationService;
-        $this->productTypeService           = $productTypeService;
     }
 
     public function productDistributionReport(Request $request)
@@ -75,7 +48,8 @@ class DistributionReportController extends Controller
                 'department_id.required' => 'দপ্তর প্রয়োজন।'
             ]);
 
-            $data['sections'] = $this->sectionService->getSectionsByDepartment($request->department_id);
+            $data['department'] = $this->departmentService->getByID($request->department_id);
+            $data['sections']   = $this->sectionService->getSectionsByDepartment($request->department_id);
 
             if ($request->section_id == 0) {
                 $sections = $data['sections']->toArray();
@@ -87,8 +61,8 @@ class DistributionReportController extends Controller
 
                 $data['section'] = [];
             } else {
-                $sectionIds = [$request->section_id];
-                $data['section'] = Section::find($request->section_id);
+                $sectionIds         = [$request->section_id];
+                $data['section']    = $this->sectionService->getByID($request->section_id);
             }
 
             $data['distributed_products'] = $this->getDistributedProducts($sectionIds, $request->product_information_id, $request->date_from, $request->date_to);
@@ -116,7 +90,7 @@ class DistributionReportController extends Controller
                     $data['date_to']    = null;
                 }
 
-                return $this->productStatisticsPdfDownload($data);
+                return $this->productDistributionPdfDownload($data);
             }
         } else {
             // $data['distributed_products'] = [];
@@ -161,14 +135,14 @@ class DistributionReportController extends Controller
         return $grouped_goods;
     }
 
-    private function currentStockPdfReport($data)
+    private function productDistributionPdfDownload($data)
     {
 
         // Generate a PDF
-        $pdf = PDF::loadView('admin.reports.current-stock-list-pdf', $data);
+        $pdf = PDF::loadView('admin.reports.product-distribution-pdf', $data);
         $pdf->SetProtection(['copy', 'print'], '', 'pass');
 
-        $fileName = 'বর্তমান মজুদ-' . $data['date_in_bengali'] . '.pdf';
+        $fileName = 'পণ্য বিতরণ রিপোর্ট -' . $data['date_in_bengali'] . '.pdf';
         return $pdf->stream($fileName);
     }
 }

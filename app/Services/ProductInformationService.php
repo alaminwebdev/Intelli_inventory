@@ -217,7 +217,8 @@ class ProductInformationService implements IService
             foreach ($productStatistics as $product) {
                 $formattedData[] = [
                     'id'                    => $product->product_id,
-                    'product'               => $product->product . ' (' . $product->unit . ')',
+                    'product'               => $product->product,
+                    'unit'                  => $product->unit,
                     'demand_quantity'       => (int) $product->total_demand_quantity,
                     'distribute_quantity'   => (int) $product->total_distribute_qty,
                 ];

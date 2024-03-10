@@ -1,5 +1,22 @@
 @extends('admin.layouts.app')
 @section('content')
+    <style>
+        table,
+        thead,
+        th,
+        tr {
+            color: #2a527b !important;
+        }
+
+        table tr {
+            font-size: 14px !important;
+        }
+
+        table.table-bordered.dataTable th,
+        table.table-bordered.dataTable td {
+            border-left-width: 1px !important;
+        }
+    </style>
     <section class="content">
         <div class="container-fluid">
             <div class="row">
@@ -9,12 +26,12 @@
                             <h4 class="card-title">{{ @$title }}</h4>
                             <form method="post" action="{{ route('admin.report.current.stock.in.list') }}" id="filterForm">
                                 @csrf
-                                <button type="submit" class="btn btn-sm btn-primary" name="type" value="pdf"><i class="fas fa-file-pdf mr-1"></i>পিডিএফ হিসাবে ডাউনলোড করুন</button>
+                                <button type="submit" class="btn btn-sm btn-primary mr-1" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i>পিডিএফ হিসাবে ডাউনলোড করুন</button>
                             </form>
                         </div>
                         <div class="card-body">
                             <table id="sb-data-table" class="table table-bordered">
-                                <thead>
+                                <thead style="background: #fff4f4 !important;">
                                     <tr>
                                         <th width="5%">নং:</th>
                                         <th>পন্যের তথ্য</th>
@@ -28,7 +45,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ @$list->product_name }}</td>
                                             <td class="text-right">{{ @$list->available_qty ?? 'N/A' }}</td>
-                                            <td class="text-right">{{  @$list->unit_name }}</td>
+                                            <td class="text-right">{{ @$list->unit_name }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

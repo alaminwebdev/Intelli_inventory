@@ -1,5 +1,31 @@
 @extends('admin.layouts.app')
 @section('content')
+    <style>
+        .select2-container--default .select2-results__option--highlighted[aria-selected],
+        .select2-container--default .select2-results__option--highlighted[aria-selected]:hover {
+            background-color: #0072bc;
+        }
+
+        .select2-container--default .select2-results__option--selected {
+            background-color: #f8f9fa;
+        }
+
+        table,
+        thead,
+        th,
+        tr {
+            color: #2a527b !important;
+        }
+
+        table tr {
+            font-size: 14px !important;
+        }
+
+        table.table-bordered.dataTable th,
+        table.table-bordered.dataTable td {
+            border-left-width: 1px !important;
+        }
+    </style>
     <section class="content">
         <div class="container-fluid">
             <div class="row">
@@ -12,49 +38,50 @@
                         <div class="card-body">
                             <form method="post" action="{{ route('admin.product.expiring.soon') }}" id="filterForm" autocomplete="off">
                                 @csrf
-                                <div class="form-row p-3 mb-3 gradient-border">
-                                    <div class="form-group col-md-2">
-                                        <label class="control-label">দিন বাছাই করুন <span class="text-red">*</span></label>
-                                        <select name="days" id="days" class="form-control select2 " required>
-                                            <option value=""> বাছাই করুন </option>
-                                            <option value="7" {{ request()->days == 7 ? 'selected' : '' }}> ৭ দিন </option>
-                                            <option value="15" {{ request()->days == 15 ? 'selected' : '' }}> ১৫ দিন </option>
-                                            <option value="30" {{ request()->days == 30 ? 'selected' : '' }}> ৩০ দিন </option>
-                                            <option value="60" {{ request()->days == 60 || !request()->has('days') ? 'selected' : '' }}> ৬০ দিন </option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group col-md-2">
-                                        <label class="control-label">পন্যের ধরন</label>
-                                        <select name="product_type_id" id="product_type_id" class="form-control select2">
-                                            <option value="0">All</option>
-                                            @foreach ($product_types as $item)
-                                                <option value="{{ $item->id }}" {{ request()->product_type_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="form-group col-md-3">
-                                        <label class="control-label">পন্য</label>
-                                        <select name="product_information_id" id="product_information_id" class="form-control select2 ">
-                                            <option value="0">All</option>
-                                            @if (request()->product_information_id)
-                                                @foreach ($products as $item)
-                                                    <option value="{{ $item->id }}" {{ request()->product_information_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
+                                <div class="gradient-border px-3 pt-4 pb-3 mb-4">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label">দিন বাছাই করুন <span class="text-red">*</span></label>
+                                            <select name="days" id="days" class="form-control select2 " required>
+                                                <option value=""> বাছাই করুন </option>
+                                                <option value="7" {{ request()->days == 7 ? 'selected' : '' }}> ৭ দিন </option>
+                                                <option value="15" {{ request()->days == 15 ? 'selected' : '' }}> ১৫ দিন </option>
+                                                <option value="30" {{ request()->days == 30 ? 'selected' : '' }}> ৩০ দিন </option>
+                                                <option value="60" {{ request()->days == 60 || !request()->has('days') ? 'selected' : '' }}> ৬০ দিন </option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label">পন্যের ধরন</label>
+                                            <select name="product_type_id" id="product_type_id" class="form-control select2">
+                                                <option value="0">All</option>
+                                                @foreach ($product_types as $item)
+                                                    <option value="{{ $item->id }}" {{ request()->product_type_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
                                                 @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label">পন্য</label>
+                                            <select name="product_information_id" id="product_information_id" class="form-control select2 ">
+                                                <option value="0">All</option>
+                                                @if (request()->product_information_id)
+                                                    @foreach ($products as $item)
+                                                        <option value="{{ $item->id }}" {{ request()->product_information_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label d-block" style="visibility: hidden;">Search</label>
+                                            <button type="submit" name="type" value="search" style="box-shadow:rgba(40, 167, 69, 0.30) 0px 8px 18px 4px" class="btn btn-success btn-sm"><i class="fas fa-search mr-1"></i>খুজুন</button>
+                                            @if (isset($expiringSoonProducts) && count($expiringSoonProducts) > 0)
+                                                <button type="submit" class="btn btn-sm btn-primary" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ</button>
                                             @endif
-                                        </select>
-                                    </div>
-                                    <div class="form-group col-md-2">
-                                        <label class="control-label d-block" style="visibility: hidden;">Search</label>
-                                        <button type="submit" name="type" value="search" class="btn btn-success btn-sm btn-block">খুজুন</button>
-                                    </div>
-                                    <div class="form-group col-md-2">
-                                        <label class="control-label d-block" style="visibility: hidden;">PDF</label>
-                                        <button type="submit" name="type" value="pdf" class="btn btn-info btn-sm btn-block"><i class="fas fa-file-pdf mr-1"></i>পিডিএফ</button>
+                                        </div>
                                     </div>
                                 </div>
                             </form>
                             <table id="" class="table table-bordered">
-                                <thead>
+                                <thead style="background: #fff4f4 !important;">
                                     <tr>
                                         <th width="5%">নং.</th>
                                         <th width="10%">ক্রয় অর্ডার নং.</th>

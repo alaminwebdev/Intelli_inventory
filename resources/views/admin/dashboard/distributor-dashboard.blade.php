@@ -45,7 +45,7 @@
         height: 60%;
         left: 50%;
         bottom: 0;
-        background: url('{{ asset(' common/images/dashboard1.png') }}');
+        background: url('{{ asset('common/images/dashboard1.png') }}');
         background-repeat: no-repeat;
         background-size: cover;
         transform: translateX(-50%);
