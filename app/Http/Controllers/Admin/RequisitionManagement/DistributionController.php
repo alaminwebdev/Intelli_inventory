@@ -346,7 +346,11 @@ class DistributionController extends Controller
                 return requisitionStatus(@$sectionRequisitions->status);
             })
             ->editColumn('created_at', function ($sectionRequisitions) {
-                return date('d-M-Y', strtotime($sectionRequisitions->created_at));
+                if ($sectionRequisitions->status == 3) {
+                    return date('d-M-Y', strtotime($sectionRequisitions->final_approve_at));
+                }else{
+                    return date('d-M-Y', strtotime($sectionRequisitions->distribute_at));
+                }
             })
             ->addColumn('action_column', function ($sectionRequisitions) use ($user) {
                 $links = '';
