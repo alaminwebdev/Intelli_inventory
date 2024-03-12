@@ -331,9 +331,9 @@ class DistributionController extends Controller
     public function getDistributedRequisitionList(Request $request)
     {
 
-        $requisition_statuses = explode(',', $request->requisition_status);
-        $user = Auth::user();
-        $sectionRequisitions   = $this->sectionRequisitionService->getAll(null, null, null, $requisition_statuses);
+        $requisition_statuses   = explode(',', $request->requisition_status);
+        $sectionRequisitions    = $this->sectionRequisitionService->getAll(null, null, null, $requisition_statuses, null, $request->from_date, $request->to_date);
+        $user                   = Auth::user();
 
         return DataTables::of($sectionRequisitions)
             ->editColumn('section', function ($sectionRequisitions) {

@@ -11,6 +11,7 @@
                         </div>
                         <div class="card-body">
                             <form method="get" action="" id="filterForm">
+                                @csrf
                                 <div class="gradient-border px-3 pt-4 pb-3 mb-4">
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
@@ -79,94 +80,6 @@
             </div>
         </div>
     </section>
-
-    <script>
-        $(document).ready(function() {
-            var dTable = $('#data-table').DataTable({
-                processing: true,
-                serverSide: true,
-                responsive: true,
-                ajax: {
-                    url: '{{ route('admin.get.distributed.requisition.list.datatable') }}',
-                    data: function(d) {
-                        d._token = "{{ csrf_token() }}";
-                        d.requisition_status = $('select[name=requisition_status]').val();
-                    }
-                },
-                lengthMenu: [25, 50, 100, 150], // Set the default entries and available options
-                pageLength: 25, // Set the default page length
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'id',
-                        orderable: false
-                    },
-                    {
-                        data: 'requisition_no',
-                        name: 'requisition_no'
-                    },
-                    {
-                        data: 'section',
-                        name: 'section'
-                    },
-                    {
-                        data: 'department',
-                        name: 'department'
-                    },
-                    {
-                        data: 'status',
-                        name: 'status'
-                    },
-                    {
-                        data: 'created_at',
-                        name: 'created_at'
-                    },
-                    {
-                        data: 'action_column',
-                        name: 'action_column'
-                    }
-                ],
-                createdRow: function(row, data, dataIndex) {
-                    // Add a class to the 'action_column' cell in each row
-                    $('td:eq(6)', row).addClass('text-center');
-                }
-            });
-            $('#filterForm').on('submit', function(e) {
-                //dTable.draw();
-                e.preventDefault();
-
-                var selectedValue = $('#requisition_status').val();
-
-                // Get the TH element containing the date column header
-                var dateColumnHeader = $('#requisition_date');
-
-                // Check the selected value and update the header text accordingly
-                if (selectedValue == 3) {
-                    dateColumnHeader.text('অনুমোদনের তারিখ');
-                } else {
-                    dateColumnHeader.text('বিতরনের তারিখ');
-                }
-
-                // Check if the search button was clicked
-                if ($('button[name="type"][value="search"]').is(':focus')) {
-                    // Draw the DataTable only when the search button is clicked
-                    dTable.draw();
-                }
-
-                // Check if the PDF button was clicked
-                if ($('button[name="type"][value="pdf"]').is(':focus')) {
-                    // Construct the PDF route with the status parameter
-                    var pdfRoute = '{{ route('admin.get.requisition.list.in.pdf', ['status' => ':selectedValue']) }}';
-                    pdfRoute = pdfRoute.replace(':selectedValue', selectedValue);
-
-                    // Open a new window with the PDF route
-                    window.open(pdfRoute, '_blank');
-                }
-
-            });
-
-        });
-    </script>
-
 
     <!-- Modal for Product Details -->
     <div class="modal" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
@@ -283,13 +196,11 @@
 
             // Initialize customdatepicker for date_from and date_to inputs
             $('.customdatepicker').daterangepicker({
-                // format: 'dd-mm-yyyy', // Adjust the format based on your requirements
+                autoUpdateInput: true,
                 autoclose: true,
-                // todayHighlight: true
+                autoApply: true,
                 singleDatePicker: true,
                 showDropdowns: true,
-                autoUpdateInput: false,
-                autoApply: true,
                 locale: {
                     format: 'DD-MM-YYYY',
                     daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
@@ -309,6 +220,100 @@
 
                 return day + '-' + month + '-' + year;
             }
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            var dTable = $('#data-table').DataTable({
+                language: {
+                    url: "{{ asset('datatable_bn.json') }}",
+                    // url: '//cdn.datatables.net/plug-ins/2.0.2/i18n/bn.json',
+                },
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                ajax: {
+                    url: '{{ route('admin.get.distributed.requisition.list.datatable') }}',
+                    data: function(d) {
+                        d._token = "{{ csrf_token() }}";
+                        d.requisition_status = $('select[name=requisition_status]').val();
+                        d.from_date = $('input[name=date_from]').val();
+                        d.to_date = $('input[name=date_to]').val();
+                    }
+                },
+                lengthMenu: [25, 50, 100, 150], // Set the default entries and available options
+                pageLength: 25, // Set the default page length
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'id',
+                        orderable: false
+                    },
+                    {
+                        data: 'requisition_no',
+                        name: 'requisition_no'
+                    },
+                    {
+                        data: 'section',
+                        name: 'section'
+                    },
+                    {
+                        data: 'department',
+                        name: 'department'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at'
+                    },
+                    {
+                        data: 'action_column',
+                        name: 'action_column'
+                    }
+                ],
+                createdRow: function(row, data, dataIndex) {
+                    // Add a class to the 'action_column' cell in each row
+                    $('td:eq(6)', row).addClass('text-center');
+                }
+            });
+
+            $('#filterForm').on('submit', function(e) {
+                //dTable.draw();
+                e.preventDefault();
+
+                var selectedValue = $('#requisition_status').val();
+
+                // Get the TH element containing the date column header
+                var dateColumnHeader = $('#requisition_date');
+
+                // Check the selected value and update the header text accordingly
+                if (selectedValue == 3) {
+                    dateColumnHeader.text('অনুমোদনের তারিখ');
+                } else {
+                    dateColumnHeader.text('বিতরনের তারিখ');
+                }
+
+                // Check which button is clicked
+                var buttonType = $(document.activeElement).val();
+
+                if (buttonType === 'search') {
+                    // Perform search action
+                    dTable.draw();
+                } else if (buttonType === 'pdf') {
+                    // Submit the form with POST method
+                    $(this).attr('method', 'post');
+                    $(this).attr('action', '{{ route('admin.get.requisition.list.in.pdf') }}');
+                    $(this).attr('target', '_blank');
+                    this.submit();
+                    
+                }
+
+            });
+
         });
     </script>
 @endsection

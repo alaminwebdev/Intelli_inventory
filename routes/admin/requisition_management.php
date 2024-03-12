@@ -70,6 +70,6 @@ Route::prefix('/distribute')->group(function () {
     Route::get('get-distributed-requisition-list', [DistributionController::class, 'getDistributedRequisitionList'])->name('get.distributed.requisition.list.datatable');
 });
 
-Route::get('get-requisition-list-in-pdf/{status}', [SectionRequisitionController::class, 'getRequisitionListInPDF'])->name('get.requisition.list.in.pdf');
+Route::post('get-requisition-list-in-pdf', [SectionRequisitionController::class, 'getRequisitionListInPDF'])->name('get.requisition.list.in.pdf');
 
 
