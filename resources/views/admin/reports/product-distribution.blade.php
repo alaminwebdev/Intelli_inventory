@@ -44,7 +44,7 @@
                                         <div class="form-group col-md-4">
                                             <label class="control-label">দপ্তর : <span class="text-red">*</span></label>
                                             <select name="department_id" id="department_id" class="form-control @error('department_id') is-invalid @enderror select2 ">
-                                                <option value="">-- দপ্তর নির্বাচন করুন --</option>
+                                                <option value="0">-- সকল দপ্তর --</option>
                                                 @foreach ($departments as $item)
                                                     <option value="{{ $item->id }}" {{ request()->department_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
                                                 @endforeach
@@ -59,7 +59,7 @@
                                         <div class="form-group col-md-4">
                                             <label class="control-label">শাখা :</label>
                                             <select name="section_id" id="section_id" class="form-control select2 @error('section_id') is-invalid @enderror">
-                                                <option value="0">All</option>
+                                                <option value="0">-- সকল শাখা --</option>
                                                 {{-- @if (request()->section_id) --}}
                                                 @foreach ($sections as $item)
                                                     <option value="{{ $item->id }}" {{ request()->section_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
@@ -76,7 +76,7 @@
                                         <div class="form-group col-md-4">
                                             <label class="control-label">পন্য :</label>
                                             <select name="product_information_id" id="product_information_id" class="form-control select2 ">
-                                                <option value="0">All</option>
+                                                <option value="0">-- সকল পন্য --</option>
                                                 @foreach ($products as $item)
                                                     <option value="{{ $item->id }}" {{ request()->product_information_id == $item->id ? 'selected' : '' }}>{{ $item->name }} ({{ $item->unit }})</option>
                                                 @endforeach
@@ -85,27 +85,22 @@
 
                                         <div class="form-group col-md-2">
                                             <label for="date_from" class="text-navy">শুরুর তারিখ :</label>
-                                            <input type="text" value="{{ request()->date_from }}" name="date_from" class="form-control form-control-sm text-gray singledatepicker" id="date_from" placeholder="শুরুর তারিখ">
+                                            <input type="text" value="{{ request()->date_from }}" name="date_from" class="form-control form-control-sm text-gray customdatepicker" id="date_from" placeholder="শুরুর তারিখ">
                                         </div>
 
                                         <div class="form-group col-md-2">
                                             <label for="date_to" class="text-navy">শেষ তারিখ :</label>
-                                            <input type="text" value="{{ request()->date_to }}" name="date_to" class="form-control form-control-sm text-gray singledatepicker" id="date_to" placeholder="শেষ তারিখ">
+                                            <input type="text" value="{{ request()->date_to }}" name="date_to" class="form-control form-control-sm text-gray customdatepicker" id="date_to" placeholder="শেষ তারিখ">
                                         </div>
 
                                         <div class="form-group col-md-8">
                                             <label class="control-label d-block" style="visibility: hidden;">Search</label>
                                             <button type="submit" name="type" value="search" class="btn btn-success btn-sm mr-1" style="box-shadow:rgba(40, 167, 69, 0.30) 0px 8px 18px 4px"><i class="fas fa-search mr-1"></i> খুজুন</button>
                                             @if (isset($distributed_products) && count($distributed_products) > 0)
-                                                    <button type="submit" class="btn btn-sm btn-primary" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ হিসাবে ডাউনলোড করুন</button>
+                                                <button type="submit" class="btn btn-sm btn-primary" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ হিসাবে ডাউনলোড করুন</button>
                                             @endif
                                         </div>
                                     </div>
-                                    {{-- @if (isset($distributed_products) && count($distributed_products) > 0)
-                                        <div class="border-top d-flex justify-content-end">
-                                            <button type="submit" class="btn btn-sm btn-primary mt-3" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ হিসাবে ডাউনলোড করুন</button>
-                                        </div>
-                                    @endif --}}
                                 </div>
                             </form>
                             <table class="table table-sm table-bordered" style="width: 100%;" id="">
@@ -155,6 +150,56 @@
             </div>
         </div>
     </section>
+
+    <script>
+        $(document).ready(function() {
+            // Calculate the current date and previous 30 days
+            var currentDate = new Date();
+            var previousDate = new Date();
+            previousDate.setDate(currentDate.getDate() - 30);
+
+            // Format the dates as strings in the desired format (assuming 'DD-MM-YYYY' format)
+            var currentDateFormatted = formatDate(currentDate);
+            var previousDateFormatted = formatDate(previousDate);
+
+            // Set default values for date_from and date_to only if they are empty
+            if ($('#date_from').val() == '') {
+                $('#date_from').val(previousDateFormatted);
+            }
+            if ($('#date_to').val() == '') {
+                $('#date_to').val(currentDateFormatted);
+            }
+
+            // Initialize customdatepicker for date_from and date_to inputs
+            $('.customdatepicker').daterangepicker({
+                autoUpdateInput: true,
+                autoclose: true,
+                autoApply: true,
+                singleDatePicker: true,
+                showDropdowns: true,
+                locale: {
+                    format: 'DD-MM-YYYY',
+                    daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+                    firstDay: 0
+                },
+            });
+
+            // Function to format date as 'DD-MM-YYYY'
+            function formatDate(date) {
+                var day = date.getDate();
+                var month = date.getMonth() + 1; // Months are zero-based
+                var year = date.getFullYear();
+
+                // Pad day and month with leading zeros if needed
+                day = day < 10 ? '0' + day : day;
+                month = month < 10 ? '0' + month : month;
+
+                return day + '-' + month + '-' + year;
+            }
+        });
+    </script>
+
+
     <script>
         $(function() {
             $(document).on('click', '[name=type]', function(e) {
@@ -167,6 +212,7 @@
             });
         })
     </script>
+
     <script>
         $(function() {
 
@@ -183,7 +229,7 @@
                         console.log(data);
                         // Handle the data here
                         let section_div = document.getElementById('section_id');
-                        section_div.innerHTML = '<option value="0">All</option>';
+                        section_div.innerHTML = '<option value="0">-- সকল শাখা --</option>';
                         data.forEach(item => {
                             section_div.innerHTML +=
                                 `<option value="${item.id}">${item.name}</option>`;
@@ -205,7 +251,7 @@
                         console.log(data);
                         // Handle the data here
                         let productInformation = document.getElementById('product_information_id');
-                        productInformation.innerHTML = '<option value="0">All</option>';
+                        productInformation.innerHTML = '<option value="0">-- সকল পন্য --</option>';
                         data.forEach(item => {
                             productInformation.innerHTML +=
                                 `<option value="${item.id}">${item.name}</option>`;
@@ -215,4 +261,5 @@
             });
         });
     </script>
+
 @endsection
