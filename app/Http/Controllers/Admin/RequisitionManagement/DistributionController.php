@@ -331,9 +331,9 @@ class DistributionController extends Controller
     public function getDistributedRequisitionList(Request $request)
     {
 
-        $requisition_statuses = explode(',', $request->requisition_status);
-        $user = Auth::user();
-        $sectionRequisitions   = $this->sectionRequisitionService->getAll(null, null, null, $requisition_statuses);
+        $requisition_statuses   = explode(',', $request->requisition_status);
+        $sectionRequisitions    = $this->sectionRequisitionService->getAll(null, null, null, $requisition_statuses, null, $request->from_date, $request->to_date);
+        $user                   = Auth::user();
 
         return DataTables::of($sectionRequisitions)
             ->editColumn('section', function ($sectionRequisitions) {
@@ -346,7 +346,11 @@ class DistributionController extends Controller
                 return requisitionStatus(@$sectionRequisitions->status);
             })
             ->editColumn('created_at', function ($sectionRequisitions) {
-                return date('d-M-Y', strtotime($sectionRequisitions->created_at));
+                if ($sectionRequisitions->status == 3) {
+                    return date('d-M-Y', strtotime($sectionRequisitions->final_approve_at));
+                }else{
+                    return date('d-M-Y', strtotime($sectionRequisitions->distribute_at));
+                }
             })
             ->addColumn('action_column', function ($sectionRequisitions) use ($user) {
                 $links = '';

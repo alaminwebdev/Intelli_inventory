@@ -17,6 +17,11 @@ use Illuminate\Support\Facades\Auth;
 use App\RoleEnum;
 use Yajra\DataTables\Facades\DataTables;
 
+use DateTime;
+use DateTimeZone;
+use PDF;
+use IntlDateFormatter;
+
 class SectionRequisitionController extends Controller
 {
     private $sectionRequisitionService;
@@ -230,5 +235,40 @@ class SectionRequisitionController extends Controller
             ->addIndexColumn()
             ->escapeColumns([])
             ->make(true);
+    }
+
+    public function getRequisitionListInPDF(Request $request)
+    {
+        $requisition_statuses           = explode(',', $request->requisition_status);
+        $data['sectionRequisitions']    = $this->sectionRequisitionService->getAll(null, null, null, $requisition_statuses, null, $request->date_from, $request->date_to);
+        
+        $date                   = new DateTime('now', new DateTimeZone('Asia/Dhaka'));
+        $formatter              = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+        $formatter->setPattern('d-MMMM-y'); // Customize the date format if needed
+        $data['date_in_bengali'] = $formatter->format($date);
+
+        if ($request['date_from'] != null) {
+            $date_from              = DateTime::createFromFormat('d-m-Y', $request['date_from'])->setTimezone(new DateTimeZone('Asia/Dhaka'));
+            $date_from_formatter    = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+            $date_from_formatter->setPattern('d-MMMM-y');
+            $data['date_from']      = $date_from_formatter->format($date_from);
+        } else {
+            $data['date_from']      = null;
+        }
+        if ($request['date_to'] != null) {
+            $date_to            = DateTime::createFromFormat('d-m-Y', $request['date_to'])->setTimezone(new DateTimeZone('Asia/Dhaka'));
+            $date_to_formatter  = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+            $date_to_formatter->setPattern('d-MMMM-y');
+            $data['date_to']    = $date_to_formatter->format($date_to);
+        } else {
+            $data['date_to']    = null;
+        }
+
+        // Generate a PDF
+        $pdf = PDF::loadView('admin.reports.requisition-list-pdf', $data);
+        $pdf->SetProtection(['copy', 'print'], '', 'pass');
+
+        $fileName = 'চাহিদাপত্রের তালিকা -' . $data['date_in_bengali'] . '.pdf';
+        return $pdf->stream($fileName);
     }
 }

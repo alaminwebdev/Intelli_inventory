@@ -15,7 +15,7 @@
 
 Clone git repository to local storage
 ```
-git clone https://gitlab.com/nanoit.biz/admin_panel.git
+git clone https://github.com/alaminwebdev/Intelli_inventory.git
 ```
 Create .env file & need .env file updated
 ```
@@ -44,8 +44,8 @@ php artisan serve
 <h3 id="UserCrendential">User Crendential</h3>
 
 ```
-email - dev@nanoit.biz
-password - dev@nano
+email - admin@gmail.com
+password - 123
 ```
 
 <h3 id="SiteSetting">Site Setting</h3>

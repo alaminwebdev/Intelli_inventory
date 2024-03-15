@@ -29,7 +29,7 @@ class SectionRequisitionService implements IService
         $this->productAvailabilityService = $productAvailabilityService;
     }
 
-    public function getAll($section_id = null, $status = null, $section_ids = null, $statuses = null, $take = null)
+    public function getAll($section_id = null, $status = null, $section_ids = null, $statuses = null, $take = null, $from_date = null, $to_date = null)
     {
         try {
             $query = SectionRequisition::with(
@@ -51,6 +51,23 @@ class SectionRequisitionService implements IService
             if ($take) {
                 $query->take($take);
             }
+            if ($from_date && $to_date && in_array(3, $statuses)) {
+                $query->whereBetween('final_approve_at', [
+                    date('Y-m-d', strtotime($from_date)) . ' 00:00:00',
+                    date('Y-m-d', strtotime($to_date)) . ' 23:59:59'
+                ]);
+            } elseif ($from_date && $to_date && in_array(4, $statuses)) {
+                $query->whereBetween('distribute_at', [
+                    date('Y-m-d', strtotime($from_date)) . ' 00:00:00',
+                    date('Y-m-d', strtotime($to_date)) . ' 23:59:59'
+                ]);
+            } elseif ($from_date && $to_date) {
+                $query->whereBetween('created_at', [
+                    date('Y-m-d', strtotime($from_date)) . ' 00:00:00',
+                    date('Y-m-d', strtotime($to_date)) . ' 23:59:59'
+                ]);
+            }
+
             $data = $query->latest()->get();
             return $data;
         } catch (\Exception $e) {
@@ -248,9 +265,9 @@ class SectionRequisitionService implements IService
                         ->sum('distribute_quantity');
 
 
-                        
+
                     $availableStock = $this->productAvailabilityService->getAvailableStock($product->product_id, $requistion_id);
-                        
+
                     // $availableQty = 0;
                     // // Iterate over each StockInDetail in the collection
                     // foreach ($product->StockDetail as $stockDetail) {

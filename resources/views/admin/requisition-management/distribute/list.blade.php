@@ -11,17 +11,29 @@
                         </div>
                         <div class="card-body">
                             <form method="get" action="" id="filterForm">
-                                <div class="form-row border-bottom mb-3">
-                                    <div class="form-group col-sm-3">
-                                        <label class="control-label" style="color:#2a527b;">চাহিদাপত্রের ধরন</label>
-                                        <select class="form-select form-select-sm select2" name="requisition_status" id="requisition_status">
-                                            <option value="3">বিতরণের অপেক্ষায় চাহিদাপত্রের তালিকা</option>
-                                            <option value="4">বিতরণ করা চাহিদাপত্রের তালিকা</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group col-sm-1">
-                                        <label class="control-label" style="visibility: hidden;">Search</label>
-                                        <button type="submit" class="btn btn-success btn-sm btn-block" style="font-weight:600">খুঁজুন</button>
+                                @csrf
+                                <div class="gradient-border px-3 pt-4 pb-3 mb-4">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label" style="color:#2a527b;">চাহিদাপত্রের ধরন</label>
+                                            <select class="form-select form-select-sm select2" name="requisition_status" id="requisition_status">
+                                                <option value="3">বিতরণের অপেক্ষায় চাহিদাপত্রের তালিকা</option>
+                                                <option value="4">বিতরণ করা চাহিদাপত্রের তালিকা</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <label for="date_from" class="text-navy">শুরুর তারিখ :</label>
+                                            <input type="text" value="" name="date_from" class="form-control form-control-sm text-gray customdatepicker" id="date_from" placeholder="শুরুর তারিখ">
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <label for="date_to" class="text-navy">শেষ তারিখ :</label>
+                                            <input type="text" value="" name="date_to" class="form-control form-control-sm text-gray customdatepicker" id="date_to" placeholder="শেষ তারিখ">
+                                        </div>
+                                        <div class="form-group col-sm-5">
+                                            <label class="control-label d-block" style="visibility: hidden;">Search</label>
+                                            <button type="submit" class="btn btn-success btn-sm" name="type" value="search" style="box-shadow:rgba(40, 167, 69, 0.30) 0px 8px 18px 4px;"><i class="fas fa-search mr-1"></i>খুঁজুন</button>
+                                            <button type="submit" class="btn btn-sm btn-primary mr-1" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i>পিডিএফ হিসাবে ডাউনলোড করুন</button>
+                                        </div>
                                     </div>
                                 </div>
                             </form>
@@ -33,7 +45,7 @@
                                         <th>অনুরোধকৃত শাখা</th>
                                         <th>অনুরোধকৃত দপ্তর</th>
                                         <th>বর্তমান অবস্থা</th>
-                                        <th>চাহিদাপত্রের তারিখ</th>
+                                        <th id="requisition_date">তারিখ</th>
                                         <th width="15%">অ্যাকশন</th>
                                     </tr>
                                 </thead>
@@ -68,65 +80,6 @@
             </div>
         </div>
     </section>
-
-    <script>
-        $(document).ready(function() {
-            var dTable = $('#data-table').DataTable({
-                processing: true,
-                serverSide: true,
-                responsive: true,
-                ajax: {
-                    url: '{{ route('admin.get.distributed.requisition.list.datatable') }}',
-                    data: function(d) {
-                        d._token = "{{ csrf_token() }}";
-                        d.requisition_status = $('select[name=requisition_status]').val();
-                    }
-                },
-                lengthMenu: [25, 50, 100, 150], // Set the default entries and available options
-                pageLength: 25, // Set the default page length
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'id',
-                        orderable: false
-                    },
-                    {
-                        data: 'requisition_no',
-                        name: 'requisition_no'
-                    },
-                    {
-                        data: 'section',
-                        name: 'section'
-                    },
-                    {
-                        data: 'department',
-                        name: 'department'
-                    },
-                    {
-                        data: 'status',
-                        name: 'status'
-                    },
-                    {
-                        data: 'created_at',
-                        name: 'created_at'
-                    },
-                    {
-                        data: 'action_column',
-                        name: 'action_column'
-                    }
-                ],
-                createdRow: function(row, data, dataIndex) {
-                    // Add a class to the 'action_column' cell in each row
-                    $('td:eq(6)', row).addClass('text-center');
-                }
-            });
-            $('#filterForm').on('submit', function(e) {
-                dTable.draw();
-                e.preventDefault();
-            });
-
-        });
-    </script>
-
 
     <!-- Modal for Product Details -->
     <div class="modal" id="productDetailsModal" tabindex="-1" role="dialog" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
@@ -223,6 +176,144 @@
                     }
                 });
             });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // Calculate the current date and previous 30 days
+            var currentDate = new Date();
+            var previousDate = new Date();
+            previousDate.setDate(currentDate.getDate() - 30);
+
+            // Format the dates as strings in the desired format (assuming 'DD-MM-YYYY' format)
+            var currentDateFormatted = formatDate(currentDate);
+            var previousDateFormatted = formatDate(previousDate);
+
+            // Set default values for date_from and date_to
+            $('#date_from').val(previousDateFormatted);
+            $('#date_to').val(currentDateFormatted);
+
+            // Initialize customdatepicker for date_from and date_to inputs
+            $('.customdatepicker').daterangepicker({
+                autoUpdateInput: true,
+                autoclose: true,
+                autoApply: true,
+                singleDatePicker: true,
+                showDropdowns: true,
+                locale: {
+                    format: 'DD-MM-YYYY',
+                    daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+                    firstDay: 0
+                },
+            });
+
+            // Function to format date as 'DD-MM-YYYY'
+            function formatDate(date) {
+                var day = date.getDate();
+                var month = date.getMonth() + 1; // Months are zero-based
+                var year = date.getFullYear();
+
+                // Pad day and month with leading zeros if needed
+                day = day < 10 ? '0' + day : day;
+                month = month < 10 ? '0' + month : month;
+
+                return day + '-' + month + '-' + year;
+            }
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            var dTable = $('#data-table').DataTable({
+                language: {
+                    url: "{{ asset('datatable_bn.json') }}",
+                    // url: '//cdn.datatables.net/plug-ins/2.0.2/i18n/bn.json',
+                },
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                ajax: {
+                    url: '{{ route('admin.get.distributed.requisition.list.datatable') }}',
+                    data: function(d) {
+                        d._token = "{{ csrf_token() }}";
+                        d.requisition_status = $('select[name=requisition_status]').val();
+                        d.from_date = $('input[name=date_from]').val();
+                        d.to_date = $('input[name=date_to]').val();
+                    }
+                },
+                lengthMenu: [25, 50, 100, 150], // Set the default entries and available options
+                pageLength: 25, // Set the default page length
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'id',
+                        orderable: false
+                    },
+                    {
+                        data: 'requisition_no',
+                        name: 'requisition_no'
+                    },
+                    {
+                        data: 'section',
+                        name: 'section'
+                    },
+                    {
+                        data: 'department',
+                        name: 'department'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at'
+                    },
+                    {
+                        data: 'action_column',
+                        name: 'action_column'
+                    }
+                ],
+                createdRow: function(row, data, dataIndex) {
+                    // Add a class to the 'action_column' cell in each row
+                    $('td:eq(6)', row).addClass('text-center');
+                }
+            });
+
+            $('#filterForm').on('submit', function(e) {
+                //dTable.draw();
+                e.preventDefault();
+
+                var selectedValue = $('#requisition_status').val();
+
+                // Get the TH element containing the date column header
+                var dateColumnHeader = $('#requisition_date');
+
+                // Check the selected value and update the header text accordingly
+                if (selectedValue == 3) {
+                    dateColumnHeader.text('অনুমোদনের তারিখ');
+                } else {
+                    dateColumnHeader.text('বিতরনের তারিখ');
+                }
+
+                // Check which button is clicked
+                var buttonType = $(document.activeElement).val();
+
+                if (buttonType === 'search') {
+                    // Perform search action
+                    dTable.draw();
+                } else if (buttonType === 'pdf') {
+                    // Submit the form with POST method
+                    $(this).attr('method', 'post');
+                    $(this).attr('action', '{{ route('admin.get.requisition.list.in.pdf') }}');
+                    $(this).attr('target', '_blank');
+                    this.submit();
+                    
+                }
+
+            });
+
         });
     </script>
 @endsection
