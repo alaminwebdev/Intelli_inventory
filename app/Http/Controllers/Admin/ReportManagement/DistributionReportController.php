@@ -48,8 +48,12 @@ class DistributionReportController extends Controller
                 'department_id.required' => 'দপ্তর প্রয়োজন।'
             ]);
 
+            if ($request->department_id == 0) {
+                $data['sections']   = $this->sectionService->getAll();
+            } else {
+                $data['sections']   = $this->sectionService->getSectionsByDepartment($request->department_id);
+            }
             $data['department'] = $this->departmentService->getByID($request->department_id);
-            $data['sections']   = $this->sectionService->getSectionsByDepartment($request->department_id);
 
             if ($request->section_id == 0) {
                 $sections = $data['sections']->toArray();
