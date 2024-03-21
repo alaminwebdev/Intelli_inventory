@@ -50,6 +50,18 @@ class DistributionService implements IService
     public function store(Request $request)
     {
 
+        // Increase max_execution_time to 2 hours (7200 seconds)
+        ini_set('max_execution_time', 7200);
+
+        // Set max_input_time to 2 hours (7200 seconds)
+        ini_set('max_input_time', 7200);
+
+        // Increase memory_limit to unlimited
+        ini_set('memory_limit', '-1'); // '-1' indicates unlimited memory
+
+        // Set max_input_vars to 5000
+        ini_set('max_input_vars', 5000);
+
         DB::beginTransaction();
         try {
 
@@ -174,6 +186,18 @@ class DistributionService implements IService
 
     public function confirm(Request $request)
     {
+        // Increase max_execution_time to 2 hours (7200 seconds)
+        ini_set('max_execution_time', 7200);
+        
+        // Set max_input_time to 2 hours (7200 seconds)
+        ini_set('max_input_time', 7200);
+
+        // Increase memory_limit to unlimited
+        ini_set('memory_limit', '-1'); // '-1' indicates unlimited memory
+
+        // Set max_input_vars to 5000
+        ini_set('max_input_vars', 5000);
+
         DB::beginTransaction();
         try {
 

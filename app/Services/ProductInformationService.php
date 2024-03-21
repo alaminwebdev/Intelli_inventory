@@ -12,6 +12,7 @@ use App\Services\IService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Services\CurrentStockService;
 
 /**
  * Class ProductInformationService
@@ -19,6 +20,14 @@ use Carbon\Carbon;
  */
 class ProductInformationService implements IService
 {
+    private $currentStockService;
+
+    public function __construct(
+        CurrentStockService $currentStockService
+
+    ) {
+        $this->currentStockService    = $currentStockService;
+    }
 
     public function getAll($statuses = null)
     {
@@ -215,12 +224,16 @@ class ProductInformationService implements IService
 
             // Iterate through the retrieved data and format it
             foreach ($productStatistics as $product) {
+                // Fetch current stock for the product
+                $currentStock = $this->currentStockService->getByProductWithSum($product->product_id);
+
                 $formattedData[] = [
                     'id'                    => $product->product_id,
                     'product'               => $product->product,
                     'unit'                  => $product->unit,
                     'demand_quantity'       => (int) $product->total_demand_quantity,
                     'distribute_quantity'   => (int) $product->total_distribute_qty,
+                    'current_stock'         => (int) @$currentStock->available_qty,
                 ];
             }
         }

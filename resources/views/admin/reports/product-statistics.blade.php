@@ -96,6 +96,7 @@
                                         <th class="text-center">ইউনিট</th>
                                         <th class="text-center">চাহিদার পরিমান</th>
                                         <th class="text-center">বিতরনের পরিমান</th>
+                                        <th class="text-center">বর্তমান মজুদ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -106,6 +107,7 @@
                                             <td>{{ @$list['unit'] ?? 'N/A' }}</td>
                                             <td class="text-right">{{ en2bn(@$list['demand_quantity']) ?? 'N/A' }}</td>
                                             <td class="text-right">{{ en2bn(@$list['distribute_quantity']) ?? 'N/A' }}</td>
+                                            <td class="text-right">{{ en2bn(@$list['current_stock']) ?? 'N/A' }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
