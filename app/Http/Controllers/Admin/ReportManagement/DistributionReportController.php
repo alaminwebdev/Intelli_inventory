@@ -39,6 +39,7 @@ class DistributionReportController extends Controller
         $data['departments']    = $this->departmentService->getAll(1);
         $data['products']       = $this->productInformationService->getAll([1]);
         $data['sections']       = [];
+        $data['product_ids']    = [];
 
         if ($request->isMethod('post')) {
 
@@ -48,11 +49,13 @@ class DistributionReportController extends Controller
                 'department_id.required' => 'দপ্তর প্রয়োজন।'
             ]);
 
+
             if ($request->department_id == 0) {
                 $data['sections']   = $this->sectionService->getAll();
             } else {
                 $data['sections']   = $this->sectionService->getSectionsByDepartment($request->department_id);
             }
+
             $data['department'] = $this->departmentService->getByID($request->department_id);
 
             if ($request->section_id == 0) {
@@ -69,7 +72,14 @@ class DistributionReportController extends Controller
                 $data['section']    = $this->sectionService->getByID($request->section_id);
             }
 
-            $data['distributed_products'] = $this->getDistributedProducts($sectionIds, $request->product_information_id, $request->date_from, $request->date_to);
+            if ($request->has('product_information_id')) {
+                $data['product_ids'] = $request->product_information_id;
+            } else {
+                $data['product_ids'] = [];
+            }
+
+
+            $data['distributed_products'] = $this->getDistributedProducts($sectionIds, $data['product_ids'], $request->date_from, $request->date_to);
 
             if ($request->type == 'pdf') {
                 $date                   = new DateTime('now', new DateTimeZone('Asia/Dhaka'));
@@ -103,9 +113,8 @@ class DistributionReportController extends Controller
         return view('admin.reports.product-distribution', $data);
     }
 
-    public function getDistributedProducts($sectionIds_ids = null, $product_id = null, $from_date = null, $to_date = null)
+    public function getDistributedProducts($sectionIds_ids = null, $product_ids = null, $from_date = null, $to_date = null)
     {
-
         $distributed_goods = SectionRequisition::join('distributes', 'distributes.section_requisition_id', 'section_requisitions.id')
             ->join('stock_in_details', 'stock_in_details.id', 'distributes.stock_in_detail_id')
             ->join('product_information', 'product_information.id', 'distributes.product_id')
@@ -116,9 +125,9 @@ class DistributionReportController extends Controller
             ->whereIn('section_requisitions.section_id', $sectionIds_ids)
             ->where('section_requisitions.status', 4)
             ->whereBetween('distributes.created_at', [date('Y-m-d', strtotime($from_date)) . ' 00:00:00', date('Y-m-d', strtotime($to_date)) . ' 23:59:59'])
-            ->when($product_id, function ($q, $product_id) {
-                if (($product_id != 0)) {
-                    $q->where('distributes.product_id', $product_id);
+            ->when($product_ids, function ($q, $product_ids) {
+                if (count($product_ids) > 0) {
+                    $q->whereIn('distributes.product_id', $product_ids);
                 }
             })
             ->select(

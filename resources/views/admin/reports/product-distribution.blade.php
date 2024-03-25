@@ -73,16 +73,6 @@
                                             @enderror
                                         </div>
 
-                                        <div class="form-group col-md-4">
-                                            <label class="control-label">পন্য :</label>
-                                            <select name="product_information_id" id="product_information_id" class="form-control select2 ">
-                                                <option value="0">-- সকল পন্য --</option>
-                                                @foreach ($products as $item)
-                                                    <option value="{{ $item->id }}" {{ request()->product_information_id == $item->id ? 'selected' : '' }}>{{ $item->name }} ({{ $item->unit }})</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
                                         <div class="form-group col-md-2">
                                             <label for="date_from" class="text-navy">শুরুর তারিখ :</label>
                                             <input type="text" value="{{ request()->date_from }}" name="date_from" class="form-control form-control-sm text-gray customdatepicker" id="date_from" placeholder="শুরুর তারিখ">
@@ -93,8 +83,18 @@
                                             <input type="text" value="{{ request()->date_to }}" name="date_to" class="form-control form-control-sm text-gray customdatepicker" id="date_to" placeholder="শেষ তারিখ">
                                         </div>
 
-                                        <div class="form-group col-md-8">
-                                            <label class="control-label d-block" style="visibility: hidden;">Search</label>
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label">পন্য :</label>
+                                            <select name="product_information_id[]" id="product_information_id" class="form-control select2" multiple="multiple">
+                                                {{-- <option value="0">-- সকল পন্য --</option> --}}
+                                                @foreach ($products as $item)
+                                                    <option value="{{ $item->id }}" {{ in_array($item->id, $product_ids) ? 'selected' : '' }} >{{ $item->name }} ({{ $item->unit }})</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label d-block">অ্যাকশন</label>
                                             <button type="submit" name="type" value="search" class="btn btn-success btn-sm mr-1" style="box-shadow:rgba(40, 167, 69, 0.30) 0px 8px 18px 4px"><i class="fas fa-search mr-1"></i> খুজুন</button>
                                             @if (isset($distributed_products) && count($distributed_products) > 0)
                                                 <button type="submit" class="btn btn-sm btn-primary" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ হিসাবে ডাউনলোড করুন</button>
