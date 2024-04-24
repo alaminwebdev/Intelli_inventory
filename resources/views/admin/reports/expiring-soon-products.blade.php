@@ -83,8 +83,8 @@
                             <table id="" class="table table-bordered">
                                 <thead style="background: #fff4f4 !important;">
                                     <tr>
-                                        <th width="5%">নং.</th>
-                                        <th width="10%">ক্রয় অর্ডার নং.</th>
+                                        <th width="5%">Sl.</th>
+                                        <th width="10%">ক্রয় অর্ডার Sl.</th>
                                         <th width="60%">পন্য</th>
                                         <th>মেয়াদ শেষ হবার তারিখ</th>
                                     </tr>

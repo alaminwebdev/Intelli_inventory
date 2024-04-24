@@ -36,7 +36,7 @@
                 <th class="text-center">চাহিদাপত্র নাম্বার</th>
                 <th class="text-center">অনুরোধকৃত শাখা</th>
                 <th class="text-center">অনুরোধকৃত দপ্তর</th>
-                <th class="text-center">বর্তমান অবস্থা</th>
+                <th class="text-center">Status</th>
                 <th class="text-center" id="requisition_date">তারিখ</th>
             </tr>
         </thead>

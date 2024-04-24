@@ -71,9 +71,9 @@ if (!function_exists('activeStatus')) {
     function activeStatus($value)
     {
         if ($value == 1) {
-            $output = '<span class="badge badge-success">' . __('সক্রিয়') . '</span>';
+            $output = '<span class="badge badge-success">' . __('Active') . '</span>';
         } else {
-            $output = '<span class="badge badge-danger">' . __('নিষ্ক্রিয়') . '</span>';
+            $output = '<span class="badge badge-danger">' . __('Inactive') . '</span>';
         }
         return $output;
     }
@@ -114,19 +114,19 @@ if (!function_exists('requisitionStatus')) {
     function requisitionStatus($value)
     {
         if ($value == 1) {
-            $output = '<span class="badge badge-info">' . __('সুপারিশ করা হয়েছে') . '</span>';
+            $output = '<span class="badge badge-info">' . __('Recommended') . '</span>';
         } elseif($value == 2) {
-            $output = '<span class="badge badge-danger">' . __('প্রত্যাখ্যান করা হয়েছে') . '</span>';
+            $output = '<span class="badge badge-danger">' . __('Rejected') . '</span>';
         }elseif($value == 3) {
-            $output = '<span class="badge badge-primary">' . __('অনুমোদন করা হয়েছে') . '</span>';
+            $output = '<span class="badge badge-primary">' . __('Approved') . '</span>';
         }elseif($value == 4) {
-            $output = '<span class="badge badge-success">' . __('বিতরণ করা হয়েছে') . '</span>';
+            $output = '<span class="badge badge-success">' . __('Distributed') . '</span>';
         }elseif($value == 5) {
-            $output = '<span class="badge badge-success">' . __('গ্রহন করা হয়েছে') . '</span>';
+            $output = '<span class="badge badge-success">' . __('Received') . '</span>';
         }elseif($value == 6) {
-            $output = '<span class="badge badge-success">' . __('যাচাই করা হয়েছে') . '</span>';
+            $output = '<span class="badge badge-success">' . __('Verified') . '</span>';
         } else {
-            $output = '<span class="badge badge-warning">' . __('সুপারিশের জন্য প্রেরন করা হয়েছে') . '</span>';
+            $output = '<span class="badge badge-warning">' . __('Initiated') . '</span>';
         }
         return $output;
     }

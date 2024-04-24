@@ -35,13 +35,13 @@
                             <table id="data-table" class="table table-sm table-bordered">
                                 <thead>
                                     <tr>
-                                        <th width="5%">নং.</th>
+                                        <th width="5%">Sl.</th>
                                         <th>চাহিদাপত্র নাম্বার</th>
                                         <th>অনুরোধকৃত শাখা</th>
                                         <th>অনুরোধকৃত দপ্তর</th>
-                                        <th>বর্তমান অবস্থা</th>
+                                        <th>Status</th>
                                         <th>চাহিদাপত্রের তারিখ</th>
-                                        <th width="10%">অ্যাকশন</th>
+                                        <th width="10%">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>

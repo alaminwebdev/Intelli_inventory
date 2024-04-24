@@ -13,14 +13,14 @@
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th width="5%">নং.</th>
+                                        <th width="5%">Sl.</th>
                                         <th>জি. আর. এন.</th>
                                         <th>চালান নং</th>
-                                        <th>ক্রয় অর্ডার নং.</th>
+                                        <th>ক্রয় অর্ডার Sl.</th>
                                         <th>এন্ট্রি তারিখ</th>
                                         <th>সরবরাহকারী</th>
                                         {{-- <th>অবস্থা</th> --}}
-                                        <th>অ্যাকশন</th>
+                                        <th>Action</th>
                                         {{-- <th width="15%" class="text-center">Action</th> --}}
                                     </tr>
                                 </thead>

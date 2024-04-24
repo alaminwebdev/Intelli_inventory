@@ -237,7 +237,7 @@
                                         <th width="30%">চাহিদাপত্র নাম্বার</th>
                                         <th width="30%">তৈরি সময়</th>
                                         <th width="30%">অবস্থা</th>
-                                        <th width="10%">অ্যাকশন</th>
+                                        <th width="10%">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="">

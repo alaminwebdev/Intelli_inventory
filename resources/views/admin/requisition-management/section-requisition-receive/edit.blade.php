@@ -113,7 +113,7 @@
                                         <div class="text-right">
                                             <button type="submit" class="btn btn-success btn-sm" {{ $editData->status === 4 ? '' : 'disabled'  }}>গ্রহন করুন</button>
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.section.requisition.receive.list') }}">পিছনে যান</a>
+                                                <a href="{{ route('admin.section.requisition.receive.list') }}">Back</a>
                                             </button>
                                         </div>
                                     </div>

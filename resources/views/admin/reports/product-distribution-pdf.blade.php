@@ -36,7 +36,7 @@
                 <th class="text-center">পন্য</th>
                 <th class="text-center">ইউনিট</th>
                 <th class="text-center">শাখা</th>
-                <th class="text-center">ক্রয় অর্ডার নং.</th>
+                <th class="text-center">ক্রয় অর্ডার Sl.</th>
                 <th class="text-center">তারিখ</th>
                 <th class="text-center">বিতরনের পরিমান</th>
                 <th class="text-center">মোট বিতরন</th>

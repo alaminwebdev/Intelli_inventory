@@ -94,7 +94,7 @@
                                         </div>
 
                                         <div class="form-group col-md-6">
-                                            <label class="control-label d-block">অ্যাকশন</label>
+                                            <label class="control-label d-block">Action</label>
                                             <button type="submit" name="type" value="search" class="btn btn-success btn-sm mr-1" style="box-shadow:rgba(40, 167, 69, 0.30) 0px 8px 18px 4px"><i class="fas fa-search mr-1"></i> খুজুন</button>
                                             @if (isset($distributed_products) && count($distributed_products) > 0)
                                                 <button type="submit" class="btn btn-sm btn-primary" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ হিসাবে ডাউনলোড করুন</button>
@@ -106,12 +106,12 @@
                             <table class="table table-sm table-bordered" style="width: 100%;" id="">
                                 <thead style="background: #fff4f4 !important;">
                                     <tr>
-                                        <th class="text-center">নং.</th>
+                                        <th class="text-center">Sl.</th>
                                         <th class="text-center">পন্য</th>
                                         <th class="text-center">ইউনিট</th>
                                         {{-- <th class="text-center">দপ্তর</th> --}}
                                         <th class="text-center">শাখা</th>
-                                        <th class="text-center">ক্রয় অর্ডার নং.</th>
+                                        <th class="text-center">ক্রয় অর্ডার Sl.</th>
                                         <th class="text-center">তারিখ</th>
                                         <th class="text-center">বিতরনের পরিমান</th>
                                         <th class="text-center">মোট বিতরন</th>

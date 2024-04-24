@@ -16,13 +16,13 @@ class UnitController extends Controller
         $this->unitService  = $unitService;
     }
     public function index(){
-        $data['title'] = 'ইউনিটের তালিকা';
+        $data['title'] = 'Unit List';
         $data['units'] = $this->unitService->getAll();
         return view('admin.system-setup.unit.list', $data);
     }
     public function add()
     {
-        $data['title'] = 'ইউনিট যুক্ত করুন';
+        $data['title'] = 'Add Unit';
         return view('admin.system-setup.unit.add', $data);
     }
     public function store(Request $request)
@@ -35,7 +35,7 @@ class UnitController extends Controller
     }
     public function edit($id)
     {
-        $data['title'] = 'ইউনিট হালনাগাদ করুন';
+        $data['title'] = 'Update Unit';
         $data['editData'] = $this->unitService->getByID($id);
         return view('admin.system-setup.unit.add', $data);
     }

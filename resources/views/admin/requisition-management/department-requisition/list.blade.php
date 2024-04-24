@@ -13,11 +13,11 @@
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th width="5%">নং.</th>
+                                        <th width="5%">Sl.</th>
                                         <th>চাহিদাপত্র নাম্বার</th>
                                         <th>অনুরোধকৃত ডিপার্টমেন্ট</th>
                                         <th>প্রোডাক্ট দেখুন</th>
-                                        <th>বর্তমান অবস্থা</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>

@@ -269,7 +269,7 @@
                                         <th width="20%">তৈরি সময়</th>
                                         <th width="20%">শাখা</th>
                                         <th width="20%">অবস্থা</th>
-                                        <th width="10%">অ্যাকশন</th>
+                                        <th width="10%">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="">

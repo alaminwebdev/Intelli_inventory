@@ -23,8 +23,10 @@
     <link rel="icon" href="{{ fileExist(['url' => @$site_setting->favicon, 'type' => 'favicon']) }}" type="image/x-icon">
     <title>{{ @$site_setting->title_suffix ? @$site_setting->title_suffix : 'Project Name' }} | {{ @$title ?? 'Dashboard' }}</title>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="{{ asset('plugins') }}/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('plugins') }}/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
     <link rel="stylesheet" href="{{ asset('plugins') }}/select2/css/select2.min.css">
@@ -42,7 +44,7 @@
     <script src="{{ asset('plugins/amcharts/exporting.js') }}"></script>
     <style>
         body {
-            font-family: 'Kalpurush', Arial, sans-serif !important;
+            font-family: "Roboto", sans-serif;
         }
 
         ::-webkit-scrollbar {
@@ -71,7 +73,7 @@
         }
 
         .navbar-white {
-            background: linear-gradient(to right, #5b86e5f2, #36d1dc26);
+            background: linear-gradient(to right, #923993, #36d1dc26);
             backdrop-filter: blur(6.6px);
             -webkit-backdrop-filter: blur(6.6px);
         }
@@ -81,8 +83,7 @@
         }
 
         .table thead {
-            background: linear-gradient(90deg, #5B86E5 0%, #5b86e5b5 100%) !important;
-            /* background: linear-gradient(180deg, #5b86e5b5 0%, #36D1DC 100%) !important; */
+            background: linear-gradient(to right, #923993, #24757b) !important;
         }
 
         .table thead th {
@@ -131,6 +132,9 @@
             background-color: #fff;
             border-top: none;
             color: #2a527b;
+            font-size: 12px;
+        }
+        .am5exporting-menu {
             font-size: 12px;
         }
 

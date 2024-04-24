@@ -50,7 +50,7 @@
         </div>
         <p style="margin: 0;">অনুরোধকৃত দপ্তর : {{ @$requestedRequisitionInfo->section->department->name }}</p>
         <p style="margin: 0;">অনুরোধকৃত শাখা : {{ @$requestedRequisitionInfo->section->name }}</p>
-        <p style="margin: 0;">বর্তমান অবস্থা : {{ $status }}</p>
+        <p style="margin: 0;">Status : {{ $status }}</p>
     </div>
     @if (@$requisitionProducts && count(@$requisitionProducts) > 0)
         <table class="table table-bordered" style="margin-top: 10px;">

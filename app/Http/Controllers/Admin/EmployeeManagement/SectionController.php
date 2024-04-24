@@ -22,13 +22,13 @@ class SectionController extends Controller
     }
     public function index()
     {
-        $data['title']      = 'শাখা তালিকা';
+        $data['title']      = 'Section List';
         $data['sections']   = $this->sectionService->getAll();
         return view('admin.employee-management.section.list', $data);
     }
     public function add()
     {
-        $data['title']          = 'শাখা যুক্ত করুন';
+        $data['title']          = 'Add Section';
         $data['departments']    = $this->departmentService->getAll();
         return view('admin.employee-management.section.add', $data);
     }
@@ -43,7 +43,7 @@ class SectionController extends Controller
     }
     public function edit($id)
     {
-        $data['title']          = 'শাখা হালনাগাদ করুন';
+        $data['title']          = 'Update Section';
         $data['editData']       = $this->sectionService->getByID($id);
         $data['departments']    = $this->departmentService->getAll();
         return view('admin.employee-management.section.add', $data);

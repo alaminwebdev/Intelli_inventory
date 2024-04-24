@@ -14,7 +14,7 @@
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th width="5%">নং.</th>
+                                        <th width="5%">Sl.</th>
                                         <th>চাহিদাপত্র নাম্বার</th>
                                         <th>শাখা</th>
                                         <th>পন্য</th>

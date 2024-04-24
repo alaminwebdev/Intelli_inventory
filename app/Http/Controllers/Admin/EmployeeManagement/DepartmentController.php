@@ -16,13 +16,13 @@ class DepartmentController extends Controller
         $this->departmentService  = $departmentService;
     }
     public function index(){
-        $data['title']          = 'দপ্তরের তালিকা';
+        $data['title']          = 'Department List';
         $data['departments']    = $this->departmentService->getAll();
         return view('admin.employee-management.department.list', $data);
     }
     public function add()
     {
-        $data['title'] = 'দপ্তর যুক্ত করুন';
+        $data['title'] = 'Add Department';
         return view('admin.employee-management.department.add', $data);
     }
     public function store(Request $request)
@@ -35,7 +35,7 @@ class DepartmentController extends Controller
     }
     public function edit($id)
     {
-        $data['title'] = 'দপ্তর হালনাগাদ করুন';
+        $data['title'] = 'Update Department';
         $data['editData'] = $this->departmentService->getByID($id);
         return view('admin.employee-management.department.add', $data);
     }

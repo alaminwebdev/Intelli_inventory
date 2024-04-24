@@ -107,10 +107,10 @@
                                                 <button type="submit" class="btn btn-success btn-sm" {{ @$editData->status == 0 ? '' : 'disabled' }}>সুপারিশ করুন</button>
                                             @else
                                                 <button type="submit" class="btn btn-success btn-sm">সংরক্ষণ</button>
-                                                <button type="reset" class="btn btn-danger btn-sm">মুছুন</button>
+                                                <button type="reset" class="btn btn-danger btn-sm">Reset</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.recommended.requisition.list') }}">পিছনে যান</a>
+                                                <a href="{{ route('admin.recommended.requisition.list') }}">Back</a>
                                             </button>
                                         </div>
                                     </div>

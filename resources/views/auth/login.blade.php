@@ -14,13 +14,15 @@
         body,
         html {
             font-family: "Roboto", sans-serif;
-            background: linear-gradient(to left, #5b86e51f, #36d1dc0d);
+            background-color: #50d8d7;
+            background-image: linear-gradient(316deg, #50d8d7 0%, #923993 74%);
             height: 100%;
         }
 
         .card-container.card {
             width: 350px;
             padding: 40px 40px;
+            background: rgb(80 216 215 / 20%)
         }
 
         .btn {
@@ -33,21 +35,7 @@
         }
 
         .card {
-            /* background-color: #fff;
-            padding: 20px 25px 30px; */
-            /* margin: 0 auto 25px; */
-            /* margin-top: 50px; */
-            /* -moz-border-radius: 2px;
-            -webkit-border-radius: 2px;
-            border-radius: 2px; */
-            /* -moz-box-shadow: 15px 15px 27px rgb(0 0 0 / 50%);
-            -webkit-box-shadow: 15px 15px 27px rgb(0 0 0 / 50%);
-            box-shadow: 15px 15px 27px rgb(0 0 0 / 50%);
-            -moz-box-shadow: 15px 15px 27px rgb(0 0 0 / 50%);
-            -webkit-box-shadow: 15px 15px 27px rgb(0 0 0 / 50%);
-            box-shadow: 15px 15px 27px rgb(0 0 0 / 50%); */
             word-wrap: break-word;
-            background-color: #fff;
             background-clip: border-box;
             border: 0 solid rgba(0, 0, 0, .125);
             border-radius: 15px;
@@ -55,7 +43,7 @@
         }
 
         .profile-img-card {
-            width: 100px;
+            width: 80px;
         }
 
         .profile-name-card {
@@ -64,6 +52,7 @@
             text-align: center;
             margin: 10px 0 0;
             min-height: 1em;
+            color: #fff;
         }
 
         .form-signin input {
@@ -104,6 +93,8 @@
             -moz-transition: all 0.218s;
             -webkit-transition: all 0.218s;
             transition: all 0.218s;
+            background: #2a527b;
+            color: #fff;
         }
     </style>
 </head>
@@ -114,8 +105,7 @@
             <div class="text-center">
                 <img src="{{ fileExist(['url' => @$site_setting->logo, 'type' => 'logo']) }}" class="profile-img-card img-circle">
             </div>
-            {{-- <p id="profile-name" class="profile-name-card">{{ @$title ?? '' }} Login</p> --}}
-            <p id="profile-name" class="profile-name-card">SB Inventory Management System</p>
+            <p id="profile-name" class="profile-name-card">Intelli Inventory Management System</p>
             <br>
             <form class="form-signin" id="form-signin" action="{{ $url }}" method="post">
                 {{ csrf_field() }}
@@ -140,11 +130,11 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
-                        <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Sign In</button>
+                        <button class="btn btn-lg btn-block btn-signin" type="submit">Sign In</button>
                     </div>
                 </div>
             </form>
-            <div class="row">
+            {{-- <div class="row">
                 <div class="form-group text-center">
                     @if (Route::has(getGuard() . '.password.request'))
                         <a class="btn btn-link" href="{{ route(getGuard() . '.password.request') }}" style="cursor: pointer;">
@@ -152,10 +142,7 @@
                         </a>
                     @endif
                 </div>
-                <div class="form-group col-md-12 col-xs-12 col-sm-12 col-lg-12">
-                    <a class="btn btn-lg btn-success btn-block btn-signin" href="{{ url('/') }}">Home</a>
-                </div>
-            </div>
+            </div> --}}
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>

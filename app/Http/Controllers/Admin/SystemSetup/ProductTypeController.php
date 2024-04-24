@@ -16,13 +16,13 @@ class ProductTypeController extends Controller
         $this->productTypeService  = $productTypeService;
     }
     public function index(){
-        $data['title'] = 'পন্যের ধরনের তালিকা';
+        $data['title'] = 'Product Type List';
         $data['product_types'] = $this->productTypeService->getAll();
         return view('admin.system-setup.product-type.list', $data);
     }
     public function add()
     {
-        $data['title'] = 'পন্যের ধরন যুক্ত করুন';
+        $data['title'] = 'Add Product Type';
         return view('admin.system-setup.product-type.add', $data);
     }
     public function store(Request $request)
@@ -35,7 +35,7 @@ class ProductTypeController extends Controller
     }
     public function edit($id)
     {
-        $data['title'] = 'পন্যের ধরন হালনাগাদ করুন';
+        $data['title'] = 'Update Product Type';
         $data['editData'] = $this->productTypeService->getByID($id);
         return view('admin.system-setup.product-type.add', $data);
     }

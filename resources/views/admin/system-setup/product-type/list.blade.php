@@ -7,16 +7,16 @@
 				<div class="card shadow-sm">
 					<div class="card-header text-right">
 						<h4 class="card-title">{{@$title}}</h4>
-						<a href="{{route('admin.product.type.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> পন্যের ধরন যুক্ত করুন</a>
+						<a href="{{route('admin.product.type.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Product Type</a>
 					</div>
 					<div class="card-body">
 						<table id="sb-data-table" class="table table-bordered">
 							<thead>
 								<tr>
-									<th width="5%">নং.</th>
-									<th>পন্যের ধরনের নাম</th>
-									<th>বর্তমান অবস্থা</th>
-									<th width="15%" class="text-center">অ্যাকশন</th>
+									<th width="5%">Sl.</th>
+									<th>Product Type</th>
+									<th>Status</th>
+									<th width="15%" class="text-center">Action</th>
 								</tr>
 							</thead>
 							<tbody >

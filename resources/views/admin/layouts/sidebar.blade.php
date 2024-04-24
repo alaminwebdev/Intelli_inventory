@@ -30,10 +30,8 @@ $nav_menus = [];
     border-left: 1px dashed rgba(255,255,255,0.5);
 }
 .layout-navbar-fixed .wrapper .sidebar-dark-primary .brand-link:not([class*=navbar]) {
-    background: #5B86E5;
-    /* background: #36D1DC;  */
-    /* background: -webkit-linear-gradient(to left, #5B86E5, #36D1DC);   */
-    /* background: linear-gradient(to left, #5B86E5, #36D1DC); */
+    background-color: #50d8d7;
+    background-image: linear-gradient(316deg, #50d8d7 0%, #923993 74%);
     font-weight: 600 !important;
     box-shadow: rgb(83 91 101 / 33%) 0px 7px 20px 0px;
 }
@@ -53,34 +51,25 @@ $nav_menus = [];
 }
 
 [class*=sidebar-dark-] {
-    background: #5B86E5;
-    /* background: #36D1DC;
-    background: -webkit-linear-gradient(to right, #5B86E5, #36D1DC);  
-    background: linear-gradient(to right, #5B86E5, #36D1DC);  */
+    background-color: #50d8d7;
+    background-image: linear-gradient(260deg, #50d8d7 0%, #923993 74%);
 
 }
-
 [class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link{
     color: #f8f9fa;
 }
 
 [class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link.active, [class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link.active:focus, [class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link.active:hover {
-    background-color: rgba(63, 103, 145, 0.441);
+    background-color: rgba(63, 103, 145, 0.40);
     color: #fff;
 }
 
 .sidebar-dark-primary .nav-sidebar>.nav-item>.nav-link.active, .sidebar-light-primary .nav-sidebar>.nav-item>.nav-link.active {
-    background-color: rgba(63, 103, 145, 0.651);
+    background-color: rgba(63, 103, 145, 0.30);
     color: #fff;
 }
 
-.main-sidebar, .main-sidebar::before {
-    transition: margin-left .5s ease-in-out,width 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-}
-.main-sidebar .brand-text, .main-sidebar .logo-xl, .main-sidebar .logo-xs, .sidebar .nav-link p, .sidebar .user-panel .info {
-    transition: margin-left .3s linear, opacity 3s linear, visibility .5s linear;
-    transition-delay: 0.3s; /* Delay the second transition by 0.5 seconds */
-}
+
 [class*=sidebar-dark] .btn-sidebar, [class*=sidebar-dark] .form-control-sidebar {
     background-color: #fff;
     border: 1px solid #ececec;
@@ -251,7 +240,7 @@ $nav_menus = [];
                 <li class="nav-item">
                     <a href="{{ route('admin.dashboard') }}" class="nav-link">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
-                        <p>ড্যাশবোর্ড</p>
+                        <p>Dashboard</p>
                     </a>
                 </li>
                 @foreach ($nav_menus as $nav_menu)

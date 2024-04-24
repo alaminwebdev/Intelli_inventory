@@ -137,11 +137,11 @@ class DashboardController extends Controller
                         $dashboard = 'admin.dashboard.dashboard';
                         $data['sectionRequisitions']            = $this->sectionRequisitionService->getAll(null, null, null, null, 10);
                         $data['pendingRequistion']              = SectionRequisition::count();
-                        $data['sectionRequisitionProducts']     = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, null, 10, 4, 7);
-                        $data['mostRequestedProducts']          = $this->sectionRequisitionService->getMostRequestedProducts(null, null, 10, 7);
+                        $data['sectionRequisitionProducts']     = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, null, 10, 4);
+                        $data['mostRequestedProducts']          = $this->sectionRequisitionService->getMostRequestedProducts(null, null, 10);
                         $data['requisitionInfoByDepartment']    = $this->sectionRequisitionService->getRequisitionInfoByDepartment();
                         $data['totalProductsInRequisition']     = $this->sectionRequisitionService->getProductsInRequisitionBySection();
-                        $data['mostStockProducts']              = $this->stockInService->getMostStockProducts(null, 10, 7);
+                        $data['mostStockProducts']              = $this->stockInService->getMostStockProducts(null, 10);
                         break;
                 }
             }
@@ -150,26 +150,23 @@ class DashboardController extends Controller
             $dashboard = 'admin.dashboard.dashboard';
             $data['sectionRequisitions']            = $this->sectionRequisitionService->getAll(null, null, null, null, 10);
             $data['pendingRequistion']              = SectionRequisition::count();
-            $data['sectionRequisitionProducts']     = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, null, 10, 4, 7);
-            $data['mostRequestedProducts']          = $this->sectionRequisitionService->getMostRequestedProducts(null, null, 10, 7);
+            $data['sectionRequisitionProducts']     = $this->sectionRequisitionService->getProductRequisitionInfoByID(null, null, 10, 4);
+            $data['mostRequestedProducts']          = $this->sectionRequisitionService->getMostRequestedProducts(null, null, 10);
             $data['requisitionInfoByDepartment']    = $this->sectionRequisitionService->getRequisitionInfoByDepartment();
             $data['totalProductsInRequisition']     = $this->sectionRequisitionService->getProductsInRequisitionBySection();
-            //dd($data['totalProductsInRequisition']);
-            $data['mostStockProducts']              = $this->stockInService->getMostStockProducts(null, 10, 70);
+            $data['mostStockProducts']              = $this->stockInService->getMostStockProducts(null, 10);
         }
 
         if (!$dashboard) {
             return view('admin.dashboard.no-role-dashboard');
         }
 
-
-
         return view($dashboard, $data);
     }
     public function receivedProducts()
     {
 
-        $data['title']  = 'সর্বশেষ প্রাপ্ত পণ্য';
+        $data['title']  = 'Last Received Product';
         $user           = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
             $userRoleIds = UserRole::where('user_id', $user->id)->pluck('role_id');
@@ -236,7 +233,7 @@ class DashboardController extends Controller
 
     public function stockInProducts()
     {
-        $data['title']                  = 'সর্বাধিক মজুদকৃত পণ্য ';
+        $data['title']                  = 'Most Stocked Products';
         $data['mostStockProducts']      = $this->stockInService->getMostStockProducts();
         return view('admin.partials.stock-products', $data);
     }

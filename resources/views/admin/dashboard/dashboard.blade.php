@@ -59,21 +59,7 @@
         position: relative;
         height: 230px;
         border-radius: 12px;
-        background: linear-gradient(102deg, #33B46E 0%, #44D486 100%);
-        overflow: hidden;
-    }
-
-    .bg::before {
-        position: absolute;
-        content: '';
-        width: 110%;
-        height: 60%;
-        left: 50%;
-        bottom: 0;
-        background: url('{{ asset('common/images/dashboard1.png') }}');
-        background-repeat: no-repeat;
-        background-size: cover;
-        transform: translateX(-50%);
+        background: linear-gradient(102deg, #923993 0%, #50d8d7 100%);
         overflow: hidden;
     }
 
@@ -107,9 +93,9 @@
     }
 
     .table tr td {
-        color: #A1A5B7;
+        color: #3f6791;
         font-size: 12px;
-        font-weight: 600;
+        font-weight: 500;
     }
 
     .table {
@@ -218,10 +204,8 @@
                 <div class="requisition-div shadow-sm">
                     <div class="bg">
                         <div class="content px-3 py-4 text-white">
-                            <h4 class="m-0" style="font-weight: 600;">আমার টাস্ক</h4>
-                            <p class="m-0" style="font-weight: 600;">{{ en2bn($pendingRequistion ?? 0) }} টি চাহিদাপত্র
-                                তৈরি করা
-                                হয়েছে।</p>
+                            <h4 class="m-0 text-uppercase" style="font-weight: 600;">My Task</h4>
+                            <p class="m-0" style="font-weight: 600;">{{ $pendingRequistion ?? 0 }} requisition have been generated</p>
                             <span class="mt-1 rounded"
                                 style="display:block; background: #fff; width:30px; height:2px;"></span>
                         </div>
@@ -235,7 +219,7 @@
                                         <img src="{{ asset('common/images/icon1.png') }}" alt="stock-in">
                                     </div>
                                     <div class="text pt-1">
-                                        <a href="{{ route('admin.stock.in.product.selection') }}">স্টক যুক্ত করুন</a>
+                                        <a href="{{ route('admin.stock.in.product.selection') }}">Add stock</a>
                                     </div>
                                 </div>
                             </div>
@@ -246,7 +230,7 @@
                                         <img src="{{ asset('common/images/icon2.png') }}" alt="product-reecive">
                                     </div>
                                     <div class="text pt-1">
-                                        <a href="{{ route('admin.report.current.stock.in.list') }}">বর্তমান মজুদ</a>
+                                        <a href="{{ route('admin.report.current.stock.in.list') }}">Current stock</a>
                                     </div>
                                 </div>
                             </div>
@@ -258,10 +242,10 @@
                 <div class="most-requisition-products">
                     <div class="card shadow-sm" style="border-radius: 12px;">
                         <div class="card-header border-0 pb-0 pt-3">
-                            <h4 class="card-title">সর্বাধিক চাহিদাকৃত পণ্য <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
+                            <h4 class="card-title">Most demanded product<span>( Latest 10 reports )</span></h4>
                             <div class="card-tools mr-0 d-flex align-items-center">
                                 <a href="{{ route('admin.product.statistics') }}" class="btn btn-sm btn-light mr-1"
-                                    style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
+                                    style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> More</a>
                                 <div class="dropdown show">
                                     <a class="btn btn-sm btn-light" data-toggle="dropdown" href="#" aria-expanded="true"
                                         style="margin-right:2rem; padding: 1px 6px;">
@@ -278,26 +262,26 @@
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <label for="most_req_date_from" class="text-navy">শুরুর তারিখ
+                                                        <label for="most_req_date_from" class="text-navy">Start Date
                                                             :</label>
                                                         <input required="" type="text" value=""
                                                             name="most_req_date_from"
                                                             class="form-control form-control-sm text-gray singledatepicker"
-                                                            id="most_req_date_from" placeholder="শুরুর তারিখ">
+                                                            id="most_req_date_from" placeholder="Start Date">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <label for="most_req_date_to" class="text-navy">শেষ তারিখ
+                                                        <label for="most_req_date_to" class="text-navy">End Date
                                                             :</label>
                                                         <input required="" type="text" value="" name="most_req_date_to"
                                                             class="form-control form-control-sm text-gray singledatepicker"
-                                                            id="most_req_date_to" placeholder="শেষ তারিখ">
+                                                            id="most_req_date_to" placeholder="End Date">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group mb-0 d-flex">
-                                                        <input required="" type="submit" value="খুজুন"
+                                                        <input required="" type="submit" value="Search"
                                                             class="form-control form-control-sm btn btn-sm btn-primary"
                                                             id="">
                                                     </div>
@@ -319,7 +303,7 @@
             <div class="col-md-12">
                 <div class="card shadow-sm" style="border-radius: 12px;">
                     <div class="card-header border-0 pb-0 pt-3">
-                        <h3 class="card-title">চাহিদাপত্রের পরিসংখ্যান <span>( দপ্তর অনুসারে )</span></h3>
+                        <h3 class="card-title">Requisition statistics <span>( According to the Department )</span></h3>
                         <div class="card-tools mr-0">
                             <div class="dropdown show requisition-statistics-form" >
                                 <a class="btn btn-sm btn-light" data-toggle="dropdown" href="#" aria-expanded="true"
@@ -336,23 +320,23 @@
                                         <div class="row">
                                             <div class="col-sm-12">
                                                 <div class="form-group">
-                                                    <label for="date_from" class="text-navy">শুরুর তারিখ :</label>
+                                                    <label for="date_from" class="text-navy">Start Date :</label>
                                                     <input required="" type="text" value="" name="date_from"
                                                         class="form-control form-control-sm text-gray singledatepicker"
-                                                        id="date_from" placeholder="শুরুর তারিখ">
+                                                        id="date_from" placeholder="Start Date">
                                                 </div>
                                             </div>
                                             <div class="col-sm-12">
                                                 <div class="form-group">
-                                                    <label for="date_to" class="text-navy">শেষ তারিখ :</label>
+                                                    <label for="date_to" class="text-navy">End Date :</label>
                                                     <input required="" type="text" value="" name="date_to"
                                                         class="form-control form-control-sm text-gray singledatepicker"
-                                                        id="date_to" placeholder="শেষ তারিখ">
+                                                        id="date_to" placeholder="End Date">
                                                 </div>
                                             </div>
                                             <div class="col-sm-12">
                                                 <div class="form-group mb-0 d-flex">
-                                                    <input required="" type="submit" value="খুজুন"
+                                                    <input required="" type="submit" value="Search"
                                                         class="form-control form-control-sm btn btn-sm btn-primary"
                                                         id="">
                                                 </div>
@@ -374,7 +358,7 @@
             <div class="col-md-12">
                 <div class="card shadow-sm" style="border-radius: 12px;">
                     <div class="card-header border-0 pb-0 pt-3">
-                        <h4 class="card-title">চাহিদাপত্র এবং পন্য পরিসংখ্যান <span>( শাখা অনুসারে )</span></h4>
+                        <h4 class="card-title">Requisition and product statistics<span>( According to the Section )</span></h4>
                         <div class="card-tools mr-0">
                             <div class="dropdown show">
                                 <a class="btn btn-sm btn-light" data-toggle="dropdown" href="#" aria-expanded="true"
@@ -391,23 +375,23 @@
                                         <div class="row">
                                             <div class="col-sm-12">
                                                 <div class="form-group">
-                                                    <label for="req_date_from" class="text-navy">শুরুর তারিখ :</label>
+                                                    <label for="req_date_from" class="text-navy">Start Date :</label>
                                                     <input required="" type="text" value="" name="req_date_from"
                                                         class="form-control form-control-sm singledatepicker text-gray"
-                                                        id="req_date_from" placeholder="শুরুর তারিখ">
+                                                        id="req_date_from" placeholder="Start Date">
                                                 </div>
                                             </div>
                                             <div class="col-sm-12">
                                                 <div class="form-group">
-                                                    <label for="req_date_to" class="text-navy">শেষ তারিখ:</label>
+                                                    <label for="req_date_to" class="text-navy">End Date:</label>
                                                     <input required="" type="text" value="" name="req_date_to"
                                                         class="form-control form-control-sm singledatepicker text-gray"
-                                                        id="req_date_to" placeholder="শেষ তারিখ">
+                                                        id="req_date_to" placeholder="End Date">
                                                 </div>
                                             </div>
                                             <div class="col-sm-12">
                                                 <div class="form-group mb-0 d-flex">
-                                                    <input required="" type="submit" value="খুজুন"
+                                                    <input required="" type="submit" value="Search"
                                                         class="form-control form-control-sm btn btn-sm btn-primary"
                                                         id="">
                                                 </div>
@@ -429,10 +413,10 @@
             <div class="col-md-12">
                 <div class="card shadow-sm" style="border-radius: 12px;">
                     <div class="card-header border-0 pb-0 pt-3">
-                        <h4 class="card-title">সর্বাধিক মজুদকৃত পণ্য <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
+                        <h4 class="card-title">Most stocked products <span>( Latest 10 reports )</span></h4>
                         <div class="card-tools mr-0 d-flex align-items-center">
                             <a href="{{ route('admin.dashboard.stock-in-products') }}" class="btn btn-sm btn-light mr-1"
-                                style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
+                                style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> More</a>
                             <div class="dropdown show">
                                 <a class="btn btn-sm btn-light" data-toggle="dropdown" href="#" aria-expanded="true"
                                     style="margin-right:2rem; padding: 1px 6px;">
@@ -448,23 +432,23 @@
                                         <div class="row">
                                             <div class="col-sm-12">
                                                 <div class="form-group">
-                                                    <label for="stock_date_from" class="text-navy">শুরুর তারিখ :</label>
+                                                    <label for="stock_date_from" class="text-navy">Start Date :</label>
                                                     <input required="" type="text" value="" name="stock_date_from"
                                                         class="form-control form-control-sm text-gray singledatepicker"
-                                                        id="stock_date_from" placeholder="শুরুর তারিখ">
+                                                        id="stock_date_from" placeholder="Start Date">
                                                 </div>
                                             </div>
                                             <div class="col-sm-12">
                                                 <div class="form-group">
-                                                    <label for="stock_date_to" class="text-navy">শেষ তারিখ :</label>
+                                                    <label for="stock_date_to" class="text-navy">End Date :</label>
                                                     <input required="" type="text" value="" name="stock_date_to"
                                                         class="form-control form-control-sm text-gray singledatepicker"
-                                                        id="stock_date_to" placeholder="শেষ তারিখ">
+                                                        id="stock_date_to" placeholder="End Date">
                                                 </div>
                                             </div>
                                             <div class="col-sm-12">
                                                 <div class="form-group mb-0 d-flex">
-                                                    <input required="" type="submit" value="খুজুন"
+                                                    <input required="" type="submit" value="Search"
                                                         class="form-control form-control-sm btn btn-sm btn-primary"
                                                         id="">
                                                 </div>
@@ -487,33 +471,26 @@
                 <div class="requisition-list">
                     <div class="card shadow-sm">
                         <div class="card-header border-0">
-                            <h4 class="card-title">চাহিদাপত্র <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
+                            <h4 class="card-title">Requisition <span>( Latest 10 reports )</span></h4>
                             <a href="{{ route('admin.section.requisition.list') }}" class="btn btn-sm btn-light"
-                                style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
+                                style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> More</a>
                         </div>
                         <div class="card-body pt-0">
                             <table class="table">
                                 <thead style="background: #fff !important;">
                                     <tr>
-                                        <th width="30%">চাহিদাপত্র নাম্বার</th>
-                                        <th width="20%">তৈরি সময়</th>
-                                        <th width="20%">শাখা</th>
-                                        <th width="20%">অবস্থা</th>
-                                        <th width="10%">অ্যাকশন</th>
+                                        <th width="30%">Requisition No.</th>
+                                        <th width="20%">Created at</th>
+                                        <th width="20%">Section</th>
+                                        <th width="20%">Status</th>
+                                        <th width="10%">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="">
                                     @foreach ($sectionRequisitions as $item)
-                                    @php
-                                    $formatter = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG,
-                                    IntlDateFormatter::NONE);
-                                    $formatter->setPattern('d-MMMM-y');
-                                    $date = $formatter->format($item->created_at);
-                                    @endphp
                                     <tr>
-                                        <td>{{ en2bn($item->requisition_no) }}</td>
-                                        {{-- <td>{{ date('d-M-Y', strtotime($item->created_at)) }}</td> --}}
-                                        <td>{{ $date }}</td>
+                                        <td>{{ $item->requisition_no }}</td>
+                                        <td>{{ date('d-M-Y', strtotime($item->created_at)) }}</td>
                                         <td>{{ $item->section->name }}</td>
                                         <td>{!! requisitionStatus($item->status) !!}</td>
                                         <td><button class="btn btn-sm btn-light px-1 py-0 view-products"
@@ -533,27 +510,27 @@
                 <div class="prodduct-list">
                     <div class="card shadow-sm">
                         <div class="card-header border-0">
-                            <h4 class="card-title">সর্বশেষ প্রাপ্ত পণ্য <span>( সর্বশেষ ১০ টি প্রতিবেদন )</span></h4>
+                            <h4 class="card-title">Last received product <span>( Latest 10 reports )</span></h4>
                             <a href="{{ route('admin.dashboard.received-products') }}" class="btn btn-sm btn-light"
-                                style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> আরও</a>
+                                style="font-size: 11px !important;"><i class="fas fa-list mr-1"></i> More</a>
                         </div>
                         <div class="card-body pt-0">
                             <table class="table">
                                 <thead style="background: #fff !important;">
                                     <tr>
-                                        <th width="20%">চাহিদাপত্র নাম্বার</th>
-                                        <th width="20%">শাখা</th>
-                                        <th width="40%">পন্যের নাম</th>
-                                        <th width="20%" class="text-right">পরিমান</th>
+                                        <th width="20%">Requisition No.</th>
+                                        <th width="20%">Section</th>
+                                        <th width="40%">Product</th>
+                                        <th width="20%" class="text-right">Quantity</th>
                                     </tr>
                                 </thead>
                                 <tbody id="">
                                     @foreach ($sectionRequisitionProducts as $item)
                                     <tr>
-                                        <td>{{ en2bn($item->requisition_no) }}</td>
+                                        <td>{{ $item->requisition_no }}</td>
                                         <td>{{ $item->section }}</td>
                                         <td>{{ $item->product }} ({{ $item->unit }})</td>
-                                        <td class="text-right">{{ en2bn($item->final_approve_quantity) }}</td>
+                                        <td class="text-right">{{ $item->final_approve_quantity }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -572,7 +549,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h6 class="modal-title" id="productDetailsModalLabel"
-                    style="font-weight: 600;color: #2a527b;text-transform: uppercase;">পন্যের বিবরনী</h6>
+                    style="font-weight: 600;color: #2a527b;text-transform: uppercase;">Product details</h6>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -581,12 +558,12 @@
                 <table class="table table-bordered">
                     <thead style="background: #fff !important;">
                         <tr>
-                            <th>পন্য</th>
-                            <th>বর্তমান মজূদ</th>
-                            <th>চাহিদার পরিমান</th>
-                            <th>সুপারিশ পরিমান</th>
-                            <th>অনুমোদিত পরিমান</th>
-                            <th>যৌক্তিকতা</th>
+                            <th>Product</th>
+                            <th>Current Stock</th>
+                            <th>Demand Quantity</th>
+                            <th>Recommended Quantity</th>
+                            <th>Approve Quantity</th>
+                            <th>Remarks</th>
                         </tr>
                     </thead>
                     <tbody id="productDetailsTable">
@@ -595,7 +572,7 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">বন্ধ করুন</button>
+                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -664,7 +641,7 @@
         let mostRequestedProducts = <?php echo json_encode(@$mostRequestedProducts); ?>;
 
         if (window.innerWidth > 576) {
-            var textSize = 10;
+            var textSize = 11;
             var yCategoryName = "product";
             var tooltipText = "{valueX}";
         } else {
@@ -961,7 +938,7 @@
                     centerY: am5.p50,
                     centerX: am5.p50,
                     paddingRight: 5,
-                    fontSize: 10,
+                    fontSize: 11,
 
                 });
 
@@ -1269,7 +1246,7 @@
                     centerY: am5.p50,
                     centerX: am5.p100,
                     paddingRight: 5,
-                    fontSize: 10,
+                    fontSize: 11,
 
                 });
 
@@ -1561,7 +1538,7 @@
         let mostStockProducts = <?php echo json_encode(@$mostStockProducts); ?>;
 
         if (window.innerWidth > 576) {
-            var textSize4 = 10;
+            var textSize4 = 11;
             var yCategoryName4 = "product";
             var tooltipText4 = "{valueX}";
         } else {

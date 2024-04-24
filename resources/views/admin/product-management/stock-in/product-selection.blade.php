@@ -16,13 +16,13 @@
                                 <h4 class="card-title">{{ @$title }}</h4>
                                 <div>
                                     <button type="submit" class="btn btn-success btn-sm">সামনে এগিয়ে যান</button>
-                                    <a class="btn btn-default btn-sm ion-android-arrow-back" href="{{ route('admin.stock.in.list') }}">পিছনে যান</a>
+                                    <a class="btn btn-default btn-sm ion-android-arrow-back" href="{{ route('admin.stock.in.list') }}">Back</a>
                                 </div>
                             </div>
                             <div class="card-body">
                                 <div class="row px-3 pb-4 border rounded shadow-sm mb-4">
                                     <div class="col-md-5 pt-4">
-                                        <label class="control-label">ক্রয় অর্ডার নং. : <span class="text-red">*</span></label>
+                                        <label class="control-label">ক্রয় অর্ডার Sl. : <span class="text-red">*</span></label>
                                         <input type="text" class="form-control form-control-sm " id="po_no" name="po_no" value="">
                                     </div>
                                     <div class="col-md-4 pt-4">
@@ -87,7 +87,7 @@
                                     <div class="col-md-12">
                                         <div class="text-right">
                                             <button type="submit" class="btn btn-success btn-sm">সামনে এগিয়ে যান</button>
-                                            <a class="btn btn-default btn-sm ion-android-arrow-back" href="{{ route('admin.stock.in.list') }}">পিছনে যান</a>
+                                            <a class="btn btn-default btn-sm ion-android-arrow-back" href="{{ route('admin.stock.in.list') }}">Back</a>
                                         </div>
                                     </div>
                                 </div>

@@ -34,7 +34,7 @@
         <table class="table table-bordered" style="margin-top: 10px;">
             <thead>
                 <tr>
-                    <th class="text-left" width="10%">ক্রমিক নং.</th>
+                    <th class="text-left" width="10%">ক্রমিক Sl.</th>
                     <th class="text-center" width="30%">পন্য</th>
                     <th class="text-center">অর্ডার পরিমাণ</th>
                     <th class="text-center">পূর্ববর্তী রিসিভ পরিমাণ</th>

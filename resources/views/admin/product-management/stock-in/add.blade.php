@@ -16,7 +16,7 @@
                                     <div class="col-md-12">
                                         <div class="form-row border-bottom">
                                             <div class="form-group col-md-4">
-                                                <label class="control-label">জি. আর. এন. নং. <span class="text-red">*</span></label>
+                                                <label class="control-label">জি. আর. এন. Sl. <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm grn_no @error('grn_no') is-invalid @enderror" id="grn_no" name="grn_no" value="{{ $uniqueGRNNo }}" readonly>
                                             </div>
                                             <div class="form-group col-md-4">
@@ -47,7 +47,7 @@
                                                 </select>
                                             </div>
                                             <div class="form-group col-md-4 ">
-                                                <label class="control-label">ক্রয় অর্ডার নং. : <span class="text-red">*</span></label>
+                                                <label class="control-label">ক্রয় অর্ডার Sl. : <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm " id="po_no" name="po_no" value="{{ $selected_po_no }}" readonly>
                                             </div>
                                             <div class="form-group col-md-4 ">
@@ -106,7 +106,7 @@
                                                 <button type="submit" class="btn btn-success btn-sm">সংরক্ষন করুন</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.stock.in.product.selection') }}">পিছনে যান</a>
+                                                <a href="{{ route('admin.stock.in.product.selection') }}">Back</a>
                                             </button>
                                         </div>
                                     </div>

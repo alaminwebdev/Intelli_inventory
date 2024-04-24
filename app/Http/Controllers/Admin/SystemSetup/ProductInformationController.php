@@ -27,13 +27,13 @@ class ProductInformationController extends Controller
     }
     public function index()
     {
-        $data['title']      = 'পন্যের তালিকা';
+        $data['title']      = 'Product List';
         $data['products']   = $this->productInformationService->getAll();
         return view('admin.system-setup.product-information.list', $data);
     }
     public function add()
     {
-        $data['title']          = 'পন্য যুক্ত করুন';
+        $data['title']          = 'Add Product';
         $data['product_types']  = $this->productTypeService->getAll(1);
         $data['units']          = $this->unitService->getAll(1);
         return view('admin.system-setup.product-information.add', $data);
@@ -51,7 +51,7 @@ class ProductInformationController extends Controller
     }
     public function edit($id)
     {
-        $data['title']          = 'পন্য হালনাগাদ করুন';
+        $data['title']          = 'Update Product';
         $data['editData']       = $this->productInformationService->getByID($id);
         $data['product_types']  = $this->productTypeService->getAll(1);
         $data['units']          = $this->unitService->getAll(1);

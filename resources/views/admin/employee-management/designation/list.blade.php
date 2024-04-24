@@ -7,25 +7,25 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.employee.designation.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> পদবী যোগ করুন</a>
+                            <a href="{{ route('admin.employee.designation.add') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Designation</a>
                         </div>
                         <div class="card-body">
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th width="5%">নং.</th>
-                                        <th>পদবী</th>
-                                        <th>সাজানো</th>
-                                        <th>অবস্থান</th>
-                                        <th width="15%">অ্যাকশন</th>
+                                        <th width="5%">Sl.</th>
+                                        <th>Designation</th>
+                                        <th>Sort</th>
+                                        <th>Status</th>
+                                        <th width="15%">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($designations as $list)
                                         <tr>
-                                            <td>{{ en2bn($loop->iteration) }}</td>
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>{{ @$list->name ?? 'N/A' }}</td>
-                                            <td>{{ en2bn(@$list->sort) ?? 'N/A' }}</td>
+                                            <td>{{ @$list->sort ?? 'N/A' }}</td>
 
                                             <td>{!! activeStatus($list->status) !!}</td>
                                             <td>

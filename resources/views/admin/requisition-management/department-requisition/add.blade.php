@@ -117,13 +117,13 @@
                                     <div class="col-md-12">
                                         <div class="text-right">
                                             @if (@$editData->id)
-                                                <button type="submit" class="btn btn-success btn-sm">হালনাগাদ</button>
+                                                <button type="submit" class="btn btn-success btn-sm">Update</button>
                                             @else
                                                 <button type="submit" class="btn btn-success btn-sm">সংরক্ষণ</button>
-                                                <button type="reset" class="btn btn-danger btn-sm">মুছুন</button>
+                                                <button type="reset" class="btn btn-danger btn-sm">Reset</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.department.requisition.list') }}">পিছনে যান</a>
+                                                <a href="{{ route('admin.department.requisition.list') }}">Back</a>
                                             </button>
                                         </div>
                                     </div>

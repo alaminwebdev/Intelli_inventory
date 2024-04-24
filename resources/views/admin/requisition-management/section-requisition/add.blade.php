@@ -84,12 +84,12 @@
                                     <div class="col-md-12">
                                         <div class="text-right">
                                             @if (@$editData->id)
-                                                <button type="submit" class="btn btn-success btn-sm">হালনাগাদ</button>
+                                                <button type="submit" class="btn btn-success btn-sm">Update</button>
                                             @else
                                                 <button type="submit" class="btn btn-success btn-sm">সংরক্ষণ</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.section.requisition.product.selection') }}">পিছনে যান</a>
+                                                <a href="{{ route('admin.section.requisition.product.selection') }}">Back</a>
                                             </button>
                                         </div>
                                     </div>

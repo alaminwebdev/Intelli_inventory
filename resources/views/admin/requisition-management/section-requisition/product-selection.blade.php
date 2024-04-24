@@ -31,7 +31,7 @@
                                 <div>
                                     <button id="toggleSearchBox" class="btn btn-primary btn-sm mr-1">সার্চ</button>
                                     <button type="submit" class="btn btn-success btn-sm mr-1">সামনে এগিয়ে যান</button>
-                                    <a class="btn btn-default btn-sm ion-android-arrow-back" href="{{ route('admin.section.requisition.list') }}">পিছনে যান</a>
+                                    <a class="btn btn-default btn-sm ion-android-arrow-back" href="{{ route('admin.section.requisition.list') }}">Back</a>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -84,7 +84,7 @@
                                         <div class="text-right">
                                             <button type="submit" class="btn btn-success btn-sm mr-1">সামনে এগিয়ে যান</button>
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.section.requisition.list') }}">পিছনে যান</a>
+                                                <a href="{{ route('admin.section.requisition.list') }}">Back</a>
                                             </button>
                                         </div>
                                     </div>

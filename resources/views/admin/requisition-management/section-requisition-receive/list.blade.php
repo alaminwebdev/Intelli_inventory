@@ -12,12 +12,12 @@
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th width="5%">নং.</th>
+                                        <th width="5%">Sl.</th>
                                         <th>চাহিদাপত্র নাম্বার</th>
                                         <th>অনুরোধকৃত শাখা</th>
                                         <th>অনুরোধকৃত দপ্তর</th>
-                                        <th>বর্তমান অবস্থা</th>
-                                        <th>অ্যাকশন</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="requistionProductsTable">

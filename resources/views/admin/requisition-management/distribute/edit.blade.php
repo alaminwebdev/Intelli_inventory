@@ -42,7 +42,7 @@
                                             </div>
 
                                             {{-- <div class="col-md-2 mb-3">
-                                                <label class="control-label">বি. পি. নং. : <span class="text-red">*</span></label>
+                                                <label class="control-label">বি. পি. Sl. : <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm  @error('bp_no') is-invalid @enderror" id="bp_no" name="bp_no">
                                                 @error('bp_no')
                                                     <span class="invalid-feedback" role="alert">
@@ -196,7 +196,7 @@
                                         <div class="text-right">
                                             <button type="submit" class="btn btn-success btn-sm" {{ $editData->status === 3 ? '' : 'disabled' }}>বিতরন করুন</button>
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
-                                                <a href="{{ route('admin.distribute.list') }}">পিছনে যান</a>
+                                                <a href="{{ route('admin.distribute.list') }}">Back</a>
                                             </button>
                                         </div>
                                     </div>

@@ -16,13 +16,13 @@ class DesignationController extends Controller
         $this->designationService  = $designationService;
     }
     public function index(){
-        $data['title'] = 'অফিসার্স পদবী তালিকা';
+        $data['title'] = 'Designation List';
         $data['designations'] = $this->designationService->getAll();
         return view('admin.employee-management.designation.list', $data);
     }
     public function add()
     {
-        $data['title'] = 'পদবী যোগ করুন';
+        $data['title'] = 'Add Designation';
         return view('admin.employee-management.designation.add', $data);
     }
     public function store(Request $request)
@@ -35,7 +35,7 @@ class DesignationController extends Controller
     }
     public function edit($id)
     {
-        $data['title'] = 'পদবী হালনাগাদ করুন';
+        $data['title'] = 'Update Designation';
         $data['editData'] = $this->designationService->getByID($id);
         return view('admin.employee-management.designation.add', $data);
     }
