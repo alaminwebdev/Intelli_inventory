@@ -7,30 +7,29 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.stock.in.product.selection') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> স্টক যুক্ত করুন</a>
+                            <a href="{{ route('admin.stock.in.product.selection') }}" class="btn btn-sm btn-info"><i class="fas fa-plus mr-1"></i> Add Stock</a>
                         </div>
                         <div class="card-body">
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th width="5%">Sl.</th>
-                                        <th>জি. আর. এন.</th>
-                                        <th>চালান নং</th>
-                                        <th>ক্রয় অর্ডার Sl.</th>
-                                        <th>এন্ট্রি তারিখ</th>
-                                        <th>সরবরাহকারী</th>
+                                        <th>G.R.N.</th>
+                                        <th>Challan No.</th>
+                                        <th>PO No.</th>
+                                        <th>Entry Date</th>
+                                        <th>Supplier</th>
                                         {{-- <th>অবস্থা</th> --}}
                                         <th>Action</th>
-                                        {{-- <th width="15%" class="text-center">Action</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($stock_in_data as $list)
                                         <tr>
-                                            <td>{{ en2bn($loop->iteration) }}</td>
-                                            <td>{{ en2bn(@$list->grn_no) ?? 'N/A' }}</td>
-                                            <td>{{ en2bn(@$list->challan_no) ?? 'N/A' }}</td>
-                                            <td>{{ en2bn(@$list->po_no) ?? 'N/A' }}</td>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ @$list->grn_no ?? 'N/A' }}</td>
+                                            <td>{{ @$list->challan_no ?? 'N/A' }}</td>
+                                            <td>{{ @$list->po_no ?? 'N/A' }}</td>
                                             <td>{{ @$list->entry_date ? date('d-M-Y', strtotime($list->entry_date)) : 'N/A' }}</td>
                                             <td>{{ @$list->supplier ?? 'N/A' }}</td>
                                             {{-- <td>{!! activeStock($list->status) !!}</td> --}}
@@ -38,7 +37,7 @@
                                                 <button class="btn btn-sm btn-success view-products" data-toggle="modal" data-target="#productDetailsModal" data-stock-id="{{ $list->id }}">
                                                     <i class="far fa-eye"></i>
                                                 </button>
-                                                <a class="btn btn-sm btn-primary" href="{{ route('admin.stock.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ</a>
+                                                <a class="btn btn-sm btn-primary" href="{{ route('admin.stock.report', $list->id) }}" target="_blank"><i class="fas fa-file-pdf mr-1"></i> PDF</a>
                                                 @if ($list->status == 0)
                                                     <a class="btn btn-sm btn-success " href="{{ route('admin.stock.in.active', $list->id) }}">
                                                         <i class="fa fa-check"></i> Approve
@@ -78,7 +77,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">পন্যের বিবরনী</h6>
+                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">Product details</h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -87,11 +86,11 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>পন্য</th>
-                                <th>অর্ডার পরিমাণ</th>
-                                <th>পূর্ববর্তী রিসিভ পরিমাণ</th>
-                                <th>রিসিভ পরিমাণ</th>
-                                <th>বাকি</th>
+                                <th>Product</th>
+                                <th>PO Quantity</th>
+                                <th>Previous Receive Quantity</th>
+                                <th>Receive Quantity</th>
+                                <th>Remaining Quantity</th>
                             </tr>
                         </thead>
                         <tbody id="productDetailsTable">
@@ -100,7 +99,7 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">বন্ধ করুন</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

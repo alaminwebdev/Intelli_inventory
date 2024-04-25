@@ -1,7 +1,7 @@
 <table class="table ">
     <thead>
         <tr>
-            <th colspan="2">পন্য বাছাই</th>
+            <th colspan="2">Select Product</th>
         </tr>
     </thead>
     <tbody>

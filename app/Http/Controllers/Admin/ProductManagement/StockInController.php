@@ -33,14 +33,14 @@ class StockInController extends Controller
     }
     public function index()
     {
-        $data['title']          = 'স্টক তালিকা';
+        $data['title']          = 'Stock List';
         $data['stock_in_data']  = $this->stockInService->getAll();
         return view('admin.product-management.stock-in.list', $data);
     }
 
     public function selectProducts()
     {
-        $data['title']                  = 'পন্য বাছাই করুন';
+        $data['title']                  = 'Select Product';
         return view('admin.product-management.stock-in.product-selection', $data);
     }
 
@@ -69,7 +69,7 @@ class StockInController extends Controller
     public function add(Request $request)
     {
         if ($request->isMethod('post')) {
-            $data['title']              = 'স্টক যুক্ত করুন';
+            $data['title']              = 'Add Stock';
             $selected_product_ids       = $request->input('selected_products', []);
             $data['selected_po_no']     = $request->input('po_no', '');
             $data['is_po_product']      = $request->input('is_po_product', '');
@@ -113,7 +113,7 @@ class StockInController extends Controller
     }
     public function edit($id)
     {
-        $data['title']          = 'স্টক হালনাগাদ করুন';
+        $data['title']          = 'Update Stock';
         $data['editData']       = $this->stockInService->getByID($id);
         $data['suppliers']      = $this->supplierService->getSupplierByStatus();
         return view('admin.product-management.stock-in.edit',$data);

@@ -7,7 +7,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.stock.in.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>স্টক তালিকা</a>
+                            <a href="{{ route('admin.stock.in.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>Stock List</a>
                         </div>
                         <div class="card-body">
                             <form id="stockInForm" method="post" action="{{ route('admin.stock.in.store') }}" enctype="multipart/form-data" autocomplete="off">
@@ -16,11 +16,11 @@
                                     <div class="col-md-12">
                                         <div class="form-row border-bottom">
                                             <div class="form-group col-md-4">
-                                                <label class="control-label">জি. আর. এন. Sl. <span class="text-red">*</span></label>
+                                                <label class="control-label">G.R.N. <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm grn_no @error('grn_no') is-invalid @enderror" id="grn_no" name="grn_no" value="{{ $uniqueGRNNo }}" readonly>
                                             </div>
                                             <div class="form-group col-md-4">
-                                                <label class="control-label">এন্ট্রি তারিখ <span class="text-red">*</span></label>
+                                                <label class="control-label">Entry Date <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm entry_date @error('entry_date') is-invalid @enderror singledatefromtoday" id="entry_date" name="entry_date">
                                                 @error('entry_date')
                                                     <span class="invalid-feedback" role="alert">
@@ -29,7 +29,7 @@
                                                 @enderror
                                             </div>
                                             <div class="form-group col-md-4">
-                                                <label class="control-label">চালান নং <span class="text-red">*</span></label>
+                                                <label class="control-label">Challan No. <span class="text-red">*</span></label>
                                                 <input type="number" class="form-control form-control-sm challan_no @error('challan_no') is-invalid @enderror" id="challan_no" name="challan_no" value="{{ @$editData->challan_no }}">
                                                 @error('challan_no')
                                                     <span class="invalid-feedback" role="alert">
@@ -38,7 +38,7 @@
                                                 @enderror
                                             </div>
                                             <div class="form-group col-md-4">
-                                                <label class="control-label">সরবরাহকারী <span class="text-red">*</span></label>
+                                                <label class="control-label">Supplier <span class="text-red">*</span></label>
                                                 <select name="supplier_id" id="supplier_id" class="form-control form-control-sm">
                                                     <option value="">Please Select</option>
                                                     @foreach ($suppliers as $item)
@@ -47,11 +47,11 @@
                                                 </select>
                                             </div>
                                             <div class="form-group col-md-4 ">
-                                                <label class="control-label">ক্রয় অর্ডার Sl. : <span class="text-red">*</span></label>
+                                                <label class="control-label">PO No. <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm " id="po_no" name="po_no" value="{{ $selected_po_no }}" readonly>
                                             </div>
                                             <div class="form-group col-md-4 ">
-                                                <label class="control-label">ক্রয় অর্ডারের তারিখ : <span class="text-red">*</span></label>
+                                                <label class="control-label">PO Date <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm singledatepicker" id="" name="" @if ($selected_po_date) value="{{ date('d-m-Y', strtotime($selected_po_date)) }}" @endif disabled>
                                                 <input type="hidden" name="po_date" value="{{ $selected_po_date }}">
                                             </div>
@@ -60,13 +60,13 @@
                                             <table id="" class="table table-bordered">
                                                 <thead>
                                                     <tr>
-                                                        <th style="width:20%;">পন্য</th>
-                                                        <th>অর্ডার পরিমাণ</th>
-                                                        <th>রিসিভ পরিমাণ</th>
-                                                        <th>বাকি</th>
-                                                        <th>উৎপাদন তারিখ</th>
-                                                        <th>মেয়াদ উত্তীর্ণের তারিখ</th>
-                                                        <th>মন্তব্য</th>
+                                                        <th style="width:20%;">Product</th>
+                                                        <th>PO Quantity</th>
+                                                        <th>Receive Quantity</th>
+                                                        <th>Remaining Quantity</th>
+                                                        <th>Date of manufacture</th>
+                                                        <th>Expiry Date</th>
+                                                        <th>Remark</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -103,7 +103,7 @@
                                             @if (@$editData->id)
                                                 <button type="submit" class="btn btn-success btn-sm">Update</button>
                                             @else
-                                                <button type="submit" class="btn btn-success btn-sm">সংরক্ষন করুন</button>
+                                                <button type="submit" class="btn btn-success btn-sm">Submit</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
                                                 <a href="{{ route('admin.stock.in.product.selection') }}">Back</a>

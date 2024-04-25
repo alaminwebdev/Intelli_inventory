@@ -15,23 +15,23 @@
                             <div class="card-header text-right">
                                 <h4 class="card-title">{{ @$title }}</h4>
                                 <div>
-                                    <button type="submit" class="btn btn-success btn-sm">সামনে এগিয়ে যান</button>
+                                    <button type="submit" class="btn btn-success btn-sm">Move forward</button>
                                     <a class="btn btn-default btn-sm ion-android-arrow-back" href="{{ route('admin.stock.in.list') }}">Back</a>
                                 </div>
                             </div>
                             <div class="card-body">
                                 <div class="row px-3 pb-4 border rounded shadow-sm mb-4">
                                     <div class="col-md-5 pt-4">
-                                        <label class="control-label">ক্রয় অর্ডার Sl. : <span class="text-red">*</span></label>
+                                        <label class="control-label">PO No. : <span class="text-red">*</span></label>
                                         <input type="text" class="form-control form-control-sm " id="po_no" name="po_no" value="">
                                     </div>
                                     <div class="col-md-4 pt-4">
-                                        <label class="control-label">ক্রয় অর্ডারের তারিখ :</label>
+                                        <label class="control-label">PO Date :</label>
                                         <input type="text" class="form-control form-control-sm singledatefromtoday" id="po_date" name="po_date" value="">
                                     </div>
                                     <div class="col-md-3 pt-4">
                                         <label class="control-label" style="visibility: hidden;">Check</label>
-                                        <button class="btn btn-primary btn-sm btn-block" id="checkPoBtn">পন্য বাছাই করুন</button>
+                                        <button class="btn btn-primary btn-sm btn-block" id="checkPoBtn">Select Product</button>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -86,7 +86,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="text-right">
-                                            <button type="submit" class="btn btn-success btn-sm">সামনে এগিয়ে যান</button>
+                                            <button type="submit" class="btn btn-success btn-sm">Move forward</button>
                                             <a class="btn btn-default btn-sm ion-android-arrow-back" href="{{ route('admin.stock.in.list') }}">Back</a>
                                         </div>
                                     </div>
@@ -178,7 +178,7 @@
                                 },
                                 iconColor: 'white',
                                 icon: "success",
-                                title: "আপনার একটি ক্রয় অর্ডার আছে ।",
+                                title: "You have a purchase order.",
                                 position: 'top-end',
                                 showConfirmButton: false,
                                 timer: 3000,

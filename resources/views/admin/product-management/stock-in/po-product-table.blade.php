@@ -2,8 +2,8 @@
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>পন্য বাছাই</th>
-            <th style="width:10%;">বাকি</th>
+            <th>Select Product</th>
+            <th style="width:10%;">Remaining</th>
         </tr>
     </thead>
     <tbody>
@@ -12,7 +12,7 @@
                 <!-- Add a "Select All" checkbox -->
                 <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" id="selectAll" style="cursor: pointer">
-                    <label for="selectAll" class="custom-control-label" style="cursor: pointer">সব গুলি বাছাই করুন</label>
+                    <label for="selectAll" class="custom-control-label" style="cursor: pointer">Select All</label>
                 </div>
             </td>
         </tr>
