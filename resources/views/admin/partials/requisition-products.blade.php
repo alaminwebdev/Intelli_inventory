@@ -14,7 +14,7 @@
                                 @csrf
                                 <div class="form-row p-3 border rounded shadow-sm mb-3">
                                     <div class="form-group col-md-3">
-                                        <label class="control-label">দপ্তর <span class="text-red">*</span></label>
+                                        <label class="control-label">Department <span class="text-red">*</span></label>
                                         <select name="department_id" id="department_id" class="form-control @error('department_id') is-invalid @enderror select2 ">
                                             <option value="0">All</option>
                                             @foreach ($departments as $item)
@@ -28,7 +28,7 @@
                                         @enderror
                                     </div>
                                     <div class="form-group col-md-3">
-                                        <label class="control-label">শাখা </label>
+                                        <label class="control-label">Section </label>
                                         <select name="section_id" id="section_id" class="form-control select2 @error('section_id') is-invalid @enderror">
                                             <option value="0">All</option>
                                             {{-- @if (request()->section_id) --}}
@@ -61,8 +61,8 @@
                                 <thead>
                                     <tr>
                                         <th width="5%">Sl.</th>
-                                        <th>পন্য</th>
-                                        <th>চাহিদার পরিমান</th>
+                                        <th>Product</th>
+                                        <th>Demand Quantity</th>
                                     </tr>
                                 </thead>
                                 <tbody>

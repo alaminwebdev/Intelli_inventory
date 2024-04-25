@@ -24,7 +24,7 @@
 @section('pdf-content')
     <div style="margin-top: 10px; font-size: 12px;">
         <div style="width:100%">
-            <p style="margin: 0; width:50%; float:left;">দপ্তর : {{ $department ? $department->name : 'সবগুলি' }} - শাখা : {{ @$section ? $section->name : 'সবগুলি' }} </p>
+            <p style="margin: 0; width:50%; float:left;">Department : {{ $department ? $department->name : 'সবগুলি' }} - Section : {{ @$section ? $section->name : 'সবগুলি' }} </p>
             <p style="margin: 0; width:50%; float:right; text-align:right">তারিখ : {{ $date_from }} - {{ $date_to }}</p>
         </div>
     </div>
@@ -33,9 +33,9 @@
         <thead>
             <tr>
                 <th class="text-left" width="5%">নং:</th>
-                <th class="text-center">পন্য</th>
+                <th class="text-center">Product</th>
                 <th class="text-center">ইউনিট</th>
-                <th class="text-center">শাখা</th>
+                <th class="text-center">Section</th>
                 <th class="text-center">ক্রয় অর্ডার Sl.</th>
                 <th class="text-center">তারিখ</th>
                 <th class="text-center">বিতরনের পরিমান</th>

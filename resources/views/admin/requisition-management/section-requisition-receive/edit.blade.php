@@ -26,15 +26,15 @@
                                         <div class="row px-3 py-4 border rounded shadow-sm mb-3">
                                             <div class="col-md-2">
                                                 <input type="hidden" value="{{ $editData->id }}" name="section_requisition_id">
-                                                <label class="control-label">চাহিদাপত্র নাম্বার :</label>
+                                                <label class="control-label">Requisition No. :</label>
                                                 <input type="text" class="form-control form-control-sm" id="remarks" name="requisition_no" value="{{ $editData->requisition_no }}" readonly>
                                             </div>
                                             <div class="col-md-5">
-                                                <label class="control-label">দপ্তর : <span class="text-red">*</span></label>
+                                                <label class="control-label">Department : <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm" id="department_id" name="department_id" value="{{ $editData->section->department->name }}" readonly>
                                             </div>
                                             <div class="col-md-5">
-                                                <label class="control-label">শাখা : <span class="text-red">*</span></label>
+                                                <label class="control-label">Section : <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm" id="section_id" name="section_id" value="{{ $editData->section->name }}" readonly>
                                             </div>
                                         </div>
@@ -55,15 +55,15 @@
                                                             <table id="" class="table table-bordered">
                                                                 <thead style="background: #fff4f4 !important;">
                                                                     <tr>
-                                                                        <th>পন্য</th>
+                                                                        <th>Product</th>
                                                                         {{-- <th>পূর্ববর্তী বিতরনের পরিমাণ</th> --}}
-                                                                        <th>বর্তমান মজূদ</th>
-                                                                        <th>চাহিদার পরিমাণ</th>
-                                                                        <th>সুপারিশ পরিমান</th>
-                                                                        {{-- <th>বিতরনযোগ্য মজূদ</th> --}}
-                                                                        <th>অনুমোদিত পরিমান</th>
+                                                                        <th>Current Stock</th>
+                                                                        <th>Demand Quantity</th>
+                                                                        <th>Recommended Quantity</th>
+                                                                        {{-- <th>Distributable Quantity</th> --}}
+                                                                        <th>Approved Quantity</th>
                                                                         <th>বিতরনের পরিমান</th>
-                                                                        <th>যৌক্তিকতা</th>
+                                                                        <th>Remark</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>

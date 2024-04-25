@@ -1,7 +1,7 @@
 @extends('admin.layouts.pdf')
 
 @section('pdf-title')
-    চাহিদাপত্র নাম্বার - {{ en2bn($requestedRequisitionInfo->requisition_no) }}
+    Requisition No. - {{ en2bn($requestedRequisitionInfo->requisition_no) }}
 @endsection
 
 @php
@@ -45,11 +45,11 @@
 @section('pdf-content')
     <div style="margin-top: 10px; font-size: 12px;">
         <div style="width:100%">
-            <p style="margin: 0; width:50%; float:left;">চাহিদাপত্র নাম্বার : {{ en2bn($requestedRequisitionInfo->requisition_no) }}</p>
+            <p style="margin: 0; width:50%; float:left;">Requisition No. : {{ en2bn($requestedRequisitionInfo->requisition_no) }}</p>
             <p style="margin: 0; width:50%; float:right; text-align:right">তারিখ : {{ $date_in_bengali }}</p>
         </div>
-        <p style="margin: 0;">অনুরোধকৃত দপ্তর : {{ @$requestedRequisitionInfo->section->department->name }}</p>
-        <p style="margin: 0;">অনুরোধকৃত শাখা : {{ @$requestedRequisitionInfo->section->name }}</p>
+        <p style="margin: 0;">Requested Department : {{ @$requestedRequisitionInfo->section->department->name }}</p>
+        <p style="margin: 0;">Requested Section : {{ @$requestedRequisitionInfo->section->name }}</p>
         <p style="margin: 0;">Status : {{ $status }}</p>
     </div>
     @if (@$requisitionProducts && count(@$requisitionProducts) > 0)
@@ -57,13 +57,13 @@
             <thead>
                 <tr>
                     <th class="text-left" width="10%">ক্রমিক নং:</th>
-                    <th class="text-center" width="30%">পন্য</th>
-                    <th class="text-center">বর্তমান মজূদ</th>
-                    <th class="text-center">চাহিদার পরিমান</th>
-                    <th class="text-center">সুপারিশ পরিমান</th>
-                    <th class="text-center">অনুমোদিত পরিমান</th>
+                    <th class="text-center" width="30%">Product</th>
+                    <th class="text-center">Current Stock</th>
+                    <th class="text-center">Demand Quantity</th>
+                    <th class="text-center">Recommended Quantity</th>
+                    <th class="text-center">Approved Quantity</th>
                     <th class="text-center">বিতরন পরিমান</th>
-                    <th class="text-center">যৌক্তিকতা</th>
+                    <th class="text-center">Remark</th>
                 </tr>
             </thead>
             <tbody>

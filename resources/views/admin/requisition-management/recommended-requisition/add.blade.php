@@ -15,7 +15,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.recommended.requisition.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>সুপারিশকৃত চাহিদাপত্রের তালিকা</a>
+                            <a href="{{ route('admin.recommended.requisition.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>Recommended Requisition List</a>
                         </div>
                         <div class="card-body">
                             <form id="submitForm" action="{{ route('admin.recommended.requisition.update', $editData->id) }} " method="post" enctype="multipart/form-data" autocomplete="off" onsubmit="return validateForm(event)">
@@ -25,23 +25,23 @@
                                     <div class="col-md-12">
                                         <div class="row px-3 py-4 border rounded shadow-sm mb-3">
                                             <div class="col-md-3">
-                                                <label class="control-label">চাহিদাপত্রের নাম্বার :</label>
+                                                <label class="control-label">Requisition No. :</label>
                                                 <input type="text" class="form-control form-control-sm" id="requisition_no" name="requisition_no" value="{{ $editData->requisition_no }}" readonly>
                                             </div>
                                             <div class="col-md-3">
-                                                <label class="control-label">দপ্তর :</label>
+                                                <label class="control-label">Department :</label>
                                                 <input type="text" class="form-control form-control-sm" value="{{ $editData->section->department->name }}" readonly>
                                             </div>
                                             <div class="col-md-3">
-                                                <label class="control-label">শাখা :</label>
+                                                <label class="control-label">Section :</label>
                                                 <input type="text" class="form-control form-control-sm" value="{{ $editData->section->name }}" readonly>
                                             </div>
                                             <div class="col-md-3">
-                                                <label class="control-label">চাহিদাপত্রের অবস্থা <span class="text-red">*</span></label>
+                                                <label class="control-label">Requisition Status <span class="text-red">*</span></label>
                                                 <select name="status" id="status" class="form-control select2 @error('status') is-invalid @enderror">
                                                     <option value="" disabled>Please Select</option>
-                                                    <option value="1" {{ @$editData->status == 1 ? 'selected' : '' }}>সুপারিশ</option>
-                                                    <option value="2" {{ @$editData->status == 2 ? 'selected' : '' }}>প্রত্যাখ্যান</option>
+                                                    <option value="1" {{ @$editData->status == 1 ? 'selected' : '' }}>Recommendation</option>
+                                                    <option value="2" {{ @$editData->status == 2 ? 'selected' : '' }}>Reject</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -62,12 +62,12 @@
                                                             <table id="" class="table table-bordered">
                                                                 <thead style="background: #fff4f4 !important;">
                                                                     <tr>
-                                                                        <th>পন্য</th>
-                                                                        <th>শাখায় বর্তমান মজূদ</th>
-                                                                        <th>চাহিদার পরিমাণ</th>
-                                                                        <th>শাখা - যৌক্তিকতা</th>
-                                                                        <th>সুপারিশ পরিমাণ</th>
-                                                                        <th>যৌক্তিকতা</th>
+                                                                        <th>Product</th>
+                                                                        <th>Section Current Stock</th>
+                                                                        <th>Demand Quantity</th>
+                                                                        <th>Section - Remark</th>
+                                                                        <th>Recommended Quantity</th>
+                                                                        <th>Remark</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -104,9 +104,9 @@
                                     <div class="col-md-12">
                                         <div class="text-right">
                                             @if (@$editData->id)
-                                                <button type="submit" class="btn btn-success btn-sm" {{ @$editData->status == 0 ? '' : 'disabled' }}>সুপারিশ করুন</button>
+                                                <button type="submit" class="btn btn-success btn-sm" {{ @$editData->status == 0 ? '' : 'disabled' }}>Recommend</button>
                                             @else
-                                                <button type="submit" class="btn btn-success btn-sm">সংরক্ষণ</button>
+                                                <button type="submit" class="btn btn-success btn-sm">Submit</button>
                                                 <button type="reset" class="btn btn-danger btn-sm">Reset</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">

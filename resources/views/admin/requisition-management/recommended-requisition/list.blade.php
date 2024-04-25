@@ -14,26 +14,26 @@
                                 <div class="col-md-12">
                                     <a class="btn btn-info btn-sm reqListBtn" data-requistition-status="0">
                                         <i class="fa fa-check-circle"></i>
-                                        সুপারিশের অপেক্ষায় চাহিদাপত্রের তালিকা
+                                        Requisitions awaiting recommendation
                                     </a>
                                     <a class="btn btn-primary btn-sm reqListBtn" data-requistition-status="1,2,3,4,5">
                                         <i class="fa "></i>
-                                        সুপারিশ করা চাহিদাপত্রের তালিকা
+                                        Recommended Requisitions
                                     </a>
                                 </div>
                             </div> --}}
                             <form method="get" action="" id="filterForm">
                                 <div class="form-row border-bottom mb-3">
                                     <div class="form-group col-sm-3">
-                                        <label class="control-label" style="color:#2a527b;">চাহিদাপত্রের ধরন</label>
+                                        <label class="control-label" style="color:#2a527b;">Requisition Type</label>
                                         <select class="form-select form-select-sm select2" name="requisition_status" id="requisition_status">
-                                            <option value="0">সুপারিশের অপেক্ষায় চাহিদাপত্রের তালিকা</option>
-                                            <option value="1,3,4,6">সুপারিশ করা চাহিদাপত্রের তালিকা</option>
+                                            <option value="0">Requisitions awaiting recommendation</option>
+                                            <option value="1,3,4,6">Recommended Requisitions</option>
                                         </select>
                                     </div>
                                     <div class="form-group col-sm-1">
                                         <label class="control-label" style="visibility: hidden;">Search</label>
-                                        <button type="submit" class="btn btn-success btn-sm btn-block" style="font-weight:600">খুঁজুন</button>
+                                        <button type="submit" class="btn btn-success btn-sm btn-block" style="font-weight:600">Search</button>
                                     </div>
                                 </div>
                             </form>
@@ -41,11 +41,11 @@
                                 <thead>
                                     <tr>
                                         <th width="5%">Sl.</th>
-                                        <th>চাহিদাপত্র নাম্বার</th>
-                                        <th>অনুরোধকৃত শাখা</th>
-                                        <th>অনুরোধকৃত দপ্তর</th>
+                                        <th>Requisition No.</th>
+                                        <th>Requested Section</th>
+                                        <th>Requested Department</th>
                                         <th>Status</th>
-                                        <th>চাহিদাপত্রের তারিখ</th>
+                                        <th>Requisition Date</th>
                                         <th width="15%">Action</th>
                                     </tr>
                                 </thead>
@@ -188,7 +188,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">পন্যের বিবরনী</h6>
+                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">Product Detail</h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -197,12 +197,12 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>পন্য</th>
-                                <th>বর্তমান মজূদ</th>
-                                <th>চাহিদার পরিমান</th>
-                                <th>সুপারিশ পরিমান</th>
-                                <th>অনুমোদিত পরিমান</th>
-                                <th>যৌক্তিকতা</th>
+                                <th>Product</th>
+                                <th>Current Stock</th>
+                                <th>Demand Quantity</th>
+                                <th>Recommended Quantity</th>
+                                <th>Approved Quantity</th>
+                                <th>Remark</th>
                             </tr>
                         </thead>
                         <tbody id="productDetailsTable">
@@ -211,7 +211,7 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">বন্ধ করুন</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

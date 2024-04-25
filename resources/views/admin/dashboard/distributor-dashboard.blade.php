@@ -201,7 +201,7 @@
                                         <img src="{{ asset('common/images/icon2.png') }}" alt="product-reecive">
                                     </div>
                                     <div class="text pt-1">
-                                        <a href="{{ route('admin.distribute.list') }}">পন্য বিতরণ করুন</a>
+                                        <a href="{{ route('admin.distribute.list') }}">Product বিতরণ করুন</a>
                                     </div>
                                 </div>
                             </div>
@@ -214,7 +214,7 @@
                     <div class="row">
                         <div class="col-lg-7 text d-flex align-items-center">
                             <h3 style="font-weight: 600; color:#fff;" class="dashboard-banner-text">
-                                সহজেই পন্য বিতরণ করুন।
+                                সহজেই Product বিতরণ করুন।
                             </h3>
                         </div>
                         <div class="col-lg-5 image d-flex align-items-center">
@@ -295,9 +295,9 @@
                             <table class="table">
                                 <thead style="background: #fff !important;">
                                     <tr>
-                                        <th width="30%">চাহিদাপত্র নাম্বার</th>
+                                        <th width="30%">Requisition No.</th>
                                         <th width="20%">তৈরি সময়</th>
-                                        <th width="20%">শাখা</th>
+                                        <th width="20%">Section</th>
                                         <th width="20%">অবস্থা</th>
                                         <th width="10%">Action</th>
                                     </tr>
@@ -340,7 +340,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h6 class="modal-title" id="productDetailsModalLabel"
-                    style="font-weight: 600;color: #2a527b;text-transform: uppercase;">পন্যের বিবরনী</h6>
+                    style="font-weight: 600;color: #2a527b;text-transform: uppercase;">Product Detail</h6>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -349,12 +349,12 @@
                 <table class="table table-bordered">
                     <thead style="background: #fff !important;">
                         <tr>
-                            <th>পন্য</th>
-                            <th>বর্তমান মজূদ</th>
-                            <th>চাহিদার পরিমান</th>
-                            <th>সুপারিশ পরিমান</th>
-                            <th>অনুমোদিত পরিমান</th>
-                            <th>যৌক্তিকতা</th>
+                            <th>Product</th>
+                            <th>Current Stock</th>
+                            <th>Demand Quantity</th>
+                            <th>Recommended Quantity</th>
+                            <th>Approved Quantity</th>
+                            <th>Remark</th>
                         </tr>
                     </thead>
                     <tbody id="productDetailsTable">
@@ -363,7 +363,7 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">বন্ধ করুন</button>
+                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

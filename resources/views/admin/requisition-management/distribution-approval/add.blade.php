@@ -25,7 +25,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.distribution.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>অনুমোদিত চাহিদাপত্রের তালিকা</a>
+                            <a href="{{ route('admin.distribution.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>Approved Requisition List</a>
                         </div>
                         <div class="card-body">
                             <form id="submitForm" action="{{ isset($editData) ? route('admin.distribution.update', $editData->id) : route('admin.distribution.store') }} " method="post" enctype="multipart/form-data" autocomplete="off">
@@ -36,15 +36,15 @@
                                         <div class="row px-3 py-4 border rounded shadow-sm mb-3">
                                             <div class="col-md-2">
                                                 <input type="hidden" value="{{ $editData->id }}" name="section_requisition_id">
-                                                <label class="control-label">চাহিদাপত্র নাম্বার :</label>
+                                                <label class="control-label">Requisition No. :</label>
                                                 <input type="text" class="form-control form-control-sm" id="remarks" name="requisition_no" value="{{ $editData->requisition_no }}" readonly>
                                             </div>
                                             <div class="col-md-5">
-                                                <label class="control-label">দপ্তর : <span class="text-red">*</span></label>
+                                                <label class="control-label">Department : <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm" id="department_id" name="department_id" value="{{ $editData->section->department->name }}" readonly>
                                             </div>
                                             <div class="col-md-5">
-                                                <label class="control-label">শাখা : <span class="text-red">*</span></label>
+                                                <label class="control-label">Section : <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm" id="section_id" name="section_id" value="{{ $editData->section->name }}" readonly>
                                             </div>
                                         </div>
@@ -65,15 +65,15 @@
                                                             <table id="" class="table table-bordered">
                                                                 <thead style="background: #fff4f4 !important;">
                                                                     <tr>
-                                                                        <th>পন্য</th>
-                                                                        <th>পূর্ববর্তী বিতরনের পরিমান</th>
-                                                                        <th>শাখায় বর্তমান মজূদ</th>
-                                                                        <th>চাহিদার পরিমান</th>
-                                                                        <th>সুপারিশ পরিমান</th>
-                                                                        <th>যাচাই পরিমান</th>
-                                                                        <th>বিতরনযোগ্য মজূদ</th>
-                                                                        <th>অনুমোদন পরিমান</th>
-                                                                        <th>যৌক্তিকতা</th>
+                                                                        <th>Product</th>
+                                                                        <th>Previous Distribute Qty.</th>
+                                                                        <th>Section Current Stock</th>
+                                                                        <th>Demand Quantity</th>
+                                                                        <th>Recommended Quantity</th>
+                                                                        <th>Verify Quantity</th>
+                                                                        <th>Distributable Quantity</th>
+                                                                        <th>Approve Quantity</th>
+                                                                        <th>Remark</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -119,9 +119,9 @@
                                     <div class="col-md-12">
                                         <div class="text-right">
                                             @if (@$editData->id)
-                                                <button type="submit" class="btn btn-success btn-sm" {{ $editData->status == 3 ? 'disabled' : '' }}>অনুমোদন করুন</button>
+                                                <button type="submit" class="btn btn-success btn-sm" {{ $editData->status == 3 ? 'disabled' : '' }}>Approve</button>
                                             @else
-                                                <button type="submit" class="btn btn-success btn-sm">সংরক্ষণ</button>
+                                                <button type="submit" class="btn btn-success btn-sm">Submit</button>
                                                 <button type="reset" class="btn btn-danger btn-sm">Reset</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
@@ -155,7 +155,7 @@
                         //     popup: 'colored-toast'
                         // },
                         // iconColor: 'white',
-                        title: "অনুমোদিত পরিমাণ বিতরনের পরিমাণের বেশি হতে পারবে না।",
+                        title: "The Approved quantity cannot exceed the disbursement amount.",
                         toast: false,
                         // position: 'top-end',
                         showConfirmButton: true,
@@ -191,7 +191,7 @@
 
                 // Validate that receive_qty is not greater than invoice_qty
                 if (approveQty > availableQty) {
-                    showAlert('error', 'প্রয়োজনীয় সব ফিল্ড পূরণ করুন।');
+                    showAlert('error', 'Fill all required fields.');
                     approveQtyInput.classList.add('is-invalid');
                     //approveQtyInput.setCustomValidity("অনুমোদিত পরিমাণ বিতরনের পরিমাণের বেশি হতে পারবে না।");
                     isValid = false;

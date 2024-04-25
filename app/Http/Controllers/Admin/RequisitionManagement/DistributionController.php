@@ -56,7 +56,7 @@ class DistributionController extends Controller
     }
     public function index()
     {
-        $data['title']  = 'অনুমোদিত চাহিদাপত্রের তালিকা';
+        $data['title']  = 'Approved Requisition List';
         // $user = Auth::user();
         // if ($user->id !== 1 && $user->employee_id) {
         //     $employee = $this->employeeService->getByID($user->employee_id);
@@ -92,7 +92,7 @@ class DistributionController extends Controller
     public function edit($id)
     {
 
-        $data['title']                      = 'চাহিদাপত্র অনুমোদন করুন';
+        $data['title']                      = 'Approve Requisition';
         $data['editData']                   = $this->sectionRequisitionService->getByID($id);
         $data['requisition_product_types']  = $this->sectionRequisitionService->getRequisitionProductsWithTypeById($id, $data['editData']);
         return view('admin.requisition-management.distribution-approval.add', $data);
@@ -152,7 +152,7 @@ class DistributionController extends Controller
 
     public function distributeList()
     {
-        $data['title'] = 'পন্য বিতরণের তালিকা';
+        $data['title'] = 'Distributed Requisition List';
 
         // $user = Auth::user();
         // if ($user->id !== 1 && $user->employee_id) {
@@ -181,7 +181,7 @@ class DistributionController extends Controller
 
     public function productDistributeEdit($id)
     {
-        $data['title']          = 'পন্য বিতরণ করুন';
+        $data['title']          = 'Distribute Requisition';
         $data['editData']       = $this->sectionRequisitionService->getByID($id);
         $data['designations']   = $this->designationService->getAll(1);
         $data['requisition_product_types']  = $this->sectionRequisitionService->getRequisitionProductsWithTypeById($id, $data['editData']);

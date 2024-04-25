@@ -34,7 +34,7 @@
                                 <thead style="background: #fff4f4 !important;">
                                     <tr>
                                         <th width="5%">নং:</th>
-                                        <th>পন্যের তথ্য</th>
+                                        <th>Productের তথ্য</th>
                                         <th>বর্তমান মজুদ</th>
                                         <th>ইউনিট</th>
                                     </tr>

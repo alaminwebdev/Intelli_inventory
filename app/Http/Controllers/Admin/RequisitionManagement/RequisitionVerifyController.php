@@ -51,7 +51,7 @@ class RequisitionVerifyController extends Controller
     }
     public function index()
     {
-        $data['title']  = 'যাচাইকৃত চাহিদাপত্রের তালিকা';
+        $data['title']  = 'Verified Requisitions List';
 
         // $user           = Auth::user();
         // if ($user->id !== 1 && $user->employee_id) {
@@ -170,7 +170,7 @@ class RequisitionVerifyController extends Controller
 
     public function edit($id)
     {
-        $data['title']                      = 'চাহিদাপত্র যাচাই করুন';
+        $data['title']                      = 'Verify Requisitions';
         $data['editData']                   = $this->sectionRequisitionService->getByID($id);
         $data['requisition_product_types']  = $this->sectionRequisitionService->getRequisitionProductsWithTypeById($id, $data['editData']);
         return view('admin.requisition-management.verify-requisition.add', $data);

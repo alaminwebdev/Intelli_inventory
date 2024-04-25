@@ -14,7 +14,7 @@
                                 <thead>
                                     <tr>
                                         <th width="5%">Sl.</th>
-                                        <th>চাহিদাপত্র নাম্বার</th>
+                                        <th>Requisition No.</th>
                                         <th>অনুরোধকৃত ডিপার্টমেন্ট</th>
                                         <th>প্রোডাক্ট দেখুন</th>
                                         <th>Status</th>
@@ -66,8 +66,8 @@
                             <tr>
                                 <th>প্রোডাক্ট</th>
                                 <th>বর্তমান স্টক</th>
-                                <th>চাহিদার পরিমাণ</th>
-                                <th>মন্তব্য / যৌক্তিকতা</th>
+                                <th>Demand Quantity</th>
+                                <th>মন্তব্য / Remark</th>
                             </tr>
                         </thead>
                         <tbody id="productDetailsTable">

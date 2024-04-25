@@ -21,7 +21,7 @@
                                     <div class="col-md-12">
                                         <div class="row px-3 py-4 border rounded shadow-sm mb-3">
                                             <div class="col-md-2">
-                                                <label class="control-label">চাহিদাপত্র নাম্বার :</label>
+                                                <label class="control-label">Requisition No. :</label>
                                                 <input type="text" class="form-control form-control-sm" id="requisition_no" name="requisition_no" value="{{ $uniqueRequisitionNo }}" readonly>
                                             </div>
                                             <div class="col-md-5">
@@ -43,7 +43,7 @@
                                                 @endif
                                             </div>
                                             <div class="col-md-5">
-                                                <label class="control-label">সেকশন চাহিদাপত্র নাম্বার : <span class="text-red"></span></label>
+                                                <label class="control-label">SECTION Requisition No. : <span class="text-red"></span></label>
                                                 <select name="section_requisition_id[]" class="form-control form-control-sm select2" id="section_requisition_id" multiple="multiple">
                                                     <option value="" disabled>Select Section Requisition</option>
                                                     @foreach ($section_requisitions as $section_requisition)
@@ -70,11 +70,11 @@
                                                                 <thead>
                                                                     <tr>
                                                                         <th>প্রোডাক্ট</th>
-                                                                        <th>বর্তমান স্টক(সেকশন)</th>
-                                                                        <th>চাহিদার পরিমাণ(সেকশন)</th>
+                                                                        <th>বর্তমান স্টক(SECTION)</th>
+                                                                        <th>Demand Quantity(SECTION)</th>
                                                                         <th>বর্তমান স্টক(ডিপার্টমেন্ট)</th>
-                                                                        <th>চাহিদার পরিমাণ(ডিপার্টমেন্ট)</th>
-                                                                        <th>মন্তব্য / যৌক্তিকতা</th>
+                                                                        <th>Demand Quantity(ডিপার্টমেন্ট)</th>
+                                                                        <th>মন্তব্য / Remark</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -119,7 +119,7 @@
                                             @if (@$editData->id)
                                                 <button type="submit" class="btn btn-success btn-sm">Update</button>
                                             @else
-                                                <button type="submit" class="btn btn-success btn-sm">সংরক্ষণ</button>
+                                                <button type="submit" class="btn btn-success btn-sm">Submit</button>
                                                 <button type="reset" class="btn btn-danger btn-sm">Reset</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">

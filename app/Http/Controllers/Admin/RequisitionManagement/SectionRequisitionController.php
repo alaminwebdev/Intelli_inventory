@@ -45,7 +45,7 @@ class SectionRequisitionController extends Controller
     }
     public function index()
     {
-        $data['title']                  = 'চাহিদাপত্রের তালিকা - শাখা';
+        $data['title']                  = 'Requisition List';
         $user = Auth::user();
 
         // if ($user->id !== 1 && $user->employee_id) {
@@ -97,7 +97,7 @@ class SectionRequisitionController extends Controller
     }
     public function selectProducts()
     {
-        $data['title']                  = 'পন্য বাছাই করুন';
+        $data['title']                  = 'Select Product';
         $data['product_types']          = $this->productInformationService->getProductTypeAndProducts();
         return view('admin.requisition-management.section-requisition.product-selection', $data);
     }
@@ -105,7 +105,7 @@ class SectionRequisitionController extends Controller
     public function add(Request $request)
     {
         if ($request->isMethod('post')) {
-            $data['title']                  = 'চাহিদাপত্র যুক্ত করুন';
+            $data['title']                  = 'Add Requisition';
             $selected_product_ids           = $request->input('selected_products', []);
             $data['selected_products']      = $this->productInformationService->getSpecificProducts($selected_product_ids);
             $data['uniqueRequisitionNo']    = $this->sectionRequisitionService->getUniqueRequisitionNo();

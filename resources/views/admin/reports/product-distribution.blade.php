@@ -42,9 +42,9 @@
                                     <div class="form-row">
 
                                         <div class="form-group col-md-4">
-                                            <label class="control-label">দপ্তর : <span class="text-red">*</span></label>
+                                            <label class="control-label">Department : <span class="text-red">*</span></label>
                                             <select name="department_id" id="department_id" class="form-control @error('department_id') is-invalid @enderror select2 ">
-                                                <option value="0">-- সকল দপ্তর --</option>
+                                                <option value="0">-- সকল Department --</option>
                                                 @foreach ($departments as $item)
                                                     <option value="{{ $item->id }}" {{ request()->department_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
                                                 @endforeach
@@ -57,9 +57,9 @@
                                         </div>
 
                                         <div class="form-group col-md-4">
-                                            <label class="control-label">শাখা :</label>
+                                            <label class="control-label">Section :</label>
                                             <select name="section_id" id="section_id" class="form-control select2 @error('section_id') is-invalid @enderror">
-                                                <option value="0">-- সকল শাখা --</option>
+                                                <option value="0">-- সকল Section --</option>
                                                 {{-- @if (request()->section_id) --}}
                                                 @foreach ($sections as $item)
                                                     <option value="{{ $item->id }}" {{ request()->section_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
@@ -84,9 +84,9 @@
                                         </div>
 
                                         <div class="form-group col-md-6">
-                                            <label class="control-label">পন্য :</label>
+                                            <label class="control-label">Product :</label>
                                             <select name="product_information_id[]" id="product_information_id" class="form-control select2" multiple="multiple">
-                                                {{-- <option value="0">-- সকল পন্য --</option> --}}
+                                                {{-- <option value="0">-- সকল Product --</option> --}}
                                                 @foreach ($products as $item)
                                                     <option value="{{ $item->id }}" {{ in_array($item->id, $product_ids) ? 'selected' : '' }} >{{ $item->name }} ({{ $item->unit }})</option>
                                                 @endforeach
@@ -107,10 +107,10 @@
                                 <thead style="background: #fff4f4 !important;">
                                     <tr>
                                         <th class="text-center">Sl.</th>
-                                        <th class="text-center">পন্য</th>
+                                        <th class="text-center">Product</th>
                                         <th class="text-center">ইউনিট</th>
-                                        {{-- <th class="text-center">দপ্তর</th> --}}
-                                        <th class="text-center">শাখা</th>
+                                        {{-- <th class="text-center">Department</th> --}}
+                                        <th class="text-center">Section</th>
                                         <th class="text-center">ক্রয় অর্ডার Sl.</th>
                                         <th class="text-center">তারিখ</th>
                                         <th class="text-center">বিতরনের পরিমান</th>
@@ -229,7 +229,7 @@
                         console.log(data);
                         // Handle the data here
                         let section_div = document.getElementById('section_id');
-                        section_div.innerHTML = '<option value="0">-- সকল শাখা --</option>';
+                        section_div.innerHTML = '<option value="0">-- সকল Section --</option>';
                         data.forEach(item => {
                             section_div.innerHTML +=
                                 `<option value="${item.id}">${item.name}</option>`;
@@ -251,7 +251,7 @@
                         console.log(data);
                         // Handle the data here
                         let productInformation = document.getElementById('product_information_id');
-                        productInformation.innerHTML = '<option value="0">-- সকল পন্য --</option>';
+                        productInformation.innerHTML = '<option value="0">-- সকল Product --</option>';
                         data.forEach(item => {
                             productInformation.innerHTML +=
                                 `<option value="${item.id}">${item.name}</option>`;

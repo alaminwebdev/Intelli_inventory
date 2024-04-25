@@ -34,7 +34,7 @@
             <tr>
                 <th class="text-left" width="5%">নং:</th>
                 <th class="text-center" width="15%">ক্রয় অর্ডার Sl.</th>
-                <th class="text-center" width="60%">পন্য</th>
+                <th class="text-center" width="60%">Product</th>
                 <th class="text-center" width="20%">মেয়াদ শেষ হবার তারিখ</th>
             </tr>
         </thead>

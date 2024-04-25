@@ -7,7 +7,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.section.requisition.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>চাহিদাপত্রের তালিকা - সেকশন</a>
+                            <a href="{{ route('admin.section.requisition.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>Requisition List</a>
                         </div>
                         <div class="card-body">
 
@@ -19,15 +19,15 @@
                                     <div class="col-md-12">
                                         <div class="row px-3 py-4 border rounded shadow-sm mb-3">
                                             <div class="col-md-3">
-                                                <label class="control-label">বি পি নাম্বার :</label>
+                                                <label class="control-label">B.P. NO.</label>
                                                 <input type="text" class="form-control form-control-sm" id="bp_number" name="bp_number" value="{{ $employee ? $employee->bp_no : '' }}" readonly>
                                             </div>
                                             <div class="col-md-3">
-                                                <label class="control-label">চাহিদাপত্র নাম্বার :</label>
+                                                <label class="control-label">Requisition No. :</label>
                                                 <input type="text" class="form-control form-control-sm" id="requisition_number" value="{{ $uniqueRequisitionNo }}" readonly>
                                             </div>
                                             <div class="col-md-6">
-                                                <label class="control-label">সেকশন <span class="text-red">*</span></label>
+                                                <label class="control-label">Section <span class="text-red">*</span></label>
                                                 <select name="section_id" class="form-control form-control-sm select2" id="section_id" {{ $employee && $employee->section_id ? 'disabled' : '' }}>
                                                     {{-- @if (!$employee)
                                                         <option value="">Select Section</option>
@@ -53,10 +53,10 @@
                                             <table id="" class="table table-bordered">
                                                 <thead>
                                                     <tr>
-                                                        <th>পন্য</th>
-                                                        <th>শাখায় বর্তমান মজূদ</th>
-                                                        <th>চাহিদার পরিমাণ</th>
-                                                        <th>যৌক্তিকতা </th>
+                                                        <th>Product</th>
+                                                        <th>Section Current Stock</th>
+                                                        <th>Demand Quantity</th>
+                                                        <th>Remark </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -86,7 +86,7 @@
                                             @if (@$editData->id)
                                                 <button type="submit" class="btn btn-success btn-sm">Update</button>
                                             @else
-                                                <button type="submit" class="btn btn-success btn-sm">সংরক্ষণ</button>
+                                                <button type="submit" class="btn btn-success btn-sm">Submit</button>
                                             @endif
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
                                                 <a href="{{ route('admin.section.requisition.product.selection') }}">Back</a>

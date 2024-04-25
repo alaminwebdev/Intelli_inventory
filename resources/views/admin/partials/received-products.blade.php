@@ -15,13 +15,13 @@
                                 <thead>
                                     <tr>
                                         <th width="5%">Sl.</th>
-                                        <th>চাহিদাপত্র নাম্বার</th>
-                                        <th>শাখা</th>
-                                        <th>পন্য</th>
-                                        <th>বর্তমান মজূদ</th>
-                                        <th>চাহিদার পরিমান</th>
-                                        <th>সুপারিশ পরিমান</th>
-                                        <th>অনুমোদিত পরিমান</th>
+                                        <th>Requisition No.</th>
+                                        <th>Section</th>
+                                        <th>Product</th>
+                                        <th>Current Stock</th>
+                                        <th>Demand Quantity</th>
+                                        <th>Recommended Quantity</th>
+                                        <th>Approved Quantity</th>
                                     </tr>
                                 </thead>
                                 <tbody>

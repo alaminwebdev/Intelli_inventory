@@ -13,9 +13,9 @@
                                 <thead>
                                     <tr>
                                         <th width="5%">Sl.</th>
-                                        <th>চাহিদাপত্র নাম্বার</th>
-                                        <th>অনুরোধকৃত শাখা</th>
-                                        <th>অনুরোধকৃত দপ্তর</th>
+                                        <th>Requisition No.</th>
+                                        <th>Requested Section</th>
+                                        <th>Requested Department</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
@@ -57,7 +57,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">পন্যের বিবরনী</h6>
+                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">Product Detail</h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -66,12 +66,12 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>পন্য</th>
-                                <th>বর্তমান মজূদ</th>
-                                <th>চাহিদার পরিমান</th>
-                                <th>সুপারিশ পরিমান</th>
-                                <th>অনুমোদিত পরিমান</th>
-                                <th>যৌক্তিকতা</th>
+                                <th>Product</th>
+                                <th>Current Stock</th>
+                                <th>Demand Quantity</th>
+                                <th>Recommended Quantity</th>
+                                <th>Approved Quantity</th>
+                                <th>Remark</th>
                             </tr>
                         </thead>
                         <tbody id="productDetailsTable">
@@ -80,7 +80,7 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">বন্ধ করুন</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

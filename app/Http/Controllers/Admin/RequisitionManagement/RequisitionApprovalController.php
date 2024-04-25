@@ -46,7 +46,7 @@ class RequisitionApprovalController extends Controller
     }
     public function index()
     {
-        $data['title']  = 'সুপারিশকৃত চাহিদাপত্রের তালিকা';
+        $data['title']  = 'Recommended Requisition List';
         $user           = Auth::user();
         if ($user->id !== 1 && $user->employee_id) {
 
@@ -93,7 +93,7 @@ class RequisitionApprovalController extends Controller
 
     public function edit($id)
     {
-        $data['title']                      = 'চাহিদাপত্র সুপারিশ করুন';
+        $data['title']                      = 'Recommend Requisition';
         $data['editData']                   = $this->sectionRequisitionService->getByID($id);
         $data['requisition_product_types']  = $this->sectionRequisitionService->getRequisitionProductsWithTypeById($id);
         return view('admin.requisition-management.recommended-requisition.add', $data);

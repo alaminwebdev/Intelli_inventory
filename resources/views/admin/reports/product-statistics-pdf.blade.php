@@ -1,7 +1,7 @@
 @extends('admin.layouts.pdf')
 
 @section('pdf-title')
-    পন্যের পরিসংখ্যান - {{ $date_in_bengali }}
+    Productের পরিসংখ্যান - {{ $date_in_bengali }}
 @endsection
 
 @section('pdf-header')
@@ -24,7 +24,7 @@
 @section('pdf-content')
     <div style="margin-top: 10px; font-size: 12px;">
         <div style="width:100%">
-            <p style="margin: 0; width:50%; float:left;">দপ্তর : {{ $department ? $department->name : 'সবগুলি'  }}  - শাখা : {{ @$section ? $section->name : 'সবগুলি'  }} </p>
+            <p style="margin: 0; width:50%; float:left;">Department : {{ $department ? $department->name : 'সবগুলি'  }}  - Section : {{ @$section ? $section->name : 'সবগুলি'  }} </p>
             <p style="margin: 0; width:50%; float:right; text-align:right">তারিখ : {{ $date_from }} - {{ $date_to }}</p>
         </div>
     </div>
@@ -33,9 +33,9 @@
         <thead>
             <tr>
                 <th class="text-left" width="10%">নং:</th>
-                <th class="text-center" width="35%">পন্য</th>
+                <th class="text-center" width="35%">Product</th>
                 <th class="text-center" width="10%">ইউনিট</th>
-                <th class="text-center" width="15%">চাহিদার পরিমান</th>
+                <th class="text-center" width="15%">Demand Quantity</th>
                 <th class="text-center" width="15%">বিতরনের পরিমান</th>
                 <th class="text-center" width="15%">বর্তমান মজুদ</th>
             </tr>

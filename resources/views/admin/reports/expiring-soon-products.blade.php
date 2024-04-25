@@ -51,7 +51,7 @@
                                             </select>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label class="control-label">পন্যের ধরন</label>
+                                            <label class="control-label">Productের ধরন</label>
                                             <select name="product_type_id" id="product_type_id" class="form-control select2">
                                                 <option value="0">All</option>
                                                 @foreach ($product_types as $item)
@@ -60,7 +60,7 @@
                                             </select>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label class="control-label">পন্য</label>
+                                            <label class="control-label">Product</label>
                                             <select name="product_information_id" id="product_information_id" class="form-control select2 ">
                                                 <option value="0">All</option>
                                                 @if (request()->product_information_id)
@@ -85,7 +85,7 @@
                                     <tr>
                                         <th width="5%">Sl.</th>
                                         <th width="10%">ক্রয় অর্ডার Sl.</th>
-                                        <th width="60%">পন্য</th>
+                                        <th width="60%">Product</th>
                                         <th>মেয়াদ শেষ হবার তারিখ</th>
                                     </tr>
                                 </thead>

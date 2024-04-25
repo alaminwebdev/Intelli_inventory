@@ -15,7 +15,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.distribute.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>পন্য বিতরনের তালিকা</a>
+                            <a href="{{ route('admin.distribute.list') }}" class="btn btn-sm btn-info"><i class="fas fa-list mr-1"></i>Distributed Requisition List</a>
                         </div>
                         <div class="card-body">
                             <form id="submitForm" action="{{ route('admin.distribute.store') }} " method="post">
@@ -25,19 +25,19 @@
                                     <div class="col-md-12">
                                         <div class="row px-3 pt-3 border rounded shadow-sm mb-3">
                                             <div class="col-md-12">
-                                                <p class="border-bottom" style="font-size: 14px; font-weight:600; color:#2a527b;">চাহিদাকারীর তথ্য</p>
+                                                <p class="border-bottom" style="font-size: 14px; font-weight:600; color:#2a527b;">Requisition Maker Information</p>
                                             </div>
                                             <div class="col-md-3 mb-3">
                                                 <input type="hidden" value="{{ $editData->id }}" name="section_requisition_id">
-                                                <label class="control-label">চাহিদাপত্র নাম্বার :</label>
+                                                <label class="control-label">Requisition No. :</label>
                                                 <input type="text" class="form-control form-control-sm" id="remarks" name="requisition_no" value="{{ $editData->requisition_no }}" readonly>
                                             </div>
                                             <div class="col-md-3 mb-3">
-                                                <label class="control-label">দপ্তর : <span class="text-red">*</span></label>
+                                                <label class="control-label">Department : <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm" id="department_id" name="department_id" value="{{ @$editData->section->department->name }}" readonly>
                                             </div>
                                             <div class="col-md-3 mb-3">
-                                                <label class="control-label">শাখা : <span class="text-red">*</span></label>
+                                                <label class="control-label">Section : <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm" id="section_id" name="section_id" value="{{ @$editData->section->name }}" readonly>
                                             </div>
 
@@ -52,7 +52,7 @@
                                             </div> --}}
 
                                             <div class="col-sm-3 mb-3">
-                                                <label class="control-label">কর্মচারীর নাম <span class="text-red">*</span></label>
+                                                <label class="control-label">Employee Name <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm" value="{{ @$editData->requisition_owner->name}}"  readonly>
                                             </div>
 
@@ -72,19 +72,19 @@
                                             </div> --}}
 
                                             <div class="col-md-3 mb-3">
-                                                <label class="control-label">ইমেইল</label>
+                                                <label class="control-label">Email</label>
                                                 <input type="text" class="form-control form-control-sm" value="{{ @$editData->requisition_owner->email}}"  readonly>
                                             </div>
                                             <div class="col-md-3 mb-3">
-                                                <label class="control-label">ফোন</label>
+                                                <label class="control-label">Phone</label>
                                                 <input type="text" class="form-control form-control-sm" value="{{ @$editData->requisition_owner->mobile_no}}"  readonly>
                                             </div>
 
                                             <div class="col-md-12">
-                                                <p class="border-bottom" style="font-size: 14px; font-weight:600; color:#2a527b;">গ্রহনকারীর তথ্য</p>
+                                                <p class="border-bottom" style="font-size: 14px; font-weight:600; color:#2a527b;">Receiver Information</p>
                                             </div>
                                             <div class="col-md-3 mb-3">
-                                                <label class="control-label">নাম <span class="text-red">*</span></label>
+                                                <label class="control-label">Name <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm name @error('name') is-invalid @enderror" id="name" name="name" placeholder="Name">
                                                 @error('name')
                                                     <span class="invalid-feedback" role="alert">
@@ -93,7 +93,7 @@
                                                 @enderror
                                             </div>
                                             <div class="col-md-3 mb-3">
-                                                <label class="control-label">পদবী <span class="text-red">*</span></label>
+                                                <label class="control-label">Designation <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm designation @error('designation') is-invalid @enderror" id="designation" name="designation" placeholder="Designation">
                                                 @error('designation')
                                                     <span class="invalid-feedback" role="alert">
@@ -102,7 +102,7 @@
                                                 @enderror
                                             </div>
                                             <div class="col-md-3 mb-3">
-                                                <label class="control-label">ফোন <span class="text-red">*</span></label>
+                                                <label class="control-label">Phone <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm phone @error('phone') is-invalid @enderror" id="phone" name="phone" placeholder="Phone">
                                                 @error('phone')
                                                     <span class="invalid-feedback" role="alert">
@@ -111,7 +111,7 @@
                                                 @enderror
                                             </div>
                                             <div class="col-md-3 mb-3">
-                                                <label class="control-label">ইমেইল</label>
+                                                <label class="control-label">Email</label>
                                                 <input type="text" class="form-control form-control-sm email @error('email') is-invalid @enderror" id="email" name="email" placeholder="Email">
                                             </div>
                                         </div>
@@ -133,16 +133,16 @@
                                                             <table id="" class="table table-bordered">
                                                                 <thead style="background: #fff4f4 !important;">
                                                                     <tr>
-                                                                        <th>পন্য</th>
-                                                                        <th>পূর্ববর্তী বিতরনের পরিমাণ</th>
-                                                                        <th>শাখায় বর্তমান মজূদ</th>
-                                                                        <th>চাহিদার পরিমাণ</th>
-                                                                        <th>সুপারিশ পরিমান</th>
-                                                                        <th>যাচাই পরিমান</th>
-                                                                        <th>অনুমোদন পরিমান</th>
-                                                                        <th>বিতরনযোগ্য মজূদ</th>
-                                                                        <th>বিতরনের পরিমাণ</th>
-                                                                        <th>যৌক্তিকতা</th>
+                                                                        <th>Product</th>
+                                                                        <th>Previous Distribute Qty.</th>
+                                                                        <th>Section Current Stock</th>
+                                                                        <th>Demand Quantity</th>
+                                                                        <th>Recommended Quantity</th>
+                                                                        <th>Verify Quantity</th>
+                                                                        <th>Approve Quantity</th>
+                                                                        <th>Distributable Quantity</th>
+                                                                        <th>Distribute Quantity</th>
+                                                                        <th>Remark</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -194,7 +194,7 @@
 
                                     <div class="col-md-12">
                                         <div class="text-right">
-                                            <button type="submit" class="btn btn-success btn-sm" {{ $editData->status === 3 ? '' : 'disabled' }}>বিতরন করুন</button>
+                                            <button type="submit" class="btn btn-success btn-sm" {{ $editData->status === 3 ? '' : 'disabled' }}>Distribute</button>
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
                                                 <a href="{{ route('admin.distribute.list') }}">Back</a>
                                             </button>
@@ -278,7 +278,7 @@
                         },
                         iconColor: 'white',
                         icon: 'error',
-                        title: 'প্রয়োজনীয় সব ফিল্ড পূরণ করুন।',
+                        title: 'Fill all required fields.',
                         position: 'top-end',
                         showConfirmButton: false,
                         timer: 3000,
@@ -300,7 +300,7 @@
                     if (distributeQuantity > availableQuantity) {
                         Swal.fire({
                             icon: 'error',
-                            title: productName + ' - পন্যের বিতরণের পরিমান অবশ্যই মজুদ পরিমানের সমান অথবা কম হতে হবে',
+                            title: productName + ' - This Product distribute quantity must be equal to or less than the stock quantity',
                         });
                         event.preventDefault(); // Prevent form submission
                         return;

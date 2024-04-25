@@ -14,7 +14,7 @@
                                 <thead>
                                     <tr>
                                         <th width="5%">Sl.</th>
-                                        <th>পন্য</th>
+                                        <th>Product</th>
                                         <th>মজূদ পরিমান</th>
                                     </tr>
                                 </thead>

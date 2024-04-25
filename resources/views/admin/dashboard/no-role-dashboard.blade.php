@@ -90,7 +90,7 @@
                                             <img src="{{ asset('common/images/icon2.png') }}" alt="product-reecive">
                                         </div>
                                         <div class="text pt-1">
-                                            <a href="{{ route('admin.section.requisition.receive.list') }}">পন্য গ্রহন করুন</a>
+                                            <a href="{{ route('admin.section.requisition.receive.list') }}">Product গ্রহন করুন</a>
                                         </div>
                                     </div>
                                 </div>
@@ -103,7 +103,7 @@
                         <div class="row">
                             <div class="col-lg-7 text d-flex align-items-center">
                                 <h3 style="font-weight: 600; color:#fff;">
-                                    সহজেই আপনার চাহিদাপত্রের পন্য বুঝে নিন।
+                                    সহজেই আপনার চাহিদাপত্রের Product বুঝে নিন।
                                 </h3>
                             </div>
                             <div class="col-lg-5 image d-flex align-items-center">

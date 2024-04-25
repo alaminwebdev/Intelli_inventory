@@ -33,7 +33,7 @@
         <thead>
             <tr>
                 <th class="text-left" width="10%">ক্রমিক নং:</th>
-                <th class="text-center" width="70%">পন্য</th>
+                <th class="text-center" width="70%">Product</th>
                 <th class="text-center" width="20%">বর্তমান মজুদ</th>
             </tr>
         </thead>

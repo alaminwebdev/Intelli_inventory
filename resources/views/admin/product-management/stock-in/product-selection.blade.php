@@ -42,7 +42,7 @@
                                                     <thead>
                                                         <tr>
                                                             <th style="width:4%;text-align:center;">বাছাই</th>
-                                                            <th>পন্য</th>
+                                                            <th>Product</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>

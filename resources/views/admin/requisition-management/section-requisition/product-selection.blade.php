@@ -22,15 +22,15 @@
                         <div class="card shadow-sm">
                             <div id="fixedSearchBox" class="fixed-search-box p-3 rounded shadow">
                                 <div class="form-group">
-                                    <label for="searchBox" style="color: #fff;">সার্চ:</label>
-                                    <input type="text" class="form-control" id="searchBox" placeholder="সার্চ করুন">
+                                    <label for="searchBox" style="color: #fff;">Search:</label>
+                                    <input type="text" class="form-control" id="searchBox" placeholder="Search">
                                 </div>
                             </div>
                             <div class="card-header text-right">
                                 <h4 class="card-title">{{ @$title }}</h4>
                                 <div>
-                                    <button id="toggleSearchBox" class="btn btn-primary btn-sm mr-1">সার্চ</button>
-                                    <button type="submit" class="btn btn-success btn-sm mr-1">সামনে এগিয়ে যান</button>
+                                    <button id="toggleSearchBox" class="btn btn-primary btn-sm mr-1">Search</button>
+                                    <button type="submit" class="btn btn-success btn-sm mr-1">Move Forward</button>
                                     <a class="btn btn-default btn-sm ion-android-arrow-back" href="{{ route('admin.section.requisition.list') }}">Back</a>
                                 </div>
                             </div>
@@ -40,7 +40,7 @@
                                     <table class="table ">
                                         <thead>
                                             <tr>
-                                                <th colspan="2">পন্য বাছাই</th>
+                                                <th colspan="2">Select Product</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -82,7 +82,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="text-right">
-                                            <button type="submit" class="btn btn-success btn-sm mr-1">সামনে এগিয়ে যান</button>
+                                            <button type="submit" class="btn btn-success btn-sm mr-1">Move Forward</button>
                                             <button type="button" class="btn btn-default btn-sm ion-android-arrow-back">
                                                 <a href="{{ route('admin.section.requisition.list') }}">Back</a>
                                             </button>

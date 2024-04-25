@@ -41,7 +41,7 @@
                                 <div class="gradient-border px-3 pt-4 pb-3 mb-4">
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
-                                            <label class="control-label">দপ্তর <span class="text-red">*</span></label>
+                                            <label class="control-label">Department <span class="text-red">*</span></label>
                                             <select name="department_id" id="department_id" class="form-control @error('department_id') is-invalid @enderror select2 ">
                                                 <option value="0">All</option>
                                                 @foreach ($departments as $item)
@@ -55,7 +55,7 @@
                                             @enderror
                                         </div>
                                         <div class="form-group col-md-2">
-                                            <label class="control-label">শাখা </label>
+                                            <label class="control-label">Section </label>
                                             <select name="section_id" id="section_id" class="form-control select2 @error('section_id') is-invalid @enderror">
                                                 <option value="0">All</option>
                                                 {{-- @if (request()->section_id) --}}
@@ -92,9 +92,9 @@
                                 <thead style="background: #fff4f4 !important;">
                                     <tr>
                                         <th width="5%">Sl.</th>
-                                        <th class="text-center">পন্য</th>
+                                        <th class="text-center">Product</th>
                                         <th class="text-center">ইউনিট</th>
-                                        <th class="text-center">চাহিদার পরিমান</th>
+                                        <th class="text-center">Demand Quantity</th>
                                         <th class="text-center">বিতরনের পরিমান</th>
                                         <th class="text-center">বর্তমান মজুদ</th>
                                     </tr>

@@ -15,24 +15,24 @@
                                 <div class="gradient-border px-3 pt-4 pb-3 mb-4">
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
-                                            <label class="control-label" style="color:#2a527b;">চাহিদাপত্রের ধরন</label>
+                                            <label class="control-label" style="color:#2a527b;">Requisition Type</label>
                                             <select class="form-select form-select-sm select2" name="requisition_status" id="requisition_status">
-                                                <option value="3">বিতরণের অপেক্ষায় চাহিদাপত্রের তালিকা</option>
-                                                <option value="4">বিতরণ করা চাহিদাপত্রের তালিকা</option>
+                                                <option value="3">Approved Requisitions</option>
+                                                <option value="4">Distributed Requisitions</option>
                                             </select>
                                         </div>
                                         <div class="form-group col-md-2">
-                                            <label for="date_from" class="text-navy">শুরুর তারিখ :</label>
-                                            <input type="text" value="" name="date_from" class="form-control form-control-sm text-gray customdatepicker" id="date_from" placeholder="শুরুর তারিখ">
+                                            <label for="date_from" class="text-navy">Start Date :</label>
+                                            <input type="text" value="" name="date_from" class="form-control form-control-sm text-gray customdatepicker" id="date_from" placeholder="Start Date">
                                         </div>
                                         <div class="form-group col-md-2">
-                                            <label for="date_to" class="text-navy">শেষ তারিখ :</label>
-                                            <input type="text" value="" name="date_to" class="form-control form-control-sm text-gray customdatepicker" id="date_to" placeholder="শেষ তারিখ">
+                                            <label for="date_to" class="text-navy">End Date :</label>
+                                            <input type="text" value="" name="date_to" class="form-control form-control-sm text-gray customdatepicker" id="date_to" placeholder="End Date">
                                         </div>
                                         <div class="form-group col-sm-5">
                                             <label class="control-label d-block" style="visibility: hidden;">Search</label>
-                                            <button type="submit" class="btn btn-success btn-sm" name="type" value="search" style="box-shadow:rgba(40, 167, 69, 0.30) 0px 8px 18px 4px;"><i class="fas fa-search mr-1"></i>খুঁজুন</button>
-                                            <button type="submit" class="btn btn-sm btn-primary mr-1" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i>পিডিএফ হিসাবে ডাউনলোড করুন</button>
+                                            <button type="submit" class="btn btn-success btn-sm" name="type" value="search" style="box-shadow:rgba(40, 167, 69, 0.30) 0px 8px 18px 4px;"><i class="fas fa-search mr-1"></i>Search</button>
+                                            <button type="submit" class="btn btn-sm btn-primary mr-1" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i>Download as PDF</button>
                                         </div>
                                     </div>
                                 </div>
@@ -41,11 +41,11 @@
                                 <thead>
                                     <tr>
                                         <th width="5%">Sl.</th>
-                                        <th>চাহিদাপত্র নাম্বার</th>
-                                        <th>অনুরোধকৃত শাখা</th>
-                                        <th>অনুরোধকৃত দপ্তর</th>
+                                        <th>Requisition No.</th>
+                                        <th>Requested Section</th>
+                                        <th>Requested Department</th>
                                         <th>Status</th>
-                                        <th id="requisition_date">তারিখ</th>
+                                        <th id="requisition_date">Date</th>
                                         <th width="15%">Action</th>
                                     </tr>
                                 </thead>
@@ -86,7 +86,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">পন্যের বিবরনী - চাহিদাপত্র নাম্বার (<span class="requisitionInfo"></span>)</h6>
+                    <h6 class="modal-title" id="productDetailsModalLabel" style="font-weight: 600;color: #2a527b;text-transform: uppercase;">Product Detail - Requisition No. (<span class="requisitionInfo"></span>)</h6>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -95,13 +95,13 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>পন্য</th>
-                                <th>বর্তমান মজূদ</th>
-                                <th>চাহিদার পরিমান</th>
-                                <th>সুপারিশ পরিমান</th>
-                                <th>যাচাই পরিমান</th>
-                                <th>অনুমোদিত পরিমান</th>
-                                <th>যৌক্তিকতা</th>
+                                <th>Product</th>
+                                <th>Current Stock</th>
+                                <th>Demand Quantity</th>
+                                <th>Recommended Quantity</th>
+                                <th>Verify Quantity</th>
+                                <th>Approved Quantity</th>
+                                <th>Remark</th>
                             </tr>
                         </thead>
                         <tbody id="productDetailsTable">
@@ -110,7 +110,7 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">বন্ধ করুন</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -181,10 +181,10 @@
 
     <script>
         $(document).ready(function() {
-            // Calculate the current date and previous 30 days
+            // Calculate the current date and previous 180 days
             var currentDate = new Date();
             var previousDate = new Date();
-            previousDate.setDate(currentDate.getDate() - 30);
+            previousDate.setDate(currentDate.getDate() - 180);
 
             // Format the dates as strings in the desired format (assuming 'DD-MM-YYYY' format)
             var currentDateFormatted = formatDate(currentDate);
@@ -228,7 +228,6 @@
         $(document).ready(function() {
             var dTable = $('#data-table').DataTable({
                 language: {
-                    url: "{{ asset('datatable_bn.json') }}",
                     // url: '//cdn.datatables.net/plug-ins/2.0.2/i18n/bn.json',
                 },
                 processing: true,
@@ -292,9 +291,9 @@
 
                 // Check the selected value and update the header text accordingly
                 if (selectedValue == 3) {
-                    dateColumnHeader.text('অনুমোদনের তারিখ');
+                    dateColumnHeader.text('Approved Date');
                 } else {
-                    dateColumnHeader.text('বিতরনের তারিখ');
+                    dateColumnHeader.text('Distributed Date');
                 }
 
                 // Check which button is clicked
