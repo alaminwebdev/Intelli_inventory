@@ -10,7 +10,7 @@ use PDF;
 use IntlDateFormatter;
 
 use App\Services\CurrentStockService;
-
+use Carbon\Carbon;
 
 class CurrentStockController extends Controller
 {
@@ -26,12 +26,15 @@ class CurrentStockController extends Controller
 
     public function index(Request $request)
     {
-        $data['title']          = 'বর্তমান মজুদ রিপোর্ট';
+        $data['title']          = 'Current Stock Report';
 
-        $date                   = new DateTime('now', new DateTimeZone('Asia/Dhaka')); // Set your desired timezone
-        $formatter              = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
-        $formatter->setPattern('d-MMMM-y'); // Customize the date format if needed
-        $data['date_in_bengali'] = $formatter->format($date);
+        // $date                   = new DateTime('now', new DateTimeZone('Asia/Dhaka'));
+        // $formatter              = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+        // $formatter->setPattern('d-MMMM-y');
+        // $data['date_in_bengali'] = $formatter->format($date);
+
+        $date = Carbon::now();
+        $data['date_in_english'] = $date->format('d-F-Y');
 
         $data['current_stock'] = $this->currentStockService->getCurrentStock();
         if ($request->isMethod('post')) {
@@ -46,12 +49,13 @@ class CurrentStockController extends Controller
     }
     private function currentStockPdfReport($data)
     {
-    
+        //return view('admin.reports.current-stock-list-pdf', $data);
+
         // Generate a PDF
         $pdf = PDF::loadView('admin.reports.current-stock-list-pdf', $data);
         $pdf->SetProtection(['copy', 'print'], '', 'pass');
 
-        $fileName = 'বর্তমান মজুদ-' . $data['date_in_bengali'] . '.pdf';
+        $fileName = 'Current Stock - ' . $data['date_in_english'] . '.pdf';
         return $pdf->stream($fileName);
     }
 }

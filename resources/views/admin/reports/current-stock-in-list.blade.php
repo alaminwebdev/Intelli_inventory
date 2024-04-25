@@ -26,17 +26,17 @@
                             <h4 class="card-title">{{ @$title }}</h4>
                             <form method="post" action="{{ route('admin.report.current.stock.in.list') }}" id="filterForm">
                                 @csrf
-                                <button type="submit" class="btn btn-sm btn-primary mr-1" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i>পিডিএফ হিসাবে ডাউনলোড করুন</button>
+                                <button type="submit" class="btn btn-sm btn-primary mr-1" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i>Download as PDF</button>
                             </form>
                         </div>
                         <div class="card-body">
                             <table id="sb-data-table" class="table table-bordered">
                                 <thead style="background: #fff4f4 !important;">
                                     <tr>
-                                        <th width="5%">নং:</th>
-                                        <th>Productের তথ্য</th>
-                                        <th>বর্তমান মজুদ</th>
-                                        <th>ইউনিট</th>
+                                        <th width="5%">Sl.</th>
+                                        <th>Product</th>
+                                        <th>Current Stock</th>
+                                        <th>Unit</th>
                                     </tr>
                                 </thead>
                                 <tbody>

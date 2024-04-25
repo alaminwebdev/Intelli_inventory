@@ -7,14 +7,14 @@
         footer: page-footer;
     }
 
-    @font-face {
+    /* @font-face {
         font-family: examplefont;
         src: url('../../../../fonts/kalpurush.ttf');
-    }
+    } */
 
     body {
-        /* font-family: 'Times New Roman', Times, serif; */
-        font-family: 'examplefont', sans-serif;
+        font-family: 'Times New Roman', Times, serif;
+        /* font-family: 'examplefont', sans-serif; */
         margin: 0;
     }
 

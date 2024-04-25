@@ -21,6 +21,7 @@ use App\Services\DepartmentService;
 use App\Services\DistributionService;
 use App\Services\ProductInformationService;
 use App\Services\ProductTypeService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class RequisitionReportController extends Controller
@@ -58,7 +59,7 @@ class RequisitionReportController extends Controller
 
     public function getProductStatistics(Request $request)
     {
-        $data['title']          = 'পন্যের পরিসংখ্যান';
+        $data['title']          = 'Product Statistics';
         $data['departments']    = $this->departmentService->getAll(1);
         $data['sections']       = [];
 
@@ -90,24 +91,29 @@ class RequisitionReportController extends Controller
                 $data['productStatistics'] = $this->productInformationService->getProductStatistics(null, $request);
             }
             if ($request->type == 'pdf') {
-                $date                   = new DateTime('now', new DateTimeZone('Asia/Dhaka'));
-                $formatter              = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
-                $formatter->setPattern('d-MMMM-y'); // Customize the date format if needed
-                $data['date_in_bengali'] = $formatter->format($date);
+                // $date                   = new DateTime('now', new DateTimeZone('Asia/Dhaka'));
+                // $formatter              = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+                // $formatter->setPattern('d-MMMM-y');
+                // $data['date_in_bengali'] = $formatter->format($date);
+                
+                $date = Carbon::now();
+                $data['date_in_english'] = $date->format('d-F-Y');
                 
                 if ($request['date_from'] != null) {
-                    $date_from              = DateTime::createFromFormat('d-m-Y', $request['date_from'])->setTimezone(new DateTimeZone('Asia/Dhaka'));
-                    $date_from_formatter    = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
-                    $date_from_formatter->setPattern('d-MMMM-y');
-                    $data['date_from']      = $date_from_formatter->format($date_from);
+                    // $date_from              = DateTime::createFromFormat('d-m-Y', $request['date_from'])->setTimezone(new DateTimeZone('Asia/Dhaka'));
+                    // $date_from_formatter    = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+                    // $date_from_formatter->setPattern('d-MMMM-y');
+                    // $data['date_from']      = $date_from_formatter->format($date_from);
+                    $data['date_from']      = date('d-F-Y', strtotime($request['date_from']));
                 }else{
                     $data['date_from']      = null;
                 }
                 if ($request['date_to'] != null) {
-                    $date_to            = DateTime::createFromFormat('d-m-Y', $request['date_to'])->setTimezone(new DateTimeZone('Asia/Dhaka'));
-                    $date_to_formatter  = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
-                    $date_to_formatter->setPattern('d-MMMM-y');
-                    $data['date_to']    = $date_to_formatter->format($date_to);
+                    // $date_to            = DateTime::createFromFormat('d-m-Y', $request['date_to'])->setTimezone(new DateTimeZone('Asia/Dhaka'));
+                    // $date_to_formatter  = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+                    // $date_to_formatter->setPattern('d-MMMM-y');
+                    // $data['date_to']    = $date_to_formatter->format($date_to);
+                    $data['date_to']    = date('d-F-Y', strtotime($request['date_to']));
                 }else{
                     $data['date_to']    = null;
                 }
@@ -126,7 +132,7 @@ class RequisitionReportController extends Controller
         // Generate a PDF
         $pdf = PDF::loadView('admin.reports.product-statistics-pdf', $data);
         $pdf->SetProtection(['copy', 'print'], '', 'pass');
-        $fileName = 'পন্যের পরিসংখ্যান-' . $data['date_in_bengali'] . '.pdf';
+        $fileName = 'Product Statistics - ' . $data['date_in_english'] . '.pdf';
         return $pdf->stream($fileName);
     }
 

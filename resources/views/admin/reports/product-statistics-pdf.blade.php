@@ -1,13 +1,13 @@
 @extends('admin.layouts.pdf')
 
 @section('pdf-title')
-    Productের পরিসংখ্যান - {{ $date_in_bengali }}
+    Product Statistics - {{ $date_in_english }}
 @endsection
 
 @section('pdf-header')
-    <p style="font-size: 12px;">গণপ্রজাতন্ত্রী বাংলাদেশ সরকার</p>
-    <p style="font-size: 12px;">বাংলাদেশ পুলিশ</p>
-    <p style="font-size: 12px;">স্পেশাল ব্রাঞ্চ , ঢাকা।</p>
+    <p style="font-size: 12px;">Intelli Inventory</p>
+    <p style="font-size: 12px;">Product Statistics Report</p>
+    <p style="font-size: 12px;">Dhaka, Bangladesh</p>
 @endsection
 
 @section('pdf-header-partner')
@@ -24,32 +24,32 @@
 @section('pdf-content')
     <div style="margin-top: 10px; font-size: 12px;">
         <div style="width:100%">
-            <p style="margin: 0; width:50%; float:left;">Department : {{ $department ? $department->name : 'সবগুলি'  }}  - Section : {{ @$section ? $section->name : 'সবগুলি'  }} </p>
-            <p style="margin: 0; width:50%; float:right; text-align:right">তারিখ : {{ $date_from }} - {{ $date_to }}</p>
+            <p style="margin: 0; width:50%; float:left;">Department : {{ $department ? $department->name : 'All'  }}  - Section : {{ @$section ? $section->name : 'All'  }} </p>
+            <p style="margin: 0; width:50%; float:right; text-align:right">Date : {{ $date_from }} - {{ $date_to }}</p>
         </div>
     </div>
 
     <table class="table table-bordered" style="margin-top: 10px;">
         <thead>
             <tr>
-                <th class="text-left" width="10%">নং:</th>
+                <th class="text-left" width="10%">Sl.</th>
                 <th class="text-center" width="35%">Product</th>
-                <th class="text-center" width="10%">ইউনিট</th>
+                <th class="text-center" width="10%">Unit</th>
                 <th class="text-center" width="15%">Demand Quantity</th>
-                <th class="text-center" width="15%">বিতরনের পরিমান</th>
-                <th class="text-center" width="15%">বর্তমান মজুদ</th>
+                <th class="text-center" width="15%">Distribute Quantity</th>
+                <th class="text-center" width="15%">Current Stock</th>
             </tr>
         </thead>
         <tbody>
             @if (@$productStatistics && count(@$productStatistics) > 0)
                 @foreach ($productStatistics as $list)
                     <tr>
-                        <td>{{ en2bn($loop->iteration) }}</td>
+                        <td>{{ $loop->iteration }}</td>
                         <td>{{ @$list['product'] ?? 'N/A' }}</td>
                         <td>{{ @$list['unit'] ?? 'N/A' }}</td>
-                        <td class="text-right">{{ en2bn(@$list['demand_quantity']) ?? 'N/A' }}</td>
-                        <td class="text-right">{{ en2bn(@$list['distribute_quantity']) ?? 'N/A' }}</td>
-                        <td class="text-right">{{ en2bn(@$list['current_stock']) ?? 'N/A' }}</td>
+                        <td class="text-right">{{ @$list['demand_quantity'] ?? 'N/A' }}</td>
+                        <td class="text-right">{{ @$list['distribute_quantity'] ?? 'N/A' }}</td>
+                        <td class="text-right">{{ @$list['current_stock'] ?? 'N/A' }}</td>
                     </tr>
                 @endforeach
             @endif

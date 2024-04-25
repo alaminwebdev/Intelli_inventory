@@ -33,7 +33,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-info"><i class="fas fa-tachometer-alt mr-1"></i>ড্যাশবোর্ড</a>
+                            <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-info"><i class="fas fa-tachometer-alt mr-1"></i>Dashboard</a>
                         </div>
                         <div class="card-body">
                             <form method="post" action="{{ route('admin.product.statistics') }}" id="filterForm" autocomplete="off">
@@ -71,18 +71,18 @@
                                             @enderror
                                         </div>
                                         <div class="form-group col-md-2">
-                                            <label for="date_from" class="text-navy">শুরুর তারিখ :</label>
-                                            <input type="text" value="{{ request()->date_from }}" name="date_from" class="form-control form-control-sm text-gray singledatepicker" id="date_from" placeholder="শুরুর তারিখ">
+                                            <label for="date_from" class="text-navy">Start Date :</label>
+                                            <input type="text" value="{{ request()->date_from }}" name="date_from" class="form-control form-control-sm text-gray singledatepicker" id="date_from" placeholder="Start Date">
                                         </div>
                                         <div class="form-group col-md-2">
-                                            <label for="date_to" class="text-navy">শেষ তারিখ :</label>
-                                            <input type="text" value="{{ request()->date_to }}" name="date_to" class="form-control form-control-sm text-gray singledatepicker" id="date_to" placeholder="শেষ তারিখ">
+                                            <label for="date_to" class="text-navy">End Date :</label>
+                                            <input type="text" value="{{ request()->date_to }}" name="date_to" class="form-control form-control-sm text-gray singledatepicker" id="date_to" placeholder="End Date">
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label class="control-label d-block" style="visibility: hidden;">Search</label>
-                                            <button type="submit" name="type" value="search" style="box-shadow:rgba(40, 167, 69, 0.30) 0px 8px 18px 4px" class="btn btn-success btn-sm"><i class="fas fa-search mr-1"></i>খুজুন</button>
+                                            <button type="submit" name="type" value="search" style="box-shadow:rgba(40, 167, 69, 0.30) 0px 8px 18px 4px" class="btn btn-success btn-sm"><i class="fas fa-search mr-1"></i>Search</button>
                                             @if (isset($productStatistics) && count($productStatistics) > 0)
-                                                <button type="submit" class="btn btn-sm btn-primary" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ</button>
+                                                <button type="submit" class="btn btn-sm btn-primary" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i> PDF</button>
                                             @endif
                                         </div>
                                     </div>
@@ -93,21 +93,21 @@
                                     <tr>
                                         <th width="5%">Sl.</th>
                                         <th class="text-center">Product</th>
-                                        <th class="text-center">ইউনিট</th>
+                                        <th class="text-center">Unit</th>
                                         <th class="text-center">Demand Quantity</th>
-                                        <th class="text-center">বিতরনের পরিমান</th>
-                                        <th class="text-center">বর্তমান মজুদ</th>
+                                        <th class="text-center">Distribute Quantity</th>
+                                        <th class="text-center">Current Stock</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($productStatistics as $list)
                                         <tr>
-                                            <td>{{ en2bn($loop->iteration) }}</td>
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>{{ @$list['product'] ?? 'N/A' }}</td>
                                             <td>{{ @$list['unit'] ?? 'N/A' }}</td>
-                                            <td class="text-right">{{ en2bn(@$list['demand_quantity']) ?? 'N/A' }}</td>
-                                            <td class="text-right">{{ en2bn(@$list['distribute_quantity']) ?? 'N/A' }}</td>
-                                            <td class="text-right">{{ en2bn(@$list['current_stock']) ?? 'N/A' }}</td>
+                                            <td class="text-right">{{ @$list['demand_quantity'] ?? 'N/A' }}</td>
+                                            <td class="text-right">{{ @$list['distribute_quantity'] ?? 'N/A' }}</td>
+                                            <td class="text-right">{{ @$list['current_stock'] ?? 'N/A' }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
