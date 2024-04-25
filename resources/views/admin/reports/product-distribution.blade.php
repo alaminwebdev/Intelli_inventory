@@ -33,7 +33,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-info"><i class="fas fa-tachometer-alt mr-1"></i>ড্যাশবোর্ড</a>
+                            <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-info"><i class="fas fa-tachometer-alt mr-1"></i>Dashboard</a>
                         </div>
                         <div class="card-body">
                             <form method="post" action="{{ route('admin.product.distribution.report') }}" id="filterForm" autocomplete="off">
@@ -44,7 +44,7 @@
                                         <div class="form-group col-md-4">
                                             <label class="control-label">Department : <span class="text-red">*</span></label>
                                             <select name="department_id" id="department_id" class="form-control @error('department_id') is-invalid @enderror select2 ">
-                                                <option value="0">-- সকল Department --</option>
+                                                <option value="0">-- All Department --</option>
                                                 @foreach ($departments as $item)
                                                     <option value="{{ $item->id }}" {{ request()->department_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
                                                 @endforeach
@@ -59,7 +59,7 @@
                                         <div class="form-group col-md-4">
                                             <label class="control-label">Section :</label>
                                             <select name="section_id" id="section_id" class="form-control select2 @error('section_id') is-invalid @enderror">
-                                                <option value="0">-- সকল Section --</option>
+                                                <option value="0">-- All Section --</option>
                                                 {{-- @if (request()->section_id) --}}
                                                 @foreach ($sections as $item)
                                                     <option value="{{ $item->id }}" {{ request()->section_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
@@ -74,19 +74,19 @@
                                         </div>
 
                                         <div class="form-group col-md-2">
-                                            <label for="date_from" class="text-navy">শুরুর তারিখ :</label>
-                                            <input type="text" value="{{ request()->date_from }}" name="date_from" class="form-control form-control-sm text-gray customdatepicker" id="date_from" placeholder="শুরুর তারিখ">
+                                            <label for="date_from" class="text-navy">Start Date :</label>
+                                            <input type="text" value="{{ request()->date_from }}" name="date_from" class="form-control form-control-sm text-gray customdatepicker" id="date_from" placeholder="Start Date">
                                         </div>
 
                                         <div class="form-group col-md-2">
-                                            <label for="date_to" class="text-navy">শেষ তারিখ :</label>
-                                            <input type="text" value="{{ request()->date_to }}" name="date_to" class="form-control form-control-sm text-gray customdatepicker" id="date_to" placeholder="শেষ তারিখ">
+                                            <label for="date_to" class="text-navy">End Date :</label>
+                                            <input type="text" value="{{ request()->date_to }}" name="date_to" class="form-control form-control-sm text-gray customdatepicker" id="date_to" placeholder="End Date">
                                         </div>
 
                                         <div class="form-group col-md-6">
                                             <label class="control-label">Product :</label>
                                             <select name="product_information_id[]" id="product_information_id" class="form-control select2" multiple="multiple">
-                                                {{-- <option value="0">-- সকল Product --</option> --}}
+                                                {{-- <option value="0">-- All Product --</option> --}}
                                                 @foreach ($products as $item)
                                                     <option value="{{ $item->id }}" {{ in_array($item->id, $product_ids) ? 'selected' : '' }} >{{ $item->name }} ({{ $item->unit }})</option>
                                                 @endforeach
@@ -95,9 +95,9 @@
 
                                         <div class="form-group col-md-6">
                                             <label class="control-label d-block">Action</label>
-                                            <button type="submit" name="type" value="search" class="btn btn-success btn-sm mr-1" style="box-shadow:rgba(40, 167, 69, 0.30) 0px 8px 18px 4px"><i class="fas fa-search mr-1"></i> খুজুন</button>
+                                            <button type="submit" name="type" value="search" class="btn btn-success btn-sm mr-1" style="box-shadow:rgba(40, 167, 69, 0.30) 0px 8px 18px 4px"><i class="fas fa-search mr-1"></i> Search</button>
                                             @if (isset($distributed_products) && count($distributed_products) > 0)
-                                                <button type="submit" class="btn btn-sm btn-primary" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ হিসাবে ডাউনলোড করুন</button>
+                                                <button type="submit" class="btn btn-sm btn-primary" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i> Download as PDF</button>
                                             @endif
                                         </div>
                                     </div>
@@ -108,13 +108,13 @@
                                     <tr>
                                         <th class="text-center">Sl.</th>
                                         <th class="text-center">Product</th>
-                                        <th class="text-center">ইউনিট</th>
+                                        <th class="text-center">Unit</th>
                                         {{-- <th class="text-center">Department</th> --}}
                                         <th class="text-center">Section</th>
-                                        <th class="text-center">ক্রয় অর্ডার Sl.</th>
-                                        <th class="text-center">তারিখ</th>
-                                        <th class="text-center">বিতরনের পরিমান</th>
-                                        <th class="text-center">মোট বিতরন</th>
+                                        <th class="text-center">PO No.</th>
+                                        <th class="text-center">Date</th>
+                                        <th class="text-center">Distribute Quantity</th>
+                                        <th class="text-center">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -153,10 +153,10 @@
 
     <script>
         $(document).ready(function() {
-            // Calculate the current date and previous 30 days
+            // Calculate the current date and previous 90 days
             var currentDate = new Date();
             var previousDate = new Date();
-            previousDate.setDate(currentDate.getDate() - 30);
+            previousDate.setDate(currentDate.getDate() - 90);
 
             // Format the dates as strings in the desired format (assuming 'DD-MM-YYYY' format)
             var currentDateFormatted = formatDate(currentDate);
@@ -229,7 +229,7 @@
                         console.log(data);
                         // Handle the data here
                         let section_div = document.getElementById('section_id');
-                        section_div.innerHTML = '<option value="0">-- সকল Section --</option>';
+                        section_div.innerHTML = '<option value="0">-- All Section --</option>';
                         data.forEach(item => {
                             section_div.innerHTML +=
                                 `<option value="${item.id}">${item.name}</option>`;
@@ -251,7 +251,7 @@
                         console.log(data);
                         // Handle the data here
                         let productInformation = document.getElementById('product_information_id');
-                        productInformation.innerHTML = '<option value="0">-- সকল Product --</option>';
+                        productInformation.innerHTML = '<option value="0">-- All Product --</option>';
                         data.forEach(item => {
                             productInformation.innerHTML +=
                                 `<option value="${item.id}">${item.name}</option>`;

@@ -137,7 +137,7 @@ class RequisitionReportController extends Controller
     }
 
     public function getExpiringSoonProducts(Request $request){
-        $data['title']          = 'শীঘ্রই মেয়াদ উত্তীর্ণ হওয়া পণ্য';
+        $data['title']          = 'Expiring Soon Products';
         $data['product_types']  = $this->productTypeService->getAll(1);
 
 
@@ -155,7 +155,6 @@ class RequisitionReportController extends Controller
                 }
             }else{
                 $data['products'] = $this->productInformationService->getProductsByTypeId($data['product_types']->pluck('id'));
-
                 $productIds = $data['products']->pluck('id');
             }
 
@@ -166,11 +165,8 @@ class RequisitionReportController extends Controller
                 $data['expiringSoonProducts']   = [];
             }
             if ($request->type == 'pdf') {
-                $date                   = new DateTime('now', new DateTimeZone('Asia/Dhaka'));
-                $formatter              = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
-                $formatter->setPattern('d-MMMM-y'); // Customize the date format if needed
-                $data['date_in_bengali'] = $formatter->format($date);
-                
+                $date = Carbon::now();
+                $data['date_in_english'] = $date->format('d-F-Y');
                 return $this->expiringSoonProductsPdfDownload($data);
             }
         }else{
@@ -186,7 +182,7 @@ class RequisitionReportController extends Controller
         // Generate a PDF
         $pdf = PDF::loadView('admin.reports.expiring-soon-products-pdf', $data);
         $pdf->SetProtection(['copy', 'print'], '', 'pass');
-        $fileName = 'মেয়াদ উত্তীর্ণ হওয়া পণ্য -' . $data['date_in_bengali'] . '.pdf';
+        $fileName = 'Expiring Soon Products -' . $data['date_in_english'] . '.pdf';
         return $pdf->stream($fileName);
     }
 }

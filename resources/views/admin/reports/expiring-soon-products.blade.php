@@ -33,7 +33,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-info"><i class="fas fa-tachometer-alt mr-1"></i>ড্যাশবোর্ড</a>
+                            <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-info"><i class="fas fa-tachometer-alt mr-1"></i>Dashboard</a>
                         </div>
                         <div class="card-body">
                             <form method="post" action="{{ route('admin.product.expiring.soon') }}" id="filterForm" autocomplete="off">
@@ -41,17 +41,17 @@
                                 <div class="gradient-border px-3 pt-4 pb-3 mb-4">
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
-                                            <label class="control-label">দিন বাছাই করুন <span class="text-red">*</span></label>
+                                            <label class="control-label">Select Days <span class="text-red">*</span></label>
                                             <select name="days" id="days" class="form-control select2 " required>
-                                                <option value=""> বাছাই করুন </option>
-                                                <option value="7" {{ request()->days == 7 ? 'selected' : '' }}> ৭ দিন </option>
-                                                <option value="15" {{ request()->days == 15 ? 'selected' : '' }}> ১৫ দিন </option>
-                                                <option value="30" {{ request()->days == 30 ? 'selected' : '' }}> ৩০ দিন </option>
-                                                <option value="60" {{ request()->days == 60 || !request()->has('days') ? 'selected' : '' }}> ৬০ দিন </option>
+                                                <option value=""> Please Select </option>
+                                                <option value="7" {{ request()->days == 7 ? 'selected' : '' }}> 7 Days </option>
+                                                <option value="15" {{ request()->days == 15 ? 'selected' : '' }}> 15 Days </option>
+                                                <option value="30" {{ request()->days == 30 ? 'selected' : '' }}> 30 Days </option>
+                                                <option value="60" {{ request()->days == 60 || !request()->has('days') ? 'selected' : '' }}> 60 Days </option>
                                             </select>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label class="control-label">Productের ধরন</label>
+                                            <label class="control-label">Product Type</label>
                                             <select name="product_type_id" id="product_type_id" class="form-control select2">
                                                 <option value="0">All</option>
                                                 @foreach ($product_types as $item)
@@ -72,9 +72,9 @@
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label class="control-label d-block" style="visibility: hidden;">Search</label>
-                                            <button type="submit" name="type" value="search" style="box-shadow:rgba(40, 167, 69, 0.30) 0px 8px 18px 4px" class="btn btn-success btn-sm"><i class="fas fa-search mr-1"></i>খুজুন</button>
+                                            <button type="submit" name="type" value="search" style="box-shadow:rgba(40, 167, 69, 0.30) 0px 8px 18px 4px" class="btn btn-success btn-sm"><i class="fas fa-search mr-1"></i>Search</button>
                                             @if (isset($expiringSoonProducts) && count($expiringSoonProducts) > 0)
-                                                <button type="submit" class="btn btn-sm btn-primary" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i> পিডিএফ</button>
+                                                <button type="submit" class="btn btn-sm btn-primary" name="type" value="pdf" style="box-shadow:rgba(13, 109, 253, 0.25) 0px 8px 18px 4px"><i class="fas fa-file-pdf mr-1"></i> PDF</button>
                                             @endif
                                         </div>
                                     </div>
@@ -84,15 +84,15 @@
                                 <thead style="background: #fff4f4 !important;">
                                     <tr>
                                         <th width="5%">Sl.</th>
-                                        <th width="10%">ক্রয় অর্ডার Sl.</th>
+                                        <th width="10%">PO No.</th>
                                         <th width="60%">Product</th>
-                                        <th>মেয়াদ শেষ হবার তারিখ</th>
+                                        <th>Expire Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($expiringSoonProducts as $product)
                                         <tr>
-                                            <td>{{ en2bn($loop->iteration) }}</td>
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>{{ $product->po_no }}</td>
                                             <td>{{ $product->product }}({{ $product->unit }})</td>
                                             <td>
@@ -101,8 +101,8 @@
                                                         $expireDate = \Carbon\Carbon::parse($product->expire_date);
                                                         $daysUntilExpiration = $expireDate->diffInDays(\Carbon\Carbon::now());
                                                     @endphp
-                                                    {{ en2bn($daysUntilExpiration) . ' দিনের মধ্যে মেয়াদ শেষ হবে' }}
-                                                    {{-- Expire in {{ $daysUntilExpiration }} day{{ $daysUntilExpiration != 1 ? 's' : '' }} --}}
+                                                    {{-- {{ en2bn($daysUntilExpiration) . ' দিনের মধ্যে মেয়াদ শেষ হবে' }} --}}
+                                                    Expire in {{ $daysUntilExpiration }} day{{ $daysUntilExpiration != 1 ? 's' : '' }}
                                                 @else
                                                     N/A
                                                 @endif

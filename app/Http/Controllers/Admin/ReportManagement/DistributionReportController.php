@@ -4,17 +4,15 @@ namespace App\Http\Controllers\Admin\ReportManagement;
 
 use App\Http\Controllers\Controller;
 
-use App\Models\Section;
+
 use App\Models\SectionRequisition;
 use Illuminate\Http\Request;
-use DateTime;
-use DateTimeZone;
 use PDF;
-use IntlDateFormatter;
 
 use App\Services\SectionService;
 use App\Services\DepartmentService;
 use App\Services\ProductInformationService;
+use Carbon\Carbon;
 
 class DistributionReportController extends Controller
 {
@@ -35,7 +33,7 @@ class DistributionReportController extends Controller
 
     public function productDistributionReport(Request $request)
     {
-        $data['title']          = 'পণ্য বিতরণ রিপোর্ট';
+        $data['title']          = 'Product Distribution report';
         $data['departments']    = $this->departmentService->getAll(1);
         $data['products']       = $this->productInformationService->getAll([1]);
         $data['sections']       = [];
@@ -46,7 +44,7 @@ class DistributionReportController extends Controller
             $request->validate([
                 'department_id' => 'required'
             ], [
-                'department_id.required' => 'দপ্তর প্রয়োজন।'
+                'department_id.required' => 'Department Required'
             ]);
 
             if ($request->department_id == 0) {
@@ -80,24 +78,16 @@ class DistributionReportController extends Controller
             $data['distributed_products'] = $this->getDistributedProducts($sectionIds, $data['product_ids'], $request->date_from, $request->date_to);
 
             if ($request->type == 'pdf') {
-                $date                   = new DateTime('now', new DateTimeZone('Asia/Dhaka'));
-                $formatter              = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
-                $formatter->setPattern('d-MMMM-y'); // Customize the date format if needed
-                $data['date_in_bengali'] = $formatter->format($date);
+                $date = Carbon::now();
+                $data['date_in_english'] = $date->format('d-F-Y');
 
                 if ($request['date_from'] != null) {
-                    $date_from              = DateTime::createFromFormat('d-m-Y', $request['date_from'])->setTimezone(new DateTimeZone('Asia/Dhaka'));
-                    $date_from_formatter    = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
-                    $date_from_formatter->setPattern('d-MMMM-y');
-                    $data['date_from']      = $date_from_formatter->format($date_from);
+                    $data['date_from']      = date('d-F-Y', strtotime($request['date_from']));
                 } else {
                     $data['date_from']      = null;
                 }
                 if ($request['date_to'] != null) {
-                    $date_to            = DateTime::createFromFormat('d-m-Y', $request['date_to'])->setTimezone(new DateTimeZone('Asia/Dhaka'));
-                    $date_to_formatter  = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
-                    $date_to_formatter->setPattern('d-MMMM-y');
-                    $data['date_to']    = $date_to_formatter->format($date_to);
+                    $data['date_to']    = date('d-F-Y', strtotime($request['date_to']));
                 } else {
                     $data['date_to']    = null;
                 }
@@ -153,7 +143,7 @@ class DistributionReportController extends Controller
         $pdf = PDF::loadView('admin.reports.product-distribution-pdf', $data);
         $pdf->SetProtection(['copy', 'print'], '', 'pass');
 
-        $fileName = 'পণ্য বিতরণ রিপোর্ট -' . $data['date_in_bengali'] . '.pdf';
+        $fileName = 'Product Distribution report -' . $data['date_in_english'] . '.pdf';
         return $pdf->stream($fileName);
     }
 }

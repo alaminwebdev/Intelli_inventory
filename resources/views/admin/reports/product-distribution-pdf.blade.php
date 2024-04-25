@@ -1,13 +1,13 @@
 @extends('admin.layouts.pdf')
 
 @section('pdf-title')
-    পণ্য বিতরণ রিপোর্ট - {{ $date_in_bengali }}
+    Product Distribution Report - {{ $date_in_english }}
 @endsection
 
 @section('pdf-header')
-    <p style="font-size: 12px;">গণপ্রজাতন্ত্রী বাংলাদেশ সরকার</p>
-    <p style="font-size: 12px;">বাংলাদেশ পুলিশ</p>
-    <p style="font-size: 12px;">স্পেশাল ব্রাঞ্চ , ঢাকা।</p>
+    <p style="font-size: 12px;">Intelli Inventory</p>
+    <p style="font-size: 12px;">Product Distribution Report</p>
+    <p style="font-size: 12px;">Dhaka, Bangladesh</p>
 @endsection
 
 @section('pdf-header-partner')
@@ -24,22 +24,22 @@
 @section('pdf-content')
     <div style="margin-top: 10px; font-size: 12px;">
         <div style="width:100%">
-            <p style="margin: 0; width:50%; float:left;">Department : {{ $department ? $department->name : 'সবগুলি' }} - Section : {{ @$section ? $section->name : 'সবগুলি' }} </p>
-            <p style="margin: 0; width:50%; float:right; text-align:right">তারিখ : {{ $date_from }} - {{ $date_to }}</p>
+            <p style="margin: 0; width:50%; float:left;">Department : {{ $department ? $department->name : 'All' }} - Section : {{ @$section ? $section->name : 'All' }} </p>
+            <p style="margin: 0; width:50%; float:right; text-align:right">Date : {{ $date_from }} - {{ $date_to }}</p>
         </div>
     </div>
 
     <table class="table table-bordered" style="margin-top: 10px;">
         <thead>
             <tr>
-                <th class="text-left" width="5%">নং:</th>
+                <th class="text-left" width="5%">Sl.</th>
                 <th class="text-center">Product</th>
-                <th class="text-center">ইউনিট</th>
+                <th class="text-center">Unit</th>
                 <th class="text-center">Section</th>
-                <th class="text-center">ক্রয় অর্ডার Sl.</th>
-                <th class="text-center">তারিখ</th>
-                <th class="text-center">বিতরনের পরিমান</th>
-                <th class="text-center">মোট বিতরন</th>
+                <th class="text-center">PO No.</th>
+                <th class="text-center">Date</th>
+                <th class="text-center">Distribute Quantity</th>
+                <th class="text-center">Total</th>
             </tr>
         </thead>
         <tbody>
