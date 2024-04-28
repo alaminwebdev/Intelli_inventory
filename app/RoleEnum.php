@@ -10,4 +10,5 @@ class RoleEnum
     const R_APPROVER = 5; // Requisition Approver
     const R_DISTRIBUTOR = 6; //Issuer/Distributor
     const R_VERIFIER = 7; //Issuer/Distributor
+    const VIEWER = 8; //Viewer
 }

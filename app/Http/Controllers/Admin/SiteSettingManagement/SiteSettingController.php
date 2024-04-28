@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Admin\SiteSettingManagement;
 
 use App\Http\Controllers\Controller;
 use App\Models\SiteSetting;
-use Auth;
+use App\RoleEnum;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -21,6 +22,7 @@ class SiteSettingController extends Controller
 
     public function update(Request $request)
     {
+
         $validator = Validator::make($request->all(), 
             [
             'logo' => ['mimes:jpeg,png,jpg,gif,svg'],

@@ -65,7 +65,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($request->only([$user, 'password']), $request->get('remember'))) {
             // return redirect()->route(getGuard() . '.dashboard');
-            
+
             // Check if the user is active (status is 1)
             if (Auth::user()->status == 1) {
                 return redirect()->route(getGuard() . '.dashboard');
@@ -86,5 +86,28 @@ class LoginController extends Controller
         return $request->wantsJson()
             ? new JsonResponse([], 204)
             : redirect()->route(getGuard() . '.login');
+    }
+
+    public function loginAsViewer()
+    {
+        // Manually authenticate the user as a viewer
+        $credentials = [
+            'email' => 'viewer@gmail.com', 
+            'password' => '12345'
+        ];
+
+        if (Auth::attempt($credentials)) {
+            // Check if the user is active (status is 1)
+            if (Auth::user()->status == 1) {
+                return redirect()->route(getGuard() . '.dashboard');
+            } else {
+                Auth::logout(); // Log out the user if not active
+                return redirect()->back()->with('login_error', 'Your account is not active. Please contact support.');
+            }
+            
+        } else {
+            // Authentication failed, redirect back with an error message
+            return redirect()->back()->with('login_error', 'Failed to log in as viewer.');
+        }
     }
 }

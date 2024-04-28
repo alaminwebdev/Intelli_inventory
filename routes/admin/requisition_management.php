@@ -14,10 +14,10 @@ Route::prefix('/section-requisition')->group(function () {
     Route::get('/list', [SectionRequisitionController::class, 'index'])->name('section.requisition.list');
     Route::get('/product-selection', [SectionRequisitionController::class, 'selectProducts'])->name('section.requisition.product.selection');
     Route::match(['get', 'post'],'/add', [SectionRequisitionController::class, 'add'])->name('section.requisition.add');
-    Route::post('/store', [SectionRequisitionController::class, 'store'])->name('section.requisition.store');
+    Route::post('/store', [SectionRequisitionController::class, 'store'])->name('section.requisition.store')->middleware('checkUserRole');
     Route::get('/edit/{id}', [SectionRequisitionController::class, 'edit'])->name('section.requisition.edit');
-    Route::post('/update/{id}', [SectionRequisitionController::class, 'update'])->name('section.requisition.update');
-    Route::post('/delete', [SectionRequisitionController::class, 'delete'])->name('section.requisition.delete');
+    Route::post('/update/{id}', [SectionRequisitionController::class, 'update'])->name('section.requisition.update')->middleware('checkUserRole');
+    Route::post('/delete', [SectionRequisitionController::class, 'delete'])->name('section.requisition.delete')->middleware('checkUserRole');
     Route::get('get-requisition-list', [SectionRequisitionController::class, 'getRequisitionList'])->name('get.requisition.list.datatable');
 });
 
@@ -40,8 +40,8 @@ Route::prefix('/department-requisition')->group(function () {
 Route::prefix('/verify-requisition')->group(function () {
     Route::get('/list', [RequisitionVerifyController::class, 'index'])->name('verified.requisition.list');
     Route::get('/edit/{id}', [RequisitionVerifyController::class, 'edit'])->name('verified.requisition.edit');
-    Route::post('/update/{id}', [RequisitionVerifyController::class, 'update'])->name('verified.requisition.update');
-    Route::post('/confirm/', [RequisitionVerifyController::class, 'confirm'])->name('verified.requisition.confirm');
+    Route::post('/update/{id}', [RequisitionVerifyController::class, 'update'])->name('verified.requisition.update')->middleware('checkUserRole');
+    Route::post('/confirm/', [RequisitionVerifyController::class, 'confirm'])->name('verified.requisition.confirm')->middleware('checkUserRole');
     Route::get('get-verified-requisition-list', [RequisitionVerifyController::class, 'getVerifiedRequisitionList'])->name('get.verified.requisition.list.datatable');
 });
 
@@ -50,22 +50,22 @@ Route::prefix('/verify-requisition')->group(function () {
 Route::prefix('/recommended-requisition')->group(function () {
     Route::get('/list', [RequisitionApprovalController::class, 'index'])->name('recommended.requisition.list');
     Route::get('/edit/{id}', [RequisitionApprovalController::class, 'edit'])->name('recommended.requisition.edit');
-    Route::post('/update/{id}', [RequisitionApprovalController::class, 'update'])->name('recommended.requisition.update');
+    Route::post('/update/{id}', [RequisitionApprovalController::class, 'update'])->name('recommended.requisition.update')->middleware('checkUserRole');
     Route::get('get-recommended-requisition-list', [RequisitionApprovalController::class, 'getRecommendedRequisitionList'])->name('get.recommended.requisition.list.datatable');
 });
 
 Route::prefix('/distribution-approval')->group(function () {
     Route::get('/list', [DistributionController::class, 'index'])->name('distribution.list');
     Route::get('/edit/{id}', [DistributionController::class, 'edit'])->name('distribution.edit');
-    Route::post('/store', [DistributionController::class, 'store'])->name('distribution.update');
+    Route::post('/store', [DistributionController::class, 'store'])->name('distribution.update')->middleware('checkUserRole');
     Route::get('get-approved-requisition-list', [DistributionController::class, 'getApprovedRequisitionList'])->name('get.approved.requisition.list.datatable');
-    Route::post('/confirm/', [DistributionController::class, 'confirmApproval'])->name('approved.requisition.confirm');
+    Route::post('/confirm/', [DistributionController::class, 'confirmApproval'])->name('approved.requisition.confirm')->middleware('checkUserRole');
 });
 
 Route::prefix('/distribute')->group(function () {
     Route::get('/list', [DistributionController::class, 'distributeList'])->name('distribute.list');
     Route::get('/edit/{id}', [DistributionController::class, 'productDistributeEdit'])->name('distribute.edit');
-    Route::post('/store', [DistributionController::class, 'productDistributeStore'])->name('distribute.store');
+    Route::post('/store', [DistributionController::class, 'productDistributeStore'])->name('distribute.store')->middleware('checkUserRole');
     Route::get('/check-bp-no', [DistributionController::class, 'checkBpNo'])->name('check.bp-no');
     Route::get('get-distributed-requisition-list', [DistributionController::class, 'getDistributedRequisitionList'])->name('get.distributed.requisition.list.datatable');
 });

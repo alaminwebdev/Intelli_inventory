@@ -85,7 +85,7 @@ $nav_menus = [];
 
 
 
-@if (in_array(1, $user_role))
+@if (in_array(1, $user_role) || in_array(8, $user_role) )
     @php
         $modules = App\Models\Module::where('status', 1)
             ->orderBy('sort', 'asc')

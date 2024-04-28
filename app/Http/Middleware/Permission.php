@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\Menu;
 use App\Models\MenuPermission;
 use App\Models\MenuRoute;
+use App\RoleEnum;
 use Auth;
 use Closure;
 use Session;
@@ -15,7 +16,7 @@ class Permission
         $route= \Route::currentRouteName();
         $user_role = Auth::user()->user_roles->pluck('role_id')->toArray();
 
-        if(in_array(1, $user_role)){
+        if(in_array(1, $user_role) || in_array(RoleEnum::VIEWER, $user_role)){
             return $next($request);        
         }else{
             $mainmenu = Menu::where('url_path',$url_path)->first();

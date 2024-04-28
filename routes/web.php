@@ -15,8 +15,10 @@ Route::get('admin/login', 'App\Http\Controllers\Auth\LoginController@showLoginFo
 Route::post('admin/login', 'App\Http\Controllers\Auth\LoginController@login');
 Route::post('admin/logout', 'App\Http\Controllers\Auth\LoginController@logout')->name('admin.logout');
 
+Route::get('/admin/login-as-viewer', 'App\Http\Controllers\Auth\LoginController@loginAsViewer')->name('admin.login-as-viewer');
+
 Route::get('admin/change-password', 'App\Http\Controllers\Auth\ChangePasswordController@changePassword')->name('admin.change-password');
-Route::post('admin/change-password', 'App\Http\Controllers\Auth\ChangePasswordController@updatePassword')->name('admin.update-password');
+Route::post('admin/change-password', 'App\Http\Controllers\Auth\ChangePasswordController@updatePassword')->name('admin.update-password')->middleware('checkUserRole');
 
 Route::get('admin/password/reset', 'App\Http\Controllers\Auth\ForgotPasswordController@showLinkRequestForm')->name('admin.password.request');
 Route::post('admin/password/email', 'App\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail')->name('admin.password.email');

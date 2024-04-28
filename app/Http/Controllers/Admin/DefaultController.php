@@ -22,6 +22,7 @@ use App\Services\StockInService;
 
 use DateTime;
 use DateTimeZone;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use PDF;
 use IntlDateFormatter;
@@ -168,10 +169,9 @@ class DefaultController extends Controller
 
     public function requisitionReport($id)
     {
-        $date                       = new DateTime('now', new DateTimeZone('Asia/Dhaka')); // Set your desired timezone
-        $formatter                  = new IntlDateFormatter('bn_BD', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
-        $formatter->setPattern('d-MMMM-y'); // Customize the date format if needed
-        $data['date_in_bengali']    = $formatter->format($date);
+
+        $date = Carbon::now();
+        $data['date_in_english'] = $date->format('d-F-Y');
 
         $productTypeData    = [];
         $product_types      = $this->productTypeService->getAll(1);
@@ -226,7 +226,7 @@ class DefaultController extends Controller
         $pdf = PDF::loadView('admin.reports.requisition-pdf', $data);
         $pdf->SetProtection(['copy', 'print'], '', 'pass');
 
-        $fileName = 'চাহিদাপত্র-' . $data['date_in_bengali'] . '.pdf';
+        $fileName = 'Requisition - ' . $data['date_in_english'] . '.pdf';
         return $pdf->stream($fileName);
     }
     

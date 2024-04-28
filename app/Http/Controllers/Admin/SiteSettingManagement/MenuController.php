@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Module;
 use App\Models\Menu;
 use App\Models\MenuRoute;
+use App\RoleEnum;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -130,6 +132,7 @@ class MenuController extends Controller
 
 	public function update(Request $request,$id)
 	{
+
         $validator = Validator::make($request->all(), 
             [
 			'name' => ['required'],

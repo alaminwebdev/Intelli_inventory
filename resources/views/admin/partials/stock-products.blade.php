@@ -7,7 +7,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-info"><i class="fas fa-tachometer-alt mr-1"></i>ড্যাশবোর্ড</a>
+                            <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-info"><i class="fas fa-tachometer-alt mr-1"></i>Dashboard</a>
                         </div>
                         <div class="card-body">
                             <table id="" class="table table-bordered">
@@ -15,15 +15,15 @@
                                     <tr>
                                         <th width="5%">Sl.</th>
                                         <th>Product</th>
-                                        <th>মজূদ পরিমান</th>
+                                        <th>Stock Quantity</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($mostStockProducts as $list)
                                         <tr>
-                                            <td>{{ en2bn($loop->iteration) }}</td>
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>{{ @$list['product'] ?? 'N/A' }}</td>
-                                            <td class="text-right">{{ en2bn(@$list['quantity']) ?? 'N/A' }}</td>
+                                            <td class="text-right">{{ @$list['quantity'] ?? 'N/A' }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

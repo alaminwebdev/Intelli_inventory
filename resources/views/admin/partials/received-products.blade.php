@@ -7,7 +7,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header text-right">
                             <h4 class="card-title">{{ @$title }}</h4>
-                            <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-info"><i class="fas fa-tachometer-alt mr-1"></i>ড্যাশবোর্ড</a>
+                            <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-info"><i class="fas fa-tachometer-alt mr-1"></i>Dashboard</a>
                         </div>
                         <div class="card-body">
 
@@ -27,14 +27,14 @@
                                 <tbody>
                                     @foreach ($sectionRequisitionProducts as $list)
                                         <tr>
-                                            <td>{{ en2bn($loop->iteration) }}</td>
-                                            <td>{{ en2bn(@$list->requisition_no) ?? 'N/A' }}</td>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ @$list->requisition_no ?? 'N/A' }}</td>
                                             <td>{{ @$list->section ?? 'N/A' }}</td>
                                             <td>{{ @$list->product }} ({{ @$list->unit }})</td>
-                                            <td class="text-right">{{ en2bn(@$list->current_stock) ?? 'N/A' }}</td>
-                                            <td class="text-right">{{ en2bn(@$list->demand_quantity) ?? 'N/A' }}</td>
-                                            <td class="text-right">{{ en2bn(@$list->recommended_quantity) ?? 'N/A' }}</td>
-                                            <td class="text-right">{{ en2bn(@$list->final_approve_quantity) ?? 'N/A' }}</td>
+                                            <td class="text-right">{{ @$list->current_stock ?? 'N/A' }}</td>
+                                            <td class="text-right">{{ @$list->demand_quantity ?? 'N/A' }}</td>
+                                            <td class="text-right">{{ @$list->recommended_quantity ?? 'N/A' }}</td>
+                                            <td class="text-right">{{ @$list->final_approve_quantity ?? 'N/A' }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
