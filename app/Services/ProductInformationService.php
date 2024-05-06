@@ -185,17 +185,18 @@ class ProductInformationService implements IService
     {
 
         // Initialize an empty array to store the formatted data
-        $formattedData = [];
+        $formattedData  = [];
+        $fromDate       = date('Y-m-d', strtotime($request['date_from'] ?? 'today'));
+        $toDate         = date('Y-m-d', strtotime($request['date_to'] ?? 'today'));
 
         $totalSectionRequisition = SectionRequisition::when($section_ids, function ($q, $section_ids) {
             $q->whereIn('section_id', $section_ids);
         })
-            ->when($request, function ($q, $request) {
+            ->when($request, function ($q, $request) use ($fromDate, $toDate) {
                 if (($request['date_from'] != null || $request['date_to'] != null)) {
-                    $fromDate   = date('Y-m-d', strtotime($request['date_from']));
-                    $toDate     = date('Y-m-d', strtotime($request['date_to']));
-                    $q->whereDate('updated_at', '>=', $fromDate);
-                    $q->whereDate('updated_at', '<=', $toDate);
+                    // $q->whereDate('created_at', '>=', $fromDate);
+                    // $q->whereDate('created_at', '<=', $toDate);
+                    $q->whereBetween('created_at', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59']);
                 }
             })
             ->pluck('id');
@@ -205,9 +206,13 @@ class ProductInformationService implements IService
             $productStatistics = SectionRequisitionDetails::whereIn('section_requisition_details.section_requisition_id', $totalSectionRequisition)
                 ->join('product_information', 'product_information.id', 'section_requisition_details.product_id')
                 ->leftjoin('units', 'units.id', 'product_information.unit_id')
-                ->leftjoin('distributes', function ($join) {
+                ->leftjoin('distributes', function ($join) use($request,$fromDate, $toDate) {
                     $join->on('distributes.product_id', '=', 'product_information.id')
                         ->on('distributes.section_requisition_id', '=', 'section_requisition_details.section_requisition_id');
+                    
+                        if ((@$request['date_from'] != null || @$request['date_to'] != null)) {
+                            $join->whereBetween('distributes.created_at', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59']);
+                        }
                 })
                 ->select(
                     'section_requisition_details.product_id as product_id',
@@ -221,11 +226,17 @@ class ProductInformationService implements IService
                 ->get();
 
 
-
             // Iterate through the retrieved data and format it
             foreach ($productStatistics as $product) {
                 // Fetch current stock for the product
                 $currentStock = $this->currentStockService->getByProductWithSum($product->product_id);
+
+                // Fetch stock which was for that date
+                if ((@$request['date_from'] != null || @$request['date_to'] != null)) {
+                    $temporaryStock = $this->currentStockService->getTemporaryStock($product->product_id, $fromDate, $toDate, $totalSectionRequisition);
+                } else {
+                    $temporaryStock = (int) @$currentStock->available_qty;
+                }
 
                 $formattedData[] = [
                     'id'                    => $product->product_id,
@@ -234,6 +245,7 @@ class ProductInformationService implements IService
                     'demand_quantity'       => (int) $product->total_demand_quantity,
                     'distribute_quantity'   => (int) $product->total_distribute_qty,
                     'current_stock'         => (int) @$currentStock->available_qty,
+                    'temporary_stock'       => $temporaryStock,
                 ];
             }
         }

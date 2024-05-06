@@ -96,6 +96,7 @@
                                         <th class="text-center">Unit</th>
                                         <th class="text-center">Demand Quantity</th>
                                         <th class="text-center">Distribute Quantity</th>
+                                        <th class="text-center">Temporary Stock</th>
                                         <th class="text-center">Current Stock</th>
                                     </tr>
                                 </thead>
@@ -107,6 +108,7 @@
                                             <td>{{ @$list['unit'] ?? 'N/A' }}</td>
                                             <td class="text-right">{{ @$list['demand_quantity'] ?? 'N/A' }}</td>
                                             <td class="text-right">{{ @$list['distribute_quantity'] ?? 'N/A' }}</td>
+                                            <td class="text-right">{{ @$list['temporary_stock'] ?? 'N/A' }}</td>
                                             <td class="text-right">{{ @$list['current_stock'] ?? 'N/A' }}</td>
                                         </tr>
                                     @endforeach

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Distribute;
 use App\Models\StockIn;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -70,6 +71,62 @@ class CurrentStockService
                 ->first();
 
             return $data;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function getTemporaryStock($product_id, $from_date, $to_date, $section_requisition_ids)
+    {
+        try {
+            $stockBeforeFromDate = StockIn::join('stock_in_details', 'stock_in_details.stock_in_id', 'stock_ins.id')
+                ->where('stock_ins.status', 1)
+                ->where('stock_in_details.product_information_id', $product_id)
+                ->whereDate('stock_ins.created_at', '<', $from_date . ' 00:00:00')
+                ->select(
+                    'stock_in_details.product_information_id as product_id',
+                    DB::raw('sum(stock_in_details.receive_qty) as receive_qty'),
+                )
+                ->groupBy('stock_in_details.product_information_id')
+                ->first();
+
+            $issueBeforeFromDate = Distribute::where('product_id', $product_id)
+                ->whereIn('section_requisition_id', $section_requisition_ids)
+                ->whereDate('created_at', '<', $from_date . ' 00:00:00')
+                ->select(
+                    'product_id',
+                    DB::raw('SUM(distribute_quantity) as distribute_quantity')
+                )
+                ->groupBy('product_id')
+                ->first();
+
+            // Calculate opening stock by subtracting distributed quantity from received quantity
+            $openingStockBeforeFromDate = (($stockBeforeFromDate ? ($stockBeforeFromDate->receive_qty ?? 0) : 0) - ($issueBeforeFromDate ? ($issueBeforeFromDate->distribute_quantity ?? 0) : 0));
+
+
+            $stockBetweenDate = StockIn::join('stock_in_details', 'stock_in_details.stock_in_id', 'stock_ins.id')
+                ->where('stock_ins.status', 1)
+                ->where('stock_in_details.product_information_id', $product_id)
+                ->whereBetween('stock_ins.created_at', [$from_date . ' 00:00:00', $to_date . ' 23:59:59'])
+                ->select(
+                    'stock_in_details.product_information_id as product_id',
+                    DB::raw('sum(stock_in_details.receive_qty) as receive_qty'),
+                )
+                ->groupBy('stock_in_details.product_information_id')
+                ->first();
+
+            $issueBetweenDate = Distribute::where('product_id', $product_id)
+                ->whereIn('section_requisition_id', $section_requisition_ids)
+                ->whereBetween('created_at', [$from_date . ' 00:00:00', $to_date . ' 23:59:59'])
+                ->select(
+                    'product_id',
+                    DB::raw('SUM(distribute_quantity) as distribute_quantity')
+                )
+                ->groupBy('product_id')
+                ->first();
+
+            $temporaryStockAfterToDate = ($openingStockBeforeFromDate ?? 0) + (($stockBetweenDate ? ($stockBetweenDate->receive_qty ?? 0) : 0) - ($issueBetweenDate ? ($issueBetweenDate->distribute_quantity ?? 0) : 0));
+            return $temporaryStockAfterToDate;
         } catch (\Exception $e) {
             return $e->getMessage();
         }

@@ -33,10 +33,11 @@
         <thead>
             <tr>
                 <th class="text-left" width="10%">Sl.</th>
-                <th class="text-center" width="35%">Product</th>
+                <th class="text-center" width="20%">Product</th>
                 <th class="text-center" width="10%">Unit</th>
                 <th class="text-center" width="15%">Demand Quantity</th>
                 <th class="text-center" width="15%">Distribute Quantity</th>
+                <th class="text-center" width="15%">Temporary Stock</th>
                 <th class="text-center" width="15%">Current Stock</th>
             </tr>
         </thead>
@@ -49,6 +50,7 @@
                         <td>{{ @$list['unit'] ?? 'N/A' }}</td>
                         <td class="text-right">{{ @$list['demand_quantity'] ?? 'N/A' }}</td>
                         <td class="text-right">{{ @$list['distribute_quantity'] ?? 'N/A' }}</td>
+                        <td class="text-right">{{ @$list['temporary_stock'] ?? 'N/A' }}</td>
                         <td class="text-right">{{ @$list['current_stock'] ?? 'N/A' }}</td>
                     </tr>
                 @endforeach
